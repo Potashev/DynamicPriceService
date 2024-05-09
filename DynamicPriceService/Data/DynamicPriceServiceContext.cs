@@ -18,5 +18,5 @@ public class DynamicPriceServiceContext : DbContext
 
 	public DbSet<Company> Company { get; set; } = default!;
 	public DbSet<Product> Product { get; set; } = default!;
-    public DbSet<PriceRule> PriceRule { get; set; } = default!;
+	public DbSet<PriceRule> PriceRule { get; set; } = default!;
 }

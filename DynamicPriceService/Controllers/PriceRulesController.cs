@@ -34,14 +34,14 @@ public class PriceRulesController : Controller
 			priceRule = CreateDefaultRule(company);
 		}
 
-		ViewData["RuleStatus"] = GetRuleStatus(priceRule);
+		ViewData["RuleStatus"] = GetRuleStatus();
 
 		return View(priceRule);
 	}
 
 	private Company GetCompany() => _context.Company.FirstOrDefault();
 
-	private string GetRuleStatus(PriceRule rule) => _activeCompaniesService.IsActive(GetCompany()) ?
+	private string GetRuleStatus() => _activeCompaniesService.IsActive(GetCompany()) ?
 		"Running" :
 		"Not running";
 

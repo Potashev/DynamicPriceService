@@ -9,12 +9,12 @@ public class PriceRule
 	public Company Company { get; set; }
 
 	/// <summary>
-	/// Повышение цены продукта (в %)
+	/// Повышение цены продукта (в %).
 	/// </summary>
 	public int Increase { get; set; }
 
 	/// <summary>
-	/// Снижение цены продукта (в %)
+	/// Снижение цены продукта (в %).
 	/// </summary>
 	public int Reduction { get; set; }
 

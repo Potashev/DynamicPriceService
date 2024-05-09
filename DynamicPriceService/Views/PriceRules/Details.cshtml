@@ -1,0 +1,42 @@
+﻿@model DynamicPriceService.Models.PriceRule
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>PriceRule</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Increase)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Increase) %
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Reduction)
+        </dt>
+        <dd class = "col-sm-10">
+			@Html.DisplayFor(model => model.Reduction) %
+        </dd>
+        <dt class = "col-sm-2">
+			@Html.DisplayNameFor(model => model.NoSellTime)
+        </dt>
+        <dd class = "col-sm-10">
+			@Html.DisplayFor(model => model.NoSellTime)
+        </dd>
+		<dt class="col-sm-2">
+			Status
+		</dt>
+		<dd class="col-sm-10">
+			@ViewData["RuleStatus"]
+		</dd>
+    </dl>
+</div>
+<div>
+	<a asp-action="Run" asp-route-id="@Model?.PriceRuleId" class="btn btn-primary">Run</a> |
+	<a asp-action="Edit" asp-route-id="@Model?.PriceRuleId">Edit</a>
+</div>

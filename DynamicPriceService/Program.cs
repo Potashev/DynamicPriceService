@@ -4,6 +4,7 @@ using DynamicPriceService.Data;
 using DynamicPriceService.Services;
 using Quartz;
 using DynamicPriceService.Extensions;
+using Microsoft.AspNetCore.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DynamicPriceServiceContext>(options =>
@@ -11,6 +12,10 @@ builder.Services.AddDbContext<DynamicPriceServiceContext>(options =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+//builder.Services.AddAutoMapper(typeof(Program).Assembly);
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());	//instead startup - is it right?
 
 builder.Services.AddSingleton<IActiveCompaniesService, ActiveCompaniesService>();   //singleton - is it right?
 

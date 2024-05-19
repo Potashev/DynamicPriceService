@@ -1,28 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using DynamicPriceService.Data;
-using DynamicPriceService.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using DynamicPriceService.MediatR.ProductEntity.Queries;
+using DynamicPriceService.MediatR.ProductEntity.Commands;
+using MediatR;
+using DynamicPriceService.MediatR.ViewModel;
 
 namespace DynamicPriceService.Controllers;
 
 public class ProductsController : Controller
 {
-    private readonly DynamicPriceServiceContext _context;
+	private readonly IMediator _mediator;
 
-    public ProductsController(DynamicPriceServiceContext context)
+    public ProductsController(IMediator mediator)
     {
-        _context = context;
+		_mediator = mediator;
     }
 
     // GET: Products
     public async Task<IActionResult> Index()
     {
-        return View(await _context.Product.ToListAsync());
+        return View(await _mediator.Send(new GetProductsQuery()));
     }
 
     // GET: Products/Details/5
@@ -33,14 +29,8 @@ public class ProductsController : Controller
             return NotFound();
         }
 
-        var product = await _context.Product
-            .FirstOrDefaultAsync(m => m.ProductId == id);
-        if (product == null)
-        {
-            return NotFound();
-        }
-
-        return View(product);
+        var productVm = await _mediator.Send(new GetProductDetailsQuery((int)id));
+        return View(productVm);
     }
 
     // GET: Products/Create
@@ -54,23 +44,15 @@ public class ProductsController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(/*[Bind("ProductId,Title,Price,MinimumPrice,Quantity,Description")]*/ Product product)
+    public async Task<IActionResult> Create([Bind("Title,Price,MinimumPrice,Quantity,Description")] ProductViewModel productVm)
     {
-		product.Company = GetCompany();
-
-		//todo: return later
-		//if (ModelState.IsValid)
-		//{
-			_context.Add(product);
-            await _context.SaveChangesAsync();
+        if (ModelState.IsValid)
+        {
+            await _mediator.Send(new CreateProductCommand(productVm));
             return RedirectToAction(nameof(Index));
-		//}
-		//return View(product);
+        }
+        return View(productVm);
     }
-
-	//todo: get right company and make async
-	private Company GetCompany() => _context.Company.FirstOrDefault();
-
 
 	// GET: Products/Edit/5
 	public async Task<IActionResult> Edit(int? id)
@@ -80,12 +62,12 @@ public class ProductsController : Controller
             return NotFound();
         }
 
-        var product = await _context.Product.FindAsync(id);
-        if (product == null)
+        var productVm = await _mediator.Send(new GetProductDetailsQuery((int)id));
+        if (productVm == null)
         {
             return NotFound();
         }
-        return View(product);
+        return View(productVm);
     }
 
     // POST: Products/Edit/5
@@ -93,34 +75,19 @@ public class ProductsController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, /*[Bind("ProductId,Title,Price,MinimumPrice,Quantity,Description")]*/ Product product)
+    public async Task<IActionResult> Edit(int id, [Bind("ProductId,Title,Price,MinimumPrice,Quantity,Description")] ProductViewModel productVm)
     {
-        if (id != product.ProductId)
+        if (id != productVm.ProductId)
         {
             return NotFound();
         }
 
-        //if (ModelState.IsValid)
-        //{
-            try
-            {
-                _context.Update(product);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProductExists(product.ProductId))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        if (ModelState.IsValid)
+        {
+            _mediator.Send(new EditProductCommand(productVm));
             return RedirectToAction(nameof(Index));
-        //}
-        //return View(product);
+        }
+        return View(productVm);
     }
 
     // GET: Products/Delete/5
@@ -131,14 +98,13 @@ public class ProductsController : Controller
             return NotFound();
         }
 
-        var product = await _context.Product
-            .FirstOrDefaultAsync(m => m.ProductId == id);
-        if (product == null)
+        var productVm = await _mediator.Send(new GetProductDetailsQuery((int)id));
+        if (productVm == null)
         {
             return NotFound();
         }
 
-        return View(product);
+        return View(productVm);
     }
 
     // POST: Products/Delete/5
@@ -146,18 +112,7 @@ public class ProductsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        var product = await _context.Product.FindAsync(id);
-        if (product != null)
-        {
-            _context.Product.Remove(product);
-        }
-
-        await _context.SaveChangesAsync();
+        _mediator.Send(new DeleteProductCommand(id));
         return RedirectToAction(nameof(Index));
-    }
-
-    private bool ProductExists(int id)
-    {
-        return _context.Product.Any(e => e.ProductId == id);
     }
 }

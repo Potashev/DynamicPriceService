@@ -84,7 +84,7 @@ public class ProductsController : Controller
 
         if (ModelState.IsValid)
         {
-            _mediator.Send(new EditProductCommand(productVm));
+            await _mediator.Send(new EditProductCommand(productVm));
             return RedirectToAction(nameof(Index));
         }
         return View(productVm);
@@ -112,7 +112,7 @@ public class ProductsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        _mediator.Send(new DeleteProductCommand(id));
+        await _mediator.Send(new DeleteProductCommand(id));
         return RedirectToAction(nameof(Index));
     }
 }

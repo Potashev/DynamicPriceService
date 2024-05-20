@@ -3,9 +3,14 @@ using DynamicPriceService.Models;
 
 namespace DynamicPriceService.MediatR.ViewModel;
 
-public class ProductMappingProfile : Profile
+public class MappingProfile : Profile
 {
-    public ProductMappingProfile() =>
+    public MappingProfile()
+    {
         CreateMap<Product, ProductViewModel>()
             .ReverseMap();
+        CreateMap<PriceRule, PriceRuleViewModel>()
+            .ReverseMap();
+    }
+
 }

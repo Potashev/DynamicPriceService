@@ -8,9 +8,9 @@ using DynamicPriceService.Models;
 namespace DynamicPriceService.Data;
 public class DynamicPriceServiceContext : DbContext
 {
-    public DynamicPriceServiceContext (DbContextOptions<DynamicPriceServiceContext> options)
-        : base(options)
-    {
+	public DynamicPriceServiceContext(DbContextOptions<DynamicPriceServiceContext> options)
+		: base(options)
+	{
 		//todo: for development - remove
 		//Database.EnsureDeleted();
 		Database.EnsureCreated();

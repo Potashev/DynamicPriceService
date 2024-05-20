@@ -5,6 +5,6 @@ namespace DynamicPriceService.MediatR.ProductEntity.Commands;
 
 public class EditProductCommand : IRequest
 {
-    public ProductViewModel ProductVm { get; set; }
-    public EditProductCommand(ProductViewModel productVm) => ProductVm = productVm;
+	public ProductViewModel ProductVm { get; set; }
+	public EditProductCommand(ProductViewModel productVm) => ProductVm = productVm;
 }

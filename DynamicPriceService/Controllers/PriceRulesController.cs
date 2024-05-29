@@ -20,13 +20,13 @@ public class PriceRulesController : Controller
 
 	public async Task<IActionResult> Details()
 	{
-		var priceRuleVm = await _mediator.Send(new GetPriceRuleDetailsQuery(GetCompany()));
+		var priceRuleWithStatus = await _mediator.Send(new GetPriceRuleWithStatusQuery(GetCompany()));
 
-		ViewData["RuleStatus"] = await _mediator.Send(new GetPriceRuleStatusQuery(GetCompany())) ?
+		ViewData["RuleStatus"] = priceRuleWithStatus.IsActive ?
 			"Running" :
 			"Not running";
 
-		return View(priceRuleVm);
+		return View(priceRuleWithStatus.PriceRule);
 
 	}
 

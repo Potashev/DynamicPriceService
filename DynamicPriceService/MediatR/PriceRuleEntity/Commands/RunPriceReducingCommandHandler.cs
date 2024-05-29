@@ -8,7 +8,6 @@ public class RunPriceReducingCommandHandler
 {
 	private IActiveCompaniesService _activeCompaniesService;
 
-
 	public RunPriceReducingCommandHandler(IActiveCompaniesService activeCompaniesService)
 		=> _activeCompaniesService = activeCompaniesService;
 

@@ -1,8 +1,4 @@
-﻿using AutoMapper;
-using DynamicPriceService.Data;
-using DynamicPriceService.MediatR.ViewModel;
-using DynamicPriceService.Models;
-using DynamicPriceService.Services;
+﻿using DynamicPriceService.Services;
 using MediatR;
 
 namespace DynamicPriceService.MediatR.PriceRuleEntity.Queries;

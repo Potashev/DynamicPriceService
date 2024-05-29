@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using DynamicPriceService.Data;
+﻿using DynamicPriceService.Data;
 using DynamicPriceService.Models;
 using MediatR;
 
@@ -9,20 +8,18 @@ public class EditProductCommandHandler
 	: IRequestHandler<EditProductCommand>
 {
 	private readonly DynamicPriceServiceContext _context;
-	private readonly IMapper _mapper;
 
-	public EditProductCommandHandler(DynamicPriceServiceContext context, IMapper mapper)
-		=> (_context, _mapper) = (context, mapper);
+	public EditProductCommandHandler(DynamicPriceServiceContext context)
+		=> _context = context;
 
 	public async Task Handle(EditProductCommand request, CancellationToken cancellationToken)
 	{
-		var productVm = request.ProductVm;
-		var product = _mapper.Map<Product>(productVm);
+        var product = request.Product;
 
-		//Looks dirty
-		var modelFields =
+        //Looks dirty
+        var modelFields =
 			(from p in _context.Product
-			 where p.ProductId == productVm.ProductId
+			 where p.ProductId == product.ProductId
 			 select new
 			 {
 				 p.Company,

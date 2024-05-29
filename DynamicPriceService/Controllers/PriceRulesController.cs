@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using DynamicPriceService.Services;
 using MediatR;
 using DynamicPriceService.MediatR.PriceRuleEntity.Queries;
-using DynamicPriceService.MediatR.ViewModel;
 using DynamicPriceService.MediatR.PriceRuleEntity.Commands;
 using DynamicPriceService.Data;
 using DynamicPriceService.Models;
@@ -44,19 +42,20 @@ public class PriceRulesController : Controller
 	// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 	[HttpPost]
 	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> Edit(int id, [Bind("PriceRuleId,Increase,Reduction,NoSellTime")] PriceRuleViewModel priceRuleVm)
+	public async Task<IActionResult> Edit(int id, PriceRule priceRule)
 	{
-		if (id != priceRuleVm.PriceRuleId)
+		if (id != priceRule.PriceRuleId)
 		{
 			return NotFound();
 		}
 
+        ModelState.Remove("Company");
 		if (ModelState.IsValid)
 		{
-			await _mediator.Send(new EditPriceRuleCommand(priceRuleVm));
-			return RedirectToAction(nameof(Details));
+            await _mediator.Send(new EditPriceRuleCommand(priceRule));
+            return RedirectToAction(nameof(Details));
 		}
-		return View(priceRuleVm);
+		return View(priceRule);
 	}
 
 	public async Task<IActionResult> Run()

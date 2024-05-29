@@ -1,5 +1,4 @@
 ﻿using DynamicPriceService.Data;
-using DynamicPriceService.Models;
 using MediatR;
 
 namespace DynamicPriceService.MediatR.ProductEntity.Commands;

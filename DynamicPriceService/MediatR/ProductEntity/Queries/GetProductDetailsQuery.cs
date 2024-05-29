@@ -1,9 +1,9 @@
-﻿using DynamicPriceService.MediatR.ViewModel;
+﻿using DynamicPriceService.Models;
 using MediatR;
 
 namespace DynamicPriceService.MediatR.ProductEntity.Queries;
 
-public class GetProductDetailsQuery : IRequest<ProductViewModel>
+public class GetProductDetailsQuery : IRequest<Product>
 {
 	public int ProductId { get; set; }
 

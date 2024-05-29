@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using DynamicPriceService.Data;
+﻿using DynamicPriceService.Data;
 using DynamicPriceService.MediatR.PriceRuleEntity.Commands;
 using DynamicPriceService.Models;
 using MediatR;
@@ -10,20 +9,18 @@ public class EditPriceRuleCommandHandler
 	: IRequestHandler<EditPriceRuleCommand>
 {
 	private readonly DynamicPriceServiceContext _context;
-	private readonly IMapper _mapper;
 
-	public EditPriceRuleCommandHandler(DynamicPriceServiceContext context, IMapper mapper)
-		=> (_context, _mapper) = (context, mapper);
+    public EditPriceRuleCommandHandler(DynamicPriceServiceContext context)
+        => _context = context;
 
 	public async Task Handle(EditPriceRuleCommand request, CancellationToken cancellationToken)
 	{
-		var priceRuleVm = request.PriceRuleVm;
-		var priceRule = _mapper.Map<PriceRule>(priceRuleVm);
+		var priceRule = request.PriceRule;
 
-		//Looks dirty
-		priceRule.Company =
+        //Looks dirty
+        priceRule.Company =
 			(from pr in _context.PriceRule
-			 where pr.PriceRuleId == priceRuleVm.PriceRuleId
+			 where pr.PriceRuleId == priceRule.PriceRuleId
 			 select pr.Company).FirstOrDefault();
 
 		_context.Update(priceRule);

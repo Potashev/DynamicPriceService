@@ -1,4 +1,6 @@
-﻿namespace DynamicPriceService.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace DynamicPriceService.Models;
 
 /// <summary>
 /// Правило изменения цены для компании.
@@ -6,6 +8,8 @@
 public class PriceRule
 {
 	public int PriceRuleId { get; set; }
+
+	[JsonIgnore]
 	public Company Company { get; set; }
 
 	/// <summary>
@@ -21,5 +25,5 @@ public class PriceRule
 	/// <summary>
 	/// Допустимое время "простоя" продукта. Если превысили - снижаем цену (см. ReducePriceService).
 	/// </summary>
-	public TimeSpan? NoSellTime { get; set; }
+	public TimeSpan? NoSellTime { get; set; } //todo: need to jsonignore?
 }

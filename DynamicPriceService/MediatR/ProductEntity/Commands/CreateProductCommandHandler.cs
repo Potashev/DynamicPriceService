@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using DynamicPriceService.Data;
+﻿using DynamicPriceService.Data;
 using DynamicPriceService.Models;
 using MediatR;
 using Microsoft.CodeAnalysis;
@@ -10,14 +9,13 @@ public class CreateProductCommandHandler
 	: IRequestHandler<CreateProductCommand>
 {
 	private readonly DynamicPriceServiceContext _context;
-	private readonly IMapper _mapper;
 
-	public CreateProductCommandHandler(DynamicPriceServiceContext context, IMapper mapper)
-		=> (_context, _mapper) = (context, mapper);
+	public CreateProductCommandHandler(DynamicPriceServiceContext context)
+		=> _context = context;
 
 	public async Task Handle(CreateProductCommand request, CancellationToken cancellationToken)
 	{
-		var product = _mapper.Map<Product>(request.ProductVm);
+		var product = request.Product;
 		product.Company = GetCompany();
 		product.LastSellTime = DateTime.UtcNow;
 

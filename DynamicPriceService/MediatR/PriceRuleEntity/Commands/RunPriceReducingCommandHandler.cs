@@ -1,7 +1,4 @@
-﻿using DynamicPriceService.Data;
-using DynamicPriceService.MediatR.PriceRuleEntity.Queries;
-using DynamicPriceService.Models;
-using DynamicPriceService.Services;
+﻿using DynamicPriceService.Services;
 using MediatR;
 
 namespace DynamicPriceService.MediatR.PriceRuleEntity.Commands;

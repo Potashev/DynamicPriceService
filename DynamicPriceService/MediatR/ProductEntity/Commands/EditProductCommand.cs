@@ -1,10 +1,10 @@
-﻿using DynamicPriceService.MediatR.ViewModel;
+﻿using DynamicPriceService.Models;
 using MediatR;
 
 namespace DynamicPriceService.MediatR.ProductEntity.Commands;
 
 public class EditProductCommand : IRequest
 {
-	public ProductViewModel ProductVm { get; set; }
-	public EditProductCommand(ProductViewModel productVm) => ProductVm = productVm;
+	public Product Product { get; set; }
+	public EditProductCommand(Product product) => Product = product;
 }

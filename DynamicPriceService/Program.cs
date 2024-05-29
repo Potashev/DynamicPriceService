@@ -13,11 +13,9 @@ builder.Services.AddDbContext<DynamicPriceServiceContext>(options =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-//builder.Services.AddAutoMapper(typeof(Program).Assembly);
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());	//instead startup - is it right?
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
 
-builder.Services.AddSingleton<IActiveCompaniesService, ActiveCompaniesService>();   //singleton - is it right?
+builder.Services.AddSingleton<IActiveCompaniesService, ActiveCompaniesService>();
 
 builder.Services.AddQuartz(q => q.AddJobAndTrigger<ReducePriceJob>(builder.Configuration));
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);

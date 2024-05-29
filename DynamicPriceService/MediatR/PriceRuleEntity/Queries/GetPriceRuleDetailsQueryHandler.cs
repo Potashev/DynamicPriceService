@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using DynamicPriceService.Data;
-using DynamicPriceService.MediatR.ViewModel;
+﻿using DynamicPriceService.Data;
 using DynamicPriceService.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -8,15 +6,14 @@ using Microsoft.EntityFrameworkCore;
 namespace DynamicPriceService.MediatR.PriceRuleEntity.Queries;
 
 public class GetPriceRuleDetailsQueryHandler
-	: IRequestHandler<GetPriceRuleDetailsQuery, PriceRuleViewModel>
+	: IRequestHandler<GetPriceRuleDetailsQuery, PriceRule>
 {
 	private readonly DynamicPriceServiceContext _context;
-	private readonly IMapper _mapper;
 
-	public GetPriceRuleDetailsQueryHandler(DynamicPriceServiceContext context, IMapper mapper)
-		=> (_context, _mapper) = (context, mapper);
+    public GetPriceRuleDetailsQueryHandler(DynamicPriceServiceContext context)
+        => _context = context;
 
-	public async Task<PriceRuleViewModel> Handle(GetPriceRuleDetailsQuery request, CancellationToken cancellationToken)
+	public async Task<PriceRule> Handle(GetPriceRuleDetailsQuery request, CancellationToken cancellationToken)
 	{
 		var company = request.Company;
 		var priceRule = await _context.PriceRule
@@ -24,8 +21,7 @@ public class GetPriceRuleDetailsQueryHandler
 
 		priceRule ??= AddDefaultRule(company);
 
-		var priceRuleVm = _mapper.Map<PriceRuleViewModel>(priceRule);
-		return priceRuleVm;
+		return priceRule;
 	}
 
 	private PriceRule AddDefaultRule(Company company)

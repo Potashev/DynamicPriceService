@@ -6,14 +6,14 @@ using MediatR;
 namespace DynamicPriceService.MediatR.PriceRuleEntity.Commands;
 
 public class EditPriceRuleCommandHandler
-	: IRequestHandler<EditPriceRuleCommand>
+	: IRequestHandler<EditPriceRuleCommand, int>
 {
 	private readonly DynamicPriceServiceContext _context;
 
     public EditPriceRuleCommandHandler(DynamicPriceServiceContext context)
         => _context = context;
 
-	public async Task Handle(EditPriceRuleCommand request, CancellationToken cancellationToken)
+	public async Task<int> Handle(EditPriceRuleCommand request, CancellationToken cancellationToken)
 	{
 		var priceRule = request.PriceRule;
 
@@ -25,5 +25,7 @@ public class EditPriceRuleCommandHandler
 
 		_context.Update(priceRule);
 		_context.SaveChanges();
+
+        return priceRule.PriceRuleId;
 	}
 }

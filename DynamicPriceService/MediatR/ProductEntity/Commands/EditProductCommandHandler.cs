@@ -5,14 +5,14 @@ using MediatR;
 namespace DynamicPriceService.MediatR.ProductEntity.Commands;
 
 public class EditProductCommandHandler
-	: IRequestHandler<EditProductCommand>
+	: IRequestHandler<EditProductCommand, int>
 {
 	private readonly DynamicPriceServiceContext _context;
 
 	public EditProductCommandHandler(DynamicPriceServiceContext context)
 		=> _context = context;
 
-	public async Task Handle(EditProductCommand request, CancellationToken cancellationToken)
+	public async Task<int> Handle(EditProductCommand request, CancellationToken cancellationToken)
 	{
         var product = request.Product;
 
@@ -31,5 +31,7 @@ public class EditProductCommandHandler
 
 		_context.Update(product);
 		_context.SaveChanges();
+
+        return product.ProductId;
 	}
 }

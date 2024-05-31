@@ -5,6 +5,6 @@ namespace DynamicPriceService.MediatR.PriceRuleEntity.Queries;
 
 public class GetPriceRuleDetailsQuery : IRequest<PriceRule>
 {
-	public Company Company { get; set; }
-	public GetPriceRuleDetailsQuery(Company company) => Company = company;
+	public string UserId { get; set; }
+	public GetPriceRuleDetailsQuery(string userId) => UserId = userId;
 }

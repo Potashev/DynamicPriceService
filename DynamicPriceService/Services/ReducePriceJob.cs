@@ -20,9 +20,9 @@ public class ReducePriceJob : IJob
 		//todo: later - think about separate job for each company?
 		foreach (var company in _activeCompaniesService.GetActiveCompanies())
 		{
-			var priceRule = _context.PriceRule.Where(pr => pr.Company == company).FirstOrDefault();
+			var priceRule = _context.PriceRules.Where(pr => pr.Company == company).FirstOrDefault();
 
-			var productsToReduceQuery = from p in _context.Product
+			var productsToReduceQuery = from p in _context.Products
 										where
 									   p.Company == company &&
 									   EF.Functions.DateDiffSecond(p.LastSellTime, DateTime.Now) > priceRule.NoSellTime.Value.TotalSeconds

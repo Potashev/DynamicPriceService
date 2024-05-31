@@ -14,10 +14,10 @@ public class DeleteProductCommandHandler
 	public async Task Handle(DeleteProductCommand request, CancellationToken cancellationToken)
 	{
 		//disposed with await
-		var product = _context.Product.Find(request.ProductId);
+		var product = _context.Products.Find(request.ProductId);
 		if (product != null)
 		{
-			_context.Product.Remove(product);
+			_context.Products.Remove(product);
 		}
 
 		_context.SaveChanges();

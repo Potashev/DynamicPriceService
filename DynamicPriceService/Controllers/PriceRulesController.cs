@@ -9,18 +9,15 @@ namespace DynamicPriceService.Controllers;
 public class PriceRulesController : Controller
 {
 	private readonly IMediator _mediator;
-	//todo: temp field to pass in mediator - remove later
-	private readonly DynamicPriceServiceContext _context;
+    //todo: temp field to pass in mediator - remove later
+    private readonly string _userId = "1";
 
-	public PriceRulesController(IMediator mediator, DynamicPriceServiceContext context)
-	{
-		_mediator = mediator;
-		_context = context;
-	}
+    public PriceRulesController(IMediator mediator, DynamicPriceServiceContext context)
+        => _mediator = mediator;
 
 	public async Task<IActionResult> Details()
 	{
-		var priceRuleWithStatus = await _mediator.Send(new GetPriceRuleWithStatusQuery(GetCompany()));
+		var priceRuleWithStatus = await _mediator.Send(new GetPriceRuleWithStatusQuery(_userId));
 
 		ViewData["RuleStatus"] = priceRuleWithStatus.IsActive ?
 			"Running" :
@@ -33,7 +30,7 @@ public class PriceRulesController : Controller
 	// GET: priceRules/Edit/5
 	public async Task<IActionResult> Edit(int? id)
 	{
-		var priceRuleVm = await _mediator.Send(new GetPriceRuleDetailsQuery(GetCompany()));
+		var priceRuleVm = await _mediator.Send(new GetPriceRuleDetailsQuery(_userId));
 		return View(priceRuleVm);
 	}
 
@@ -60,9 +57,7 @@ public class PriceRulesController : Controller
 
 	public async Task<IActionResult> Run()
 	{
-		await _mediator.Send(new RunPriceReducingCommand(GetCompany()));
+		await _mediator.Send(new RunPriceReducingCommand(_userId));
 		return RedirectToAction(nameof(Details));
 	}
-
-	private Company GetCompany() => _context.Company.FirstOrDefault();
 }

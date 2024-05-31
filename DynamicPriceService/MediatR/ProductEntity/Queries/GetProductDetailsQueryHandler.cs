@@ -14,5 +14,5 @@ public class GetProductDetailsQueryHandler
 		=> _context = context;
 
 	public async Task<Product> Handle(GetProductDetailsQuery request, CancellationToken cancellationToken) =>
-        await _context.Product.FirstOrDefaultAsync(product => product.ProductId == request.ProductId, cancellationToken);
+        await _context.Products.FirstOrDefaultAsync(product => product.ProductId == request.ProductId, cancellationToken);
 }

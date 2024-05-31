@@ -15,31 +15,15 @@ public class GetPriceRuleDetailsQueryHandler
 
 	public async Task<PriceRule> Handle(GetPriceRuleDetailsQuery request, CancellationToken cancellationToken)
 	{
-		var company = request.Company;
-		var priceRule = await _context.PriceRule
-				.FirstOrDefaultAsync(pr => pr.PriceRuleId == company.CompanyId);
+        var company = await _context.CompanyUsers
+            .Where(cu => cu.UserId == request.UserId)
+            .Select(cu => cu.Company)
+            .FirstOrDefaultAsync();
 
-		priceRule ??= AddDefaultRule(company);
+        var priceRule = await _context.PriceRules
+			.FirstOrDefaultAsync(pr => pr.Company.CompanyId == company.CompanyId);
 
+        //todo: when priceRule not exist for the company - do we need add default rule?
 		return priceRule;
 	}
-
-	private PriceRule AddDefaultRule(Company company)
-	{
-		var priceRule = new PriceRule
-		{
-			Increase = 10,
-			Reduction = 1,
-			NoSellTime = new TimeSpan(0, 0, 10),
-			Company = company
-		};
-
-		// concept conflict - write action in query
-		_context.Add(priceRule);
-		_context.SaveChanges();
-
-		//PriceRuleId lost
-		return priceRule;
-	}
-
 }

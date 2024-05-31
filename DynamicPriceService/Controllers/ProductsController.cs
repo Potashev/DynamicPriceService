@@ -9,6 +9,8 @@ namespace DynamicPriceService.Controllers;
 public class ProductsController : Controller
 {
     private readonly IMediator _mediator;
+    //todo: temp field to pass in mediator - remove later
+    private readonly string _userId = "1";
 
     public ProductsController(IMediator mediator)
     {
@@ -18,7 +20,7 @@ public class ProductsController : Controller
     // GET: Products
     public async Task<IActionResult> Index()
     {
-        return View(await _mediator.Send(new GetProductsQuery()));
+        return View(await _mediator.Send(new GetProductsQuery(_userId)));
     }
 
     // GET: Products/Details/5
@@ -49,7 +51,7 @@ public class ProductsController : Controller
         ModelState.Remove("Company");
         if (ModelState.IsValid)
         {
-            await _mediator.Send(new CreateProductCommand(product));
+            await _mediator.Send(new CreateProductCommand(product, _userId));
             return RedirectToAction(nameof(Index));
         }
         return View(product);

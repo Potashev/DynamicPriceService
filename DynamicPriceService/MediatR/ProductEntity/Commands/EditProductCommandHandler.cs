@@ -1,37 +1,37 @@
 ﻿using DynamicPriceService.Data;
 using DynamicPriceService.Models;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace DynamicPriceService.MediatR.ProductEntity.Commands;
 
 public class EditProductCommandHandler
-	: IRequestHandler<EditProductCommand, int>
+    : IRequestHandler<EditProductCommand, int>
 {
-	private readonly DynamicPriceServiceContext _context;
+    private readonly DynamicPriceServiceContext _context;
 
-	public EditProductCommandHandler(DynamicPriceServiceContext context)
-		=> _context = context;
+    public EditProductCommandHandler(DynamicPriceServiceContext context)
+        => _context = context;
 
-	public async Task<int> Handle(EditProductCommand request, CancellationToken cancellationToken)
-	{
-        var product = request.Product;
+    public async Task<int> Handle(EditProductCommand request, CancellationToken cancellationToken)
+    {
+        var updatedProduct = request.Product;
+        var product = await _context.Products
+            .FirstOrDefaultAsync(p => p.ProductId == updatedProduct.ProductId);
 
-        //Looks dirty
-        var modelFields =
-			(from p in _context.Product
-			 where p.ProductId == product.ProductId
-			 select new
-			 {
-				 p.Company,
-				 LastSellTile = p.LastSellTime
-			 }).FirstOrDefault();
+        if (product != null)
+        {
+            product.Title        = updatedProduct.Title;
+            product.Price        = updatedProduct.Price;
+            product.MinimumPrice = updatedProduct.MinimumPrice;
+            product.Quantity     = updatedProduct.Quantity;
+            product.Description  = updatedProduct.Description;
+        }
 
-		product.Company = modelFields.Company;
-		product.LastSellTime = modelFields.LastSellTile;
-
-		_context.Update(product);
-		_context.SaveChanges();
+        _context.Update(product);
+        _context.SaveChanges();
 
         return product.ProductId;
-	}
+    }
 }

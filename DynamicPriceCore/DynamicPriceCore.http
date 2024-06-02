@@ -1,0 +1,6 @@
+@DynamicPriceCore_HostAddress = http://localhost:5237
+
+GET {{DynamicPriceCore_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

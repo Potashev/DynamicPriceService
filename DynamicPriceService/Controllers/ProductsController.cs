@@ -3,6 +3,9 @@ using DynamicPriceService.MediatR.ProductEntity.Queries;
 using DynamicPriceService.MediatR.ProductEntity.Commands;
 using MediatR;
 using DynamicPriceService.Models;
+using System;
+using System.Text.Json;
+using System.Text;
 
 namespace DynamicPriceService.Controllers;
 
@@ -12,15 +15,29 @@ public class ProductsController : Controller
     //todo: temp field to pass in mediator - remove later
     private readonly string _userId = "1";
 
-    public ProductsController(IMediator mediator)
+    private readonly string _localhosturl = "https://localhost:7140";
+    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly JsonSerializerOptions _options = new JsonSerializerOptions
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
+    public ProductsController(IMediator mediator, IHttpClientFactory httpClientFactory)
     {
         _mediator = mediator;
+        _httpClientFactory = httpClientFactory;
     }
 
     // GET: Products
     public async Task<IActionResult> Index()
     {
-        return View(await _mediator.Send(new GetProductsQuery(_userId)));
+        var client = _httpClientFactory.CreateClient();
+        var url = $"{_localhosturl}/api/Products";
+        var response = await client.GetStringAsync(url);
+
+        var products = JsonSerializer.Deserialize<IEnumerable<Product>>(response, _options);
+
+        return View(products);
     }
 
     // GET: Products/Details/5
@@ -31,7 +48,12 @@ public class ProductsController : Controller
             return NotFound();
         }
 
-        var product = await _mediator.Send(new GetProductDetailsQuery((int)id));
+        var client = _httpClientFactory.CreateClient();
+        var response = await client.GetStringAsync($"{_localhosturl}/api/Products/1");
+
+        var product = JsonSerializer.Deserialize<Product>(response, _options);
+        return View(product);
+
         return View(product);
     }
 
@@ -51,7 +73,12 @@ public class ProductsController : Controller
         ModelState.Remove("Company");
         if (ModelState.IsValid)
         {
-            await _mediator.Send(new CreateProductCommand(product, _userId));
+            var client = _httpClientFactory.CreateClient();
+
+            var json = JsonSerializer.Serialize(product);
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await client.PostAsync($"{_localhosturl}/api/Products", data);
+
             return RedirectToAction(nameof(Index));
         }
         return View(product);

@@ -1,26 +1,34 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using DynamicPriceService.MediatR.ProductEntity.Queries;
-using DynamicPriceService.MediatR.ProductEntity.Commands;
-using MediatR;
-using DynamicPriceService.Models;
+using System.Text.Json;
+using System.Text;
+using DynamicPriceService.ViewModels;
 
 namespace DynamicPriceService.Controllers;
 
 public class ProductsController : Controller
 {
-    private readonly IMediator _mediator;
     //todo: temp field to pass in mediator - remove later
     private readonly string _userId = "1";
 
-    public ProductsController(IMediator mediator)
+    private readonly string _localhosturl = "https://localhost:7140";
+    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly JsonSerializerOptions _options = new JsonSerializerOptions
     {
-        _mediator = mediator;
+        PropertyNameCaseInsensitive = true
+    };
+
+    public ProductsController(IHttpClientFactory httpClientFactory)
+    {
+        _httpClientFactory = httpClientFactory;
     }
 
     // GET: Products
     public async Task<IActionResult> Index()
     {
-        return View(await _mediator.Send(new GetProductsQuery(_userId)));
+        var client = _httpClientFactory.CreateClient();
+        var response = await client.GetStringAsync($"{_localhosturl}/api/Products");
+        var productsVm = JsonSerializer.Deserialize<IEnumerable<ProductViewModel>>(response, _options);
+        return View(productsVm);
     }
 
     // GET: Products/Details/5
@@ -30,9 +38,10 @@ public class ProductsController : Controller
         {
             return NotFound();
         }
-
-        var product = await _mediator.Send(new GetProductDetailsQuery((int)id));
-        return View(product);
+        var client = _httpClientFactory.CreateClient();
+        var response = await client.GetStringAsync($"{_localhosturl}/api/Products/{id}");
+        var productVm = JsonSerializer.Deserialize<ProductViewModel>(response, _options);
+        return View(productVm);
     }
 
     // GET: Products/Create
@@ -46,12 +55,14 @@ public class ProductsController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Product product)
+    public async Task<IActionResult> Create(ProductViewModel product)
     {
-        ModelState.Remove("Company");
         if (ModelState.IsValid)
         {
-            await _mediator.Send(new CreateProductCommand(product, _userId));
+            var client = _httpClientFactory.CreateClient();
+            var json = JsonSerializer.Serialize(product);
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await client.PostAsync($"{_localhosturl}/api/Products", data);
             return RedirectToAction(nameof(Index));
         }
         return View(product);
@@ -64,13 +75,10 @@ public class ProductsController : Controller
         {
             return NotFound();
         }
-
-        var product = await _mediator.Send(new GetProductDetailsQuery((int)id));
-        if (product == null)
-        {
-            return NotFound();
-        }
-        return View(product);
+        var client = _httpClientFactory.CreateClient();
+        var response = await client.GetStringAsync($"{_localhosturl}/api/Products/{id}");
+        var productVm = JsonSerializer.Deserialize<ProductViewModel>(response, _options);
+        return View(productVm);
     }
 
     // POST: Products/Edit/5
@@ -78,20 +86,18 @@ public class ProductsController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, Product product)
+    public async Task<IActionResult> Edit(int id, ProductViewModel productVm)
     {
-        if (id != product.ProductId)
-        {
-            return NotFound();
-        }
-
-        ModelState.Remove("Company");   //todo: why modelsstate doesn't know about lastsell time?
         if (ModelState.IsValid)
         {
-            await _mediator.Send(new EditProductCommand(product));
+            var client = _httpClientFactory.CreateClient();
+            var json = JsonSerializer.Serialize(productVm);
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await client.PutAsync($"{_localhosturl}/api/Products/{id}", data);
             return RedirectToAction(nameof(Index));
         }
-        return View(product);
+
+        return View(productVm);
     }
 
     // GET: Products/Delete/5
@@ -101,14 +107,14 @@ public class ProductsController : Controller
         {
             return NotFound();
         }
-
-        var product = await _mediator.Send(new GetProductDetailsQuery((int)id));
-        if (product == null)
+        var client = _httpClientFactory.CreateClient();
+        var response = await client.GetStringAsync($"{_localhosturl}/api/Products/{id}");
+        var productVm = JsonSerializer.Deserialize<ProductViewModel>(response, _options);
+        if (productVm == null)
         {
             return NotFound();
         }
-
-        return View(product);
+        return View(productVm);
     }
 
     // POST: Products/Delete/5
@@ -116,7 +122,8 @@ public class ProductsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        await _mediator.Send(new DeleteProductCommand(id));
+        var client = _httpClientFactory.CreateClient();
+        var response = await client.DeleteAsync($"{_localhosturl}/api/Products/{id}");
         return RedirectToAction(nameof(Index));
     }
 }

@@ -1,63 +1,80 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MediatR;
-using DynamicPriceService.MediatR.PriceRuleEntity.Queries;
-using DynamicPriceService.MediatR.PriceRuleEntity.Commands;
-using DynamicPriceService.Data;
-using DynamicPriceService.Models;
+using System.Text.Json;
+using DynamicPriceService.ViewModels;
+using System.Text;
 
 namespace DynamicPriceService.Controllers;
 public class PriceRulesController : Controller
 {
-	private readonly IMediator _mediator;
     //todo: temp field to pass in mediator - remove later
     private readonly string _userId = "1";
 
-    public PriceRulesController(IMediator mediator, DynamicPriceServiceContext context)
-        => _mediator = mediator;
+    private readonly string _localhosturl = "https://localhost:7140";
+    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly JsonSerializerOptions _options = new JsonSerializerOptions
+    {
+        PropertyNameCaseInsensitive = true
+    };
 
-	public async Task<IActionResult> Details()
+    public PriceRulesController(IHttpClientFactory httpClientFactory)
+    {
+        _httpClientFactory = httpClientFactory;
+    }
+
+    public async Task<IActionResult> Details()
 	{
-		var priceRuleWithStatus = await _mediator.Send(new GetPriceRuleWithStatusQuery(_userId));
+        var client = _httpClientFactory.CreateClient();
+        //url looks not right
+        var response = await client.GetStringAsync($"{_localhosturl}/api/PriceRules/{_userId}");
+        var priceRuleWithStatus = JsonSerializer.Deserialize<PriceRuleWithStatus>(response, _options);
 
 		ViewData["RuleStatus"] = priceRuleWithStatus.IsActive ?
 			"Running" :
 			"Not running";
 
-		return View(priceRuleWithStatus.PriceRule);
-
+		return View(priceRuleWithStatus.PriceRuleVm);
 	}
 
 	// GET: priceRules/Edit/5
 	public async Task<IActionResult> Edit(int? id)
 	{
-		var priceRuleVm = await _mediator.Send(new GetPriceRuleDetailsQuery(_userId));
-		return View(priceRuleVm);
-	}
+        if (id == null)
+        {
+            return NotFound();
+        }
+        var client = _httpClientFactory.CreateClient();
+        var response = await client.GetStringAsync($"{_localhosturl}/api/PriceRules/{_userId}");
+
+        //to make api more compact, we use prVm with status
+        var priceRuleWithStatus = JsonSerializer.Deserialize<PriceRuleWithStatus>(response, _options);
+        return View(priceRuleWithStatus.PriceRuleVm);
+    }
 
 	// POST: priceRules/Edit/5
 	// To protect from overposting attacks, enable the specific properties you want to bind to.
 	// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 	[HttpPost]
 	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> Edit(int id, PriceRule priceRule)
+	public async Task<IActionResult> Edit(int id, PriceRuleViewModel priceRuleVm)
 	{
-		if (id != priceRule.PriceRuleId)
-		{
-			return NotFound();
-		}
+        if (ModelState.IsValid)
+        {
+            var client = _httpClientFactory.CreateClient();
 
-        ModelState.Remove("Company");
-		if (ModelState.IsValid)
-		{
-            await _mediator.Send(new EditPriceRuleCommand(priceRule));
+            var json = JsonSerializer.Serialize(priceRuleVm);
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await client.PutAsync($"{_localhosturl}/api/PriceRules/{_userId}", data);
+
             return RedirectToAction(nameof(Details));
-		}
-		return View(priceRule);
-	}
+        }
+
+        return View(priceRuleVm);
+    }
 
 	public async Task<IActionResult> Run()
 	{
-		await _mediator.Send(new RunPriceReducingCommand(_userId));
-		return RedirectToAction(nameof(Details));
+        var client = _httpClientFactory.CreateClient();
+        var response = await client.GetStringAsync($"{_localhosturl}/api/PriceRules/{_userId}/Run");
+        return RedirectToAction(nameof(Details));
 	}
 }

@@ -1,24 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using DynamicPriceService.Data;
-using DynamicPriceService.Services;
-using Quartz;
-using DynamicPriceService.Extensions;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<DynamicPriceServiceContext>(options =>
-	options.UseSqlServer(builder.Configuration.GetConnectionString("DynamicPriceServiceContext") ?? throw new InvalidOperationException("Connection string 'DynamicPriceServiceContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
-
-builder.Services.AddSingleton<IActiveCompaniesService, ActiveCompaniesService>();
-
-builder.Services.AddQuartz(q => q.AddJobAndTrigger<ReducePriceJob>(builder.Configuration));
-builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 

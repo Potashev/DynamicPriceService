@@ -14,6 +14,7 @@ builder.Services.AddDbContext<DynamicPriceServiceContext>(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient();
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
 
 builder.Services.AddSingleton<IActiveCompaniesService, ActiveCompaniesService>();

@@ -9,13 +9,13 @@ public class PriceRule
 {
 	public int PriceRuleId { get; set; }
 
-	[JsonIgnore]
-	public Company Company { get; set; }
+    [JsonIgnore]
+    public Company Company { get; set; }
 
-	/// <summary>
-	/// Повышение цены продукта (в %).
-	/// </summary>
-	public int Increase { get; set; }
+    /// <summary>
+    /// Повышение цены продукта (в %).
+    /// </summary>
+    public int Increase { get; set; }
 
 	/// <summary>
 	/// Снижение цены продукта (в %).

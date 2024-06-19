@@ -1,4 +1,5 @@
-﻿using DynamicPriceCore.Data;
+﻿using AutoMapper;
+using DynamicPriceCore.Data;
 using DynamicPriceCore.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -10,27 +11,31 @@ public class EditProductCommandHandler
     : IRequestHandler<EditProductCommand, int>
 {
     private readonly DynamicPriceCoreContext _context;
+    private readonly IMapper _mapper;
 
-    public EditProductCommandHandler(DynamicPriceCoreContext context)
-        => _context = context;
+    public EditProductCommandHandler(DynamicPriceCoreContext context, IMapper mapper)
+        => (_context, _mapper) = (context, mapper);
 
     public async Task<int> Handle(EditProductCommand request, CancellationToken cancellationToken)
     {
-        var updatedProduct = request.Product;
+        var updatedProductVm = request.ProductVm;
         var product = await _context.Products
-            .FirstOrDefaultAsync(p => p.ProductId == updatedProduct.ProductId);
+            .FirstOrDefaultAsync(p => p.ProductId == updatedProductVm.ProductId);
 
         if (product != null)
         {
-            product.Title        = updatedProduct.Title;
-            product.Price        = updatedProduct.Price;
-            product.MinimumPrice = updatedProduct.MinimumPrice;
-            product.Quantity     = updatedProduct.Quantity;
-            product.Description  = updatedProduct.Description;
+            _mapper.Map(updatedProductVm, product);
+
+            _context.Update(product);
+            _context.SaveChanges();
+
+            //product.Title        = updatedProduct.Title;
+            //product.Price        = updatedProduct.Price;
+            //product.MinimumPrice = updatedProduct.MinimumPrice;
+            //product.Quantity     = updatedProduct.Quantity;
+            //product.Description  = updatedProduct.Description;
         }
 
-        _context.Update(product);
-        _context.SaveChanges();
 
         return product.ProductId;
     }

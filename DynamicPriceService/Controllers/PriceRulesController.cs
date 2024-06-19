@@ -39,20 +39,23 @@ public class PriceRulesController : Controller
 	// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 	[HttpPost]
 	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> Edit(int id, PriceRule priceRule)
+	public async Task<IActionResult> Edit(int id, EditPriceRuleCommand command)
 	{
-		if (id != priceRule.PriceRuleId)
-		{
-			return NotFound();
-		}
+        //if (id != priceRule.PriceRuleId)
+        //{
+        //	return NotFound();
+        //}
 
-        ModelState.Remove("Company");
-		if (ModelState.IsValid)
-		{
-            await _mediator.Send(new EditPriceRuleCommand(priceRule));
-            return RedirectToAction(nameof(Details));
-		}
-		return View(priceRule);
+        //      ModelState.Remove("Company");
+        //if (ModelState.IsValid)
+        //{
+        //          await _mediator.Send(new EditPriceRuleCommand(priceRule));
+        //          return RedirectToAction(nameof(Details));
+        //}
+        //return View(priceRule);
+
+        var priceRule = await _mediator.Send(command);
+        return Ok(priceRule);
 	}
 
 	public async Task<IActionResult> Run()

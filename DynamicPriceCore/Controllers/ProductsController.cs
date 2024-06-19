@@ -9,6 +9,8 @@ using DynamicPriceCore.Data;
 using DynamicPriceCore.Models;
 using MediatR;
 using DynamicPriceCore.MediatR.ProductEntity.Queries;
+using DynamicPriceCore.MediatR.ViewModels;
+using DynamicPriceCore.MediatR.ProductEntity.Commands;
 
 namespace DynamicPriceCore.Controllers
 {
@@ -29,53 +31,56 @@ namespace DynamicPriceCore.Controllers
 
         // GET: api/Products
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProduct()
+        public async Task<ActionResult<IEnumerable<ProductViewModel>>> GetProduct()
         {
-            var products = await _mediator.Send(new GetProductsQuery(_userId));
-            return Ok(products);
+            var productsVm = await _mediator.Send(new GetProductsQuery(_userId));
+            return Ok(productsVm);
         }
 
         // GET: api/Products/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(int id)
+        public async Task<ActionResult<ProductViewModel>> GetProduct(int id)
         {
-            var product = await _mediator.Send(new GetProductDetailsQuery((int)id));
+            var productVm = await _mediator.Send(new GetProductDetailsQuery((int)id));
 
-            if (product == null)
+            if (productVm == null)
             {
                 return NotFound();
             }
 
-            return product;
+            return productVm;
         }
 
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct(int id, Product product)
+        public async Task<IActionResult> PutProduct(int id, ProductViewModel productVm)
         {
-            if (id != product.ProductId)
+            if (id != productVm.ProductId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(product).State = EntityState.Modified;
+            var productId = await _mediator.Send(new EditProductCommand(productVm));
+            return Ok(productId);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProductExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            //_context.Entry(product).State = EntityState.Modified;
+
+            //try
+            //{
+            //    await _context.SaveChangesAsync();
+            //}
+            //catch (DbUpdateConcurrencyException)
+            //{
+            //    if (!ProductExists(id))
+            //    {
+            //        return NotFound();
+            //    }
+            //    else
+            //    {
+            //        throw;
+            //    }
+            //}
 
             return NoContent();
         }
@@ -83,26 +88,34 @@ namespace DynamicPriceCore.Controllers
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Product>> PostProduct(Product product)
+        public async Task<ActionResult<int>> PostProduct(ProductViewModel productVm)
         {
-            _context.Products.Add(product);
-            await _context.SaveChangesAsync();
+            //_context.Products.Add(product);
+            //await _context.SaveChangesAsync();
+            //return CreatedAtAction("GetProduct", new { id = productVm.ProductId }, productVm);
 
-            return CreatedAtAction("GetProduct", new { id = product.ProductId }, product);
+
+
+            var productId = await _mediator.Send(new CreateProductCommand(productVm, _userId));
+            return Ok(productId);
+            //return RedirectToAction(nameof(Index));
         }
 
         // DELETE: api/Products/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
+            await _mediator.Send(new DeleteProductCommand(id));
+            return Ok();
 
-            _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
+            //var product = await _context.Products.FindAsync(id);
+            //if (product == null)
+            //{
+            //    return NotFound();
+            //}
+
+            //_context.Products.Remove(product);
+            //await _context.SaveChangesAsync();
 
             return NoContent();
         }

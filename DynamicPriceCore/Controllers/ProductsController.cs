@@ -14,7 +14,6 @@ using DynamicPriceCore.MediatR.ProductEntity.Commands;
 
 namespace DynamicPriceCore.Controllers
 {
-    //[ApiController(SuppressModelStateInvalidFilter = true)]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase

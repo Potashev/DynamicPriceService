@@ -18,7 +18,7 @@ public class ProductsController : Controller
         PropertyNameCaseInsensitive = true
     };
 
-    public ProductsController(IMediator mediator, IHttpClientFactory httpClientFactory)
+    public ProductsController(IHttpClientFactory httpClientFactory)
     {
         _httpClientFactory = httpClientFactory;
     }

@@ -1,4 +1,5 @@
-﻿using DynamicPriceCore.Data;
+﻿using AutoMapper;
+using DynamicPriceCore.Data;
 using DynamicPriceCore.MediatR.PriceRuleEntity.Commands;
 using DynamicPriceCore.Models;
 using MediatR;
@@ -10,25 +11,24 @@ public class EditPriceRuleCommandHandler
 	: IRequestHandler<EditPriceRuleCommand, int>
 {
 	private readonly DynamicPriceCoreContext _context;
+    private readonly IMapper _mapper;
 
-    public EditPriceRuleCommandHandler(DynamicPriceCoreContext context)
-        => _context = context;
+    public EditPriceRuleCommandHandler(DynamicPriceCoreContext context, IMapper mapper)
+        => (_context, _mapper) = (context, mapper);
 
-	public async Task<int> Handle(EditPriceRuleCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(EditPriceRuleCommand request, CancellationToken cancellationToken)
 	{
-        var updatedPriceRule = request.PriceRule;
+        var updatedPriceRuleVm = request.PriceRuleVm;
         var priceRule = await _context.PriceRules
-            .FirstOrDefaultAsync(pr => pr.PriceRuleId == updatedPriceRule.PriceRuleId);
+            .FirstOrDefaultAsync(pr => pr.PriceRuleId == updatedPriceRuleVm.PriceRuleId);
 
         if (priceRule != null) 
         {
-            priceRule.Increase = updatedPriceRule.Increase;
-            priceRule.Reduction = updatedPriceRule.Reduction;
-            priceRule.NoSellTime = updatedPriceRule.NoSellTime;
-        }
+            _mapper.Map(updatedPriceRuleVm, priceRule);
 
-        _context.Update(priceRule);
-        _context.SaveChanges();
+            _context.Update(priceRule);
+            _context.SaveChanges();
+        }
 
         return priceRule.PriceRuleId;
 	}

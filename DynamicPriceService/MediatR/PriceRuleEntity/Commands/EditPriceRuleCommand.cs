@@ -1,10 +1,11 @@
-﻿using DynamicPriceService.Models;
+﻿using DynamicPriceService.MediatR.ViewModels;
+using DynamicPriceService.Models;
 using MediatR;
 
 namespace DynamicPriceService.MediatR.PriceRuleEntity.Commands;
 
 public class EditPriceRuleCommand : IRequest<int>
 {
-	public PriceRule PriceRule { get; set; }
-	public EditPriceRuleCommand(PriceRule priceRule) => PriceRule = priceRule;
+	public PriceRuleViewModel PriceRuleVm { get; set; }
+	public EditPriceRuleCommand(PriceRuleViewModel priceRuleVm) => PriceRuleVm = priceRuleVm;
 }

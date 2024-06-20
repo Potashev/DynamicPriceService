@@ -1,21 +1,22 @@
-﻿using DynamicPriceCore.Models;
+﻿using DynamicPriceCore.MediatR.ViewModels;
+using DynamicPriceCore.Models;
 using MediatR;
 
 namespace DynamicPriceCore.MediatR.PriceRuleEntity.Queries;
 
-public class GetPriceRuleWithStatusQuery : IRequest<PriceRuleWithStatusDto>
+public class GetPriceRuleWithStatusQuery : IRequest<PriceRuleWithStatus>
 {
 	public string UserId { get; set; }
 	public GetPriceRuleWithStatusQuery(string userId) => UserId = userId;
 }
 
-public class PriceRuleWithStatusDto
+public class PriceRuleWithStatus
 {
-    public PriceRule PriceRule { get; set; }
+    public PriceRuleViewModel PriceRuleVm { get; set; }
     public bool IsActive { get; set; }
-    public PriceRuleWithStatusDto(PriceRule priceRule, bool isActive)
+    public PriceRuleWithStatus(PriceRuleViewModel priceRuleVm, bool isActive)
     {
-        PriceRule = priceRule;
+        PriceRuleVm = priceRuleVm;
         IsActive = isActive;
     }
 }

@@ -1,4 +1,4 @@
-using DynamicPriceService.Models;
+using DynamicPriceService.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 

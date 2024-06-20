@@ -1,4 +1,4 @@
-namespace DynamicPriceService.Models;
+namespace DynamicPriceService.ViewModels;
 
 public class ErrorViewModel
 {

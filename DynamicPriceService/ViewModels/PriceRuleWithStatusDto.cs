@@ -1,6 +1,4 @@
-﻿using DynamicPriceService.MediatR.ViewModels;
-
-namespace DynamicPriceService.ViewModels;
+﻿namespace DynamicPriceService.ViewModels;
 
 public class PriceRuleWithStatus
 {

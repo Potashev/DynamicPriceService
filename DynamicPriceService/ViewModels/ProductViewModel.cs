@@ -1,4 +1,4 @@
-﻿namespace DynamicPriceService.MediatR.ViewModels;
+﻿namespace DynamicPriceService.ViewModels;
 
 public class ProductViewModel
 {

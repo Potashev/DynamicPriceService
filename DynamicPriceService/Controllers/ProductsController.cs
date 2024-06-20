@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MediatR;
 using System.Text.Json;
 using System.Text;
-using DynamicPriceService.MediatR.ViewModels;
+using DynamicPriceService.ViewModels;
 
 namespace DynamicPriceService.Controllers;
 

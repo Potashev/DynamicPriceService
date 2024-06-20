@@ -21,22 +21,10 @@ public class GetPriceRuleDetailsQueryHandler
 
 	public async Task<PriceRuleViewModel> Handle(GetPriceRuleDetailsQuery request, CancellationToken cancellationToken)
 	{
-        var company = await _context.CompanyUsers
-            .Where(cu => cu.UserId == request.UserId)
-            .Select(cu => cu.Company)
-            .FirstOrDefaultAsync();
-
-        PriceRule priceRule = new PriceRule();
-
-        try
-        {
-            priceRule = await _context.PriceRules
-                .FirstOrDefaultAsync(pr => pr.Company.CompanyId == company.CompanyId);
-        }
-        catch(Exception ex)
-        {
-
-        }
+        var priceRule = await _context.PriceRules
+               .Where(pr => pr.Company.CompanyUsers
+                               .Any(cu => cu.UserId == request.UserId))
+               .FirstOrDefaultAsync();
 
         var priceRuleVm = _mapper.Map<PriceRuleViewModel>(priceRule);
 

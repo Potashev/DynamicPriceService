@@ -1,4 +1,5 @@
-﻿using DynamicPriceCore.Data;
+﻿using AutoMapper;
+using DynamicPriceCore.Data;
 using DynamicPriceCore.MediatR.ViewModels;
 using DynamicPriceCore.Services;
 using MediatR;
@@ -9,33 +10,22 @@ namespace DynamicPriceCore.MediatR.PriceRuleEntity.Queries;
 public class GetPriceRuleWithStatusQueryHandler
 	: IRequestHandler<GetPriceRuleWithStatusQuery, PriceRuleWithStatus>
 {
-    private IMediator _mediator;
+    private IMapper _mapper;
     private DynamicPriceCoreContext _context;
     private IActiveCompaniesService _activeCompaniesService;
 
-	public GetPriceRuleWithStatusQueryHandler(IMediator mediator, DynamicPriceCoreContext context, IActiveCompaniesService activeCompaniesService)
-		=> (_mediator, _context, _activeCompaniesService) = (mediator, context, activeCompaniesService);
+	public GetPriceRuleWithStatusQueryHandler(IMapper mapper, DynamicPriceCoreContext context, IActiveCompaniesService activeCompaniesService)
+		=> (_mapper, _context, _activeCompaniesService) = (mapper, context, activeCompaniesService);
     public async Task<PriceRuleWithStatus> Handle(GetPriceRuleWithStatusQuery request, CancellationToken cancellationToken)
     {
-        var company = await _context.CompanyUsers
-            .Where(cu => cu.UserId == request.UserId)
-            .Select(cu => cu.Company)
-            .FirstOrDefaultAsync();
+        var priceRule = await _context.PriceRules
+                       .Include(pr => pr.Company)
+                       .Where(pr => pr.Company.CompanyUsers
+                                       .Any(cu => cu.UserId == request.UserId))
+                       .FirstOrDefaultAsync();
 
-        var priceRuleVm = await _mediator.Send(new GetPriceRuleDetailsQuery(request.UserId));
-
-        //var priceRule = await _context.PriceRules
-        //               .Include(pr => pr.Company)
-        //               .Where(pr => pr.Company.CompanyUsers
-        //                               .Any(cu => cu.UserId == request.UserId))
-        //               .FirstOrDefaultAsync();
-
-        //var priceRule = await _context.CompanyUsers
-        //                .Include(cu => cu.Company)
-        //                .Include()
-
-
-        var status = _activeCompaniesService.IsActive(company);
+        var priceRuleVm = _mapper.Map<PriceRuleViewModel>(priceRule);
+        var status = _activeCompaniesService.IsActive(priceRule.Company);
 
         return new PriceRuleWithStatus(priceRuleVm, status);
     }

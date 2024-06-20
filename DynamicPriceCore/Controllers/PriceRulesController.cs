@@ -1,7 +1,5 @@
 ﻿using DynamicPriceCore.MediatR.PriceRuleEntity.Commands;
-using DynamicPriceCore.MediatR.PriceRuleEntity.Queries;
-using DynamicPriceCore.MediatR.ProductEntity.Commands;
-using DynamicPriceCore.MediatR.ProductEntity.Queries;
+using DynamicPriceCore.MediatR.PriceRuleEntity.Queries; 
 using DynamicPriceCore.MediatR.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -13,8 +11,6 @@ namespace DynamicPriceCore.Controllers;
 public class PriceRulesController : ControllerBase
 {
     private readonly IMediator _mediator;
-    //todo: temp field to pass in mediator - remove later
-    private readonly string _userId = "1";
 
     public PriceRulesController(IMediator mediator)
     {
@@ -37,4 +33,11 @@ public class PriceRulesController : ControllerBase
         return Ok(priceRuleId);
     }
 
+    [Route("/api/PriceRules/{userId}/Run")]
+    [HttpGet]
+    public async Task<ActionResult> RunPriceReducing(string userId)
+    {
+        await _mediator.Send(new RunPriceReducingCommand(userId));
+        return Ok();
+    }
 }

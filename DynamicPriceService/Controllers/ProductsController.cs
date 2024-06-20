@@ -26,11 +26,8 @@ public class ProductsController : Controller
     public async Task<IActionResult> Index()
     {
         var client = _httpClientFactory.CreateClient();
-        var url = $"{_localhosturl}/api/Products";
-        var response = await client.GetStringAsync(url);
-
+        var response = await client.GetStringAsync($"{_localhosturl}/api/Products");
         var productsVm = JsonSerializer.Deserialize<IEnumerable<ProductViewModel>>(response, _options);
-
         return View(productsVm);
     }
 
@@ -41,10 +38,8 @@ public class ProductsController : Controller
         {
             return NotFound();
         }
-
         var client = _httpClientFactory.CreateClient();
         var response = await client.GetStringAsync($"{_localhosturl}/api/Products/{id}");
-
         var productVm = JsonSerializer.Deserialize<ProductViewModel>(response, _options);
         return View(productVm);
     }
@@ -62,15 +57,12 @@ public class ProductsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(ProductViewModel product)
     {
-        //ModelState.Remove("Company");
         if (ModelState.IsValid)
         {
             var client = _httpClientFactory.CreateClient();
-
             var json = JsonSerializer.Serialize(product);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await client.PostAsync($"{_localhosturl}/api/Products", data);
-
             return RedirectToAction(nameof(Index));
         }
         return View(product);
@@ -85,7 +77,6 @@ public class ProductsController : Controller
         }
         var client = _httpClientFactory.CreateClient();
         var response = await client.GetStringAsync($"{_localhosturl}/api/Products/{id}");
-
         var productVm = JsonSerializer.Deserialize<ProductViewModel>(response, _options);
         return View(productVm);
     }
@@ -100,11 +91,9 @@ public class ProductsController : Controller
         if (ModelState.IsValid)
         {
             var client = _httpClientFactory.CreateClient();
-
             var json = JsonSerializer.Serialize(productVm);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await client.PutAsync($"{_localhosturl}/api/Products/{id}", data);
-
             return RedirectToAction(nameof(Index));
         }
 
@@ -118,12 +107,9 @@ public class ProductsController : Controller
         {
             return NotFound();
         }
-
         var client = _httpClientFactory.CreateClient();
         var response = await client.GetStringAsync($"{_localhosturl}/api/Products/{id}");
-
         var productVm = JsonSerializer.Deserialize<ProductViewModel>(response, _options);
-
         if (productVm == null)
         {
             return NotFound();

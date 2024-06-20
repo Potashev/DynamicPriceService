@@ -23,13 +23,9 @@ public class PriceRulesController : Controller
 
     public async Task<IActionResult> Details()
 	{
-        //url looks not right
-        var url = $"{_localhosturl}/api/PriceRules/{_userId}";
-
         var client = _httpClientFactory.CreateClient();
-
-        var response = await client.GetStringAsync(url);
-
+        //url looks not right
+        var response = await client.GetStringAsync($"{_localhosturl}/api/PriceRules/{_userId}");
         var priceRuleWithStatus = JsonSerializer.Deserialize<PriceRuleWithStatus>(response, _options);
 
 		ViewData["RuleStatus"] = priceRuleWithStatus.IsActive ?
@@ -77,7 +73,8 @@ public class PriceRulesController : Controller
 
 	public async Task<IActionResult> Run()
 	{
-		//await _mediator.Send(new RunPriceReducingCommand(_userId));
-		return RedirectToAction(nameof(Details));
+        var client = _httpClientFactory.CreateClient();
+        var response = await client.GetStringAsync($"{_localhosturl}/api/PriceRules/{_userId}/Run");
+        return RedirectToAction(nameof(Details));
 	}
 }

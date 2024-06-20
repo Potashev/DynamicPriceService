@@ -28,15 +28,7 @@ public class EditProductCommandHandler
 
             _context.Update(product);
             _context.SaveChanges();
-
-            //product.Title        = updatedProduct.Title;
-            //product.Price        = updatedProduct.Price;
-            //product.MinimumPrice = updatedProduct.MinimumPrice;
-            //product.Quantity     = updatedProduct.Quantity;
-            //product.Description  = updatedProduct.Description;
         }
-
-
         return product.ProductId;
     }
 }

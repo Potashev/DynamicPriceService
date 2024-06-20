@@ -9,7 +9,6 @@ namespace DynamicPriceCore.MediatR.PriceRuleEntity.Commands;
 public class RunPriceReducingCommandHandler
 	: IRequestHandler<RunPriceReducingCommand, bool>
 {
-
     private DynamicPriceCoreContext _context;
     private IActiveCompaniesService _activeCompaniesService;
 

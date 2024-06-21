@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace DynamicPriceCore.Models;
+﻿namespace DynamicPriceCore.Models;
 
 /// <summary>
 /// Правило изменения цены для компании.
@@ -8,8 +6,6 @@ namespace DynamicPriceCore.Models;
 public class PriceRule
 {
 	public int PriceRuleId { get; set; }
-
-	[JsonIgnore]
 	public Company Company { get; set; }
 
 	/// <summary>

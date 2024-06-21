@@ -17,23 +17,21 @@ public class PriceRulesController : ControllerBase
 		_mediator = mediator;
 	}
 
-	// GET: api/PriceRules/5
-	[HttpGet("{userId}")]
+	[Route("/api/{userId}/PriceRule/Details")]
 	public async Task<ActionResult<PriceRuleWithStatus>> GetPriceRule(string userId)
 	{
 		return await _mediator.Send(new GetPriceRuleWithStatusQuery(userId));
 	}
 
-	// PUT: api/PriceRules/5
 	// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-	[HttpPut("{userId}")]
+	[Route("/api/{userId}/PriceRule/Edit")]
 	public async Task<IActionResult> PutProduct(int userId, PriceRuleViewModel priceRuleVm)
 	{
 		var priceRuleId = await _mediator.Send(new EditPriceRuleCommand(priceRuleVm));
 		return Ok(priceRuleId);
 	}
 
-	[Route("/api/PriceRules/{userId}/Run")]
+	[Route("/api/{userId}/PriceRule/Run")]
 	[HttpGet]
 	public async Task<ActionResult> RunPriceReducing(string userId)
 	{

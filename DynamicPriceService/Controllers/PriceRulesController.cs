@@ -7,7 +7,7 @@ namespace DynamicPriceService.Controllers;
 public class PriceRulesController : Controller
 {
 	//todo: temp field to pass in mediator - remove later
-	private readonly string _userId = "1";
+	private readonly string _userId;
 
 	private readonly string _localhosturl = "https://localhost:7140";
 	private readonly IHttpClientFactory _httpClientFactory;
@@ -16,16 +16,22 @@ public class PriceRulesController : Controller
 		PropertyNameCaseInsensitive = true
 	};
 
-	public PriceRulesController(IHttpClientFactory httpClientFactory)
+	public PriceRulesController(IHttpClientFactory httpClientFactory, IHttpContextAccessor httpContextAccessor)
 	{
 		_httpClientFactory = httpClientFactory;
+
+		var context = httpContextAccessor.HttpContext;
+		if (context.Request.Cookies.ContainsKey("User"))
+			_userId = context.Request.Cookies["User"];
+		else
+			throw new Exception("User not found");
 	}
 
 	public async Task<IActionResult> Details()
 	{
 		var client = _httpClientFactory.CreateClient();
 		//url looks not right
-		var response = await client.GetStringAsync($"{_localhosturl}/api/PriceRules/{_userId}");
+		var response = await client.GetStringAsync($"{_localhosturl}/api/{_userId}/PriceRule/Details");
 		var priceRuleWithStatus = JsonSerializer.Deserialize<PriceRuleWithStatus>(response, _options);
 
 		ViewData["RuleStatus"] = priceRuleWithStatus.IsActive ?
@@ -43,7 +49,7 @@ public class PriceRulesController : Controller
 			return NotFound();
 		}
 		var client = _httpClientFactory.CreateClient();
-		var response = await client.GetStringAsync($"{_localhosturl}/api/PriceRules/{_userId}");
+		var response = await client.GetStringAsync($"{_localhosturl}/api/{_userId}/PriceRule/Details");
 
 		//to make api more compact, we use prVm with status
 		var priceRuleWithStatus = JsonSerializer.Deserialize<PriceRuleWithStatus>(response, _options);
@@ -63,7 +69,7 @@ public class PriceRulesController : Controller
 
 			var json = JsonSerializer.Serialize(priceRuleVm);
 			var data = new StringContent(json, Encoding.UTF8, "application/json");
-			var response = await client.PutAsync($"{_localhosturl}/api/PriceRules/{_userId}", data);
+			var response = await client.PutAsync($"{_localhosturl}/api/{_userId}/PriceRule/Edit", data);
 
 			return RedirectToAction(nameof(Details));
 		}
@@ -74,7 +80,7 @@ public class PriceRulesController : Controller
 	public async Task<IActionResult> Run()
 	{
 		var client = _httpClientFactory.CreateClient();
-		var response = await client.GetStringAsync($"{_localhosturl}/api/PriceRules/{_userId}/Run");
+		var response = await client.GetStringAsync($"{_localhosturl}/api/{_userId}/PriceRule/Run");
 		return RedirectToAction(nameof(Details));
 	}
 }

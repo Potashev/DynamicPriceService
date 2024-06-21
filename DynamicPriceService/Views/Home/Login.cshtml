@@ -1,0 +1,8 @@
+﻿@model int // Тип модели для этой вьюшки, если нужно
+
+<h2>Login</h2>
+
+<form method="post">
+	@Html.DropDownList("selectedValue", (SelectList)ViewData["Users"], "Select User")
+	<button type="submit">Login</button>
+</form>

@@ -11,19 +11,16 @@ namespace DynamicPriceCore.Controllers
 	public class ProductsController : ControllerBase
 	{
 		private readonly IMediator _mediator;
-		//todo: temp field to pass in mediator - remove later
-		private readonly string _userId = "1";
-
 		public ProductsController(IMediator mediator)
 		{
 			_mediator = mediator;
 		}
 
-		// GET: api/Products
 		[HttpGet]
-		public async Task<ActionResult<IEnumerable<ProductViewModel>>> GetProduct()
+		[Route("/api/{userId}/Products")]
+		public async Task<ActionResult<IEnumerable<ProductViewModel>>> GetProduct(string userId)
 		{
-			var productsVm = await _mediator.Send(new GetProductsQuery(_userId));
+			var productsVm = await _mediator.Send(new GetProductsQuery(userId));
 			return Ok(productsVm);
 		}
 
@@ -51,12 +48,12 @@ namespace DynamicPriceCore.Controllers
 			return Ok(productId);
 		}
 
-		// POST: api/Products
 		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
 		[HttpPost]
-		public async Task<ActionResult<int>> PostProduct(ProductViewModel productVm)
+		[Route("/api/{userId}/Products")]
+		public async Task<ActionResult<int>> PostProduct(ProductViewModel productVm, string userId)
 		{
-			var productId = await _mediator.Send(new CreateProductCommand(productVm, _userId));
+			var productId = await _mediator.Send(new CreateProductCommand(productVm, userId));
 			return Ok(productId);
 		}
 

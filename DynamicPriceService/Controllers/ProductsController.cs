@@ -8,7 +8,7 @@ namespace DynamicPriceService.Controllers;
 public class ProductsController : Controller
 {
 	//todo: temp field to pass in mediator - remove later
-	private readonly string _userId = "1";
+	private readonly string _userId;
 
 	private readonly string _localhosturl = "https://localhost:7140";
 	private readonly IHttpClientFactory _httpClientFactory;
@@ -17,18 +17,30 @@ public class ProductsController : Controller
 		PropertyNameCaseInsensitive = true
 	};
 
-	public ProductsController(IHttpClientFactory httpClientFactory)
+	public ProductsController(IHttpClientFactory httpClientFactory, IHttpContextAccessor httpContextAccessor)
 	{
 		_httpClientFactory = httpClientFactory;
+
+		var context = httpContextAccessor.HttpContext;
+		if (context.Request.Cookies.ContainsKey("User"))
+			_userId = context.Request.Cookies["User"];
+		else
+			throw new Exception("User not found");
 	}
 
 	// GET: Products
 	public async Task<IActionResult> Index()
 	{
 		var client = _httpClientFactory.CreateClient();
-		var response = await client.GetStringAsync($"{_localhosturl}/api/Products");
+		var response = await client.GetStringAsync($"{_localhosturl}/api/{_userId}/Products");
 		var productsVm = JsonSerializer.Deserialize<IEnumerable<ProductViewModel>>(response, _options);
 		return View(productsVm);
+	}
+
+	public async Task<IActionResult> Login()
+	{
+		var users = new List<int> { 1, 2 };
+		return View(users);
 	}
 
 	// GET: Products/Details/5
@@ -62,7 +74,7 @@ public class ProductsController : Controller
 			var client = _httpClientFactory.CreateClient();
 			var json = JsonSerializer.Serialize(product);
 			var data = new StringContent(json, Encoding.UTF8, "application/json");
-			var response = await client.PostAsync($"{_localhosturl}/api/Products", data);
+			var response = await client.PostAsync($"{_localhosturl}/api/{_userId}/Products", data);
 			return RedirectToAction(nameof(Index));
 		}
 		return View(product);

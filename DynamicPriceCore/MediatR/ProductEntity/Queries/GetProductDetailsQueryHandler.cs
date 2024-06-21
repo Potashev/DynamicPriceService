@@ -17,7 +17,8 @@ public class GetProductDetailsQueryHandler
 
 	public async Task<ProductViewModel> Handle(GetProductDetailsQuery request, CancellationToken cancellationToken)
 	{
-		var product = await _context.Products.FirstOrDefaultAsync(product => product.ProductId == request.ProductId, cancellationToken);
+		var product = await _context.Products
+			.FirstOrDefaultAsync(product => product.ProductId == request.ProductId, cancellationToken);
 		return _mapper.Map<ProductViewModel>(product);
 	}
 }

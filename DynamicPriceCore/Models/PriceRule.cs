@@ -25,5 +25,5 @@ public class PriceRule
 	/// <summary>
 	/// Допустимое время "простоя" продукта. Если превысили - снижаем цену (см. ReducePriceService).
 	/// </summary>
-	public TimeSpan? NoSellTime { get; set; } //todo: need to jsonignore?
+	public TimeSpan? NoSellTime { get; set; }
 }

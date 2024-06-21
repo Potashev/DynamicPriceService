@@ -1,5 +1,4 @@
 ﻿using DynamicPriceCore.MediatR.ViewModels;
-using DynamicPriceCore.Models;
 using MediatR;
 
 namespace DynamicPriceCore.MediatR.ProductEntity.Queries;

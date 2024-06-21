@@ -7,7 +7,7 @@ using DynamicPriceCore.Services;
 using DynamicPriceCore.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DynamicPriceCoreContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DynamicPriceCoreContext") ?? throw new InvalidOperationException("Connection string 'DynamicPriceCoreContext' not found.")));
+	options.UseSqlServer(builder.Configuration.GetConnectionString("DynamicPriceCoreContext") ?? throw new InvalidOperationException("Connection string 'DynamicPriceCoreContext' not found.")));
 
 // Add services to the container.
 
@@ -29,8 +29,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+	app.UseSwagger();
+	app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

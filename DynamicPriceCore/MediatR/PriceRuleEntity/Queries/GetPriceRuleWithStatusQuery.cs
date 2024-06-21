@@ -1,5 +1,4 @@
 ﻿using DynamicPriceCore.MediatR.ViewModels;
-using DynamicPriceCore.Models;
 using MediatR;
 
 namespace DynamicPriceCore.MediatR.PriceRuleEntity.Queries;
@@ -12,11 +11,11 @@ public class GetPriceRuleWithStatusQuery : IRequest<PriceRuleWithStatus>
 
 public class PriceRuleWithStatus
 {
-    public PriceRuleViewModel PriceRuleVm { get; set; }
-    public bool IsActive { get; set; }
-    public PriceRuleWithStatus(PriceRuleViewModel priceRuleVm, bool isActive)
-    {
-        PriceRuleVm = priceRuleVm;
-        IsActive = isActive;
-    }
+	public PriceRuleViewModel PriceRuleVm { get; set; }
+	public bool IsActive { get; set; }
+	public PriceRuleWithStatus(PriceRuleViewModel priceRuleVm, bool isActive)
+	{
+		PriceRuleVm = priceRuleVm;
+		IsActive = isActive;
+	}
 }

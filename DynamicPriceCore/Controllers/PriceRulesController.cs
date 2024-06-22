@@ -35,7 +35,15 @@ public class PriceRulesController : ControllerBase
 	[HttpGet]
 	public async Task<ActionResult> RunPriceReducing(string userId)
 	{
-		await _mediator.Send(new RunPriceReducingCommand(userId));
+		await _mediator.Send(new PriceReducingCommand(userId, true));
+		return Ok();
+	}
+
+	[Route("/api/{userId}/PriceRule/Stop")]
+	[HttpGet]
+	public async Task<ActionResult> StopPriceReducing(string userId)
+	{
+		await _mediator.Send(new PriceReducingCommand(userId, false));
 		return Ok();
 	}
 }

@@ -83,4 +83,11 @@ public class PriceRulesController : Controller
 		var response = await client.GetStringAsync($"{_localhosturl}/api/{_userId}/PriceRule/Run");
 		return RedirectToAction(nameof(Details));
 	}
+
+	public async Task<IActionResult> Stop()
+	{
+		var client = _httpClientFactory.CreateClient();
+		var response = await client.GetStringAsync($"{_localhosturl}/api/{_userId}/PriceRule/Stop");
+		return RedirectToAction(nameof(Details));
+	}
 }

@@ -11,7 +11,7 @@ public class ActiveCompaniesService : IActiveCompaniesService
 
 	public IEnumerable<Company> GetActiveCompanies() => _activeCompanies;
 	public void Add(Company company) => _activeCompanies.Add(company);
-	public void Remove(Company company) => _activeCompanies.Remove(company);
+	public void Remove(Company company) => _activeCompanies.RemoveAll(c => c.CompanyId == company.CompanyId);
 	public bool IsActive(Company company) => _activeCompanies.Any(c => c.CompanyId == company.CompanyId);
 }
 

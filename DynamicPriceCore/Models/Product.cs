@@ -14,11 +14,12 @@ public class Product
 	public string Title { get; set; }
 	public double Price { get; set; }
 
-	[Display(Name = "Minimum Price")]
 	public double MinimumPrice { get; set; }
 	public int? Quantity { get; set; }
 	public string? Description { get; set; }
 
 	//todo: remove after adding order entity
 	public DateTime? LastSellTime { get; set; }
+	[JsonIgnore]
+	public ICollection<OrderProduct> OrderProducts { get; set; }
 }

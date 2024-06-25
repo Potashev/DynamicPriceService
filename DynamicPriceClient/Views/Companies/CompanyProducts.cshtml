@@ -1,0 +1,55 @@
+﻿@model DynamicPriceClient.ViewModels.CompanyProductsInfo
+
+@{
+	ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+	<a asp-controller="Orders" asp-action="CartOrderDetails" asp-route-companyId="@Model.CompanyId">Shopping Cart</a>
+</p>
+<table class="table">
+	<thead>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Title)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Price)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Quantity)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Description)
+			</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model.Products)
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.Title)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Price)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Quantity)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Description)
+				</td>
+				<td>
+					<a asp-controller="Orders" asp-action="AddProduct" asp-route-id="@item.ProductId">Add to Cart</a>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+<div>
+	<a asp-controller="Companies" asp-action="Index">Back to List</a>
+</div>

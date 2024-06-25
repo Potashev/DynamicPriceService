@@ -5,7 +5,9 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamicPriceService", "DynamicPriceService\DynamicPriceService.csproj", "{8AD5E5D4-825C-4E4D-8671-9424D4B5A99C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicPriceCore", "DynamicPriceCore\DynamicPriceCore.csproj", "{F5087C86-3AC1-4843-AB26-ADAB6184CAC0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamicPriceCore", "DynamicPriceCore\DynamicPriceCore.csproj", "{F5087C86-3AC1-4843-AB26-ADAB6184CAC0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicPriceClient", "DynamicPriceClient\DynamicPriceClient.csproj", "{1C9C53A1-F452-4CBC-9C20-015F288C271C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{F5087C86-3AC1-4843-AB26-ADAB6184CAC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5087C86-3AC1-4843-AB26-ADAB6184CAC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F5087C86-3AC1-4843-AB26-ADAB6184CAC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C9C53A1-F452-4CBC-9C20-015F288C271C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C9C53A1-F452-4CBC-9C20-015F288C271C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C9C53A1-F452-4CBC-9C20-015F288C271C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C9C53A1-F452-4CBC-9C20-015F288C271C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

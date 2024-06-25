@@ -20,6 +20,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
 
 builder.Services.AddSingleton<IActiveCompaniesService, ActiveCompaniesService>();
+builder.Services.AddTransient<IIncreasePriceService, IncreasePriceService>();	//todo: change
 
 builder.Services.AddQuartz(q => q.AddJobAndTrigger<ReducePriceJob>(builder.Configuration));
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);

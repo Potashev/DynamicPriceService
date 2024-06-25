@@ -1,0 +1,28 @@
+﻿@model IEnumerable<DynamicPriceCore.Models.Company>
+
+@{
+	ViewData["Title"] = "Index";
+}
+
+<h1>Active Companies</h1>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.Title)
+			</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>
+					<a asp-action="CompanyProducts" asp-route-id="@item.CompanyId">@Html.DisplayFor(modelItem => item.Title)</a>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

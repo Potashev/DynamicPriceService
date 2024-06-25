@@ -7,6 +7,8 @@ public class MappingProfile : Profile
 {
 	public MappingProfile()
 	{
+		CreateMap<Product, ProductInfoViewModel>()
+			.ReverseMap();
 		CreateMap<Product, ProductViewModel>()
 			.ReverseMap();
 		CreateMap<PriceRule, PriceRuleViewModel>()

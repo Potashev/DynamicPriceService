@@ -1,4 +1,5 @@
-﻿using DynamicPriceCore.Models;
+﻿using DynamicPriceClient.ViewModels;
+using DynamicPriceCore.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -23,5 +24,13 @@ public class CompaniesController : Controller
 		var response = await client.GetStringAsync($"{_localhosturl}/api/ActiveCompanies");
 		var activeCompanies = JsonSerializer.Deserialize<IEnumerable<Company>>(response, _options);	//todo: use dto
 		return View(activeCompanies);
+	}
+
+	public async Task<IActionResult> CompanyProducts(int? id)
+	{
+		var client = _httpClientFactory.CreateClient();
+		var response = await client.GetStringAsync($"{_localhosturl}/api/ActiveCompanies/{id}");
+		var companyProducts = JsonSerializer.Deserialize<IEnumerable<ProductInfoViewModel>>(response, _options);
+		return View(companyProducts);
 	}
 }

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace DynamicPriceCore.MediatR.OrderEntity.Commands;
 
 public class AddProductToOrderCommandHadnler
-	: IRequestHandler<AddProductToOrderCommand, int>
+	: IRequestHandler<AddProductToOrderCommand, Order>
 {
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IMapper _mapper;
@@ -17,7 +17,7 @@ public class AddProductToOrderCommandHadnler
 	public AddProductToOrderCommandHadnler(DynamicPriceCoreContext context, IMapper mapper)
 		=> (_context, _mapper) = (context, mapper);
 
-	public async Task<int> Handle(AddProductToOrderCommand request, CancellationToken cancellationToken)
+	public async Task<Order> Handle(AddProductToOrderCommand request, CancellationToken cancellationToken)
 	{
 		var product = await _context.Products
 			.Include(p => p.Company)
@@ -36,7 +36,7 @@ public class AddProductToOrderCommandHadnler
 
 		cartOrder.Products.Add(product);
 		_context.SaveChanges();
-		return product.ProductId;
+		return cartOrder;
 	}
 
 	private async Task<Order> CreateNewOrder(AddProductToOrderCommand request, Company company)

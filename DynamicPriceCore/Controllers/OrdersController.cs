@@ -1,5 +1,7 @@
 ﻿using DynamicPriceCore.MediatR.OrderEntity.Commands;
+using DynamicPriceCore.MediatR.OrderEntity.Queries;
 using DynamicPriceCore.MediatR.ProductEntity.Queries;
+using DynamicPriceCore.Models;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,13 +16,20 @@ public class OrdersController : ControllerBase
 	{
 		_mediator = mediator;
 	}
+
+	[HttpGet]
+	[Route("/api/Orders/Cart/{customerId}/")]
+	public async Task<ActionResult<Order>> CartOrderDetails(int? customerId)
+	{
+		var cartOrder = await _mediator.Send(new GetCartOrderQuery((int)customerId));
+		return Ok(cartOrder);
+	}
+
 	[HttpGet]
 	[Route("/api/Orders/{customerId}/{productId}")]
-	public async Task<ActionResult> AddProduct(int? customerId, int? productId)
+	public async Task<ActionResult<Order>> AddProduct(int? customerId, int? productId)
 	{
-		//var productsVm = await _mediator.Send(new GetProductsQuery(userId));
-		//return Ok(productsVm);
-		await _mediator.Send(new AddProductToOrderCommand(customerId.ToString(), productId.ToString()));
-		return Ok();
+		var cartOrder = await _mediator.Send(new AddProductToOrderCommand(customerId.ToString(), productId.ToString()));
+		return Ok(cartOrder);
 	}
 }

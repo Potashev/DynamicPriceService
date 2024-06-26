@@ -24,9 +24,13 @@ public class OrdersController : Controller
 		_httpClientFactory = httpClientFactory;
 	}
 
-	public IActionResult Index()
+	public async Task<IActionResult> CartOrderDetails()
 	{
-		return View();
+		var client = _httpClientFactory.CreateClient();
+		var url = $"{_localhosturl}/api/Orders/Cart/{_customerId}/";
+		var response = await client.GetStringAsync(url);
+		var cartOrder = JsonSerializer.Deserialize<Order>(response, _options);
+		return View(cartOrder);
 	}
 
 	public async Task<IActionResult> AddProduct(int? id)
@@ -34,8 +38,10 @@ public class OrdersController : Controller
 		var client = _httpClientFactory.CreateClient();
 		var url = $"{_localhosturl}/api/Orders/{_customerId}/{id}";
 		var response = await client.GetStringAsync(url);
-		// todo: if success - notice customer
-		// todo: redirect to cart or to company products
-		return View();
+		var cartOrder = JsonSerializer.Deserialize<Order>(response, _options);
+		//not good?
+		//var companyId = cartOrder.Company.CompanyId;
+		//return RedirectToAction("CompanyProducts", "Companies", new { id = companyId });
+		return Ok(cartOrder.Products);
 	}
 }

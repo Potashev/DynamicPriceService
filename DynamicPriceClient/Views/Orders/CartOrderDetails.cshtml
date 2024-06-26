@@ -1,0 +1,47 @@
+﻿@model DynamicPriceCore.Models.Order
+
+@{
+	ViewData["Title"] = "Cart";
+}
+
+<h1>Products cart</h1>
+
+<p>
+	<a asp-action="Create">Clear cart</a>
+</p>
+<table class="table">
+	<thead>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Title)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Description)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Price)
+			</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model.Products)
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.Title)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Description)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Price)
+				</td>
+				<td>
+					<a asp-action="Edit" asp-route-id="@item.ProductId">Add</a> |
+					<a asp-action="Details" asp-route-id="@item.ProductId">Remove</a> |
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

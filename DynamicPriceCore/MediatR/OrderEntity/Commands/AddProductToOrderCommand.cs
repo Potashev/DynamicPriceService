@@ -3,7 +3,7 @@ using MediatR;
 
 namespace DynamicPriceCore.MediatR.OrderEntity.Commands;
 
-public class AddProductToOrderCommand : IRequest<int>
+public class AddProductToOrderCommand : IRequest<Order>
 {
 	public string CustomerId { get; set; }
 	public string ProductId { get; set; }

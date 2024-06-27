@@ -32,4 +32,12 @@ public class OrdersController : ControllerBase
 		var cartOrder = await _mediator.Send(new AddProductToOrderCommand(customerId.ToString(), productId.ToString()));
 		return Ok(cartOrder);
 	}
+
+	[HttpGet]
+	[Route("/api/Orders/Confirm/{customerId}/{cartOrderId}")]
+	public async Task<ActionResult<double>> ConfirmOrder(int? customerId, int? cartOrderId)
+	{
+		var orderPrice = await _mediator.Send(new ConfirmOrderCommand((int)customerId, (int)cartOrderId));
+		return Ok(orderPrice);
+	}
 }

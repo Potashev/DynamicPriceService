@@ -39,9 +39,16 @@ public class OrdersController : Controller
 		var url = $"{_localhosturl}/api/Orders/{_customerId}/{id}";
 		var response = await client.GetStringAsync(url);
 		var cartOrder = JsonSerializer.Deserialize<Order>(response, _options);
-		//not good?
-		//var companyId = cartOrder.Company.CompanyId;
-		//return RedirectToAction("CompanyProducts", "Companies", new { id = companyId });
 		return Ok(cartOrder.Products);
 	}
+
+	public async Task<IActionResult> ConfirmOrder(int? id)
+	{
+		var client = _httpClientFactory.CreateClient();
+		var url = $"{_localhosturl}/api/Orders/Confirm/{_customerId}/{id}";
+		var response = await client.GetStringAsync(url);
+		var orderPrice = JsonSerializer.Deserialize<double>(response, _options);
+		return Ok(orderPrice);
+	}
+
 }

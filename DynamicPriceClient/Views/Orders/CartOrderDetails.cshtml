@@ -7,7 +7,7 @@
 <h1>Products cart</h1>
 
 <p>
-	<a asp-action="Create">Clear cart</a>
+	<a asp-action="ConfirmOrder" asp-route-id="@Model?.OrderId" class="btn btn-primary">Confirm order</a>
 </p>
 <table class="table">
 	<thead>

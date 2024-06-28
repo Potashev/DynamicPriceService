@@ -19,22 +19,21 @@ public class ConfirmOrderCommandHandler
 	public async Task<double> Handle(ConfirmOrderCommand request, CancellationToken cancellationToken)
 	{
 		var order = await _context.Orders
-			.Include(o => o.Products)
+			.Include(o => o.OrderProducts)
+				.ThenInclude(op => op.Product)
 			.Where(o => o.OrderId == request.CastOrderId)
 			.FirstOrDefaultAsync();
 
-		// фиксируем цену продуктов для заказа и итоговую сумму заказа (пока просто храним)
-		var orderPrice = GetOrderPrice(order);
-		// повышаем цену продуктам 
-		_increasePriceService.Increase(order.Products);
-		// продуктам обновляем дату продажи и уменьшаем quantity и продуктов в компании (где есть)
-		foreach(var product in order.Products)
+		var orderPrice = SetOrderPrice(order);
+		_increasePriceService.Increase(order.OrderProducts.Select(op => op.Product.ProductId));
+
+		foreach (var op in order.OrderProducts)
 		{
+			var product = op.Product;
 			product.LastSellTime = DateTime.UtcNow;
 			if (product.Quantity != null)
-				product.Quantity -= 1;
+				product.Quantity -= op.Quantity;
 		}
-		// меняем статус у заказа и добавляем дату
 		order.Status = OrderStatus.Confirmed;
 		order.OrderDate = DateTime.UtcNow;
 
@@ -42,11 +41,16 @@ public class ConfirmOrderCommandHandler
 		return orderPrice;
 	}
 
-	private double GetOrderPrice(Order order)
+	private double SetOrderPrice(Order order)
 	{
 		double sum = 0;
-		foreach (var product in order.Products) 
-			sum += product.Price;
+		foreach (var orderProduct in order.OrderProducts)
+		{
+			if (orderProduct.Price == null)
+				orderProduct.Price = orderProduct.Product.Price;
+
+			sum += (double)(orderProduct.Price * orderProduct.Quantity);
+		}
 		return sum;
 	}
 }

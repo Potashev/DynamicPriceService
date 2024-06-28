@@ -13,33 +13,39 @@
 	<thead>
 		<tr>
 			<th>
-				@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Title)
+				@Html.DisplayNameFor(model => model.OrderProducts.FirstOrDefault().Product.Title)
 			</th>
 			<th>
-				@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Description)
+				@Html.DisplayNameFor(model => model.OrderProducts.FirstOrDefault().Product.Description)
 			</th>
 			<th>
-				@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Price)
+				@Html.DisplayNameFor(model => model.OrderProducts.FirstOrDefault().Quantity)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.OrderProducts.FirstOrDefault().Price)
 			</th>
 			<th></th>
 		</tr>
 	</thead>
 	<tbody>
-		@foreach (var item in Model.Products)
+		@foreach (var item in Model.OrderProducts)
 		{
 			<tr>
 				<td>
-					@Html.DisplayFor(modelItem => item.Title)
+					@Html.DisplayFor(modelItem => item.Product.Title)
 				</td>
 				<td>
-					@Html.DisplayFor(modelItem => item.Description)
+					@Html.DisplayFor(modelItem => item.Product.Description)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Quantity)
 				</td>
 				<td>
 					@Html.DisplayFor(modelItem => item.Price)
 				</td>
 				<td>
-					<a asp-action="Edit" asp-route-id="@item.ProductId">Add</a> |
-					<a asp-action="Details" asp-route-id="@item.ProductId">Remove</a> |
+@* 					<a asp-action="Edit" asp-route-id="@item.Product?.ProductId">Add</a> |
+					<a asp-action="Details" asp-route-id="@item.Product.ProductId">Remove</a> | *@
 				</td>
 			</tr>
 		}

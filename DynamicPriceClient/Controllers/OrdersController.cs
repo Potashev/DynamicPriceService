@@ -28,7 +28,8 @@ public class OrdersController : Controller
 	{
 		var client = _httpClientFactory.CreateClient();
 		var url = $"{_localhosturl}/api/Orders/Cart/{_customerId}/";
-		var response = await client.GetStringAsync(url);
+		string response = "";
+		response = await client.GetStringAsync(url);
 		var cartOrder = JsonSerializer.Deserialize<Order>(response, _options);
 		return View(cartOrder);
 	}
@@ -39,7 +40,7 @@ public class OrdersController : Controller
 		var url = $"{_localhosturl}/api/Orders/{_customerId}/{id}";
 		var response = await client.GetStringAsync(url);
 		var cartOrder = JsonSerializer.Deserialize<Order>(response, _options);
-		return Ok(cartOrder.Products);
+		return Ok(cartOrder.OrderProducts);
 	}
 
 	public async Task<IActionResult> ConfirmOrder(int? id)

@@ -25,7 +25,7 @@ public class AddProductToOrderCommandHadnler
 			.FirstOrDefaultAsync();
 
 		var cartOrder = await _context.Orders
-			.Include(o => o.Products)
+			.Include(o => o.OrderProducts)
 			.Where(o => o.Customer.CustomerId.ToString() == request.CustomerId
 				&& o.Company == product.Company
 				&& o.Status == OrderStatus.Cart)
@@ -34,7 +34,26 @@ public class AddProductToOrderCommandHadnler
 		if (cartOrder == null)
 			cartOrder = await CreateNewOrder(request, product.Company);
 
-		cartOrder.Products.Add(product);
+		var orderproduct = cartOrder.OrderProducts
+			.Where(op => op.ProductId == product.ProductId)
+			.FirstOrDefault();
+
+		if (orderproduct == null)
+		{
+			//todo: make better
+			orderproduct = new OrderProduct
+			{
+				Order = cartOrder,
+				Product = product,
+				//Price		= product.Price,
+				Quantity = 1
+			};
+			cartOrder.OrderProducts.Add(orderproduct);
+		}
+		else
+		{
+			orderproduct.Quantity += 1;
+		}
 		_context.SaveChanges();
 		return cartOrder;
 	}
@@ -50,7 +69,7 @@ public class AddProductToOrderCommandHadnler
 			Customer = customer,
 			Company = company,
 			Status = OrderStatus.Cart,
-			Products = new List<Product>()	//is it right?
+			OrderProducts = new List<OrderProduct>()	//is it right?
 		};
 
 		await _context.Orders.AddAsync(order);

@@ -11,10 +11,8 @@ public class IncreasePriceService : IIncreasePriceService
     public IncreasePriceService(DynamicPriceCoreContext context)
 		=> _context = context;
 
-    public void Increase(IEnumerable<Product> products)
+    public void Increase(IEnumerable<int> productIds)
 	{
-		var productIds = products.Select(p => p.ProductId);
-
 		var productsToIncrease = _context.Products
 							.Include(p => p.Company)	//todo: make better
 							.Where(p => productIds.Contains(p.ProductId))
@@ -41,5 +39,5 @@ public class IncreasePriceService : IIncreasePriceService
 
 public interface IIncreasePriceService
 {
-	void Increase(IEnumerable<Product> products);
+	void Increase(IEnumerable<int> productIds);
 }

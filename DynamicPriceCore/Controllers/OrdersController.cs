@@ -1,6 +1,7 @@
 ﻿using DynamicPriceCore.MediatR.OrderEntity.Commands;
 using DynamicPriceCore.MediatR.OrderEntity.Queries;
 using DynamicPriceCore.MediatR.ProductEntity.Queries;
+using DynamicPriceCore.MediatR.ViewModels;
 using DynamicPriceCore.Models;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -39,5 +40,19 @@ public class OrdersController : ControllerBase
 	{
 		var orderPrice = await _mediator.Send(new ConfirmOrderCommand((int)customerId, (int)cartOrderId));
 		return Ok(orderPrice);
+	}
+
+	[HttpGet("/api/{userId}/CompanyOrders")]
+	public async Task<ActionResult<IEnumerable<OrderViewModel>>> GetCompanyOrders(string userId)
+	{
+		var ordersVm = await _mediator.Send(new GetCompanyOrdersQuery(userId));
+		return Ok(ordersVm);
+	}
+
+	[HttpGet("/api/CompanyOrders/{orderId}")]
+	public async Task<ActionResult<IEnumerable<OrderViewModel>>> GetCompanyOrder(string orderId)
+	{
+		var ordersVm = await _mediator.Send(new GetCompanyOrderDetailsQuery(orderId));
+		return Ok(ordersVm);
 	}
 }

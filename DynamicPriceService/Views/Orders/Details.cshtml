@@ -1,0 +1,56 @@
+﻿@model DynamicPriceService.ViewModels.OrderViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+<h2>Order products</h2>
+<table class="table">
+	<thead>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.OrderProducts.FirstOrDefault().Product.Title)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.OrderProducts.FirstOrDefault().Price)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.OrderProducts.FirstOrDefault().Quantity)
+			</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model.OrderProducts)
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.Product.Title)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Price)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Quantity)
+				</td>
+				<td>
+					<a asp-controller="Products" asp-action="Details" asp-route-id="@item.Product.ProductId">Details</a>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+
+<div>
+	<h2>Order details</h2>
+	<hr />
+	<dl class="row">
+		<dt class="col-sm-2">
+			@Html.DisplayNameFor(model => model.OrderAmount)
+		</dt>
+		<dd class="col-sm-10">
+			@Html.DisplayFor(model => model.OrderAmount)
+		</dd>
+	</dl>
+</div>

@@ -13,5 +13,9 @@ public class MappingProfile : Profile
 			.ReverseMap();
 		CreateMap<PriceRule, PriceRuleViewModel>()
 			.ReverseMap();
+		CreateMap<Order, OrderViewModel>()
+			.ReverseMap();
+		CreateMap<OrderProduct, OrderProductViewModel>()
+			.ReverseMap();
 	}
 }

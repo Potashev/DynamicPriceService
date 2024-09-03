@@ -41,4 +41,12 @@ public class OrdersController : Controller
 		var orderVm = JsonSerializer.Deserialize<OrderViewModel>(response, _options);
 		return View(orderVm);
 	}
+
+	public async Task<IActionResult> Statistics()
+	{
+		var client = _httpClientFactory.CreateClient();
+		var response = await client.GetStringAsync($"{_localhosturl}/api/{_userId}/CompanyOrders/Statistics");
+		var orderStatistics = JsonSerializer.Deserialize<OrderStatistics>(response, _options);
+		return View(orderStatistics);
+	}
 }

@@ -55,4 +55,11 @@ public class OrdersController : ControllerBase
 		var ordersVm = await _mediator.Send(new GetCompanyOrderDetailsQuery(orderId));
 		return Ok(ordersVm);
 	}
+
+	[HttpGet("/api/{userId}/CompanyOrders/Statistics")]
+	public async Task<ActionResult<OrderStatistics>> GetCompanyStatistics(string userId)
+	{
+		var orderStatistics = await _mediator.Send(new GetCompanyStatisticsQuery(userId));
+		return Ok(orderStatistics);
+	}
 }

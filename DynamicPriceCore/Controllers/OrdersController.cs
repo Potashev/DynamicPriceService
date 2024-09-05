@@ -44,10 +44,10 @@ public class OrdersController : ControllerBase
 
 	[HttpGet]
 	[Route("/api/Orders/Confirm/{customerId}/{cartOrderId}")]
-	public async Task<ActionResult<double>> ConfirmOrder(int? customerId, int? cartOrderId)
+	public async Task<ActionResult<int>> ConfirmOrder(int? customerId, int? cartOrderId)
 	{
-		var orderPrice = await _mediator.Send(new ConfirmOrderCommand((int)customerId, (int)cartOrderId));
-		return Ok(orderPrice);
+		var receiveKey = await _mediator.Send(new ConfirmOrderCommand((int)customerId, (int)cartOrderId));
+		return Ok(receiveKey);
 	}
 
 	[HttpGet("/api/{userId}/CompanyOrders")]

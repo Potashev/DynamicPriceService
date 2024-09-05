@@ -39,8 +39,6 @@ public class OrdersController : Controller
 		var client = _httpClientFactory.CreateClient();
 		var url = $"{_localhosturl}/api/Orders/Add/{_customerId}/{id}";
 		var response = await client.GetStringAsync(url);
-		var cartOrder = JsonSerializer.Deserialize<Order>(response, _options);
-		//return Ok(cartOrder.OrderProducts);
 		return RedirectToAction(nameof(CartOrderDetails));
 	}
 
@@ -49,8 +47,6 @@ public class OrdersController : Controller
 		var client = _httpClientFactory.CreateClient();
 		var url = $"{_localhosturl}/api/Orders/Remove/{_customerId}/{id}";
 		var response = await client.GetStringAsync(url);
-		//var cartOrder = JsonSerializer.Deserialize<Order>(response, _options);
-		//return Ok(cartOrder.OrderProducts);
 		return RedirectToAction(nameof(CartOrderDetails));
 	}
 
@@ -59,8 +55,8 @@ public class OrdersController : Controller
 		var client = _httpClientFactory.CreateClient();
 		var url = $"{_localhosturl}/api/Orders/Confirm/{_customerId}/{id}";
 		var response = await client.GetStringAsync(url);
-		var orderPrice = JsonSerializer.Deserialize<double>(response, _options);
-		return Ok(orderPrice);
+		var receiveKey = JsonSerializer.Deserialize<int>(response, _options);
+		return Ok(receiveKey);
 	}
 
 }

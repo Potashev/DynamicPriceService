@@ -11,33 +11,32 @@ public class IncreasePriceService : IIncreasePriceService
     public IncreasePriceService(DynamicPriceCoreContext context)
 		=> _context = context;
 
-    public void Increase(IEnumerable<int> productIds)
+    public void Increase(IEnumerable<OrderProduct> OrderProducts)
 	{
-		var productsToIncrease = _context.Products
-							.Include(p => p.Company)	//todo: make better
-							.Where(p => productIds.Contains(p.ProductId))
-							.ToList();
-		var company = productsToIncrease.FirstOrDefault().Company;
+		var company = _context.Products
+			.Where(p => p.ProductId == OrderProducts.FirstOrDefault().ProductId)
+			.Select(p => p.Company).FirstOrDefault();		
 
 		var priceRule = _context.PriceRules
 			.FirstOrDefault(p => p.Company.CompanyId == company.CompanyId);
 
-		foreach(var product in productsToIncrease)
-		{
-			product.Price = IncreasePrice(product.Price, priceRule.Increase);
-		}
+		IncreasePrice(OrderProducts, priceRule);
+
 		_context.SaveChanges();
 	}
 
-	private double IncreasePrice(double productPrice, int pricingRuleIncrease)
+	private void IncreasePrice(IEnumerable<OrderProduct> OrderProducts, PriceRule priceRule)
 	{
-		var increase = pricingRuleIncrease * 0.01 * productPrice;
-		productPrice += increase;
-		return productPrice;
+		foreach(var orderProduct in OrderProducts)
+		{
+			var product = orderProduct.Product;
+			var increase = product.Price * priceRule.Increase * 0.01 * orderProduct.Quantity;
+			product.Price += increase;
+		}
 	}
 }
 
 public interface IIncreasePriceService
 {
-	void Increase(IEnumerable<int> productIds);
+	void Increase(IEnumerable<OrderProduct> OrderProducts);
 }

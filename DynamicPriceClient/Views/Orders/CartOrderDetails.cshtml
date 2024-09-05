@@ -44,10 +44,13 @@
 					@Html.DisplayFor(modelItem => item.Price)
 				</td>
 				<td>
-@* 					<a asp-action="Edit" asp-route-id="@item.Product?.ProductId">Add</a> |
-					<a asp-action="Details" asp-route-id="@item.Product.ProductId">Remove</a> | *@
+					<a asp-action="AddProduct" asp-route-id="@item.Product?.ProductId">Add</a> |
+					<a asp-action="RemoveProduct" asp-route-id="@item.Product?.ProductId">Remove</a> |
 				</td>
 			</tr>
 		}
 	</tbody>
 </table>
+<div>
+	<a asp-controller="Companies" asp-action="CompanyProducts" asp-route-id="@Model.Company.CompanyId">Back to List</a>
+</div>

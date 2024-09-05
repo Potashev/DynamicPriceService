@@ -37,10 +37,21 @@ public class OrdersController : Controller
 	public async Task<IActionResult> AddProduct(int? id)
 	{
 		var client = _httpClientFactory.CreateClient();
-		var url = $"{_localhosturl}/api/Orders/{_customerId}/{id}";
+		var url = $"{_localhosturl}/api/Orders/Add/{_customerId}/{id}";
 		var response = await client.GetStringAsync(url);
 		var cartOrder = JsonSerializer.Deserialize<Order>(response, _options);
-		return Ok(cartOrder.OrderProducts);
+		//return Ok(cartOrder.OrderProducts);
+		return RedirectToAction(nameof(CartOrderDetails));
+	}
+
+	public async Task<IActionResult> RemoveProduct(int? id)
+	{
+		var client = _httpClientFactory.CreateClient();
+		var url = $"{_localhosturl}/api/Orders/Remove/{_customerId}/{id}";
+		var response = await client.GetStringAsync(url);
+		//var cartOrder = JsonSerializer.Deserialize<Order>(response, _options);
+		//return Ok(cartOrder.OrderProducts);
+		return RedirectToAction(nameof(CartOrderDetails));
 	}
 
 	public async Task<IActionResult> ConfirmOrder(int? id)

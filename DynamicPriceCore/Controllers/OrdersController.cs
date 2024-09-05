@@ -27,11 +27,19 @@ public class OrdersController : ControllerBase
 	}
 
 	[HttpGet]
-	[Route("/api/Orders/{customerId}/{productId}")]
+	[Route("/api/Orders/Add/{customerId}/{productId}")]
 	public async Task<ActionResult<Order>> AddProduct(int? customerId, int? productId)
 	{
 		var cartOrder = await _mediator.Send(new AddProductToOrderCommand(customerId.ToString(), productId.ToString()));
 		return Ok(cartOrder);
+	}
+
+	
+	[HttpGet("/api/Orders/Remove/{customerId}/{productId}")]
+	public async Task<ActionResult<Order>> RemoveProduct(int? customerId, int? productId)
+	{
+		await _mediator.Send(new RemoveProductFromOrderCommand(customerId.ToString(), productId.ToString()));
+		return Ok();
 	}
 
 	[HttpGet]

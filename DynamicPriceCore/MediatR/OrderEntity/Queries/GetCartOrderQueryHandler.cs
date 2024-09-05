@@ -18,6 +18,7 @@ public class GetCartOrderQueryHandler
 	public async Task<Order> Handle(GetCartOrderQuery request, CancellationToken cancellationToken)
 	{
 		var cartOrder = _context.Orders
+			.Include(o => o.Company)
 			.Include(o => o.OrderProducts)
 				.ThenInclude(op => op.Product)
 			.FirstOrDefault(o => o.Customer.CustomerId == request.CustomerId && o.Status == OrderStatus.Cart);

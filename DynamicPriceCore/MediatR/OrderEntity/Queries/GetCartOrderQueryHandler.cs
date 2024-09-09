@@ -21,7 +21,9 @@ public class GetCartOrderQueryHandler
 			.Include(o => o.Company)
 			.Include(o => o.OrderProducts)
 				.ThenInclude(op => op.Product)
-			.FirstOrDefault(o => o.Customer.CustomerId == request.CustomerId && o.Status == OrderStatus.Cart);
+			.FirstOrDefault(o => o.Customer.CustomerId == request.CustomerId 
+				&& o.Company.CompanyId == request.CompanyId 
+				&& o.Status == OrderStatus.Cart);
 		return cartOrder;
 	}
 }

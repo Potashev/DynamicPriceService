@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace DynamicPriceCore.MediatR.CompanyEntity.Queries;
 
 public class GetCompanyProductsQueryHandler
-	: IRequestHandler<GetCompanyProductsQuery, IEnumerable<ProductInfoViewModel>>
+	: IRequestHandler<GetCompanyProductsQuery, CompanyProductsInfo>
 {
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IMapper _mapper;
@@ -16,12 +16,14 @@ public class GetCompanyProductsQueryHandler
 	public GetCompanyProductsQueryHandler(DynamicPriceCoreContext context, IMapper mapper)
 		=> (_context, _mapper) = (context, mapper);
 
-	public async Task<IEnumerable<ProductInfoViewModel>> Handle(GetCompanyProductsQuery request, CancellationToken cancellationToken)
+	public async Task<CompanyProductsInfo> Handle(GetCompanyProductsQuery request, CancellationToken cancellationToken)
 	{
 		var products = await _context.Products
 			.Where(p => p.Company.CompanyId.ToString() == request.CompanyId)
-			.ToListAsync();
+			.ToArrayAsync(cancellationToken);
 
-		return _mapper.Map<List<ProductInfoViewModel>>(products);
+		var productsInfoVm = _mapper.Map<ProductInfoViewModel[]>(products);
+
+		return new CompanyProductsInfo(request.CompanyId, productsInfoVm);
 	}
 }

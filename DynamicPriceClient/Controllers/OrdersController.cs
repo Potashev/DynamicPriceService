@@ -24,10 +24,10 @@ public class OrdersController : Controller
 		_httpClientFactory = httpClientFactory;
 	}
 
-	public async Task<IActionResult> CartOrderDetails()
+	public async Task<IActionResult> CartOrderDetails(string companyId)
 	{
 		var client = _httpClientFactory.CreateClient();
-		var url = $"{_localhosturl}/api/Orders/Cart/{_customerId}/";
+		var url = $"{_localhosturl}/api/Orders/Cart/{_customerId}/{companyId}";
 		string response = "";
 		response = await client.GetStringAsync(url);
 		var cartOrder = JsonSerializer.Deserialize<Order>(response, _options);
@@ -39,7 +39,9 @@ public class OrdersController : Controller
 		var client = _httpClientFactory.CreateClient();
 		var url = $"{_localhosturl}/api/Orders/Add/{_customerId}/{id}";
 		var response = await client.GetStringAsync(url);
-		return RedirectToAction(nameof(CartOrderDetails));
+		var cartOrder = JsonSerializer.Deserialize<Order>(response, _options);
+		var companyId = cartOrder.Company.CompanyId;
+		return RedirectToAction(nameof(CartOrderDetails), new { companyId });
 	}
 
 	public async Task<IActionResult> RemoveProduct(int? id)
@@ -47,7 +49,9 @@ public class OrdersController : Controller
 		var client = _httpClientFactory.CreateClient();
 		var url = $"{_localhosturl}/api/Orders/Remove/{_customerId}/{id}";
 		var response = await client.GetStringAsync(url);
-		return RedirectToAction(nameof(CartOrderDetails));
+		var cartOrder = JsonSerializer.Deserialize<Order>(response, _options);
+		var companyId = cartOrder.Company.CompanyId;
+		return RedirectToAction(nameof(CartOrderDetails), new { companyId });
 	}
 
 	public async Task<IActionResult> ConfirmOrder(int? id)

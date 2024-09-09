@@ -27,7 +27,7 @@ public class CompaniesController : ControllerBase
 
 	[HttpGet]
 	[Route("/api/ActiveCompanies/{companyId}")]
-	public async Task<ActionResult<IEnumerable<ProductInfoViewModel>>> GetCompanyProducts(string companyId)
+	public async Task<ActionResult<CompanyProductsInfo>> GetCompanyProducts(string companyId)
 	{
 		var companyProducts = await _mediator.Send(new GetCompanyProductsQuery(companyId));
 		return Ok(companyProducts);

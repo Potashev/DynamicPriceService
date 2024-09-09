@@ -3,7 +3,7 @@ using MediatR;
 
 namespace DynamicPriceCore.MediatR.OrderEntity.Commands;
 
-public class RemoveProductFromOrderCommand : IRequest
+public class RemoveProductFromOrderCommand : IRequest<Order>
 {
 	public string CustomerId { get; set; }
 	public string ProductId { get; set; }

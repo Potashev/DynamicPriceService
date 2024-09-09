@@ -22,14 +22,14 @@ public class AddProductToOrderCommandHadnler
 		var product = await _context.Products
 			.Include(p => p.Company)
 			.Where(p => p.ProductId.ToString() == request.ProductId)
-			.FirstOrDefaultAsync();
+			.FirstOrDefaultAsync(cancellationToken);
 
 		var cartOrder = await _context.Orders
 			.Include(o => o.OrderProducts)
 			.Where(o => o.Customer.CustomerId.ToString() == request.CustomerId
 				&& o.Company == product.Company
 				&& o.Status == OrderStatus.Cart)
-			.FirstOrDefaultAsync();
+			.FirstOrDefaultAsync(cancellationToken);
 
 		if (cartOrder == null)
 			cartOrder = await CreateNewOrder(request, product.Company);

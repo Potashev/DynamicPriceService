@@ -30,7 +30,7 @@ public class CompaniesController : Controller
 	{
 		var client = _httpClientFactory.CreateClient();
 		var response = await client.GetStringAsync($"{_localhosturl}/api/ActiveCompanies/{id}");
-		var companyProducts = JsonSerializer.Deserialize<IEnumerable<ProductInfoViewModel>>(response, _options);
+		var companyProducts = JsonSerializer.Deserialize<CompanyProductsInfo>(response, _options);
 		return View(companyProducts);
 	}
 }

@@ -12,9 +12,6 @@
 			<th>
 				@Html.DisplayNameFor(model => model.Title)
 			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.CompanyId)
-			</th>
 			<th></th>
 		</tr>
 	</thead>
@@ -23,10 +20,7 @@
 		{
 			<tr>
 				<td>
-					@Html.DisplayFor(modelItem => item.Title)
-				</td>
-				<td>
-					<a asp-action="CompanyProducts" asp-route-id="@item.CompanyId">Select</a>
+					<a asp-action="CompanyProducts" asp-route-id="@item.CompanyId">@Html.DisplayFor(modelItem => item.Title)</a>
 				</td>
 			</tr>
 		}

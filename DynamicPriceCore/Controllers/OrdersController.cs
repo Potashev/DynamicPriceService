@@ -23,7 +23,10 @@ public class OrdersController : ControllerBase
 	public async Task<ActionResult<Order>> CartOrderDetails(int? customerId, int? companyId)
 	{
 		var cartOrder = await _mediator.Send(new GetCartOrderQuery((int)customerId, (int)companyId));
-		return Ok(cartOrder);
+
+		return cartOrder == null 
+			? NotFound(new { message = "Cart is empty." }) 
+			: Ok(cartOrder);
 	}
 
 	[HttpGet]

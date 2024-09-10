@@ -28,10 +28,17 @@ public class OrdersController : Controller
 	{
 		var client = _httpClientFactory.CreateClient();
 		var url = $"{_localhosturl}/api/Orders/Cart/{_customerId}/{companyId}";
-		string response = "";
-		response = await client.GetStringAsync(url);
-		var cartOrder = JsonSerializer.Deserialize<Order>(response, _options);
-		return View(cartOrder);
+		var response = await client.GetAsync(url);
+		if (response.IsSuccessStatusCode)
+		{
+			var responseBody = await response.Content.ReadAsStringAsync();
+			var cartOrder = JsonSerializer.Deserialize<Order>(responseBody, _options);
+			return View(cartOrder);
+		}
+		else
+		{
+			return Content("The cart is empty");
+		}
 	}
 
 	public async Task<IActionResult> AddProduct(int? id)
@@ -60,7 +67,7 @@ public class OrdersController : Controller
 		var url = $"{_localhosturl}/api/Orders/Confirm/{_customerId}/{id}";
 		var response = await client.GetStringAsync(url);
 		var receiveKey = JsonSerializer.Deserialize<int>(response, _options);
-		return Ok(receiveKey);
+		return Content($"Your receive Key: {receiveKey}");
 	}
 
 }

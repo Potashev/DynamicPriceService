@@ -34,12 +34,33 @@ public class OrdersController : Controller
 		return View(ordersVm);
 	}
 
+	public async Task<IActionResult> FindByReceiveKey(string key)
+	{
+		var client = _httpClientFactory.CreateClient();
+		var response = await client.GetStringAsync($"{_localhosturl}/api/CompanyOrders/FindByReceiveKey/{key}");
+
+		//todo: make better
+		if (int.TryParse(response, out int id))
+		{
+			return RedirectToAction(nameof(Details), new { id });
+		}
+		return View(response);	// remove
+	}
+
 	public async Task<IActionResult> Details(int? id)
 	{
 		var client = _httpClientFactory.CreateClient();
 		var response = await client.GetStringAsync($"{_localhosturl}/api/CompanyOrders/{id}");
 		var orderVm = JsonSerializer.Deserialize<OrderViewModel>(response, _options);
 		return View(orderVm);
+	}
+
+	public async Task<IActionResult> CompleteOrder(string orderId)
+	{
+		var client = _httpClientFactory.CreateClient();
+		var response = await client.GetStringAsync($"{_localhosturl}/api/CompanyOrders/Complete/{orderId}");
+
+		return RedirectToAction(nameof(Details), new { id = orderId });
 	}
 
 	public async Task<IActionResult> Statistics()

@@ -61,10 +61,24 @@ public class OrdersController : ControllerBase
 	}
 
 	[HttpGet("/api/CompanyOrders/{orderId}")]
-	public async Task<ActionResult<IEnumerable<OrderViewModel>>> GetCompanyOrder(string orderId)
+	public async Task<ActionResult<IEnumerable<OrderViewModel>>> GetCompanyOrder(string orderId)	//why enumerable?
 	{
 		var ordersVm = await _mediator.Send(new GetCompanyOrderDetailsQuery(orderId));
 		return Ok(ordersVm);
+	}
+
+	[HttpGet("/api/CompanyOrders/FindByReceiveKey/{key}")]
+	public async Task<ActionResult<int>> GetCompanyOrderByReceiveKey(string key)
+	{
+		var orderId = await _mediator.Send(new GetOrderIdByReceiveKeyQuery(key));
+		return orderId;
+	}
+
+	[HttpGet("/api/CompanyOrders/Complete/{orderId}")]
+	public async Task<ActionResult<int>> CompleteOrder(string orderId)
+	{
+		var id =  await _mediator.Send(new CompleteOrderCommand(orderId));
+		return id;
 	}
 
 	[HttpGet("/api/{userId}/CompanyOrders/Statistics")]

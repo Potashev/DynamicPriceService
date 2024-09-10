@@ -21,7 +21,7 @@ public class ConfirmOrderCommandHandler
 		var order = await _context.Orders
 			.Include(o => o.OrderProducts)
 				.ThenInclude(op => op.Product)
-			.Where(o => o.OrderId == request.CastOrderId)
+			.Where(o => o.OrderId == request.CartOrderId)
 			.FirstOrDefaultAsync(cancellationToken);
 
 		foreach (var orderProduct in order.OrderProducts)

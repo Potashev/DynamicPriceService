@@ -6,7 +6,7 @@ namespace DynamicPriceCore.MediatR.OrderEntity.Commands;
 public class ConfirmOrderCommand : IRequest<int>
 {
 	public int CustomerId { get; set; }
-	public int CastOrderId { get; set; }
+	public int CartOrderId { get; set; }
 	public ConfirmOrderCommand(int customerId, int cartOrderId)
-		=> (CustomerId, CastOrderId) = (customerId, cartOrderId);
+		=> (CustomerId, CartOrderId) = (customerId, cartOrderId);
 }

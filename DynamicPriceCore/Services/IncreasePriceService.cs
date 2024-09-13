@@ -38,7 +38,7 @@ public class IncreasePriceService : IIncreasePriceService
 		foreach(var orderProduct in OrderProducts)
 		{
 			var product = orderProduct.Product;
-			var increase = product.Price * priceRule.Increase * 0.01 * orderProduct.Quantity;
+			var increase = product.Price * (decimal)priceRule.Increase * 0.01m * orderProduct.Quantity;
 			product.Price += increase;
 		}
 	}

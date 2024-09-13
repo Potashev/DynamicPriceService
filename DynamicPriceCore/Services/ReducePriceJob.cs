@@ -44,9 +44,9 @@ public class ReducePriceJob : IJob
 		return Task.CompletedTask;
 	}
 
-	private double ReducePrice(double price, int pricingRuleReduction)
+	private decimal ReducePrice(decimal price, double pricingRuleReduction)
 	{
-		var reduction = pricingRuleReduction * 0.01 * price;
+		var reduction = (decimal)pricingRuleReduction * 0.01m * price; //todo: think about rounding
 		price -= reduction;
 		return price;
 	}

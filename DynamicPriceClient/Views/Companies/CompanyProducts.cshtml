@@ -7,7 +7,7 @@
 		<tr>
 			<th>@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Title)</th>
 			<th>@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Price)</th>
-			<th>Price Change Graph</th>
+			<th>Price dynamics</th>
 			<th></th>
 		</tr>
 	</thead>
@@ -19,7 +19,7 @@
 				<td id="price-@product.ProductId">@product.Price</td>
 				<td>
 					<div class="chart-container">
-						<canvas id="chart-@product.ProductId" width="400" height="200"></canvas>
+						<canvas id="chart-@product.ProductId" width="100" height="50"></canvas>
 					</div>
 				</td>
 				<td>

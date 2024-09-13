@@ -10,4 +10,7 @@ public class ProductInfoViewModel
 	public double Price { get; set; }
 	public int? Quantity { get; set; }
 	public string? Description { get; set; }
+
+	public List<decimal> PriceHistory { get; set; } = new List<decimal>();
+	public List<DateTime> PriceChangeDates { get; set; } = new List<DateTime>();
 }

@@ -1,55 +1,131 @@
 ﻿@model DynamicPriceClient.ViewModels.CompanyProductsInfo
 
-@{
-	ViewData["Title"] = "Index";
-}
+<h1>Product Prices (Real-Time Updates)</h1>
 
-<h1>Index</h1>
-
-<p>
-	<a asp-controller="Orders" asp-action="CartOrderDetails" asp-route-companyId="@Model.CompanyId">Shopping Cart</a>
-</p>
 <table class="table">
 	<thead>
 		<tr>
-			<th>
-				@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Title)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Price)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Quantity)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Description)
-			</th>
+			<th>@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Title)</th>
+			<th>@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Price)</th>
+			<th>Price Change Graph</th>
 			<th></th>
 		</tr>
 	</thead>
 	<tbody>
-		@foreach (var item in Model.Products)
+		@foreach (var product in Model.Products)
 		{
 			<tr>
+				<td>@product.Title</td>
+				<td>@product.Price</td>
 				<td>
-					@Html.DisplayFor(modelItem => item.Title)
+					<!-- Место для графика -->
+					<div class="chart-container">
+						<canvas id="chart-@product.ProductId" width="400" height="200"></canvas>
+					</div>
 				</td>
 				<td>
-					@Html.DisplayFor(modelItem => item.Price)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.Quantity)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.Description)
-				</td>
-				<td>
-					<a asp-controller="Orders" asp-action="AddProduct" asp-route-id="@item.ProductId">Add to Cart</a>
+					<a asp-controller="Orders" asp-action="AddProduct" asp-route-id="@product.ProductId">Add to Cart</a>
 				</td>
 			</tr>
 		}
 	</tbody>
 </table>
-<div>
-	<a asp-controller="Companies" asp-action="Index">Back to List</a>
-</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
+
+<script>
+	// Создание соединения с SignalR хабом
+	var connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7140/priceHub").build();
+
+	// Массив для хранения графиков
+	var charts = {};
+
+	// Запуск соединения
+	connection.start().then(function () {
+		console.log("SignalR connected");
+	}).catch(function (err) {
+		console.error("SignalR connection error: ", err);
+	});
+
+	// Обработка получения обновлений от сервера
+	connection.on("ReceivePriceUpdate", function (productId, newPrice) {
+		console.log("Received price update for product " + productId + ": " + newPrice);
+		updateChart(productId, newPrice);
+	});
+
+	// Функция для обновления графика при изменении цены
+	function updateChart(productId, newPrice) {
+		var chart = charts[productId];
+		if (chart) {
+			chart.data.datasets[0].data.push(newPrice);  // Добавление новой цены
+			chart.data.labels.push(new Date().toLocaleTimeString());  // Добавление времени изменения цены
+
+			// Ограничиваем количество точек на графике (например, до 10)
+			if (chart.data.datasets[0].data.length > 10) {
+				chart.data.datasets[0].data.shift();  // Удаляем старую цену
+				chart.data.labels.shift();  // Удаляем старую метку времени
+			}
+
+			chart.update();  // Обновляем график
+		}
+	}
+
+	// Тестовые данные для проверки отрисовки графика
+	var testPriceLabels = ["2024-09-01", "2024-09-02", "2024-09-03", "2024-09-04", "2024-09-05"];
+	var testPriceData = [10, 15, 8, 12, 20];
+
+	// Отрисовка графиков для каждого продукта на основе тестовых данных
+	@foreach (var product in Model.Products)
+	{
+		<text>
+				drawChart(@product.ProductId, testPriceLabels, testPriceData);
+		</text>
+	}
+
+		// Функция для создания графика
+		function drawChart(productId, labels, data) {
+			var ctx = document.getElementById('chart-' + productId).getContext('2d');
+			var chart = new Chart(ctx, {
+				type: 'line',
+				data: {
+					labels: labels,
+					datasets: [{
+						label: 'Price Change',
+						data: data,
+						borderColor: 'rgba(75, 192, 192, 1)',
+						borderWidth: 2,
+						fill: false
+					}]
+				},
+				options: {
+					scales: {
+						x: {
+							beginAtZero: false,
+							grid: { display: false },
+							ticks: { display: false }
+						},
+						y: {
+							beginAtZero: true,
+							grid: { display: false },
+							ticks: { display: false }
+						}
+					},
+					plugins: {
+						legend: { display: false }
+					}
+				}
+			});
+
+			// Сохраняем график по ID продукта
+			charts[productId] = chart;
+		}
+</script>
+
+<style>
+	.chart-container {
+		border: 2px solid #000;
+		padding: 10px;
+		background-color: #f9f9f9;
+	}
+</style>

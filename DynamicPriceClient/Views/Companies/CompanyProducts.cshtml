@@ -1,6 +1,6 @@
 ﻿@model DynamicPriceClient.ViewModels.CompanyProductsInfo
 
-<h1>Product Prices (Real-Time Updates)</h1>
+ё<h1>Product Prices</h1>
 
 <table class="table">
 	<thead>
@@ -16,9 +16,8 @@
 		{
 			<tr>
 				<td>@product.Title</td>
-				<td>@product.Price</td>
+				<td id="price-@product.ProductId">@product.Price</td>
 				<td>
-					<!-- Место для графика -->
 					<div class="chart-container">
 						<canvas id="chart-@product.ProductId" width="400" height="200"></canvas>
 					</div>
@@ -35,7 +34,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
 
 <script>
-	// Создание соединения с SignalR хабом
+	// Создание соединения с хабом SignalR
 	var connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7140/priceHub").build();
 
 	// Массив для хранения графиков
@@ -43,89 +42,82 @@
 
 	// Запуск соединения
 	connection.start().then(function () {
-		console.log("SignalR connected");
+		   console.log("SignalR connected");
 	}).catch(function (err) {
-		console.error("SignalR connection error: ", err);
+		   console.error("SignalR connection error: ", err);
 	});
 
-	// Обработка получения обновлений от сервера
+	// Получение обновлений цены от сервера
 	connection.on("ReceivePriceUpdate", function (productId, newPrice) {
-		console.log("Received price update for product " + productId + ": " + newPrice);
-		updateChart(productId, newPrice);
+		   updateChart(productId, newPrice);
+		   updatePriceLabel(productId, newPrice);
 	});
 
 	// Функция для обновления графика при изменении цены
 	function updateChart(productId, newPrice) {
-		var chart = charts[productId];
-		if (chart) {
-			chart.data.datasets[0].data.push(newPrice);  // Добавление новой цены
-			chart.data.labels.push(new Date().toLocaleTimeString());  // Добавление времени изменения цены
+		   var chart = charts[productId];
+		   if (chart) {
+				  chart.data.datasets[0].data.push(newPrice);  // Добавление новой цены
+				  chart.data.labels.push(new Date().toLocaleTimeString());  // Добавление времени изменения цены
 
-			// Ограничиваем количество точек на графике (например, до 10)
-			if (chart.data.datasets[0].data.length > 10) {
-				chart.data.datasets[0].data.shift();  // Удаляем старую цену
-				chart.data.labels.shift();  // Удаляем старую метку времени
-			}
+				  // Ограничиваем количество точек на графике (например, до 10)
+				  if (chart.data.datasets[0].data.length > 10) {
+						 chart.data.datasets[0].data.shift();  // Удаляем старую цену
+						 chart.data.labels.shift();  // Удаляем старую метку времени
+				  }
 
-			chart.update();  // Обновляем график
-		}
+				  chart.update();  // Обновляем график
+		   }
 	}
 
-	// Тестовые данные для проверки отрисовки графика
-	var testPriceLabels = ["2024-09-01", "2024-09-02", "2024-09-03", "2024-09-04", "2024-09-05"];
-	var testPriceData = [10, 15, 8, 12, 20];
+	// Функция для обновления отображаемой цены
+	function updatePriceLabel(productId, newPrice) {
+		document.getElementById('price-' + productId).innerText = newPrice;
+	 }
 
-	// Отрисовка графиков для каждого продукта на основе тестовых данных
+	// Отрисовка графиков для каждого продукта
 	@foreach (var product in Model.Products)
 	{
 		<text>
-				drawChart(@product.ProductId, testPriceLabels, testPriceData);
+				   drawChart(@product.ProductId);
 		</text>
 	}
 
-		// Функция для создания графика
-		function drawChart(productId, labels, data) {
-			var ctx = document.getElementById('chart-' + productId).getContext('2d');
-			var chart = new Chart(ctx, {
-				type: 'line',
-				data: {
-					labels: labels,
-					datasets: [{
-						label: 'Price Change',
-						data: data,
-						borderColor: 'rgba(75, 192, 192, 1)',
-						borderWidth: 2,
-						fill: false
-					}]
-				},
-				options: {
-					scales: {
-						x: {
-							beginAtZero: false,
-							grid: { display: false },
-							ticks: { display: false }
-						},
-						y: {
-							beginAtZero: true,
-							grid: { display: false },
-							ticks: { display: false }
-						}
-					},
-					plugins: {
-						legend: { display: false }
-					}
-				}
-			});
+	   // Функция для создания графика
+		  function drawChart(productId) {
+			  var ctx = document.getElementById('chart-' + productId).getContext('2d');
+				 var chart = new Chart(ctx, {
+					 type: 'line',
+						data: {
+							labels: [],  // Начальные пустые метки
+							   datasets: [{
+								   label: 'Price Change',
+								   data: [],  // Начальные пустые данные
+								   borderColor: 'rgba(75, 192, 192, 1)',
+								   borderWidth: 2,
+								fill: false
+						 }]
+					 },
+						options: {
+							   scales: {
+									  x: { display: false },  // Ось X скрыта
+									  y: { display: false }   // Ось Y скрыта
+								  },
+							   plugins: {
+						              legend: { display: false }
+							   }
+						   }
+					   });
 
-			// Сохраняем график по ID продукта
-			charts[productId] = chart;
-		}
+						  // Сохраняем график по ID продукта
+						  charts[productId] = chart;
+	 }
 </script>
 
 <style>
 	.chart-container {
-		border: 2px solid #000;
-		padding: 10px;
-		background-color: #f9f9f9;
+		border: 2px solid #000; /* Цвет и толщина рамки */
+		padding: 10px; /* Отступы вокруг графика */
+		background-color: #f9f9f9; /* Цвет фона */
 	}
 </style>

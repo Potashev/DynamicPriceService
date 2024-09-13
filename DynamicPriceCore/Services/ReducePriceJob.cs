@@ -1,4 +1,5 @@
 ﻿using DynamicPriceCore.Data;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 
@@ -8,11 +9,13 @@ public class ReducePriceJob : IJob
 {
 	private readonly DynamicPriceCoreContext _context;
 	private IActiveCompaniesService _activeCompaniesService;
+	private readonly IHubContext<PriceHub> _priceHubContext;
 
-	public ReducePriceJob(DynamicPriceCoreContext context, IActiveCompaniesService activeCompaniesService)
+	public ReducePriceJob(DynamicPriceCoreContext context, IActiveCompaniesService activeCompaniesService, IHubContext<PriceHub> priceHubContext)
 	{
 		_context = context;
 		_activeCompaniesService = activeCompaniesService;
+		_priceHubContext = priceHubContext;
 	}
 
 	public Task Execute(IJobExecutionContext jobContext)
@@ -25,13 +28,14 @@ public class ReducePriceJob : IJob
 			var productsToReduceQuery = from p in _context.Products
 										where
 									   p.Company == company &&
-									   EF.Functions.DateDiffSecond(p.LastSellTime, DateTime.Now) > priceRule.NoSellTime.Value.TotalSeconds
+									   EF.Functions.DateDiffSecond(p.LastSellTime, DateTime.UtcNow) > priceRule.NoSellTime.Value.TotalSeconds
 										select p;
 			var productsToReduce = productsToReduceQuery.ToList();
 
 			foreach (var product in productsToReduce)
 			{
 				product.Price = ReducePrice(product.Price, priceRule.Reduction);
+				_priceHubContext.Clients.All.SendAsync("ReceivePriceUpdate", product.ProductId, product.Price); //todo: make async?
 			}
 
 			_context.SaveChanges();

@@ -38,7 +38,7 @@ public class ConfirmOrderCommandHandler
 
 		_context.SaveChanges();
 
-		_increasePriceService.Increase(order.OrderProducts);
+		await _increasePriceService.Increase(order.OrderProducts);
 
 		return order.ReceiveKey;
 	}

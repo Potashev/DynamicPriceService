@@ -35,6 +35,8 @@ public class ReducePriceJob : IJob
 			foreach (var product in productsToReduce)
 			{
 				product.Price = ReducePrice(product.Price, priceRule.Reduction);
+				if (product.Price < product.MinimumPrice)
+					product.Price = product.MinimumPrice;
 				_priceHubContext.Clients.All.SendAsync("ReceivePriceUpdate", product.ProductId, product.Price); //todo: make async?
 			}
 
@@ -48,6 +50,12 @@ public class ReducePriceJob : IJob
 	{
 		var reduction = (decimal)pricingRuleReduction * 0.01m * price; //todo: think about rounding
 		price -= reduction;
+
+		//todo: temp field for checking drawing - remove after test
+		var maxrand = (int)Math.Round(reduction * 2);
+		var rnd = new Random();
+		price += rnd.Next(maxrand);
+
 		return price;
 	}
 }

@@ -1,4 +1,6 @@
-﻿namespace DynamicPriceClient.ViewModels;
+﻿using DynamicPriceCore.Models;
+
+namespace DynamicPriceClient.ViewModels;
 
 /// <summary>
 /// Dto продукта для покупателя.
@@ -11,6 +13,6 @@ public class ProductInfoViewModel
 	public int? Quantity { get; set; }
 	public string? Description { get; set; }
 
-	public List<decimal> PriceHistory { get; set; } = new List<decimal>();
-	public List<DateTime> PriceChangeDates { get; set; } = new List<DateTime>();
+	public PriceDynamic[] PriceDynamics { get; set; }
+	//public List<decimal> PriceDynamics { get; set; } = new List<decimal>();
 }

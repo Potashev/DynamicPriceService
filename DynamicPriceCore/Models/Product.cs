@@ -25,4 +25,5 @@ public class Product
 	public DateTime? LastSellTime { get; set; }
 	[JsonIgnore]
 	public ICollection<OrderProduct> OrderProducts { get; set; }
+	public ICollection<PriceDynamic> PriceDynamics { get; set; }
 }

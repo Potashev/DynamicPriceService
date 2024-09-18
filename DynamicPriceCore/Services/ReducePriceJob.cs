@@ -1,4 +1,5 @@
 ﻿using DynamicPriceCore.Data;
+using DynamicPriceCore.Models;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
@@ -37,6 +38,15 @@ public class ReducePriceJob : IJob
 				product.Price = ReducePrice(product.Price, priceRule.Reduction);
 				if (product.Price < product.MinimumPrice)
 					product.Price = product.MinimumPrice;
+
+				var priceDynamic = new PriceDynamic
+				{
+					Product = product,
+					Price = product.Price,
+					Date = DateTime.UtcNow, //todo: make default
+				};
+				//_context.PriceDynamics.AddAsync(priceDynamic);
+
 				_priceHubContext.Clients.All.SendAsync("ReceivePriceUpdate", product.ProductId, product.Price); //todo: make async?
 			}
 

@@ -79,20 +79,25 @@
 	@foreach (var product in Model.Products)
 	{
 		<text>
-				   drawChart(@product.ProductId);
+					   drawChart(@product.ProductId, @Html.Raw(Json.Serialize(product.PriceDynamics.Select(d => new { Price = d.Price, Date = d.Date }))));
 		</text>
 	}
 
 	   // Функция для создания графика
-		  function drawChart(productId) {
+		  function drawChart(productId, priceDynamics) {
 			  var ctx = document.getElementById('chart-' + productId).getContext('2d');
+			  var prices = priceDynamics.map(item => item.Price);
+			  var dates = priceDynamics.map(item => new Date(item.Date).toLocaleString());
+
 				 var chart = new Chart(ctx, {
 					 type: 'line',
 						data: {
-							labels: [],  // Начальные пустые метки
+							// labels: [],  // Начальные пустые метки
+							labels: Array.from({length: priceDynamics.length}, (_, i) => `T${i+1}`),  // Генерация фиктивных меток времени
 							   datasets: [{
 								   label: 'Price Change',
-								   data: [],  // Начальные пустые данные
+								   // data: [],  // Начальные пустые данные
+								   data: prices,
 								   // backgroundColor: gradient,  // Использование градиента
 								   borderColor: 'rgba(75, 192, 192, 1)',
 								   borderWidth: 2,

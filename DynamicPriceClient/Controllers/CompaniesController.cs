@@ -30,14 +30,7 @@ public class CompaniesController : Controller
 	{
 		var client = _httpClientFactory.CreateClient();
 		var response = await client.GetStringAsync($"{_localhosturl}/api/ActiveCompanies/{id}");
-		var companyProducts = JsonSerializer.Deserialize<CompanyProductsInfo>(response, _options);
-
-		foreach (var productVm in companyProducts.Products)
-		{
-			productVm.PriceHistory = productVm.PriceDynamics.Select(x => x.Price).ToList();
-		}
-
-
-		return View(companyProducts);
+		var companyProductsInfo = JsonSerializer.Deserialize<CompanyProductsInfo>(response, _options);
+		return View(companyProductsInfo);
 	}
 }

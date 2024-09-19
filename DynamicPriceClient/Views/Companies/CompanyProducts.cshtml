@@ -78,24 +78,15 @@
 	// Отрисовка графиков для каждого продукта
 	@foreach (var product in Model.Products)
 	{
-		// <text>
-					   // drawChart(@product.ProductId, @Html.Raw(Json.Serialize(product.PriceDynamics.Select(d => new { Price = d.Price, Date = d.Date }))));
-		// </text>
-		// <text>
-		// 	drawChart(@product.ProductId, @Html.Raw(Json.Serialize(product.PriceHistory)));
-		// </text>
 		<text>
-				drawChart(@product.ProductId, @Html.Raw(Json.Serialize(product.PriceHistory)), @Html.Raw(Json.Serialize(product.PriceDynamics.Select(d => new { Price = d.Price }))));
+				drawChart(@product.ProductId, @Html.Raw(Json.Serialize(product.PriceDynamics.Select(d => new { Price = d.Price }))));
 		</text>
 	}
 
 	   // Функция для создания графика
-		  function drawChart(productId, priceHistory, priceDynamics) {
+		  function drawChart(productId, priceDynamics) {
 			  var ctx = document.getElementById('chart-' + productId).getContext('2d');
 			  // var dates = priceDynamics.map(item => new Date(item.Date).toLocaleString());
-
-			console.log("Price History: ", priceHistory);
-			console.log("Price Dynamics: ", priceDynamics);
 
 			var prices = priceDynamics.map(item => item.price);
 
@@ -104,13 +95,10 @@
 				 var chart = new Chart(ctx, {
 					 type: 'line',
 						data: {
-							// labels: [],  // Начальные пустые метки
-							// labels: Array.from({length: priceDynamics.length}, (_, i) => `T${i+1}`),  // Генерация фиктивных меток времени
-							labels: Array.from({length: priceHistory.length}, (_, i) => `T${i+1}`),  // Генерация фиктивных меток времени
+							   labels: Array.from({ length: prices.length }, (_, i) => `T${i + 1}`),  // Генерация фиктивных меток времени
 							   datasets: [{
 								   label: 'Price Change',
-								   // data: [],  // Начальные пустые данные
-						data: prices,
+							   data: prices,
 								   // backgroundColor: gradient,  // Использование градиента
 								   borderColor: 'rgba(75, 192, 192, 1)',
 								   borderWidth: 2,

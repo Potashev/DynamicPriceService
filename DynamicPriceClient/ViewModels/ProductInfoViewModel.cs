@@ -14,5 +14,4 @@ public class ProductInfoViewModel
 	public string? Description { get; set; }
 
 	public PriceDynamic[] PriceDynamics { get; set; }
-	public List<decimal> PriceHistory { get; set; } = new List<decimal>();
 }

@@ -79,18 +79,27 @@
 	@foreach (var product in Model.Products)
 	{
 		// <text>
-		// 			   drawChart(@product.ProductId, @Html.Raw(Json.Serialize(product.PriceDynamics.Select(d => new { Price = d.Price, Date = d.Date }))));
+					   // drawChart(@product.ProductId, @Html.Raw(Json.Serialize(product.PriceDynamics.Select(d => new { Price = d.Price, Date = d.Date }))));
+		// </text>
+		// <text>
+		// 	drawChart(@product.ProductId, @Html.Raw(Json.Serialize(product.PriceHistory)));
 		// </text>
 		<text>
-			drawChart(@product.ProductId, @Html.Raw(Json.Serialize(product.PriceHistory)));
+				drawChart(@product.ProductId, @Html.Raw(Json.Serialize(product.PriceHistory)), @Html.Raw(Json.Serialize(product.PriceDynamics.Select(d => new { Price = d.Price }))));
 		</text>
 	}
 
 	   // Функция для создания графика
-		  function drawChart(productId, priceHistory) {
+		  function drawChart(productId, priceHistory, priceDynamics) {
 			  var ctx = document.getElementById('chart-' + productId).getContext('2d');
-			  // var prices = priceDynamics.map(item => item.Price);
 			  // var dates = priceDynamics.map(item => new Date(item.Date).toLocaleString());
+
+			console.log("Price History: ", priceHistory);
+			console.log("Price Dynamics: ", priceDynamics);
+
+			var prices = priceDynamics.map(item => item.price);
+
+			console.log("Prices: ", prices);
 
 				 var chart = new Chart(ctx, {
 					 type: 'line',
@@ -101,7 +110,7 @@
 							   datasets: [{
 								   label: 'Price Change',
 								   // data: [],  // Начальные пустые данные
-								   data: priceHistory,
+						data: prices,
 								   // backgroundColor: gradient,  // Использование градиента
 								   borderColor: 'rgba(75, 192, 192, 1)',
 								   borderWidth: 2,

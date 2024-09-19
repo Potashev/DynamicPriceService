@@ -45,7 +45,7 @@ public class ReducePriceJob : IJob
 					Price = product.Price,
 					Date = DateTime.UtcNow, //todo: make default
 				};
-				//_context.PriceDynamics.AddAsync(priceDynamic);
+				_context.PriceDynamics.AddAsync(priceDynamic);
 
 				_priceHubContext.Clients.All.SendAsync("ReceivePriceUpdate", product.ProductId, product.Price); //todo: make async?
 			}

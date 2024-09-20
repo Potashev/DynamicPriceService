@@ -12,8 +12,5 @@ public class ProductInfoViewModel
 	public decimal Price { get; set; }
 	public int? Quantity { get; set; }
 	public string? Description { get; set; }
-	//public List<PriceDynamic> PriceDynamics { get; set; } = new List<PriceDynamic>();
 	public PriceDynamic[] PriceDynamics { get; set; }
-
-	//public List<decimal> PriceDynamics { get; set; } = new List<decimal>();
 }

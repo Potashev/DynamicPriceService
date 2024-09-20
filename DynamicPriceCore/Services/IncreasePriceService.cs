@@ -17,11 +17,11 @@ public class IncreasePriceService : IIncreasePriceService
 		_priceHubContext = priceHubContext;
 	}
 
-    public async Task Increase(IEnumerable<OrderProduct> OrderProducts)
+	public async Task Increase(IEnumerable<OrderProduct> OrderProducts)
 	{
 		var company = _context.Products
 			.Where(p => p.ProductId == OrderProducts.FirstOrDefault().ProductId)
-			.Select(p => p.Company).FirstOrDefault();		
+			.Select(p => p.Company).FirstOrDefault();
 
 		var priceRule = _context.PriceRules
 			.FirstOrDefault(p => p.Company.CompanyId == company.CompanyId);
@@ -35,7 +35,7 @@ public class IncreasePriceService : IIncreasePriceService
 
 	private void IncreasePrice(IEnumerable<OrderProduct> OrderProducts, PriceRule priceRule)
 	{
-		foreach(var orderProduct in OrderProducts)
+		foreach (var orderProduct in OrderProducts)
 		{
 			var product = orderProduct.Product;
 			var increase = product.Price * (decimal)priceRule.Increase * 0.01m * orderProduct.Quantity;
@@ -44,7 +44,7 @@ public class IncreasePriceService : IIncreasePriceService
 	}
 	private async Task NoticeOfIncrease(IEnumerable<OrderProduct> OrderProducts)
 	{
-		foreach(var orderProduct in OrderProducts)
+		foreach (var orderProduct in OrderProducts)
 		{
 			var product = orderProduct.Product;
 			await _priceHubContext.Clients.All.SendAsync("ReceivePriceUpdate", product.ProductId, product.Price);

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using DynamicPriceCore.Data;
-using DynamicPriceCore.MediatR.ProductEntity.Queries;
 using DynamicPriceCore.MediatR.ViewModels;
+using DynamicPriceCore.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,10 +20,10 @@ public class GetCompanyProductsQueryHandler
 	{
 		var products = await _context.Products
 			.Where(p => p.Company.CompanyId.ToString() == request.CompanyId)
+			.Include(p => p.PriceDynamics)  //todo: set lenght?
 			.ToArrayAsync(cancellationToken);
 
 		var productsInfoVm = _mapper.Map<ProductInfoViewModel[]>(products);
-
 		return new CompanyProductsInfo(request.CompanyId, productsInfoVm);
 	}
 }

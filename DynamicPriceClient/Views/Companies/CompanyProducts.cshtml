@@ -1,55 +1,140 @@
 ﻿@model DynamicPriceClient.ViewModels.CompanyProductsInfo
 
-@{
-	ViewData["Title"] = "Index";
-}
+ё<h1>Product Prices</h1>
 
-<h1>Index</h1>
-
-<p>
-	<a asp-controller="Orders" asp-action="CartOrderDetails" asp-route-companyId="@Model.CompanyId">Shopping Cart</a>
-</p>
 <table class="table">
 	<thead>
 		<tr>
-			<th>
-				@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Title)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Price)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Quantity)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Description)
-			</th>
+			<th>@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Title)</th>
+			<th>Price dynamics</th>
+			<th>@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Price)</th>
 			<th></th>
 		</tr>
 	</thead>
 	<tbody>
-		@foreach (var item in Model.Products)
+		@foreach (var product in Model.Products)
 		{
 			<tr>
+				<td>@product.Title</td>
 				<td>
-					@Html.DisplayFor(modelItem => item.Title)
+					<div class="chart-container">
+						<canvas id="chart-@product.ProductId" @* width="100" height="50" *@></canvas>
+					</div>
 				</td>
+				<td id="price-@product.ProductId">@product.Price</td>
 				<td>
-					@Html.DisplayFor(modelItem => item.Price)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.Quantity)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.Description)
-				</td>
-				<td>
-					<a asp-controller="Orders" asp-action="AddProduct" asp-route-id="@item.ProductId">Add to Cart</a>
+					<a asp-controller="Orders" asp-action="AddProduct" asp-route-id="@product.ProductId">Add to Cart</a>
 				</td>
 			</tr>
 		}
 	</tbody>
 </table>
-<div>
-	<a asp-controller="Companies" asp-action="Index">Back to List</a>
-</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
+
+<script>
+	// Создание соединения с хабом SignalR
+	var connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7140/priceHub").build();
+
+	// Массив для хранения графиков
+	var charts = {};
+
+	// Запуск соединения
+	connection.start().then(function () {
+		console.log("SignalR connected");
+	}).catch(function (err) {
+		console.error("SignalR connection error: ", err);
+	});
+
+	// Получение обновлений цены от сервера
+	connection.on("ReceivePriceUpdate", function (productId, newPrice) {
+		updateChart(productId, newPrice);
+		updatePriceLabel(productId, newPrice);
+	});
+
+	// Функция для обновления графика при изменении цены
+	function updateChart(productId, newPrice) {
+		var chart = charts[productId];
+		if (chart) {
+			chart.data.datasets[0].data.push(newPrice);  // Добавление новой цены
+			chart.data.labels.push(new Date().toLocaleTimeString());  // Добавление времени изменения цены
+
+			// Ограничиваем количество точек на графике (например, до 100)
+			if (chart.data.datasets[0].data.length > 100) {
+				chart.data.datasets[0].data.shift();  // Удаляем старую цену
+				chart.data.labels.shift();  // Удаляем старую метку времени
+			}
+
+			chart.update();  // Обновляем график
+		}
+	}
+
+	// Функция для обновления отображаемой цены
+	function updatePriceLabel(productId, newPrice) {
+		document.getElementById('price-' + productId).innerText = newPrice;
+	}
+
+	// Отрисовка графиков для каждого продукта
+	@foreach (var product in Model.Products)
+	{
+		<text>
+				drawChart(@product.ProductId, @Html.Raw(Json.Serialize(product.PriceDynamics.Select(d => new { Price = d.Price }))));
+		</text>
+	}
+
+		// Функция для создания графика
+		function drawChart(productId, priceDynamics) {
+			var ctx = document.getElementById('chart-' + productId).getContext('2d');
+			// var dates = priceDynamics.map(item => new Date(item.Date).toLocaleString());
+
+			var prices = priceDynamics.map(item => item.price);
+
+			console.log("Prices: ", prices);
+
+			var chart = new Chart(ctx, {
+				type: 'line',
+				data: {
+					labels: Array.from({ length: prices.length }, (_, i) => `T${i + 1}`),  // Генерация фиктивных меток времени
+					datasets: [{
+						label: 'Price Change',
+						data: prices,
+						// backgroundColor: gradient,  // Использование градиента
+						borderColor: 'rgba(75, 192, 192, 1)',
+						borderWidth: 2,
+						fill: true,
+						pointRadius: 1
+					}]
+				},
+				options: {
+					scales: {
+						x: { display: false },  // Ось X скрыта
+						y: { display: false }   // Ось Y скрыта
+					},
+					plugins: {
+						legend: { display: false }
+					},
+					animation: {
+						duration: 300,  // Продолжительность анимации в миллисекундах
+						easing: 'linear'  // Стиль анимации
+					}
+				}
+			});
+
+			// Сохраняем график по ID продукта
+			charts[productId] = chart;
+		}
+</script>
+
+<style>
+	.chart-container {
+		width: 340pt;
+		height: 175pt;
+		border: 1px solid #ccc;
+		padding: 5px;
+		margin: 10px 0;
+		background-color: #f0f0f0;
+		box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+		border-radius: 5px;
+	}
+</style>

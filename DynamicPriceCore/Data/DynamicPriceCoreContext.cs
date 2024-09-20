@@ -40,6 +40,7 @@ public class DynamicPriceCoreContext : DbContext
 	public DbSet<CompanyUser> CompanyUsers { get; set; } = default;
 	public DbSet<Product> Products { get; set; } = default!;
 	public DbSet<PriceRule> PriceRules { get; set; } = default!;
+	public DbSet<PriceDynamic> PriceDynamics { get; set; } = default!;
 	public DbSet<Order> Orders { get; set; } = default;
 	public DbSet<OrderProduct> OrderProducts { get; set; } = default;
 	public DbSet<Customer> Customers { get; set; } = default;

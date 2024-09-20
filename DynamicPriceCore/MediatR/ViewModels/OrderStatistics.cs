@@ -3,6 +3,6 @@
 public class OrderStatistics
 {
     public int OrdersQuantity { get; set; }
-    public double? TotalAmount { get; set; }
-    public double? AverageOrderAmount { get; set; }
+    public decimal TotalAmount { get; set; }
+    public decimal AverageOrderAmount { get; set; }
 }

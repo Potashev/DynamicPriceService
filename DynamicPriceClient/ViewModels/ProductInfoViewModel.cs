@@ -1,4 +1,6 @@
-﻿namespace DynamicPriceClient.ViewModels;
+﻿using DynamicPriceCore.Models;
+
+namespace DynamicPriceClient.ViewModels;
 
 /// <summary>
 /// Dto продукта для покупателя.
@@ -10,4 +12,6 @@ public class ProductInfoViewModel
 	public double Price { get; set; }
 	public int? Quantity { get; set; }
 	public string? Description { get; set; }
+
+	public PriceDynamic[] PriceDynamics { get; set; }
 }

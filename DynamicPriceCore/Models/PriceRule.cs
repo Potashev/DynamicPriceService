@@ -11,12 +11,12 @@ public class PriceRule
 	/// <summary>
 	/// Повышение цены продукта (в %).
 	/// </summary>
-	public int Increase { get; set; }
+	public double Increase { get; set; }
 
 	/// <summary>
 	/// Снижение цены продукта (в %).
 	/// </summary>
-	public int Reduction { get; set; }
+	public double Reduction { get; set; }
 
 	/// <summary>
 	/// Допустимое время "простоя" продукта. Если превысили - снижаем цену (см. ReducePriceService).

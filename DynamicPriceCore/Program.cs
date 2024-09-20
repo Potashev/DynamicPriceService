@@ -12,6 +12,21 @@ builder.Services.AddDbContext<DynamicPriceCoreContext>(options =>
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy("AllowSpecificOrigins",
+		policy =>
+		{
+			policy.WithOrigins("https://localhost:7022")  // Добавляем клиентский адрес
+				  .AllowAnyHeader()
+				  .AllowAnyMethod()
+				  .AllowCredentials();  // Разрешаем отправлять куки и аутентификационные данные
+		});
+});
+
+builder.Services.AddSignalR(); // Добавляем поддержку SignalR
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -39,5 +54,10 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Включаем CORS для всех маршрутов или только для хаба
+app.UseCors("AllowSpecificOrigins");
+// Регистрируем хаб SignalR
+app.MapHub<PriceHub>("/priceHub"); // Убедитесь, что маршрут хаба корректен
 
 app.Run();

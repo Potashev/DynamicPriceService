@@ -18,14 +18,14 @@ public class EditProductCommandHandler
 	{
 		var updatedProductVm = request.ProductVm;
 		var product = await _context.Products
-			.FirstOrDefaultAsync(p => p.ProductId == updatedProductVm.ProductId);
+			.FirstOrDefaultAsync(p => p.ProductId == updatedProductVm.ProductId, cancellationToken);
 
 		if (product != null)
 		{
 			_mapper.Map(updatedProductVm, product);
 
 			_context.Update(product);
-			_context.SaveChanges();
+			await _context.SaveChangesAsync(cancellationToken);
 		}
 		return product.ProductId;
 	}

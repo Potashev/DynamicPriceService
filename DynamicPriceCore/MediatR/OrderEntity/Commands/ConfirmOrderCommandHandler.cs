@@ -36,7 +36,7 @@ public class ConfirmOrderCommandHandler
 		order.OrderDate		= DateTime.UtcNow;
 		order.ReceiveKey	= GenerateReceiveKey();
 
-		_context.SaveChanges();
+		await _context.SaveChangesAsync(cancellationToken);
 
 		await _increasePriceService.Increase(order.OrderProducts);
 

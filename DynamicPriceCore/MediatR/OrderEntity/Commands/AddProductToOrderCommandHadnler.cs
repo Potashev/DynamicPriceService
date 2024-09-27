@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using Azure.Core;
 using DynamicPriceCore.Data;
-using DynamicPriceCore.MediatR.ProductEntity.Commands;
 using DynamicPriceCore.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -45,7 +43,6 @@ public class AddProductToOrderCommandHadnler
 			{
 				Order = cartOrder,
 				Product = product,
-				//Price		= product.Price,
 				Quantity = 1
 			};
 			cartOrder.OrderProducts.Add(orderproduct);
@@ -54,7 +51,7 @@ public class AddProductToOrderCommandHadnler
 		{
 			orderproduct.Quantity += 1;
 		}
-		_context.SaveChanges();
+		await _context.SaveChangesAsync(cancellationToken);
 		return cartOrder;
 	}
 

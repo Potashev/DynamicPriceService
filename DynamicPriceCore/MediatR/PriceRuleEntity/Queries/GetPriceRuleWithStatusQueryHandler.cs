@@ -22,7 +22,7 @@ public class GetPriceRuleWithStatusQueryHandler
 					   .Include(pr => pr.Company)
 					   .Where(pr => pr.Company.CompanyUsers
 									   .Any(cu => cu.UserId == request.UserId))
-					   .FirstOrDefaultAsync();
+					   .FirstOrDefaultAsync(cancellationToken);
 
 		var priceRuleVm = _mapper.Map<PriceRuleViewModel>(priceRule);
 		var status = _activeCompaniesService.IsActive(priceRule.Company);

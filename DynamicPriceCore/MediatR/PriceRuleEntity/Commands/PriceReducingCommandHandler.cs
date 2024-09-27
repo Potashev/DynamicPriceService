@@ -19,7 +19,7 @@ public class PriceReducingCommandHandler
 		var company = await _context.CompanyUsers
 			.Where(cu => cu.UserId == request.UserId)
 			.Select(cu => cu.Company)
-			.FirstOrDefaultAsync();
+			.FirstOrDefaultAsync(cancellationToken);
 
 		if (request.IsRunCommand)
 			_activeCompaniesService.Add(company);

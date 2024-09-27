@@ -3,8 +3,4 @@ using MediatR;
 
 namespace DynamicPriceCore.MediatR.CompanyEntity.Queries;
 
-public class GetActiveCompaniesQuery : IRequest<IEnumerable<Company>>
-{
-	//public string UserId { get; set; }
-	//public GetProductsQuery(string userId) => UserId = userId;
-}
+public record GetActiveCompaniesQuery : IRequest<IEnumerable<Company>>;

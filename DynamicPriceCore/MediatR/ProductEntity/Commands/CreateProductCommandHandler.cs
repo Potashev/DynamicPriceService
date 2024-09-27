@@ -21,7 +21,7 @@ public class CreateProductCommandHandler
 		var company = await _context.CompanyUsers
 			.Where(cu => cu.UserId == request.UserId)
 			.Select(cu => cu.Company)
-			.FirstOrDefaultAsync();
+			.FirstOrDefaultAsync(cancellationToken);
 
 		var product = _mapper.Map<Product>(request.ProductVm);
 		product.Company = company;

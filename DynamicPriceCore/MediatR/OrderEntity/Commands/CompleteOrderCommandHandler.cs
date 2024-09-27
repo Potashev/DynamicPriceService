@@ -24,7 +24,7 @@ public class CompleteOrderCommandHandler
 		order.Status = OrderStatus.Completed;
 		order.ReceiveKey = 0;	//todo: think about nullable
 
-		_context.SaveChanges();
+		await _context.SaveChangesAsync(cancellationToken);
 
 		return order.OrderId;
 	}

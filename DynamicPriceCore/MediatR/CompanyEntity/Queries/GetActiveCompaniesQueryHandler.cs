@@ -1,7 +1,4 @@
-﻿using AutoMapper;
-using DynamicPriceCore.Data;
-using DynamicPriceCore.MediatR.ProductEntity.Queries;
-using DynamicPriceCore.Models;
+﻿using DynamicPriceCore.Models;
 using DynamicPriceCore.Services;
 using MediatR;
 
@@ -11,7 +8,6 @@ public class GetActiveCompaniesQueryHandler
 	: IRequestHandler<GetActiveCompaniesQuery, IEnumerable<Company>>
 {
 	private readonly IActiveCompaniesService _activeCompaniesService;
-	//private readonly IMapper _mapper;
 
 	public GetActiveCompaniesQueryHandler(IActiveCompaniesService activeCompaniesService)
 		=> _activeCompaniesService = activeCompaniesService;

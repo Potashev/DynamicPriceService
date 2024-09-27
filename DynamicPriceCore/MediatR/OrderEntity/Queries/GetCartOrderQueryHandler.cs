@@ -17,13 +17,13 @@ public class GetCartOrderQueryHandler
 
 	public async Task<Order> Handle(GetCartOrderQuery request, CancellationToken cancellationToken)
 	{
-		var cartOrder = _context.Orders
+		var cartOrder = await _context.Orders
 			.Include(o => o.Company)
 			.Include(o => o.OrderProducts)
 				.ThenInclude(op => op.Product)
-			.FirstOrDefault(o => o.Customer.CustomerId == request.CustomerId 
+			.FirstOrDefaultAsync(o => o.Customer.CustomerId == request.CustomerId 
 				&& o.Company.CompanyId == request.CompanyId 
-				&& o.Status == OrderStatus.Cart);
+				&& o.Status == OrderStatus.Cart, cancellationToken);
 		return cartOrder;
 	}
 }

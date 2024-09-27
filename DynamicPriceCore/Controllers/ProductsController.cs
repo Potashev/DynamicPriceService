@@ -16,9 +16,8 @@ namespace DynamicPriceCore.Controllers
 			_mediator = mediator;
 		}
 
-		[HttpGet]
-		[Route("/api/{userId}/Products")]
-		public async Task<ActionResult<IEnumerable<ProductViewModel>>> GetProduct(string userId)
+		[HttpGet("/api/{userId}/Products")]
+		public async Task<ActionResult<IEnumerable<ProductViewModel>>> GetProducts(string userId)
 		{
 			var productsVm = await _mediator.Send(new GetProductsQuery(userId));
 			return Ok(productsVm);
@@ -37,8 +36,8 @@ namespace DynamicPriceCore.Controllers
 
 		// PUT: api/Products/5
 		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-		[HttpPut("{id}")]
-		public async Task<IActionResult> PutProduct(int id, ProductViewModel productVm)
+		[HttpPost("{id}/Edit")]
+		public async Task<IActionResult> Edit(int id, ProductViewModel productVm)
 		{
 			if (id != productVm.ProductId)
 			{
@@ -49,9 +48,8 @@ namespace DynamicPriceCore.Controllers
 		}
 
 		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-		[HttpPost]
-		[Route("/api/{userId}/Products")]
-		public async Task<ActionResult<int>> PostProduct(ProductViewModel productVm, string userId)
+		[HttpPost("/api/{userId}/Products")]
+		public async Task<ActionResult<int>> Create(ProductViewModel productVm, string userId)
 		{
 			var productId = await _mediator.Send(new CreateProductCommand(productVm, userId));
 			return Ok(productId);
@@ -59,7 +57,7 @@ namespace DynamicPriceCore.Controllers
 
 		// DELETE: api/Products/5
 		[HttpDelete("{id}")]
-		public async Task<IActionResult> DeleteProduct(int id)
+		public async Task<IActionResult> Delete(int id)
 		{
 			await _mediator.Send(new DeleteProductCommand(id));
 			return Ok();

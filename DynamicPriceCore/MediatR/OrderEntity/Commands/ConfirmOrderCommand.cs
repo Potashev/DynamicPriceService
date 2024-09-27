@@ -1,12 +1,5 @@
-﻿using DynamicPriceCore.Models;
-using MediatR;
+﻿using MediatR;
 
 namespace DynamicPriceCore.MediatR.OrderEntity.Commands;
 
-public class ConfirmOrderCommand : IRequest<int>
-{
-	public int CustomerId { get; set; }
-	public int CartOrderId { get; set; }
-	public ConfirmOrderCommand(int customerId, int cartOrderId)
-		=> (CustomerId, CartOrderId) = (customerId, cartOrderId);
-}
+public record ConfirmOrderCommand(int CustomerId, int CartOrderId) : IRequest<int>;

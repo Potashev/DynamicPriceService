@@ -69,7 +69,7 @@ public class PriceRulesController : Controller
 
 			var json = JsonSerializer.Serialize(priceRuleVm);
 			var data = new StringContent(json, Encoding.UTF8, "application/json");
-			var response = await client.PutAsync($"{_localhosturl}/api/{_userId}/PriceRule/Edit", data);
+			var response = await client.PostAsync($"{_localhosturl}/api/PriceRule/Edit", data);
 
 			return RedirectToAction(nameof(Details));
 		}

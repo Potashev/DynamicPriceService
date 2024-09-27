@@ -105,7 +105,7 @@ public class ProductsController : Controller
 			var client = _httpClientFactory.CreateClient();
 			var json = JsonSerializer.Serialize(productVm);
 			var data = new StringContent(json, Encoding.UTF8, "application/json");
-			var response = await client.PutAsync($"{_localhosturl}/api/Products/{id}", data);
+			var response = await client.PostAsync($"{_localhosturl}/api/Products/{id}/Edit", data);
 			return RedirectToAction(nameof(Index));
 		}
 

@@ -18,14 +18,14 @@ public class EditPriceRuleCommandHandler
 	{
 		var updatedPriceRuleVm = request.PriceRuleVm;
 		var priceRule = await _context.PriceRules
-			.FirstOrDefaultAsync(pr => pr.PriceRuleId == updatedPriceRuleVm.PriceRuleId);
+			.FirstOrDefaultAsync(pr => pr.PriceRuleId == updatedPriceRuleVm.PriceRuleId, cancellationToken);
 
 		if (priceRule != null)
 		{
 			_mapper.Map(updatedPriceRuleVm, priceRule);
 
 			_context.Update(priceRule);
-			_context.SaveChanges();
+			await _context.SaveChangesAsync(cancellationToken);
 		}
 
 		return priceRule.PriceRuleId;

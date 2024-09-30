@@ -21,7 +21,8 @@ public class CompaniesController : Controller
     public async Task<IActionResult> Index()
 	{
 		var client = _httpClientFactory.CreateClient();
-		var response = await client.GetStringAsync($"{_localhosturl}/api/ActiveCompanies");
+		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+		var response = await client.GetStringAsync($"{_localhosturl}/api/ActiveCompanies", cts.Token);
 		var activeCompanies = JsonSerializer.Deserialize<IEnumerable<Company>>(response, _options);	//todo: use dto
 		return View(activeCompanies);
 	}
@@ -29,7 +30,8 @@ public class CompaniesController : Controller
 	public async Task<IActionResult> CompanyProducts(int? id)
 	{
 		var client = _httpClientFactory.CreateClient();
-		var response = await client.GetStringAsync($"{_localhosturl}/api/ActiveCompanies/{id}");
+		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+		var response = await client.GetStringAsync($"{_localhosturl}/api/ActiveCompanies/{id}", cts.Token);
 		var companyProductsInfo = JsonSerializer.Deserialize<CompanyProductsInfo>(response, _options);
 		return View(companyProductsInfo);
 	}

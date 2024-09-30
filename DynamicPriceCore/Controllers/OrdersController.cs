@@ -1,10 +1,8 @@
 ﻿using DynamicPriceCore.MediatR.OrderEntity.Commands;
 using DynamicPriceCore.MediatR.OrderEntity.Queries;
-using DynamicPriceCore.MediatR.ProductEntity.Queries;
 using DynamicPriceCore.MediatR.ViewModels;
 using DynamicPriceCore.Models;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPriceCore.Controllers;
@@ -18,19 +16,17 @@ public class OrdersController : ControllerBase
 		_mediator = mediator;
 	}
 
-	[HttpGet]
-	[Route("/api/Orders/Cart/{customerId}/{companyId}")]
-	public async Task<ActionResult<Order>> CartOrderDetails(int? customerId, int? companyId)
+	[HttpGet("/api/Orders/Cart/{customerId}/{companyId}")]
+	public async Task<ActionResult<Order>> CartOrderDetails(int? customerId, int? companyId, CancellationToken cancellationToken)
 	{
-		var cartOrder = await _mediator.Send(new GetCartOrderQuery((int)customerId, (int)companyId));
+		var cartOrder = await _mediator.Send(new GetCartOrderQuery((int)customerId, (int)companyId), cancellationToken);
 
 		return cartOrder == null 
 			? NotFound(new { message = "Cart is empty." }) 
 			: Ok(cartOrder);
 	}
 
-	[HttpGet]
-	[Route("/api/Orders/Add/{customerId}/{productId}")]
+	[HttpGet("/api/Orders/Add/{customerId}/{productId}")]
 	public async Task<ActionResult<Order>> AddProduct(int? customerId, int? productId)
 	{
 		var cartOrder = await _mediator.Send(new AddProductToOrderCommand(customerId.ToString(), productId.ToString()));
@@ -45,23 +41,22 @@ public class OrdersController : ControllerBase
 		return Ok(cartOrder);
 	}
 
-	[HttpGet]
-	[Route("/api/Orders/Confirm/{customerId}/{cartOrderId}")]
-	public async Task<ActionResult<int>> ConfirmOrder(int? customerId, int? cartOrderId)
+	[HttpGet("/api/Orders/Confirm/{customerId}/{cartOrderId}")]
+	public async Task<ActionResult<int>> ConfirmOrder(int? customerId, int? cartOrderId, CancellationToken cancellationToken)
 	{
-		var receiveKey = await _mediator.Send(new ConfirmOrderCommand((int)customerId, (int)cartOrderId));
+		var receiveKey = await _mediator.Send(new ConfirmOrderCommand((int)customerId, (int)cartOrderId), cancellationToken);
 		return Ok(receiveKey);
 	}
 
 	[HttpGet("/api/{userId}/CompanyOrders")]
-	public async Task<ActionResult<IEnumerable<OrderViewModel>>> GetCompanyOrders(string userId)
+	public async Task<ActionResult<IEnumerable<OrderViewModel>>> GetCompanyOrders(string userId, CancellationToken cancellationToken)
 	{
-		var ordersVm = await _mediator.Send(new GetCompanyOrdersQuery(userId));
+		var ordersVm = await _mediator.Send(new GetCompanyOrdersQuery(userId), cancellationToken);
 		return Ok(ordersVm);
 	}
 
 	[HttpGet("/api/CompanyOrders/{orderId}")]
-	public async Task<ActionResult<IEnumerable<OrderViewModel>>> GetCompanyOrder(string orderId)	//why enumerable?
+	public async Task<ActionResult<OrderViewModel>> GetCompanyOrder(string orderId)
 	{
 		var ordersVm = await _mediator.Send(new GetCompanyOrderDetailsQuery(orderId));
 		return Ok(ordersVm);
@@ -82,9 +77,9 @@ public class OrdersController : ControllerBase
 	}
 
 	[HttpGet("/api/{userId}/CompanyOrders/Statistics")]
-	public async Task<ActionResult<OrderStatistics>> GetCompanyStatistics(string userId)
+	public async Task<ActionResult<OrderStatistics>> GetCompanyStatistics(string userId, CancellationToken cancellationToken)
 	{
-		var orderStatistics = await _mediator.Send(new GetCompanyStatisticsQuery(userId));
+		var orderStatistics = await _mediator.Send(new GetCompanyStatisticsQuery(userId), cancellationToken);
 		return Ok(orderStatistics);
 	}
 }

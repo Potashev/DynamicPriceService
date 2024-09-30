@@ -29,7 +29,8 @@ public class OrdersController : Controller
 	public async Task<IActionResult> Index()
 	{
 		var client = _httpClientFactory.CreateClient();
-		var response = await client.GetStringAsync($"{_localhosturl}/api/{_userId}/CompanyOrders");
+		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+		var response = await client.GetStringAsync($"{_localhosturl}/api/{_userId}/CompanyOrders", cts.Token);
 		var ordersVm = JsonSerializer.Deserialize<IEnumerable<OrderViewModel>>(response, _options);
 		return View(ordersVm);
 	}
@@ -66,7 +67,8 @@ public class OrdersController : Controller
 	public async Task<IActionResult> Statistics()
 	{
 		var client = _httpClientFactory.CreateClient();
-		var response = await client.GetStringAsync($"{_localhosturl}/api/{_userId}/CompanyOrders/Statistics");
+		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+		var response = await client.GetStringAsync($"{_localhosturl}/api/{_userId}/CompanyOrders/Statistics", cts.Token);
 		var orderStatistics = JsonSerializer.Deserialize<OrderStatistics>(response, _options);
 		return View(orderStatistics);
 	}

@@ -32,7 +32,8 @@ public class ProductsController : Controller
 	public async Task<IActionResult> Index()
 	{
 		var client = _httpClientFactory.CreateClient();
-		var response = await client.GetStringAsync($"{_localhosturl}/api/{_userId}/Products");
+		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+		var response = await client.GetStringAsync($"{_localhosturl}/api/{_userId}/Products", cts.Token);
 		var productsVm = JsonSerializer.Deserialize<IEnumerable<ProductViewModel>>(response, _options);
 		return View(productsVm);
 	}

@@ -5,7 +5,6 @@ using DynamicPriceCore.Models;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 
 namespace DynamicPriceCore.Controllers;
 [Route("api/[controller]")]
@@ -18,19 +17,17 @@ public class CompaniesController : ControllerBase
 		_mediator = mediator;
 	}
 
-	[HttpGet]
-	[Route("/api/ActiveCompanies")]
-	public async Task<ActionResult<IEnumerable<Company>>> GetActiveCompanies()
+	[HttpGet("/api/ActiveCompanies")]
+	public async Task<ActionResult<IEnumerable<Company>>> GetActiveCompanies(CancellationToken cancellationToken)
 	{
-		var activeCompanies = await _mediator.Send(new GetActiveCompaniesQuery());
+		var activeCompanies = await _mediator.Send(new GetActiveCompaniesQuery(), cancellationToken);
 		return Ok(activeCompanies);
 	}
 
-	[HttpGet]
-	[Route("/api/ActiveCompanies/{companyId}")]
-	public async Task<ActionResult<CompanyProductsInfo>> GetCompanyProducts(string companyId)
+	[HttpGet("/api/ActiveCompanies/{companyId}")]
+	public async Task<ActionResult<CompanyProductsInfo>> GetCompanyProducts(string companyId, CancellationToken cancellationToken)
 	{
-		var companyProducts = await _mediator.Send(new GetCompanyProductsQuery(companyId));
+		var companyProducts = await _mediator.Send(new GetCompanyProductsQuery(companyId), cancellationToken);
 		return Ok(companyProducts);
 	}
 }

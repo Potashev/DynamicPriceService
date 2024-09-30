@@ -27,8 +27,9 @@ public class OrdersController : Controller
 	public async Task<IActionResult> CartOrderDetails(string companyId)
 	{
 		var client = _httpClientFactory.CreateClient();
+		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
 		var url = $"{_localhosturl}/api/Orders/Cart/{_customerId}/{companyId}";
-		var response = await client.GetAsync(url);
+		var response = await client.GetAsync(url, cts.Token);
 		if (response.IsSuccessStatusCode)
 		{
 			var responseBody = await response.Content.ReadAsStringAsync();
@@ -64,8 +65,9 @@ public class OrdersController : Controller
 	public async Task<IActionResult> ConfirmOrder(int? id)
 	{
 		var client = _httpClientFactory.CreateClient();
+		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
 		var url = $"{_localhosturl}/api/Orders/Confirm/{_customerId}/{id}";
-		var response = await client.GetStringAsync(url);
+		var response = await client.GetStringAsync(url,cts.Token);
 		var receiveKey = JsonSerializer.Deserialize<int>(response, _options);
 		return Content($"Your receive Key: {receiveKey}");
 	}

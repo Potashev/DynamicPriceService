@@ -17,9 +17,9 @@ namespace DynamicPriceCore.Controllers
 		}
 
 		[HttpGet("/api/{userId}/Products")]
-		public async Task<ActionResult<IEnumerable<ProductViewModel>>> GetProducts(string userId)
+		public async Task<ActionResult<IEnumerable<ProductViewModel>>> GetProducts(string userId, CancellationToken cancellationToken)
 		{
-			var productsVm = await _mediator.Send(new GetProductsQuery(userId));
+			var productsVm = await _mediator.Send(new GetProductsQuery(userId), cancellationToken);
 			return Ok(productsVm);
 		}
 

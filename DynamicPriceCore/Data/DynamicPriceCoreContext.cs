@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using DynamicPriceCore.Models;
 
 namespace DynamicPriceCore.Data;
 public class DynamicPriceCoreContext : DbContext
 {
 	public DynamicPriceCoreContext(DbContextOptions<DynamicPriceCoreContext> options)
-		: base(options)
-	{
-		Database.EnsureCreated();
-	}
+		: base(options) { }
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{

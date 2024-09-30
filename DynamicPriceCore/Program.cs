@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using DynamicPriceCore.Data;
-using DynamicPriceCore.Controllers;
 using Quartz;
 using DynamicPriceCore.Services;
 using DynamicPriceCore.Extensions;
@@ -41,6 +40,12 @@ builder.Services.AddQuartz(q => q.AddJobAndTrigger<ReducePriceJob>(builder.Confi
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+	var dbContext = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
+	dbContext.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

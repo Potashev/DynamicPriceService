@@ -4,9 +4,16 @@ using DynamicPriceCore.Data;
 using Quartz;
 using DynamicPriceCore.Services;
 using DynamicPriceCore.Extensions;
+using Microsoft.AspNetCore.Identity;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DynamicPriceCoreContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("DynamicPriceCoreContext") ?? throw new InvalidOperationException("Connection string 'DynamicPriceCoreContext' not found.")));
+
+builder.Services.AddAuthorization();
+
+builder.Services.AddIdentityApiEndpoints<IdentityUser>()
+	.AddEntityFrameworkStores<DynamicPriceCoreContext>();
 
 // Add services to the container.
 
@@ -49,6 +56,8 @@ if (app.Environment.IsDevelopment())
 
 	app.ApplyMigrations();
 }
+
+app.MapIdentityApi<IdentityUser>();
 
 app.UseHttpsRedirection();
 

@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using DynamicPriceCore.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace DynamicPriceCore.Data;
-public class DynamicPriceCoreContext : DbContext
+public class DynamicPriceCoreContext : IdentityDbContext
 {
 	public DynamicPriceCoreContext(DbContextOptions<DynamicPriceCoreContext> options)
 		: base(options) { }

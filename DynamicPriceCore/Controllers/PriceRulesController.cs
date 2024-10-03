@@ -2,6 +2,7 @@
 using DynamicPriceCore.MediatR.PriceRuleEntity.Queries;
 using DynamicPriceCore.MediatR.ViewModels;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,6 +19,7 @@ public class PriceRulesController : ControllerBase
 	}
 
 	[HttpGet("/api/{userId}/PriceRule/Details")]
+	[Authorize]
 	public async Task<ActionResult<PriceRuleWithStatus>> Get(string userId)
 	{
 		return await _mediator.Send(new GetPriceRuleWithStatusQuery(userId));

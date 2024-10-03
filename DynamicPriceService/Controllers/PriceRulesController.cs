@@ -20,11 +20,12 @@ public class PriceRulesController : Controller
 	{
 		_httpClientFactory = httpClientFactory;
 
-		var context = httpContextAccessor.HttpContext;
-		if (context.Request.Cookies.ContainsKey("User"))
-			_userId = context.Request.Cookies["User"];
-		else
-			throw new Exception("User not found");
+		//var context = httpContextAccessor.HttpContext;
+		//if (context.Request.Cookies.ContainsKey("User"))
+		//	_userId = context.Request.Cookies["User"];
+		//else
+		//	throw new Exception("User not found");
+		_userId = "1";	//todo: remove
 	}
 
 	public async Task<IActionResult> Details()

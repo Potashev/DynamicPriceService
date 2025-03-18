@@ -1,7 +1,8 @@
-﻿namespace DynamicPriceCore.Models;
+﻿using Microsoft.AspNetCore.Identity;
 
-public class Customer
+namespace DynamicPriceCore.Models;
+
+public class Customer : IdentityUser
 {
-	public int CustomerId { get; set; }
-	public string Name { get; set; }
+	public decimal Balance { get; set; }
 }

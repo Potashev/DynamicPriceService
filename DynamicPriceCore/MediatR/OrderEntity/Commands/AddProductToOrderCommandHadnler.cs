@@ -24,7 +24,7 @@ public class AddProductToOrderCommandHadnler
 
 		var cartOrder = await _context.Orders
 			.Include(o => o.OrderProducts)
-			.Where(o => o.Customer.CustomerId.ToString() == request.CustomerId
+			.Where(o => o.Customer.Id == request.CustomerId	//todo: check
 				&& o.Company == product.Company
 				&& o.Status == OrderStatus.Cart)
 			.FirstOrDefaultAsync(cancellationToken);
@@ -58,7 +58,7 @@ public class AddProductToOrderCommandHadnler
 	private async Task<Order> CreateNewOrder(AddProductToOrderCommand request, Company company)
 	{
 		var customer = await _context.Customers
-			.Where(c => c.CustomerId.ToString() == request.CustomerId)
+			.Where(c => c.Id == request.CustomerId)	//todo: check
 			.FirstOrDefaultAsync();
 
 		var order = new Order

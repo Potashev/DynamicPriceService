@@ -19,7 +19,7 @@ public class RemoveProductFromOrderCommandHandler
 	{
 		var orderproduct = await _context.OrderProducts
 			.Where(op => op.ProductId.ToString() == request.ProductId
-				&& op.Order.Customer.CustomerId.ToString() == request.CustomerId
+				&& op.Order.Customer.Id == request.CustomerId	//todo: check
 				&& op.Order.Status == OrderStatus.Cart)
 			.Include(op => op.Order)
 				.ThenInclude(o => o.Company)

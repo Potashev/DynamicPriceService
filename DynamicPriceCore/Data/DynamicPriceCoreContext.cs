@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using DynamicPriceCore.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace DynamicPriceCore.Data;
-public class DynamicPriceCoreContext : DbContext
+public class DynamicPriceCoreContext : IdentityDbContext
 {
 	public DynamicPriceCoreContext(DbContextOptions<DynamicPriceCoreContext> options)
 		: base(options) { }
@@ -36,5 +38,6 @@ public class DynamicPriceCoreContext : DbContext
 	public DbSet<PriceDynamic> PriceDynamics { get; set; } = default!;
 	public DbSet<Order> Orders { get; set; } = default;
 	public DbSet<OrderProduct> OrderProducts { get; set; } = default;
-	public DbSet<Customer> Customers { get; set; } = default;
+	public DbSet<Customer> Customers { get; set; }
+	public DbSet<Manager> Managers { get; set; }
 }

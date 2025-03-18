@@ -21,7 +21,7 @@ public class GetCartOrderQueryHandler
 			.Include(o => o.Company)
 			.Include(o => o.OrderProducts)
 				.ThenInclude(op => op.Product)
-			.FirstOrDefaultAsync(o => o.Customer.CustomerId == request.CustomerId 
+			.FirstOrDefaultAsync(o => o.Customer.Id == request.CustomerId.ToString()   //todo: make string request.CustomerId
 				&& o.Company.CompanyId == request.CompanyId 
 				&& o.Status == OrderStatus.Cart, cancellationToken);
 		return cartOrder;

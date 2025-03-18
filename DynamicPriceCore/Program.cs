@@ -4,9 +4,82 @@ using DynamicPriceCore.Data;
 using Quartz;
 using DynamicPriceCore.Services;
 using DynamicPriceCore.Extensions;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using System;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DynamicPriceCoreContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("DynamicPriceCoreContext") ?? throw new InvalidOperationException("Connection string 'DynamicPriceCoreContext' not found.")));
+
+
+//var t = builder.Services;
+
+//builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+//	options.SignIn.RequireConfirmedAccount = true)
+//	.AddEntityFrameworkStores<ApplicationDbContext>();
+
+
+//builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+//	.AddEntityFrameworkStores<DynamicPriceCoreContext>()
+//	.AddDefaultTokenProviders();
+
+//builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+//	options.SignIn.RequireConfirmedAccount = true)
+//	.AddEntityFrameworkStores<DynamicPriceCoreContext>();
+
+//builder.Services.Configure<IdentityOptions>(options =>
+//{
+//	// Password settings.
+//	options.Password.RequireDigit = true;
+//	options.Password.RequireLowercase = true;
+//	options.Password.RequireNonAlphanumeric = true;
+//	options.Password.RequireUppercase = true;
+//	options.Password.RequiredLength = 6;
+//	options.Password.RequiredUniqueChars = 1;
+
+//	// Lockout settings.
+//	options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+//	options.Lockout.MaxFailedAccessAttempts = 5;
+//	options.Lockout.AllowedForNewUsers = true;
+
+//	// User settings.
+//	options.User.AllowedUserNameCharacters =
+//	"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+//	options.User.RequireUniqueEmail = false;
+//});
+
+
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+	.AddEntityFrameworkStores<DynamicPriceCoreContext>()
+	.AddDefaultTokenProviders();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+	.AddJwtBearer(options =>
+	{
+		options.TokenValidationParameters = new TokenValidationParameters
+		{
+			ValidateIssuer = true,
+			ValidateAudience = true,
+			ValidateLifetime = true,
+			ValidateIssuerSigningKey = true,
+			ValidIssuer = "TestIssuer",
+			ValidAudience = "TestAudience",
+			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SuperSecretKey123!"))
+		};
+	});
+
+builder.Services.AddAuthorization(options =>
+{
+	options.AddPolicy("ManagerPolicy", policy => policy.RequireRole("Manager"));
+	options.AddPolicy("CustomerPolicy", policy => policy.RequireRole("Customer"));
+});
+
+
 
 // Add services to the container.
 
@@ -52,6 +125,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();	//todo: is it right?
 app.UseAuthorization();
 
 app.MapControllers();

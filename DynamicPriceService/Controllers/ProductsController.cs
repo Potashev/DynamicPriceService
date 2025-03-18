@@ -68,17 +68,17 @@ public class ProductsController : Controller
 	// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 	[HttpPost]
 	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> Create(ProductViewModel product)
+	public async Task<IActionResult> Create(ProductViewModel productVm)
 	{
 		if (ModelState.IsValid)
 		{
 			var client = _httpClientFactory.CreateClient();
-			var json = JsonSerializer.Serialize(product);
+			var json = JsonSerializer.Serialize(productVm);
 			var data = new StringContent(json, Encoding.UTF8, "application/json");
 			var response = await client.PostAsync($"{_localhosturl}/api/{_userId}/Products", data);
 			return RedirectToAction(nameof(Index));
 		}
-		return View(product);
+		return View(productVm);
 	}
 
 	// GET: Products/Edit/5

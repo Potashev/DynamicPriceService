@@ -54,10 +54,6 @@ namespace DynamicPriceClient.Controllers
 
 		public IActionResult LoginCustomer()
 		{
-			//for testing
-			//var client = _httpClientFactory.CreateClient();
-			//client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("AuthToken"));
-
 			return View();
 		}
 

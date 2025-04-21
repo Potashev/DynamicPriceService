@@ -23,14 +23,10 @@ public class CompaniesController : Controller
 	public async Task<IActionResult> Index()
 	{
 		var client = _httpClientFactory.CreateClient();
-
 		var token = HttpContext.Session.GetString("AuthToken");
-
 		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
 		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-		//var response = await client.GetStringAsync($"{_localhosturl}/api/ActiveCompanies", cts.Token);
-		var response = await client.GetStringAsync($"{_localhosturl}/api/TestAuth", cts.Token);
+		var response = await client.GetStringAsync($"{_localhosturl}/api/ActiveCompanies", cts.Token);
 		var activeCompanies = JsonSerializer.Deserialize<IEnumerable<Company>>(response, _options);	//todo: use dto
 		return View(activeCompanies);
 	}

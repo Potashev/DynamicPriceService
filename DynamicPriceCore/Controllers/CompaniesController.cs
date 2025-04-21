@@ -19,20 +19,7 @@ public class CompaniesController : ControllerBase
 		_mediator = mediator;
 	}
 
-
-	[HttpGet("/api/TestAuth")]
-	//[Authorize]
-	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-	//[Authorize(Roles = "Customer")]
-	public IActionResult TestAuth()
-	{
-		var user = HttpContext.User.Identity;
-		var headers = HttpContext.Request.Headers;
-		return Ok(new { UserName = user.Name, IsAuthenticated = user.IsAuthenticated });
-	}
-
-	//[Authorize]
-	//[Authorize(Policy = "CustomerPolicy")]
+	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "CustomerPolicy")]
 	[HttpGet("/api/ActiveCompanies")]
 	public async Task<ActionResult<IEnumerable<Company>>> GetActiveCompanies(CancellationToken cancellationToken)
 	{

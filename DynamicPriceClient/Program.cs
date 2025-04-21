@@ -30,14 +30,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-
-//app.UseSession();   //todo: is it right?
-
-//app.UseAuthorization();
-app.UseSession();
-app.UseAuthentication();
-app.UseAuthorization();
-
+app.UseSession();	//todo: check
 
 app.MapControllerRoute(
 	name: "default",

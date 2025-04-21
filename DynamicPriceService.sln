@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamicPriceCore", "Dynamic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicPriceClient", "DynamicPriceClient\DynamicPriceClient.csproj", "{1C9C53A1-F452-4CBC-9C20-015F288C271C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestJwt", "TestJwt\TestJwt.csproj", "{CE94E091-3EF4-48C0-A591-BF1F5EE5596B}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +27,6 @@ Global
 		{1C9C53A1-F452-4CBC-9C20-015F288C271C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C9C53A1-F452-4CBC-9C20-015F288C271C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C9C53A1-F452-4CBC-9C20-015F288C271C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CE94E091-3EF4-48C0-A591-BF1F5EE5596B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CE94E091-3EF4-48C0-A591-BF1F5EE5596B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CE94E091-3EF4-48C0-A591-BF1F5EE5596B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CE94E091-3EF4-48C0-A591-BF1F5EE5596B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

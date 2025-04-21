@@ -2,6 +2,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+//todo: check
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+	options.IdleTimeout = TimeSpan.FromMinutes(30); // Храним токен 30 минут
+	options.Cookie.HttpOnly = true; // Защита от XSS
+	options.Cookie.IsEssential = true;
+});
+
+
 builder.Services.AddHttpClient();
 
 var app = builder.Build();
@@ -19,7 +30,14 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+
+//app.UseSession();   //todo: is it right?
+
+//app.UseAuthorization();
+app.UseSession();
+app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapControllerRoute(
 	name: "default",

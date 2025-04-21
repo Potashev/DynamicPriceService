@@ -1,4 +1,4 @@
-﻿@model DynamicPriceClient.ViewModels.RegisterViewModel;
+﻿@model DynamicPriceClient.ViewModels.LoginViewModel;
 
 @{
 	ViewData["Title"] = "Create";
@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
 	<div class="col-md-4">
-		<form asp-action="RegisterCustomer">
+		<form asp-action="LoginCustomer">
 			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 			<div class="form-group">
 				<label asp-for="Username" class="control-label"></label>
@@ -18,17 +18,12 @@
 				<span asp-validation-for="Username" class="text-danger"></span>
 			</div>
 			<div class="form-group">
-				<label asp-for="Email" class="control-label"></label>
-				<input asp-for="Email" class="form-control" />
-				<span asp-validation-for="Email" class="text-danger"></span>
-			</div>
-			<div class="form-group">
 				<label asp-for="Password" class="control-label"></label>
 				<input asp-for="Password" class="form-control" />
 				<span asp-validation-for="Password" class="text-danger"></span>
 			</div>
 			<div class="form-group">
-				<input type="submit" value="RegisterCustomer" class="btn btn-primary" />
+				<input type="submit" value="LoginCustomer" class="btn btn-primary" />
 			</div>
 		</form>
 	</div>

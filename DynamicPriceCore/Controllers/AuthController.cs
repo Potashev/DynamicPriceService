@@ -8,6 +8,7 @@ using System.Security.Claims;
 using System.Text;
 using System;
 using DynamicPriceCore.Data;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 
 namespace DynamicPriceCore.Controllers
 {
@@ -64,16 +65,26 @@ namespace DynamicPriceCore.Controllers
 			return Ok("User registered successfully");
 		}
 
-		[HttpPost("login")]
+		[HttpPost("/api/Login")]
 		public async Task<IActionResult> Login([FromBody] LoginModel model)
 		{
 			var user = await _userManager.FindByNameAsync(model.Username);
 			if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
 				return Unauthorized();
 
-			var roles = await _userManager.GetRolesAsync(user);
-			var token = GenerateJwtToken(user, roles);
-			return Ok(new { token });
+			//for testing
+			try
+			{
+				var roles = await _userManager.GetRolesAsync(user);
+				var token = GenerateJwtToken(user, roles);
+				return Ok(new { token });
+			}
+			catch (Exception ex)
+			{
+
+			}
+
+			return BadRequest();
 		}
 
 		private string GenerateJwtToken(IdentityUser user, IList<string> roles)

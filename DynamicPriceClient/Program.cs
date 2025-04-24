@@ -30,7 +30,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseSession();	//todo: check
+app.UseSession();
 
 app.MapControllerRoute(
 	name: "default",

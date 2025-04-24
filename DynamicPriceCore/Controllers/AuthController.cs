@@ -41,7 +41,13 @@ namespace DynamicPriceCore.Controllers
 			}
 			else if (registerVm.Role == "Manager")
 			{
-				user = new Manager { UserName = registerVm.Username, Email = registerVm.Email };
+				user = new Manager 
+				{
+					UserName = registerVm.Username, 
+					Email = registerVm.Email,
+					CompanyId = 2
+				};
+				
 			}
 			else
 			{

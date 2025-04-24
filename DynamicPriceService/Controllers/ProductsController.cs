@@ -2,6 +2,7 @@
 using System.Text.Json;
 using System.Text;
 using DynamicPriceService.ViewModels;
+using System.Net.Http.Headers;
 
 namespace DynamicPriceService.Controllers;
 
@@ -21,19 +22,26 @@ public class ProductsController : Controller
 	{
 		_httpClientFactory = httpClientFactory;
 
-		var context = httpContextAccessor.HttpContext;
-		if (context.Request.Cookies.ContainsKey("User"))
-			_userId = context.Request.Cookies["User"];
-		else
-			throw new Exception("User not found");
+		//var context = httpContextAccessor.HttpContext;
+		//if (context.Request.Cookies.ContainsKey("User"))
+		//	_userId = context.Request.Cookies["User"];
+		//else
+		//	throw new Exception("User not found");
 	}
 
 	// GET: Products
 	public async Task<IActionResult> Index()
 	{
 		var client = _httpClientFactory.CreateClient();
+
+		var token = HttpContext.Session.GetString("AuthToken");
+		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+		// здесь токен получаю, осталось это в запрос встроить
+
 		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-		var response = await client.GetStringAsync($"{_localhosturl}/api/{_userId}/Products", cts.Token);
+		//var response = await client.GetStringAsync($"{_localhosturl}/api/{_userId}/Products", cts.Token);
+		var response = await client.GetStringAsync($"{_localhosturl}/api/Products", cts.Token);
 		var productsVm = JsonSerializer.Deserialize<IEnumerable<ProductViewModel>>(response, _options);
 		return View(productsVm);
 	}

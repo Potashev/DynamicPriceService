@@ -5,6 +5,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddSession(options =>
+{
+	options.IdleTimeout = TimeSpan.FromMinutes(30); // Храним токен 30 минут
+	options.Cookie.HttpOnly = true; // Защита от XSS
+	options.Cookie.IsEssential = true;
+});
+
 builder.Services.AddHttpClient();
 builder.Services.AddHttpContextAccessor();  //for temp auth - remove later
 
@@ -23,7 +31,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthorization();
+//app.UseAuthorization();
+app.UseSession();
 
 app.MapControllerRoute(
 	name: "default",

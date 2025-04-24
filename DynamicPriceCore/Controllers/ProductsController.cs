@@ -3,6 +3,8 @@ using MediatR;
 using DynamicPriceCore.MediatR.ProductEntity.Queries;
 using DynamicPriceCore.MediatR.ViewModels;
 using DynamicPriceCore.MediatR.ProductEntity.Commands;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DynamicPriceCore.Controllers
 {
@@ -16,9 +18,17 @@ namespace DynamicPriceCore.Controllers
 			_mediator = mediator;
 		}
 
-		[HttpGet("/api/{userId}/Products")]
-		public async Task<ActionResult<IEnumerable<ProductViewModel>>> GetProducts(string userId, CancellationToken cancellationToken)
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
+		[HttpGet("/api/Products")]
+		//[HttpGet("/api/{userId}/Products")]
+		public async Task<ActionResult<IEnumerable<ProductViewModel>>> GetProducts(/*string userId,*/ CancellationToken cancellationToken)
 		{
+			var user = HttpContext.User.Identity;	//надо как-то вытягивать company из manager'а, чтчобы уже слать медиатору
+
+
+			var userId = "1";
+
+
 			var productsVm = await _mediator.Send(new GetProductsQuery(userId), cancellationToken);
 			return Ok(productsVm);
 		}

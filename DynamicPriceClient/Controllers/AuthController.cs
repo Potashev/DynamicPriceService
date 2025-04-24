@@ -40,10 +40,11 @@ namespace DynamicPriceClient.Controllers
 		public async Task<IActionResult> RegisterCustomer(RegisterViewModel registerVm)
 		{
 			registerVm.Role = "Customer";   //todo: is it right
+			//registerVm.Role = "Manager";   //for test: 
 
 			//if (ModelState.IsValid)
 			//{
-				var client = _httpClientFactory.CreateClient();
+			var client = _httpClientFactory.CreateClient();
 				var json = JsonSerializer.Serialize(registerVm);
 				var data = new StringContent(json, Encoding.UTF8, "application/json");
 				var response = await client.PostAsync($"{_localhosturl}/api/Register", data);       //bad url?

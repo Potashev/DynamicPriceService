@@ -20,16 +20,9 @@ namespace DynamicPriceCore.Controllers
 
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 		[HttpGet("/api/Products")]
-		//[HttpGet("/api/{userId}/Products")]
-		public async Task<ActionResult<IEnumerable<ProductViewModel>>> GetProducts(/*string userId,*/ CancellationToken cancellationToken)
+		public async Task<ActionResult<IEnumerable<ProductViewModel>>> GetProducts(CancellationToken cancellationToken)
 		{
-			var user = HttpContext.User.Identity;	//надо как-то вытягивать company из manager'а, чтчобы уже слать медиатору
-
-
-			var userId = "1";
-
-
-			var productsVm = await _mediator.Send(new GetProductsQuery(userId), cancellationToken);
+			var productsVm = await _mediator.Send(new GetProductsQuery(), cancellationToken);
 			return Ok(productsVm);
 		}
 
@@ -46,7 +39,18 @@ namespace DynamicPriceCore.Controllers
 
 		// PUT: api/Products/5
 		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-		[HttpPost("{id}/Edit")]
+		//[HttpPost("{id}/Edit")]
+		//public async Task<IActionResult> Edit(int id, ProductViewModel productVm)
+		//{
+		//	if (id != productVm.ProductId)
+		//	{
+		//		return BadRequest();
+		//	}
+		//	var productId = await _mediator.Send(new EditProductCommand(productVm));
+		//	return Ok(productId);
+		//}
+
+		[HttpPut("{id}")]
 		public async Task<IActionResult> Edit(int id, ProductViewModel productVm)
 		{
 			if (id != productVm.ProductId)
@@ -58,10 +62,11 @@ namespace DynamicPriceCore.Controllers
 		}
 
 		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-		[HttpPost("/api/{userId}/Products")]
-		public async Task<ActionResult<int>> Create(ProductViewModel productVm, string userId)
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
+		[HttpPost("/api/Products")]
+		public async Task<ActionResult<int>> Create(ProductViewModel productVm)
 		{
-			var productId = await _mediator.Send(new CreateProductCommand(productVm, userId));
+			var productId = await _mediator.Send(new CreateProductCommand(productVm));
 			return Ok(productId);
 		}
 

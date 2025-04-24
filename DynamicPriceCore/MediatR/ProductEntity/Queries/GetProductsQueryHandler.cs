@@ -21,10 +21,6 @@ public class GetProductsQueryHandler
 	{
 		var manager = await _currentUserService.GetCurrentManagerAsync();
 
-		//var products = await _context.Products
-		//	.Where(p => p.Company.CompanyUsers.Any(cu => cu.UserId == request.UserId))
-		//	.ToArrayAsync(cancellationToken);
-
 		var products = await _context.Products
 			.Where(p => p.Company.CompanyId == manager.CompanyId)
 			.ToArrayAsync(cancellationToken);

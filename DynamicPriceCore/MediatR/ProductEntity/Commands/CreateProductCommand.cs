@@ -3,4 +3,4 @@ using MediatR;
 
 namespace DynamicPriceCore.MediatR.ProductEntity.Commands;
 
-public record CreateProductCommand(ProductViewModel ProductVm, string UserId) : IRequest<int>;
+public record CreateProductCommand(ProductViewModel ProductVm) : IRequest<int>;

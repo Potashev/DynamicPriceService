@@ -60,7 +60,7 @@ public class AuthController : Controller
 				// Сохранить токен (например, в куки или localStorage в браузере)
 				HttpContext.Session.SetString("AuthToken", token);
 
-				return RedirectToAction(nameof(Register));
+				return RedirectToAction(nameof(Index), "Products");
 			}
 			else
 			{

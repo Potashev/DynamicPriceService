@@ -45,7 +45,7 @@ namespace DynamicPriceCore.Controllers
 				{
 					UserName = registerVm.Username, 
 					Email = registerVm.Email,
-					CompanyId = 2
+					CompanyId = 1
 				};
 				
 			}

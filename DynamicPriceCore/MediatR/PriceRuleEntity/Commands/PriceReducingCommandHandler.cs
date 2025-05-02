@@ -26,9 +26,9 @@ public class PriceReducingCommandHandler
 		var company = manager.Company;
 
 		if (request.IsRunCommand)
-			_activeCompaniesService.Add(company);
+			_activeCompaniesService.AddRequest(company);
 		else
-			_activeCompaniesService.Remove(company);
+			_activeCompaniesService.RemoveRequest(company);
 
 		return _activeCompaniesService.IsActive(company);
 	}

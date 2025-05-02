@@ -53,6 +53,9 @@ public class ReducePriceJob : IJob
 			_context.SaveChanges();
 		}
 
+		// adding and removing all companies from requests since last circle iteration
+		_activeCompaniesService.HandleRequests();
+
 		return Task.CompletedTask;
 	}
 

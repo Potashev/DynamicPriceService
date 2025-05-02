@@ -3,6 +3,8 @@ using DynamicPriceCore.MediatR.OrderEntity.Queries;
 using DynamicPriceCore.MediatR.ViewModels;
 using DynamicPriceCore.Models;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPriceCore.Controllers;
@@ -48,14 +50,17 @@ public class OrdersController : ControllerBase
 		return Ok(receiveKey);
 	}
 
-	[HttpGet("/api/{userId}/CompanyOrders")]
-	public async Task<ActionResult<IEnumerable<OrderViewModel>>> GetCompanyOrders(string userId, CancellationToken cancellationToken)
+	[HttpGet("/api/CompanyOrders")]
+	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
+	public async Task<ActionResult<IEnumerable<OrderViewModel>>> GetCompanyOrders(CancellationToken cancellationToken)
 	{
-		var ordersVm = await _mediator.Send(new GetCompanyOrdersQuery(userId), cancellationToken);
+		//update
+		var ordersVm = await _mediator.Send(new GetCompanyOrdersQuery(), cancellationToken);
 		return Ok(ordersVm);
 	}
 
 	[HttpGet("/api/CompanyOrders/{orderId}")]
+	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 	public async Task<ActionResult<OrderViewModel>> GetCompanyOrder(string orderId)
 	{
 		var ordersVm = await _mediator.Send(new GetCompanyOrderDetailsQuery(orderId));
@@ -63,23 +68,26 @@ public class OrdersController : ControllerBase
 	}
 
 	[HttpGet("/api/CompanyOrders/FindByReceiveKey/{key}")]
+	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 	public async Task<ActionResult<int>> GetCompanyOrderByReceiveKey(string key)
 	{
 		var orderId = await _mediator.Send(new GetOrderIdByReceiveKeyQuery(key));
 		return orderId;
 	}
 
-	[HttpGet("/api/CompanyOrders/Complete/{orderId}")]
+	[HttpGet("/api/CompanyOrders/{orderId}/Complete")]
+	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 	public async Task<ActionResult<int>> CompleteOrder(string orderId)
 	{
 		var id =  await _mediator.Send(new CompleteOrderCommand(orderId));
 		return id;
 	}
 
-	[HttpGet("/api/{userId}/CompanyOrders/Statistics")]
-	public async Task<ActionResult<OrderStatistics>> GetCompanyStatistics(string userId, CancellationToken cancellationToken)
+	[HttpGet("/api/CompanyOrders/Statistics")]
+	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
+	public async Task<ActionResult<OrderStatistics>> GetCompanyStatistics(CancellationToken cancellationToken)
 	{
-		var orderStatistics = await _mediator.Send(new GetCompanyStatisticsQuery(userId), cancellationToken);
+		var orderStatistics = await _mediator.Send(new GetCompanyStatisticsQuery(), cancellationToken);
 		return Ok(orderStatistics);
 	}
 }

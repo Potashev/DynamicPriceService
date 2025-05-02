@@ -3,7 +3,7 @@ using MediatR;
 
 namespace DynamicPriceCore.MediatR.PriceRuleEntity.Queries;
 
-public record GetPriceRuleWithStatusQuery(string UserId) : IRequest<PriceRuleWithStatus>;
+public record GetPriceRuleWithStatusQuery() : IRequest<PriceRuleWithStatus>;
 
 public class PriceRuleWithStatus
 {

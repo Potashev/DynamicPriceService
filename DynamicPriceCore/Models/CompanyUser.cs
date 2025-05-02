@@ -1,5 +1,6 @@
 ﻿namespace DynamicPriceCore.Models;
 
+//look like is obsolete
 public class CompanyUser
 {
     public int CompanyId { get; set; }

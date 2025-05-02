@@ -2,12 +2,15 @@
 using DynamicPriceCore.MediatR.PriceRuleEntity.Queries;
 using DynamicPriceCore.MediatR.ViewModels;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPriceCore.Controllers;
 [Route("api/[controller]")]
 [ApiController]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 public class PriceRulesController : ControllerBase
 {
 	private readonly IMediator _mediator;
@@ -17,31 +20,31 @@ public class PriceRulesController : ControllerBase
 		_mediator = mediator;
 	}
 
-	[HttpGet("/api/{userId}/PriceRule/Details")]
-	public async Task<ActionResult<PriceRuleWithStatus>> Get(string userId)
+	[HttpGet("/api/PriceRule")]
+	public async Task<ActionResult<PriceRuleWithStatus>> Get()
 	{
-		return await _mediator.Send(new GetPriceRuleWithStatusQuery(userId));
+		return await _mediator.Send(new GetPriceRuleWithStatusQuery());
 	}
 
 	// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-	[HttpPost("/api/PriceRule/Edit")]
+	[HttpPut("/api/PriceRule")]
 	public async Task<IActionResult> Edit(PriceRuleViewModel priceRuleVm)
 	{
 		var priceRuleId = await _mediator.Send(new EditPriceRuleCommand(priceRuleVm));
 		return Ok(priceRuleId);
 	}
 
-	[HttpGet("/api/{userId}/PriceRule/Run")]
-	public async Task<ActionResult> RunPriceReducing(string userId)
+	[HttpGet("/api/PriceRule/Run")]
+	public async Task<ActionResult> RunPriceReducing()
 	{
-		await _mediator.Send(new PriceReducingCommand(userId, true));
+		await _mediator.Send(new PriceReducingCommand(true));
 		return Ok();
 	}
 
-	[HttpGet("/api/{userId}/PriceRule/Stop")]
-	public async Task<ActionResult> StopPriceReducing(string userId)
+	[HttpGet("/api/PriceRule/Stop")]
+	public async Task<ActionResult> StopPriceReducing()
 	{
-		await _mediator.Send(new PriceReducingCommand(userId, false));
+		await _mediator.Send(new PriceReducingCommand(false));
 		return Ok();
 	}
 }

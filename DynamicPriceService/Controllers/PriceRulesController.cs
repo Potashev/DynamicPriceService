@@ -2,12 +2,13 @@
 using System.Text.Json;
 using DynamicPriceService.ViewModels;
 using System.Text;
+using System.Net.Http.Headers;
 
 namespace DynamicPriceService.Controllers;
 public class PriceRulesController : Controller
 {
 	//todo: temp field to pass in mediator - remove later
-	private readonly string _userId;
+	//private readonly string _userId;
 
 	private readonly string _localhosturl = "https://localhost:7140";
 	private readonly IHttpClientFactory _httpClientFactory;
@@ -19,19 +20,15 @@ public class PriceRulesController : Controller
 	public PriceRulesController(IHttpClientFactory httpClientFactory, IHttpContextAccessor httpContextAccessor)
 	{
 		_httpClientFactory = httpClientFactory;
-
-		var context = httpContextAccessor.HttpContext;
-		if (context.Request.Cookies.ContainsKey("User"))
-			_userId = context.Request.Cookies["User"];
-		else
-			throw new Exception("User not found");
 	}
 
 	public async Task<IActionResult> Details()
 	{
 		var client = _httpClientFactory.CreateClient();
-		//url looks not right
-		var response = await client.GetStringAsync($"{_localhosturl}/api/{_userId}/PriceRule/Details");
+		var token = HttpContext.Session.GetString("AuthToken");
+		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+		var response = await client.GetStringAsync($"{_localhosturl}/api/PriceRule");
 		var priceRuleWithStatus = JsonSerializer.Deserialize<PriceRuleWithStatus>(response, _options);
 
 		ViewData["RuleStatus"] = priceRuleWithStatus.IsActive ?
@@ -49,7 +46,10 @@ public class PriceRulesController : Controller
 			return NotFound();
 		}
 		var client = _httpClientFactory.CreateClient();
-		var response = await client.GetStringAsync($"{_localhosturl}/api/{_userId}/PriceRule/Details");
+		var token = HttpContext.Session.GetString("AuthToken");
+		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+		var response = await client.GetStringAsync($"{_localhosturl}/api/PriceRule");
 
 		//to make api more compact, we use prVm with status
 		var priceRuleWithStatus = JsonSerializer.Deserialize<PriceRuleWithStatus>(response, _options);
@@ -66,10 +66,12 @@ public class PriceRulesController : Controller
 		if (ModelState.IsValid)
 		{
 			var client = _httpClientFactory.CreateClient();
+			var token = HttpContext.Session.GetString("AuthToken");
+			client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
 			var json = JsonSerializer.Serialize(priceRuleVm);
 			var data = new StringContent(json, Encoding.UTF8, "application/json");
-			var response = await client.PostAsync($"{_localhosturl}/api/PriceRule/Edit", data);
+			var response = await client.PutAsync($"{_localhosturl}/api/PriceRule", data);
 
 			return RedirectToAction(nameof(Details));
 		}
@@ -80,14 +82,20 @@ public class PriceRulesController : Controller
 	public async Task<IActionResult> Run()
 	{
 		var client = _httpClientFactory.CreateClient();
-		var response = await client.GetStringAsync($"{_localhosturl}/api/{_userId}/PriceRule/Run");
+		var token = HttpContext.Session.GetString("AuthToken");
+		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+		var response = await client.GetStringAsync($"{_localhosturl}/api/PriceRule/Run");
 		return RedirectToAction(nameof(Details));
 	}
 
 	public async Task<IActionResult> Stop()
 	{
 		var client = _httpClientFactory.CreateClient();
-		var response = await client.GetStringAsync($"{_localhosturl}/api/{_userId}/PriceRule/Stop");
+		var token = HttpContext.Session.GetString("AuthToken");
+		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+		var response = await client.GetStringAsync($"{_localhosturl}/api/PriceRule/Stop");
 		return RedirectToAction(nameof(Details));
 	}
 }

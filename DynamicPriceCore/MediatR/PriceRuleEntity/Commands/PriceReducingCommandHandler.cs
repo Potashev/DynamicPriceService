@@ -30,6 +30,9 @@ public class PriceReducingCommandHandler
 		else
 			_activeCompaniesService.RemoveRequest(company);
 
+		//temp solution to show actual status after request
+		Thread.Sleep(1000);
+
 		return _activeCompaniesService.IsActive(company);
 	}
 }

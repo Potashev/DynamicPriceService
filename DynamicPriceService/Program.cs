@@ -11,6 +11,7 @@ builder.Services.AddSession(options =>
 	options.IdleTimeout = TimeSpan.FromMinutes(30); // Храним токен 30 минут
 	options.Cookie.HttpOnly = true; // Защита от XSS
 	options.Cookie.IsEssential = true;
+	options.Cookie.Name = "Manager.Session";   //for using manager and customer in one browser
 });
 
 builder.Services.AddHttpClient();

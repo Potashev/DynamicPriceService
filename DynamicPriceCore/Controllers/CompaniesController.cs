@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DynamicPriceCore.Controllers;
 [Route("api/[controller]")]
 [ApiController]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "CustomerPolicy")]
 public class CompaniesController : ControllerBase
 {
 	private readonly IMediator _mediator;
@@ -19,7 +20,7 @@ public class CompaniesController : ControllerBase
 		_mediator = mediator;
 	}
 
-	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "CustomerPolicy")]
+	//[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "CustomerPolicy")]
 	[HttpGet("/api/ActiveCompanies")]
 	public async Task<ActionResult<IEnumerable<Company>>> GetActiveCompanies(CancellationToken cancellationToken)
 	{

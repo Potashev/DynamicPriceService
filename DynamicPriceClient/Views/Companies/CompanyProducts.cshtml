@@ -1,6 +1,12 @@
 ﻿@model DynamicPriceClient.ViewModels.CompanyProductsInfo
 
-ё<h1>Product Prices</h1>
+<h1>Product Prices</h1>
+
+<p><strong>Company ID:</strong> @Model.CompanyId</p>
+
+<p>
+	<a asp-controller="Orders" asp-action="OrderDetails" asp-route-companyId="@Model.CompanyId">Cart Details</a>
+</p>
 
 <table class="table">
 	<thead>

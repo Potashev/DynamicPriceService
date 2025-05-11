@@ -37,6 +37,15 @@ public class CurrentUserService : ICurrentUserService
 			.Include(m => m.Company)
 			.FirstOrDefaultAsync(m => m.Id == UserId);
 	}
+
+	public async Task<Customer?> GetCurrentCustomerAsync()
+	{
+		if (Role != "Customer" || string.IsNullOrEmpty(UserId))
+			return null;
+
+		return await _context.Customers
+			.FirstOrDefaultAsync(m => m.Id == UserId);
+	}
 }
 
 public interface ICurrentUserService
@@ -44,4 +53,5 @@ public interface ICurrentUserService
 	string? UserId { get; }
 	string? Role { get; }
 	Task<Manager?> GetCurrentManagerAsync();
+	Task<Customer?> GetCurrentCustomerAsync();
 }

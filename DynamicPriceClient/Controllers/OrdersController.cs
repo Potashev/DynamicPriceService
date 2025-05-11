@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 
@@ -16,19 +17,19 @@ public class OrdersController : Controller
 		PropertyNameCaseInsensitive = true
 	};
 
-	//todo: temp field to pass in mediator - remove later
-	private readonly string _customerId = "1";
-
 	public OrdersController(IHttpClientFactory httpClientFactory)
 	{
 		_httpClientFactory = httpClientFactory;
 	}
 
-	public async Task<IActionResult> CartOrderDetails(string companyId)
+	public async Task<IActionResult> OrderDetails(string companyId)
 	{
 		var client = _httpClientFactory.CreateClient();
-		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-		var url = $"{_localhosturl}/api/Orders/Cart/{_customerId}/{companyId}";
+		var token = HttpContext.Session.GetString("AuthToken");
+		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+		var url = $"{_localhosturl}/api/Orders/Cart/{companyId}";
 		var response = await client.GetAsync(url, cts.Token);
 		if (response.IsSuccessStatusCode)
 		{
@@ -45,28 +46,37 @@ public class OrdersController : Controller
 	public async Task<IActionResult> AddProduct(int? id)
 	{
 		var client = _httpClientFactory.CreateClient();
-		var url = $"{_localhosturl}/api/Orders/Add/{_customerId}/{id}";
+		var token = HttpContext.Session.GetString("AuthToken");
+		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+		var url = $"{_localhosturl}/api/Orders/Add/{id}";
 		var response = await client.GetStringAsync(url);
 		var cartOrder = JsonSerializer.Deserialize<Order>(response, _options);
 		var companyId = cartOrder.Company.CompanyId;
-		return RedirectToAction(nameof(CartOrderDetails), new { companyId });
+		return RedirectToAction(nameof(OrderDetails), new { companyId });
 	}
 
 	public async Task<IActionResult> RemoveProduct(int? id)
 	{
 		var client = _httpClientFactory.CreateClient();
-		var url = $"{_localhosturl}/api/Orders/Remove/{_customerId}/{id}";
+		var token = HttpContext.Session.GetString("AuthToken");
+		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+		var url = $"{_localhosturl}/api/Orders/Remove/{id}";
 		var response = await client.GetStringAsync(url);
 		var cartOrder = JsonSerializer.Deserialize<Order>(response, _options);
 		var companyId = cartOrder.Company.CompanyId;
-		return RedirectToAction(nameof(CartOrderDetails), new { companyId });
+		return RedirectToAction(nameof(OrderDetails), new { companyId });
 	}
 
 	public async Task<IActionResult> ConfirmOrder(int? id)
 	{
 		var client = _httpClientFactory.CreateClient();
-		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-		var url = $"{_localhosturl}/api/Orders/Confirm/{_customerId}/{id}";
+		var token = HttpContext.Session.GetString("AuthToken");
+		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+		var url = $"{_localhosturl}/api/Orders/Confirm/{id}";
 		var response = await client.GetStringAsync(url,cts.Token);
 		var receiveKey = JsonSerializer.Deserialize<int>(response, _options);
 		return Content($"Your receive Key: {receiveKey}");

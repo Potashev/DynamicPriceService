@@ -3,4 +3,4 @@ using MediatR;
 
 namespace DynamicPriceCore.MediatR.OrderEntity.Queries;
 
-public record GetCartOrderQuery(int CustomerId, int CompanyId) : IRequest<Order>;
+public record GetCartOrderQuery(int CompanyId) : IRequest<Order>;

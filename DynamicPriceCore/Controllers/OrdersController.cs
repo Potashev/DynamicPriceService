@@ -18,35 +18,39 @@ public class OrdersController : ControllerBase
 		_mediator = mediator;
 	}
 
-	[HttpGet("/api/Orders/Cart/{customerId}/{companyId}")]
-	public async Task<ActionResult<Order>> CartOrderDetails(int? customerId, int? companyId, CancellationToken cancellationToken)
+	[HttpGet("/api/Orders/Cart/{companyId}")]
+	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "CustomerPolicy")]
+	public async Task<ActionResult<Order>> CartOrderDetails(int? companyId, CancellationToken cancellationToken)
 	{
-		var cartOrder = await _mediator.Send(new GetCartOrderQuery((int)customerId, (int)companyId), cancellationToken);
+		var cartOrder = await _mediator.Send(new GetCartOrderQuery((int)companyId), cancellationToken);
 
 		return cartOrder == null 
 			? NotFound(new { message = "Cart is empty." }) 
 			: Ok(cartOrder);
 	}
 
-	[HttpGet("/api/Orders/Add/{customerId}/{productId}")]
-	public async Task<ActionResult<Order>> AddProduct(int? customerId, int? productId)
+	[HttpGet("/api/Orders/Add/{productId}")]
+	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "CustomerPolicy")]
+	public async Task<ActionResult<Order>> AddProduct(int? productId)
 	{
-		var cartOrder = await _mediator.Send(new AddProductToOrderCommand(customerId.ToString(), productId.ToString()));
+		var cartOrder = await _mediator.Send(new AddProductToOrderCommand(productId.ToString()));
 		return Ok(cartOrder);
 	}
 
 	
-	[HttpGet("/api/Orders/Remove/{customerId}/{productId}")]
-	public async Task<ActionResult<Order>> RemoveProduct(int? customerId, int? productId)
+	[HttpGet("/api/Orders/Remove/{productId}")]
+	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "CustomerPolicy")]
+	public async Task<ActionResult<Order>> RemoveProduct(int? productId)
 	{
-		var cartOrder = await _mediator.Send(new RemoveProductFromOrderCommand(customerId.ToString(), productId.ToString()));
+		var cartOrder = await _mediator.Send(new RemoveProductFromOrderCommand(productId.ToString()));
 		return Ok(cartOrder);
 	}
 
-	[HttpGet("/api/Orders/Confirm/{customerId}/{cartOrderId}")]
-	public async Task<ActionResult<int>> ConfirmOrder(int? customerId, int? cartOrderId, CancellationToken cancellationToken)
+	[HttpGet("/api/Orders/Confirm/{cartOrderId}")]
+	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "CustomerPolicy")]
+	public async Task<ActionResult<int>> ConfirmOrder(int? cartOrderId, CancellationToken cancellationToken)
 	{
-		var receiveKey = await _mediator.Send(new ConfirmOrderCommand((int)customerId, (int)cartOrderId), cancellationToken);
+		var receiveKey = await _mediator.Send(new ConfirmOrderCommand((int)cartOrderId), cancellationToken);
 		return Ok(receiveKey);
 	}
 

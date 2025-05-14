@@ -1,8 +1,11 @@
-﻿namespace DynamicPriceService.ViewModels;
+﻿using DynamicPriceCore.Models;
 
-public class OrderViewModel
+namespace DynamicPriceClient.ViewModels;
+
+public class OrderInfoViewModel
 {
 	public int OrderId { get; set; }
+	public Company Company { get; set; }
 	public ICollection<OrderProductViewModel> OrderProducts { get; set; }
 	public OrderStatus Status { get; set; }
 	public DateTime? OrderDate { get; set; }
@@ -10,9 +13,9 @@ public class OrderViewModel
 	public double? OrderAmount { get; set; }
 }
 
-public enum OrderStatus
-{
-	Cart,
-	Confirmed,
-	Completed
-}
+//public enum OrderStatus
+//{
+//	Cart,
+//	Confirmed,
+//	Completed
+//}

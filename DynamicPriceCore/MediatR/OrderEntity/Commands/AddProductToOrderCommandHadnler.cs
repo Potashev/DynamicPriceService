@@ -61,10 +61,6 @@ public class AddProductToOrderCommandHadnler
 
 	private async Task<Order> CreateNewOrder(Customer customer, Company company)
 	{
-		//var customer = await _context.Customers
-		//	.Where(c => c.Id == customerId)	//todo: check
-		//	.FirstOrDefaultAsync();
-
 		var order = new Order
 		{
 			Customer = customer,

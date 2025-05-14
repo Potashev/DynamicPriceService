@@ -81,7 +81,7 @@ namespace DynamicPriceClient.Controllers
 					// Сохранить токен (например, в куки или localStorage в браузере)
 					HttpContext.Session.SetString("AuthToken", tokenResponse.Token);
 
-					return RedirectToAction(nameof(RegisterCustomer));
+					return RedirectToAction(nameof(Index), "Companies");
 				}
 				else
 				{

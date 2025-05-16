@@ -39,8 +39,8 @@ namespace DynamicPriceClient.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> RegisterCustomer(RegisterViewModel registerVm)
 		{
-			//registerVm.Role = "Customer";   //todo: is it right?
-			registerVm.Role = "Manager";   //for test: 
+			registerVm.Role = "Customer";   //todo: is it right?
+			//registerVm.Role = "Manager";   //for test: 
 
 			//if (ModelState.IsValid)
 			//{

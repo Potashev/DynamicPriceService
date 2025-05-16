@@ -134,4 +134,10 @@ app.UseCors("AllowSpecificOrigins");
 // Регистрируем хаб SignalR
 app.MapHub<PriceHub>("/priceHub"); // Убедитесь, что маршрут хаба корректен
 
+using (var scope = app.Services.CreateScope())
+{
+	var services = scope.ServiceProvider;
+	await DbInitializer.SeedUsersAsync(services);
+}
+
 app.Run();

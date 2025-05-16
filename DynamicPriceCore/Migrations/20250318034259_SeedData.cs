@@ -56,14 +56,14 @@ namespace DynamicPriceCore.Migrations
 				});
 
 			// Привязываем пользователей к компаниям
-			migrationBuilder.InsertData(
-				"CompanyUsers",
-				new[] { "CompanyId", "UserId" },
-				new object[,]
-				{
-			{ 1, "1" },
-			{ 2, "2" }
-				});
+			//migrationBuilder.InsertData(
+			//	"CompanyUsers",
+			//	new[] { "CompanyId", "UserId" },
+			//	new object[,]
+			//	{
+			//{ 1, "1" },
+			//{ 2, "2" }
+			//	});
 
 			// Добавляем тестового кастомера (без CustomerId)
 			migrationBuilder.InsertData(
@@ -71,8 +71,9 @@ namespace DynamicPriceCore.Migrations
 				new[] { "Id", "UserName", "NormalizedUserName", "Email", "NormalizedEmail", "EmailConfirmed", "PasswordHash", "SecurityStamp", "AccessFailedCount", "Discriminator", "PhoneNumberConfirmed", "TwoFactorEnabled", "LockoutEnabled" },
 				new object[,]
 				{
-		{ "1001", "customer1", "CUSTOMER1", "customer@test.com", "CUSTOMER@TEST.COM", true, "HASHED_PASSWORD_HERE", "", 0, "Customer", false, false, true },  // Указываем тип пользователя
-        { "1002", "manager1", "MANAGER1", "manager@test.com", "MANAGER@TEST.COM", true, "HASHED_PASSWORD_HERE", "", 0, "Manager", false, false, true }   // Для менеджера тоже
+		{ "1001", "customer1", "CUSTOMER1", "customer@test.com", "CUSTOMER@TEST.COM", true, "HASHED_PASSWORD_HERE", "", 0, "Customer", false, false, true },
+        { "1002", "manager1", "MANAGER1", "manager@test.com", "MANAGER@TEST.COM", true, "HASHED_PASSWORD_HERE", "", 0, "Manager", false, false, true },
+		{ "450fdd56-43cd-4bd5-979f-27959450181c", "Nik1", "NIK1", "potashev.nik@gmail.com", "POTASHEV.NIK@GMAIL.COM", false, "AQAAAAIAAYagAAAAEG6s4gKJ02XTB/rYvujCUatoTzAxGfAneaZCBu2HYWhqRrksA4Zq/1vJqRXj382szQ==", "OM3OR6CWNA55FUGLG5VDANGFU2PYWOYU", 0, "Customer", false, false, true },
 				});
 
 			// Назначаем ему роль Customer

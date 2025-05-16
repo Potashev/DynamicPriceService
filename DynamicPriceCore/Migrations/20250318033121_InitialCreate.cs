@@ -93,23 +93,23 @@ namespace DynamicPriceCore.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "CompanyUsers",
-                columns: table => new
-                {
-                    CompanyId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CompanyUsers", x => new { x.CompanyId, x.UserId });
-                    table.ForeignKey(
-                        name: "FK_CompanyUsers_Companies_CompanyId",
-                        column: x => x.CompanyId,
-                        principalTable: "Companies",
-                        principalColumn: "CompanyId",
-                        onDelete: ReferentialAction.Cascade);
-                });
+            //migrationBuilder.CreateTable(
+            //    name: "CompanyUsers",
+            //    columns: table => new
+            //    {
+            //        CompanyId = table.Column<int>(type: "int", nullable: false),
+            //        UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+            //    },
+            //    constraints: table =>
+            //    {
+            //        table.PrimaryKey("PK_CompanyUsers", x => new { x.CompanyId, x.UserId });
+            //        table.ForeignKey(
+            //            name: "FK_CompanyUsers_Companies_CompanyId",
+            //            column: x => x.CompanyId,
+            //            principalTable: "Companies",
+            //            principalColumn: "CompanyId",
+            //            onDelete: ReferentialAction.Cascade);
+            //    });
 
             migrationBuilder.CreateTable(
                 name: "PriceRules",

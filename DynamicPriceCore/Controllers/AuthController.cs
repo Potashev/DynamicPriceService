@@ -9,6 +9,7 @@ using System.Text;
 using System;
 using DynamicPriceCore.Data;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
+using DynamicPriceCore.MediatR.ViewModels;
 
 namespace DynamicPriceCore.Controllers
 {
@@ -72,7 +73,7 @@ namespace DynamicPriceCore.Controllers
 		}
 
 		[HttpPost("/api/Login")]
-		public async Task<IActionResult> Login([FromBody] LoginModel model)
+		public async Task<IActionResult> Login([FromBody] LoginViewModel model)
 		{
 			var user = await _userManager.FindByNameAsync(model.Username);
 			if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))

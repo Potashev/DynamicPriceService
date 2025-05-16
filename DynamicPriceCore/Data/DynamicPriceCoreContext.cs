@@ -13,8 +13,9 @@ public class DynamicPriceCoreContext : IdentityDbContext
 	{
 		base.OnModelCreating(modelBuilder);
 
-		modelBuilder.Entity<CompanyUser>()
-			.HasKey(cu => new { cu.CompanyId, cu.UserId });
+		//modelBuilder.Entity<CompanyUser>()
+		//	.HasKey(cu => new { cu.CompanyId, cu.UserId });
+
 		modelBuilder.Entity<OrderProduct>()
 			.HasKey(op => op.Id);
 
@@ -32,7 +33,7 @@ public class DynamicPriceCoreContext : IdentityDbContext
 	}
 
 	public DbSet<Company> Companies { get; set; } = default!;
-	public DbSet<CompanyUser> CompanyUsers { get; set; } = default;
+	//public DbSet<CompanyUser> CompanyUsers { get; set; } = default;
 	public DbSet<Product> Products { get; set; } = default!;
 	public DbSet<PriceRule> PriceRules { get; set; } = default!;
 	public DbSet<PriceDynamic> PriceDynamics { get; set; } = default!;

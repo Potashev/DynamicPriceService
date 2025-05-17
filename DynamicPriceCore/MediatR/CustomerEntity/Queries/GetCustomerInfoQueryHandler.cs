@@ -22,7 +22,7 @@ public class GetCustomerInfoQueryHandler
 
 	public async Task<CustomerInfoViewModel> Handle(GetCustomerInfoQuery request, CancellationToken cancellationToken)
 	{
-		var customer = await _currentUserService.GetCurrentCustomerAsync();
+		var customer = await _currentUserService.GetCurrentUserAsync();
 
 		var customerOrders = await _context.Orders
 			.Include(o => o.Company)

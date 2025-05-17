@@ -38,11 +38,11 @@ namespace DynamicPriceCore.Controllers
 			IdentityUser user;
 			if (registerVm.Role == "Customer")
 			{
-				user = new Customer { UserName = registerVm.Username, Email = registerVm.Email, Balance = 0 };
+				user = new ApplicationUser { UserName = registerVm.Username, Email = registerVm.Email, Balance = 0 };
 			}
 			else if (registerVm.Role == "Manager")
 			{
-				user = new Manager 
+				user = new ApplicationUser
 				{
 					UserName = registerVm.Username, 
 					Email = registerVm.Email,

@@ -23,7 +23,7 @@ public class GetCompanyOrdersQueryHandler
 		//	.Where(o => o.Company.CompanyUsers.Any(cu => cu.UserId == request.UserId))
 		//	.ToArrayAsync(cancellationToken);
 
-		var manager = await _currentUserService.GetCurrentManagerAsync();
+		var manager = await _currentUserService.GetCurrentUserAsync();
 
 		//todo: check
 		var companyOrders = await _context.Orders

@@ -9,28 +9,60 @@ namespace DynamicPriceCore.Data;
 /// </summary>
 public static class DbInitializer
 {
-	public static async Task SeedUsersAsync(IServiceProvider serviceProvider)
+	public static async Task SeedRolesAsync(IServiceProvider serviceProvider)
 	{
-		var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+		var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-		// Проверка, есть ли уже такой пользователь
-		var user = await userManager.FindByEmailAsync("test@example.com");
-		if (user == null)
+		string[] roleNames = { "Manager", "Customer" };
+
+		foreach (var roleName in roleNames)
 		{
-			var newUser = new Customer
+			if (!await roleManager.RoleExistsAsync(roleName))
 			{
-				UserName = "Nik1",
-				Email = "test@example.com",
-				EmailConfirmed = true,
-				Balance = 10
-			};
-
-			var result = await userManager.CreateAsync(newUser, "sfjk23Q/+");
-			if (!result.Succeeded)
-			{
-				throw new Exception("Не удалось создать тестового пользователя: " +
-					string.Join(", ", result.Errors.Select(e => e.Description)));
+				await roleManager.CreateAsync(new IdentityRole(roleName));
 			}
 		}
 	}
+
+	public static async Task SeedUsersAsync(IServiceProvider serviceProvider)
+	{
+		var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+		// Customer
+		var customerEmail = "customer@test.com";
+		if (await userManager.FindByEmailAsync(customerEmail) is null)
+		{
+			var customer = new ApplicationUser
+			{
+				UserName = "Nik1",
+				Email = customerEmail,
+				EmailConfirmed = true,
+				Balance = 100,
+
+				
+			};
+
+			var result = await userManager.CreateAsync(customer, "sfjk23Q/+");
+			if (result.Succeeded)
+				await userManager.AddToRoleAsync(customer, "Customer");
+		}
+
+		// Manager
+		var managerEmail = "manager@test.com";
+		if (await userManager.FindByEmailAsync(managerEmail) is null)
+		{
+			var manager = new ApplicationUser
+			{
+				UserName = "Man1",
+				Email = managerEmail,
+				EmailConfirmed = true,
+				CompanyId = 1
+			};
+
+			var result = await userManager.CreateAsync(manager, "sfjk23Q/+");
+			if (result.Succeeded)
+				await userManager.AddToRoleAsync(manager, "Manager");
+		}
+	}
+
 }

@@ -28,7 +28,7 @@ public class GetCompanyStatisticsQueryHandler
 		//	})
 		//	.ToArrayAsync(cancellationToken);
 
-		var manager = await _currentUserService.GetCurrentManagerAsync();
+		var manager = await _currentUserService.GetCurrentUserAsync();
 
 		//todo: check
 		var companyOrdersWithAmount = await _context.Orders

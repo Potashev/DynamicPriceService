@@ -1,14 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using DynamicPriceCore.Data;
-using Quartz;
-using DynamicPriceCore.Services;
+﻿using DynamicPriceCore.Data;
 using DynamicPriceCore.Extensions;
-using Microsoft.AspNetCore.Identity;
+using DynamicPriceCore.Models;
+using DynamicPriceCore.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Quartz;
+using System;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,7 +42,10 @@ builder.Services.AddAuthorization(options =>
 });
 
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+//builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+//	.AddEntityFrameworkStores<DynamicPriceCoreContext>()
+//	.AddDefaultTokenProviders();
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 	.AddEntityFrameworkStores<DynamicPriceCoreContext>()
 	.AddDefaultTokenProviders();
 
@@ -137,6 +141,7 @@ app.MapHub<PriceHub>("/priceHub"); // Убедитесь, что маршрут 
 using (var scope = app.Services.CreateScope())
 {
 	var services = scope.ServiceProvider;
+	await DbInitializer.SeedRolesAsync(services);
 	await DbInitializer.SeedUsersAsync(services);
 }
 

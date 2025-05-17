@@ -19,7 +19,7 @@ public class GetCartOrderQueryHandler
 
 	public async Task<Order> Handle(GetCartOrderQuery request, CancellationToken cancellationToken)
 	{
-		var customer = await _currentUserService.GetCurrentCustomerAsync();
+		var customer = await _currentUserService.GetCurrentUserAsync();
 
 		var cartOrder = await _context.Orders
 			.Include(o => o.Company)

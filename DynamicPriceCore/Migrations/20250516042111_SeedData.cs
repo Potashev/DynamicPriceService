@@ -7,18 +7,18 @@ namespace DynamicPriceCore.Migrations
     /// <inheritdoc />
     public partial class SeedData : Migration
     {
-		/// <inheritdoc />
-		protected override void Up(MigrationBuilder migrationBuilder)
-		{
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
 			// Добавляем роли
-			migrationBuilder.InsertData(
-				"AspNetRoles",
-				new[] { "Id", "Name", "NormalizedName" },
-				new object[,]
-				{
-			{ "1", "Customer", "CUSTOMER" },
-			{ "2", "Manager", "MANAGER" }
-				});
+			//migrationBuilder.InsertData(
+			//	"AspNetRoles",
+			//	new[] { "Id", "Name", "NormalizedName" },
+			//	new object[,]
+			//	{
+			//{ "1", "Customer", "CUSTOMER" },
+			//{ "2", "Manager", "MANAGER" }
+			//	});
 
 			// Добавляем компании
 			migrationBuilder.InsertData(
@@ -66,25 +66,25 @@ namespace DynamicPriceCore.Migrations
 			//	});
 
 			// Добавляем тестового кастомера (без CustomerId)
-			migrationBuilder.InsertData(
-				"AspNetUsers",
-				new[] { "Id", "UserName", "NormalizedUserName", "Email", "NormalizedEmail", "EmailConfirmed", "PasswordHash", "SecurityStamp", "AccessFailedCount", "Discriminator", "PhoneNumberConfirmed", "TwoFactorEnabled", "LockoutEnabled" },
-				new object[,]
-				{
-		{ "1001", "customer1", "CUSTOMER1", "customer@test.com", "CUSTOMER@TEST.COM", true, "HASHED_PASSWORD_HERE", "", 0, "Customer", false, false, true },
-        { "1002", "manager1", "MANAGER1", "manager@test.com", "MANAGER@TEST.COM", true, "HASHED_PASSWORD_HERE", "", 0, "Manager", false, false, true },
-		{ "450fdd56-43cd-4bd5-979f-27959450181c", "Nik1", "NIK1", "potashev.nik@gmail.com", "POTASHEV.NIK@GMAIL.COM", false, "AQAAAAIAAYagAAAAEG6s4gKJ02XTB/rYvujCUatoTzAxGfAneaZCBu2HYWhqRrksA4Zq/1vJqRXj382szQ==", "OM3OR6CWNA55FUGLG5VDANGFU2PYWOYU", 0, "Customer", false, false, true },
-				});
+		//	migrationBuilder.InsertData(
+		//		"AspNetUsers",
+		//		new[] { "Id", "UserName", "NormalizedUserName", "Email", "NormalizedEmail", "EmailConfirmed", "PasswordHash", "SecurityStamp", "AccessFailedCount", "Discriminator", "PhoneNumberConfirmed", "TwoFactorEnabled", "LockoutEnabled" },
+		//		new object[,]
+		//		{
+		//{ "1001", "customer1", "CUSTOMER1", "customer@test.com", "CUSTOMER@TEST.COM", true, "HASHED_PASSWORD_HERE", "", 0, "Customer", false, false, true },
+		//{ "1002", "manager1", "MANAGER1", "manager@test.com", "MANAGER@TEST.COM", true, "HASHED_PASSWORD_HERE", "", 0, "Manager", false, false, true },
+		//{ "450fdd56-43cd-4bd5-979f-27959450181c", "Nik1", "NIK1", "potashev.nik@gmail.com", "POTASHEV.NIK@GMAIL.COM", false, "AQAAAAIAAYagAAAAEG6s4gKJ02XTB/rYvujCUatoTzAxGfAneaZCBu2HYWhqRrksA4Zq/1vJqRXj382szQ==", "OM3OR6CWNA55FUGLG5VDANGFU2PYWOYU", 0, "Customer", false, false, true },
+		//		});
 
 			// Назначаем ему роль Customer
-			migrationBuilder.InsertData(
-				"AspNetUserRoles",
-				new[] { "UserId", "RoleId" },
-				new object[,]
-				{
-			{ "1001", "1" }, // Привязка пользователя к роли Customer
-			{ "1002", "2" } // Привязка пользователя к роли Manager
-				});
+			//migrationBuilder.InsertData(
+			//	"AspNetUserRoles",
+			//	new[] { "UserId", "RoleId" },
+			//	new object[,]
+			//	{
+			//{ "1001", "1" }, // Привязка пользователя к роли Customer
+			//{ "1002", "2" } // Привязка пользователя к роли Manager
+			//	});
 
 			// TODO: добавить заказы и динамику цен
 		}

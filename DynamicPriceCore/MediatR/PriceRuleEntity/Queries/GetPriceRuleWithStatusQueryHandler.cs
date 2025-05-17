@@ -19,7 +19,7 @@ public class GetPriceRuleWithStatusQueryHandler
 		=> (_mapper, _context, _activeCompaniesService, _currentUserService) = (mapper, context, activeCompaniesService, currentUserService);
 	public async Task<PriceRuleWithStatus> Handle(GetPriceRuleWithStatusQuery request, CancellationToken cancellationToken)
 	{
-		var manager = await _currentUserService.GetCurrentManagerAsync();
+		var manager = await _currentUserService.GetCurrentUserAsync();
 
 		var priceRule = await _context.PriceRules
 			   .Where(pr => pr.Company.CompanyId == manager.CompanyId)

@@ -9,12 +9,12 @@ namespace DynamicPriceCore.Services;
 public class CurrentUserService : ICurrentUserService
 {
 	private readonly IHttpContextAccessor _httpContextAccessor;
-	private readonly UserManager<IdentityUser> _userManager;
+	private readonly UserManager<ApplicationUser> _userManager;
 	private readonly DynamicPriceCoreContext _context;
 
 	public CurrentUserService(
 		IHttpContextAccessor httpContextAccessor,
-		UserManager<IdentityUser> userManager,
+		UserManager<ApplicationUser> userManager,
 		DynamicPriceCoreContext context)
 	{
 		_httpContextAccessor = httpContextAccessor;
@@ -28,22 +28,30 @@ public class CurrentUserService : ICurrentUserService
 	public string? Role =>
 		_httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role)?.Value;
 
-	public async Task<Manager?> GetCurrentManagerAsync()
+	//public async Task<Manager?> GetCurrentManagerAsync()
+	//{
+	//	if (Role != "Manager" || string.IsNullOrEmpty(UserId))
+	//		return null;
+
+	//	return await _context.Managers
+	//		.Include(m => m.Company)
+	//		.FirstOrDefaultAsync(m => m.Id == UserId);
+	//}
+
+	//public async Task<Customer?> GetCurrentCustomerAsync()
+	//{
+	//	if (Role != "Customer" || string.IsNullOrEmpty(UserId))
+	//		return null;
+
+	//	return await _context.Customers
+	//		.FirstOrDefaultAsync(m => m.Id == UserId);
+	//}
+
+	public async Task<ApplicationUser?> GetCurrentUserAsync()
 	{
-		if (Role != "Manager" || string.IsNullOrEmpty(UserId))
-			return null;
-
-		return await _context.Managers
-			.Include(m => m.Company)
-			.FirstOrDefaultAsync(m => m.Id == UserId);
-	}
-
-	public async Task<Customer?> GetCurrentCustomerAsync()
-	{
-		if (Role != "Customer" || string.IsNullOrEmpty(UserId))
-			return null;
-
-		return await _context.Customers
+		//todo: check
+		return await _context.Users
+			//.Include(m => m.Company)
 			.FirstOrDefaultAsync(m => m.Id == UserId);
 	}
 }
@@ -52,6 +60,7 @@ public interface ICurrentUserService
 {
 	string? UserId { get; }
 	string? Role { get; }
-	Task<Manager?> GetCurrentManagerAsync();
-	Task<Customer?> GetCurrentCustomerAsync();
+	Task<ApplicationUser?> GetCurrentUserAsync();
+	//Task<Manager?> GetCurrentManagerAsync();
+	//Task<Customer?> GetCurrentCustomerAsync();
 }

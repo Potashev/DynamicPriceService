@@ -19,7 +19,8 @@ public class AddProductToOrderCommandHadnler
 
 	public async Task<Order> Handle(AddProductToOrderCommand request, CancellationToken cancellationToken)
 	{
-		var customer = await _currentUserService.GetCurrentCustomerAsync();
+		//var customer = await _currentUserService.GetCurrentCustomerAsync();
+		var customer = await _currentUserService.GetCurrentUserAsync();
 
 		var product = await _context.Products
 			.Include(p => p.Company)
@@ -59,7 +60,7 @@ public class AddProductToOrderCommandHadnler
 		return cartOrder;
 	}
 
-	private async Task<Order> CreateNewOrder(Customer customer, Company company)
+	private async Task<Order> CreateNewOrder(ApplicationUser customer, Company company)
 	{
 		var order = new Order
 		{

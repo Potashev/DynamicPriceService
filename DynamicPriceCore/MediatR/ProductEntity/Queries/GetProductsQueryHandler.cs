@@ -19,7 +19,7 @@ public class GetProductsQueryHandler
 
 	public async Task<IEnumerable<ProductViewModel>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
 	{
-		var manager = await _currentUserService.GetCurrentManagerAsync();
+		var manager = await _currentUserService.GetCurrentUserAsync();
 
 		var products = await _context.Products
 			.Where(p => p.Company.CompanyId == manager.CompanyId)

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 
 namespace DynamicPriceCore.Data;
-public class DynamicPriceCoreContext : IdentityDbContext
+public class DynamicPriceCoreContext : IdentityDbContext<ApplicationUser>
 {
 	public DynamicPriceCoreContext(DbContextOptions<DynamicPriceCoreContext> options)
 		: base(options) { }
@@ -39,6 +39,6 @@ public class DynamicPriceCoreContext : IdentityDbContext
 	public DbSet<PriceDynamic> PriceDynamics { get; set; } = default!;
 	public DbSet<Order> Orders { get; set; } = default;
 	public DbSet<OrderProduct> OrderProducts { get; set; } = default;
-	public DbSet<Customer> Customers { get; set; }
-	public DbSet<Manager> Managers { get; set; }
+	//public DbSet<Customer> Customers { get; set; }
+	//public DbSet<Manager> Managers { get; set; }
 }

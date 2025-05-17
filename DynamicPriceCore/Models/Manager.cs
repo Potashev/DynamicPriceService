@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿//using Microsoft.AspNetCore.Identity;
 
-namespace DynamicPriceCore.Models;
+//namespace DynamicPriceCore.Models;
 
-public class Manager : IdentityUser
-{
-	public int CompanyId { get; set; }
-	public virtual Company Company { get; set; }
-}
+//public class Manager : IdentityUser
+//{
+//	public int CompanyId { get; set; }
+//	public virtual Company Company { get; set; }
+//}

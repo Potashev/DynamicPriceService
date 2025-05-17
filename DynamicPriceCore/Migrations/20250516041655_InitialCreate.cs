@@ -64,8 +64,7 @@ namespace DynamicPriceCore.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Discriminator = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
-                    Balance = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     CompanyId = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -89,27 +88,8 @@ namespace DynamicPriceCore.Migrations
                         name: "FK_AspNetUsers_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companies",
-                        principalColumn: "CompanyId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "CompanyId");
                 });
-
-            //migrationBuilder.CreateTable(
-            //    name: "CompanyUsers",
-            //    columns: table => new
-            //    {
-            //        CompanyId = table.Column<int>(type: "int", nullable: false),
-            //        UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-            //    },
-            //    constraints: table =>
-            //    {
-            //        table.PrimaryKey("PK_CompanyUsers", x => new { x.CompanyId, x.UserId });
-            //        table.ForeignKey(
-            //            name: "FK_CompanyUsers_Companies_CompanyId",
-            //            column: x => x.CompanyId,
-            //            principalTable: "Companies",
-            //            principalColumn: "CompanyId",
-            //            onDelete: ReferentialAction.Cascade);
-            //    });
 
             migrationBuilder.CreateTable(
                 name: "PriceRules",
@@ -415,9 +395,6 @@ namespace DynamicPriceCore.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
-
-            migrationBuilder.DropTable(
-                name: "CompanyUsers");
 
             migrationBuilder.DropTable(
                 name: "OrderProducts");

@@ -19,7 +19,7 @@ public class RemoveProductFromOrderCommandHandler
 
 	public async Task<Order> Handle(RemoveProductFromOrderCommand request, CancellationToken cancellationToken)
 	{
-		var customer = await _currentUserService.GetCurrentCustomerAsync();
+		var customer = await _currentUserService.GetCurrentUserAsync();
 
 		var orderproduct = await _context.OrderProducts
 			.Where(op => op.ProductId.ToString() == request.ProductId

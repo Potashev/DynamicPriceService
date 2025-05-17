@@ -20,7 +20,7 @@ public class CreateProductCommandHandler
 
 	public async Task<int> Handle(CreateProductCommand request, CancellationToken cancellationToken)
 	{
-		var manager = await _currentUserService.GetCurrentManagerAsync();
+		var manager = await _currentUserService.GetCurrentUserAsync();
 
 		//var company = await _context.CompanyUsers
 		//	.Where(cu => cu.UserId == request.UserId)

@@ -22,7 +22,7 @@ public class PriceReducingCommandHandler
 		//	.Select(cu => cu.Company)
 		//	.FirstOrDefaultAsync(cancellationToken);
 
-		var manager = await _currentUserService.GetCurrentManagerAsync();
+		var manager = await _currentUserService.GetCurrentUserAsync();
 		var company = manager.Company;
 
 		if (request.IsRunCommand)

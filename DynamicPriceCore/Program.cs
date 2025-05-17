@@ -45,6 +45,8 @@ builder.Services.AddAuthorization(options =>
 //builder.Services.AddIdentity<IdentityUser, IdentityRole>()
 //	.AddEntityFrameworkStores<DynamicPriceCoreContext>()
 //	.AddDefaultTokenProviders();
+
+//?
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 	.AddEntityFrameworkStores<DynamicPriceCoreContext>()
 	.AddDefaultTokenProviders();
@@ -119,6 +121,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+	app.UseDeveloperExceptionPage();
+
 	app.UseSwagger();
 	app.UseSwaggerUI();
 

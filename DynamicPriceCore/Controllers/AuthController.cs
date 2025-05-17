@@ -17,12 +17,12 @@ namespace DynamicPriceCore.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-		private readonly UserManager<IdentityUser> _userManager;
-		private readonly SignInManager<IdentityUser> _signInManager;
+		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly SignInManager<ApplicationUser> _signInManager;
 		private readonly IConfiguration _config;
 		private readonly DynamicPriceCoreContext _context;
 
-		public AuthController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IConfiguration config, DynamicPriceCoreContext context)
+		public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration config, DynamicPriceCoreContext context)
 		{
 			_userManager = userManager;
 			_signInManager = signInManager;
@@ -35,7 +35,7 @@ namespace DynamicPriceCore.Controllers
 		public async Task<IActionResult> Register([FromBody] RegisterViewModel registerVm)
 		{
 			//todo: test - make better
-			IdentityUser user;
+			ApplicationUser user;
 			if (registerVm.Role == "Customer")
 			{
 				user = new ApplicationUser { UserName = registerVm.Username, Email = registerVm.Email, Balance = 0 };
@@ -94,7 +94,7 @@ namespace DynamicPriceCore.Controllers
 			return BadRequest();
 		}
 
-		private string GenerateJwtToken(IdentityUser user, IList<string> roles)
+		private string GenerateJwtToken(ApplicationUser user, IList<string> roles)
 		{
 			var claims = new List<Claim>
 		{

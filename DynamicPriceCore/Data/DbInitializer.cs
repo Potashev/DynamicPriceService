@@ -63,6 +63,22 @@ public static class DbInitializer
 			if (result.Succeeded)
 				await userManager.AddToRoleAsync(manager, "Manager");
 		}
+
+		var managerEmail2 = "manager2@test.com";
+		if (await userManager.FindByEmailAsync(managerEmail2) is null)
+		{
+			var manager = new ApplicationUser
+			{
+				UserName = "Man2",
+				Email = managerEmail2,
+				EmailConfirmed = true,
+				CompanyId = 2
+			};
+
+			var result = await userManager.CreateAsync(manager, "sfjk23Q/+");
+			if (result.Succeeded)
+				await userManager.AddToRoleAsync(manager, "Manager");
+		}
 	}
 
 }

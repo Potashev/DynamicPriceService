@@ -51,7 +51,7 @@ public class CurrentUserService : ICurrentUserService
 	{
 		//todo: check
 		return await _context.Users
-			//.Include(m => m.Company)
+			.Include(m => m.Company)
 			.FirstOrDefaultAsync(m => m.Id == UserId);
 	}
 }

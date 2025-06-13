@@ -17,23 +17,46 @@ builder.Services.AddDbContext<DynamicPriceCoreContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("DynamicPriceCoreContext") ?? throw new InvalidOperationException("Connection string 'DynamicPriceCoreContext' not found.")));
 
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-	.AddJwtBearer(options =>
+//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//	.AddJwtBearer(options =>
+//	{
+//		options.TokenValidationParameters = new TokenValidationParameters
+//		{
+//			ValidateIssuerSigningKey = true,
+//			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+
+//			ValidateIssuer = true,
+//			ValidateAudience = true,
+//			ValidIssuer = "TestIssuer",
+//			ValidAudience = "TestAudience",
+
+//			ValidateLifetime = true,
+//			ClockSkew = TimeSpan.Zero
+//		};
+//	});
+
+builder.Services.AddAuthentication(options =>
+{
+	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+	options.TokenValidationParameters = new TokenValidationParameters
 	{
-		options.TokenValidationParameters = new TokenValidationParameters
-		{
-			ValidateIssuerSigningKey = true,
-			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+		ValidateIssuerSigningKey = true,
+		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
 
-			ValidateIssuer = true,
-			ValidateAudience = true,
-			ValidIssuer = "TestIssuer",
-			ValidAudience = "TestAudience",
+		ValidateIssuer = true,
+		ValidateAudience = true,
+		ValidIssuer = "TestIssuer",
+		ValidAudience = "TestAudience",
 
-			ValidateLifetime = true,
-			ClockSkew = TimeSpan.Zero
-		};
-	});
+		ValidateLifetime = true,
+		ClockSkew = TimeSpan.Zero
+	};
+});
+
 
 builder.Services.AddAuthorization(options =>
 {

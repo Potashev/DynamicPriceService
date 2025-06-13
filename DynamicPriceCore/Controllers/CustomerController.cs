@@ -1,5 +1,8 @@
 ﻿using DynamicPriceCore.MediatR.CompanyEntity.Queries;
+using DynamicPriceCore.MediatR.CustomerEntity.Commands;
 using DynamicPriceCore.MediatR.CustomerEntity.Queries;
+using DynamicPriceCore.MediatR.PriceRuleEntity.Commands;
+using DynamicPriceCore.MediatR.ViewModels;
 using DynamicPriceCore.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -19,10 +22,18 @@ public class CustomerController : ControllerBase
 		_mediator = mediator;
 	}
 
-	[HttpGet("/api/CustomerInfo")]
-	public async Task<ActionResult<IEnumerable<Company>>> GetCustomerInfo(CancellationToken cancellationToken)
+	[HttpGet("Info")]
+	public async Task<ActionResult<CustomerInfoViewModel>> GetCustomerInfo(CancellationToken cancellationToken)
 	{
 		var customerInfo = await _mediator.Send(new GetCustomerInfoQuery(), cancellationToken);
 		return Ok(customerInfo);
 	}
+
+	[HttpPut("Balance")]
+	public async Task<IActionResult> TopUp([FromBody] BalanceViewModel balanceVm)
+	{
+		await _mediator.Send(new TopUpBalanceCommand(balanceVm));
+		return Ok();
+	}
+
 }

@@ -7,22 +7,30 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPriceCore.MediatR.OrderEntity.Commands;
 
-public class ConfirmOrderCommandHandler
+public class TopUpBalanceCommandHandler
 	: IRequestHandler<ConfirmOrderCommand, int>
 {
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IIncreasePriceService _increasePriceService;
+	private readonly ICurrentUserService _currentUserService;
 
-	public ConfirmOrderCommandHandler(DynamicPriceCoreContext context, IIncreasePriceService increasePriceService)
-		=> (_context, _increasePriceService) = (context, increasePriceService);
+	public TopUpBalanceCommandHandler(DynamicPriceCoreContext context, IIncreasePriceService increasePriceService, ICurrentUserService currentUserService)
+		=> (_context, _increasePriceService, _currentUserService) = (context, increasePriceService, currentUserService);
 
 	public async Task<int> Handle(ConfirmOrderCommand request, CancellationToken cancellationToken)
 	{
+		//todo: check that request from customer?
+
+		var customer = await _currentUserService.GetCurrentUserAsync();
+
+
 		var order = await _context.Orders
 			.Include(o => o.OrderProducts)
 				.ThenInclude(op => op.Product)
 			.Where(o => o.OrderId == request.CartOrderId)
 			.FirstOrDefaultAsync(cancellationToken);
+
+		decimal orderTotalAmout = 0;
 
 		foreach (var orderProduct in order.OrderProducts)
 		{
@@ -31,12 +39,24 @@ public class ConfirmOrderCommandHandler
 			product.LastSellTime = DateTime.UtcNow;
 			if (product.Quantity != null)
 				product.Quantity -= orderProduct.Quantity;
-		}
-		order.Status		= OrderStatus.Confirmed;
-		order.OrderDate		= DateTime.UtcNow;
-		order.ReceiveKey	= GenerateReceiveKey();
 
-		await _context.SaveChangesAsync(cancellationToken);
+			orderTotalAmout += orderProduct.Quantity * orderProduct.Price;
+		}
+
+		if(customer.Balance >= orderTotalAmout)
+		{
+			customer.Balance -= orderTotalAmout;
+
+			order.Status = OrderStatus.Confirmed;
+			order.OrderDate = DateTime.UtcNow;
+			order.ReceiveKey = GenerateReceiveKey();
+		}
+		else
+		{
+			throw new Exception("Top up the balance!");
+		}
+
+			await _context.SaveChangesAsync(cancellationToken);
 
 		await _increasePriceService.Increase(order.OrderProducts);
 

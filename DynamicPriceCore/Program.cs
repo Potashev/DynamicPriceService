@@ -1,14 +1,54 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using DynamicPriceCore.Data;
-using Quartz;
-using DynamicPriceCore.Services;
+﻿using DynamicPriceCore.Data;
 using DynamicPriceCore.Extensions;
+using DynamicPriceCore.Models;
+using DynamicPriceCore.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using Quartz;
+using System;
+using System.Text;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DynamicPriceCoreContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("DynamicPriceCoreContext") ?? throw new InvalidOperationException("Connection string 'DynamicPriceCoreContext' not found.")));
 
-// Add services to the container.
+
+builder.Services.AddAuthentication(options =>
+{
+	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+	options.TokenValidationParameters = new TokenValidationParameters
+	{
+		ValidateIssuerSigningKey = true,
+		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+
+		ValidateIssuer = true,
+		ValidateAudience = true,
+		ValidIssuer = "TestIssuer",
+		ValidAudience = "TestAudience",
+
+		ValidateLifetime = true,
+		ClockSkew = TimeSpan.Zero
+	};
+});
+
+
+builder.Services.AddAuthorization(options =>
+{
+	options.AddPolicy("ManagerPolicy", policy => policy.RequireRole("Manager"));
+	options.AddPolicy("CustomerPolicy", policy => policy.RequireRole("Customer"));
+});
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+	.AddEntityFrameworkStores<DynamicPriceCoreContext>()
+	.AddDefaultTokenProviders();
 
 builder.Services.AddControllers();
 
@@ -17,33 +57,67 @@ builder.Services.AddCors(options =>
 	options.AddPolicy("AllowSpecificOrigins",
 		policy =>
 		{
-			policy.WithOrigins("https://localhost:7022")  // Добавляем клиентский адрес
+			policy.WithOrigins("https://localhost:7022")
 				  .AllowAnyHeader()
 				  .AllowAnyMethod()
-				  .AllowCredentials();  // Разрешаем отправлять куки и аутентификационные данные
+				  .AllowCredentials();
 		});
 });
 
-builder.Services.AddSignalR(); // Добавляем поддержку SignalR
+builder.Services.AddSignalR();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+//builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+	options.SwaggerDoc("v1", new() { Title = "Your API", Version = "v1" });
+
+	options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+	{
+		Name = "Authorization",
+		Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+		Scheme = "Bearer",
+		BearerFormat = "JWT",
+		In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+		Description = "Введите токен как: Bearer {ваш_токен}"
+	});
+
+	options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+	{
+		{
+			new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+			{
+				Reference = new Microsoft.OpenApi.Models.OpenApiReference
+				{
+					Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+					Id = "Bearer"
+				}
+			},
+			Array.Empty<string>()
+		}
+	});
+});
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
 
 builder.Services.AddSingleton<IActiveCompaniesService, ActiveCompaniesService>();
-builder.Services.AddTransient<IIncreasePriceService, IncreasePriceService>();	//todo: change
+builder.Services.AddTransient<IIncreasePriceService, IncreasePriceService>();   //todo: change
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 builder.Services.AddQuartz(q => q.AddJobAndTrigger<ReducePriceJob>(builder.Configuration));
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+	app.UseDeveloperExceptionPage();
+
 	app.UseSwagger();
 	app.UseSwaggerUI();
 
@@ -52,13 +126,21 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();
 
-// Включаем CORS для всех маршрутов или только для хаба
 app.UseCors("AllowSpecificOrigins");
-// Регистрируем хаб SignalR
-app.MapHub<PriceHub>("/priceHub"); // Убедитесь, что маршрут хаба корректен
+
+app.MapHub<PriceHub>("/priceHub");
+
+using (var scope = app.Services.CreateScope())
+{
+	var services = scope.ServiceProvider;
+	await DbInitializer.SeedRolesAsync(services);
+	await DbInitializer.SeedUsersAsync(services);
+}
 
 app.Run();

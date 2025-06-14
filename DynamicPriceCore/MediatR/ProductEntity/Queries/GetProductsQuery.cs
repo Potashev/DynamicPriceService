@@ -3,4 +3,4 @@ using MediatR;
 
 namespace DynamicPriceCore.MediatR.ProductEntity.Queries;
 
-public record GetProductsQuery(string UserId) : IRequest<IEnumerable<ProductViewModel>>;
+public record GetProductsQuery() : IRequest<IEnumerable<ProductViewModel>>;

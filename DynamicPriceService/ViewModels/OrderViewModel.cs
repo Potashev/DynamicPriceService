@@ -7,7 +7,7 @@ public class OrderViewModel
 	public OrderStatus Status { get; set; }
 	public DateTime? OrderDate { get; set; }
 
-	public double? OrderAmount { get; set; }	// additional prop
+	public double? OrderAmount { get; set; }
 }
 
 public enum OrderStatus

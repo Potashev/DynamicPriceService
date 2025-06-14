@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DynamicPriceCore.Data;
 using DynamicPriceCore.Models;
+using DynamicPriceCore.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,15 +12,18 @@ public class RemoveProductFromOrderCommandHandler
 {
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IMapper _mapper;
+	private readonly ICurrentUserService _currentUserService;
 
-	public RemoveProductFromOrderCommandHandler(DynamicPriceCoreContext context, IMapper mapper)
-		=> (_context, _mapper) = (context, mapper);
+	public RemoveProductFromOrderCommandHandler(DynamicPriceCoreContext context, IMapper mapper, ICurrentUserService currentUserService)
+		=> (_context, _mapper, _currentUserService) = (context, mapper, currentUserService);
 
 	public async Task<Order> Handle(RemoveProductFromOrderCommand request, CancellationToken cancellationToken)
 	{
+		var customer = await _currentUserService.GetCurrentUserAsync();
+
 		var orderproduct = await _context.OrderProducts
 			.Where(op => op.ProductId.ToString() == request.ProductId
-				&& op.Order.Customer.CustomerId.ToString() == request.CustomerId
+				&& op.Order.Customer.Id == customer.Id	//todo: check
 				&& op.Order.Status == OrderStatus.Cart)
 			.Include(op => op.Order)
 				.ThenInclude(o => o.Company)

@@ -1,6 +1,7 @@
 ﻿using DynamicPriceClient.ViewModels;
 using DynamicPriceCore.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http.Headers;
 using System.Text.Json;
 
 namespace DynamicPriceClient.Controllers;
@@ -18,10 +19,13 @@ public class CompaniesController : Controller
 			_httpClientFactory = httpClientFactory;
     }
 
-    public async Task<IActionResult> Index()
+	public async Task<IActionResult> Index()
 	{
 		var client = _httpClientFactory.CreateClient();
-		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+		var token = HttpContext.Session.GetString("AuthToken");
+		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
 		var response = await client.GetStringAsync($"{_localhosturl}/api/ActiveCompanies", cts.Token);
 		var activeCompanies = JsonSerializer.Deserialize<IEnumerable<Company>>(response, _options);	//todo: use dto
 		return View(activeCompanies);
@@ -30,7 +34,10 @@ public class CompaniesController : Controller
 	public async Task<IActionResult> CompanyProducts(int? id)
 	{
 		var client = _httpClientFactory.CreateClient();
-		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+		var token = HttpContext.Session.GetString("AuthToken");
+		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
 		var response = await client.GetStringAsync($"{_localhosturl}/api/ActiveCompanies/{id}", cts.Token);
 		var companyProductsInfo = JsonSerializer.Deserialize<CompanyProductsInfo>(response, _options);
 		return View(companyProductsInfo);

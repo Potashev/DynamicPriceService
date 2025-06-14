@@ -10,21 +10,31 @@ public class PriceReducingCommandHandler
 {
 	private DynamicPriceCoreContext _context;
 	private IActiveCompaniesService _activeCompaniesService;
+	private readonly ICurrentUserService _currentUserService;
 
-	public PriceReducingCommandHandler(DynamicPriceCoreContext context, IActiveCompaniesService activeCompaniesService)
-		=> (_context, _activeCompaniesService) = (context, activeCompaniesService);
+	public PriceReducingCommandHandler(DynamicPriceCoreContext context, IActiveCompaniesService activeCompaniesService, ICurrentUserService currentUserService)
+		=> (_context, _activeCompaniesService, _currentUserService) = (context, activeCompaniesService, currentUserService);
 
 	public async Task<bool> Handle(PriceReducingCommand request, CancellationToken cancellationToken)
 	{
-		var company = await _context.CompanyUsers
-			.Where(cu => cu.UserId == request.UserId)
-			.Select(cu => cu.Company)
-			.FirstOrDefaultAsync(cancellationToken);
+		//var company = await _context.CompanyUsers
+		//	.Where(cu => cu.UserId == request.UserId)
+		//	.Select(cu => cu.Company)
+		//	.FirstOrDefaultAsync(cancellationToken);
+
+		var manager = await _currentUserService.GetCurrentUserAsync();
+		var company = manager.Company;
 
 		if (request.IsRunCommand)
-			_activeCompaniesService.Add(company);
+		{
+			if(!_activeCompaniesService.IsActive(company))
+				_activeCompaniesService.AddRequest(company);
+		}
 		else
-			_activeCompaniesService.Remove(company);
+			_activeCompaniesService.RemoveRequest(company);
+
+		//temp solution to show actual status after request
+		Thread.Sleep(1000);
 
 		return _activeCompaniesService.IsActive(company);
 	}

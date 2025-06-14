@@ -3,6 +3,8 @@ using MediatR;
 using DynamicPriceCore.MediatR.ProductEntity.Queries;
 using DynamicPriceCore.MediatR.ViewModels;
 using DynamicPriceCore.MediatR.ProductEntity.Commands;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DynamicPriceCore.Controllers
 {
@@ -16,15 +18,16 @@ namespace DynamicPriceCore.Controllers
 			_mediator = mediator;
 		}
 
-		[HttpGet("/api/{userId}/Products")]
-		public async Task<ActionResult<IEnumerable<ProductViewModel>>> GetProducts(string userId, CancellationToken cancellationToken)
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
+		[HttpGet("/api/Products")]
+		public async Task<ActionResult<IEnumerable<ProductViewModel>>> GetProducts(CancellationToken cancellationToken)
 		{
-			var productsVm = await _mediator.Send(new GetProductsQuery(userId), cancellationToken);
+			var productsVm = await _mediator.Send(new GetProductsQuery(), cancellationToken);
 			return Ok(productsVm);
 		}
 
-		// GET: api/Products/5
 		[HttpGet("{id}")]
+		//todo: add authrize
 		public async Task<ActionResult<ProductViewModel>> GetProduct(int id)
 		{
 			var productVm = await _mediator.Send(new GetProductDetailsQuery((int)id));
@@ -34,9 +37,8 @@ namespace DynamicPriceCore.Controllers
 				productVm;
 		}
 
-		// PUT: api/Products/5
-		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-		[HttpPost("{id}/Edit")]
+		[HttpPut("{id}")]
+		//todo: add authrize
 		public async Task<IActionResult> Edit(int id, ProductViewModel productVm)
 		{
 			if (id != productVm.ProductId)
@@ -47,16 +49,16 @@ namespace DynamicPriceCore.Controllers
 			return Ok(productId);
 		}
 
-		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-		[HttpPost("/api/{userId}/Products")]
-		public async Task<ActionResult<int>> Create(ProductViewModel productVm, string userId)
+		[HttpPost("/api/Products")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
+		public async Task<ActionResult<int>> Create(ProductViewModel productVm)
 		{
-			var productId = await _mediator.Send(new CreateProductCommand(productVm, userId));
+			var productId = await _mediator.Send(new CreateProductCommand(productVm));
 			return Ok(productId);
 		}
 
-		// DELETE: api/Products/5
 		[HttpDelete("{id}")]
+		//todo: add authrize
 		public async Task<IActionResult> Delete(int id)
 		{
 			await _mediator.Send(new DeleteProductCommand(id));

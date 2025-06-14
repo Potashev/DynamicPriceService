@@ -2,10 +2,11 @@
 
 namespace DynamicPriceCore.Models;
 
+//todo: think about this instead Manager and Customer
 public class ApplicationUser : IdentityUser
 {
 	public decimal Balance { get; set; }
 	public int? CompanyId { get; set; }
 
-	public Company? Company { get; set; } // если есть связь с Company
+	public Company? Company { get; set; }
 }

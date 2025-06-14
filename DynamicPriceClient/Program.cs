@@ -1,14 +1,13 @@
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+
 builder.Services.AddControllersWithViews();
 
-//todo: check
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-	options.IdleTimeout = TimeSpan.FromMinutes(30); // Храним токен 30 минут
-	options.Cookie.HttpOnly = true; // Защита от XSS
+	options.IdleTimeout = TimeSpan.FromMinutes(30);
+	options.Cookie.HttpOnly = true;
 	options.Cookie.IsEssential = true;
 	options.Cookie.Name = "Customer.Session";	//for using manager and customer in one browser
 });

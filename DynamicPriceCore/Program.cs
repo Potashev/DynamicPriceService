@@ -17,24 +17,6 @@ builder.Services.AddDbContext<DynamicPriceCoreContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("DynamicPriceCoreContext") ?? throw new InvalidOperationException("Connection string 'DynamicPriceCoreContext' not found.")));
 
 
-//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-//	.AddJwtBearer(options =>
-//	{
-//		options.TokenValidationParameters = new TokenValidationParameters
-//		{
-//			ValidateIssuerSigningKey = true,
-//			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
-
-//			ValidateIssuer = true,
-//			ValidateAudience = true,
-//			ValidIssuer = "TestIssuer",
-//			ValidAudience = "TestAudience",
-
-//			ValidateLifetime = true,
-//			ClockSkew = TimeSpan.Zero
-//		};
-//	});
-
 builder.Services.AddAuthentication(options =>
 {
 	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -64,17 +46,9 @@ builder.Services.AddAuthorization(options =>
 	options.AddPolicy("CustomerPolicy", policy => policy.RequireRole("Customer"));
 });
 
-
-//builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-//	.AddEntityFrameworkStores<DynamicPriceCoreContext>()
-//	.AddDefaultTokenProviders();
-
-//?
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 	.AddEntityFrameworkStores<DynamicPriceCoreContext>()
 	.AddDefaultTokenProviders();
-
-// Add services to the container.
 
 builder.Services.AddControllers();
 
@@ -83,16 +57,15 @@ builder.Services.AddCors(options =>
 	options.AddPolicy("AllowSpecificOrigins",
 		policy =>
 		{
-			policy.WithOrigins("https://localhost:7022")  // Добавляем клиентский адрес
+			policy.WithOrigins("https://localhost:7022")
 				  .AllowAnyHeader()
 				  .AllowAnyMethod()
-				  .AllowCredentials();  // Разрешаем отправлять куки и аутентификационные данные
+				  .AllowCredentials();
 		});
 });
 
-builder.Services.AddSignalR(); // Добавляем поддержку SignalR
+builder.Services.AddSignalR();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
 //builder.Services.AddSwaggerGen();
@@ -141,7 +114,6 @@ builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
 	app.UseDeveloperExceptionPage();
@@ -160,10 +132,9 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// Включаем CORS для всех маршрутов или только для хаба
 app.UseCors("AllowSpecificOrigins");
-// Регистрируем хаб SignalR
-app.MapHub<PriceHub>("/priceHub"); // Убедитесь, что маршрут хаба корректен
+
+app.MapHub<PriceHub>("/priceHub");
 
 using (var scope = app.Services.CreateScope())
 {

@@ -7,9 +7,6 @@ using System.Net.Http.Headers;
 namespace DynamicPriceService.Controllers;
 public class PriceRulesController : Controller
 {
-	//todo: temp field to pass in mediator - remove later
-	//private readonly string _userId;
-
 	private readonly string _localhosturl = "https://localhost:7140";
 	private readonly IHttpClientFactory _httpClientFactory;
 	private readonly JsonSerializerOptions _options = new JsonSerializerOptions
@@ -38,7 +35,6 @@ public class PriceRulesController : Controller
 		return View(priceRuleWithStatus.PriceRuleVm);
 	}
 
-	// GET: priceRules/Edit/5
 	public async Task<IActionResult> Edit(int? id)
 	{
 		if (id == null)
@@ -56,9 +52,6 @@ public class PriceRulesController : Controller
 		return View(priceRuleWithStatus.PriceRuleVm);
 	}
 
-	// POST: priceRules/Edit/5
-	// To protect from overposting attacks, enable the specific properties you want to bind to.
-	// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 	[HttpPost]
 	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> Edit(int id, PriceRuleViewModel priceRuleVm)

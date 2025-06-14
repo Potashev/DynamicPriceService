@@ -3,23 +3,21 @@ using Microsoft.AspNetCore.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddSession(options =>
 {
-	options.IdleTimeout = TimeSpan.FromMinutes(30); // Храним токен 30 минут
-	options.Cookie.HttpOnly = true; // Защита от XSS
+	options.IdleTimeout = TimeSpan.FromMinutes(30);
+	options.Cookie.HttpOnly = true;
 	options.Cookie.IsEssential = true;
 	options.Cookie.Name = "Manager.Session";   //for using manager and customer in one browser
 });
 
 builder.Services.AddHttpClient();
-builder.Services.AddHttpContextAccessor();  //for temp auth - remove later
+builder.Services.AddHttpContextAccessor();  //todo: for temp auth - remove later
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
 	app.UseExceptionHandler("/Home/Error");
@@ -32,7 +30,6 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-//app.UseAuthorization();
 app.UseSession();
 
 app.MapControllerRoute(

@@ -12,10 +12,3 @@ public class OrderInfoViewModel
 
 	public double? OrderAmount { get; set; }
 }
-
-//public enum OrderStatus
-//{
-//	Cart,
-//	Confirmed,
-//	Completed
-//}

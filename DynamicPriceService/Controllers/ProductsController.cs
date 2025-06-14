@@ -20,7 +20,6 @@ public class ProductsController : Controller
 		_httpClientFactory = httpClientFactory;
 	}
 
-	// GET: Products
 	public async Task<IActionResult> Index()
 	{
 		var client = _httpClientFactory.CreateClient();
@@ -34,7 +33,6 @@ public class ProductsController : Controller
 		return View(productsVm);
 	}
 
-	// GET: Products/Details/5
 	public async Task<IActionResult> Details(int? id)
 	{
 		if (id == null)
@@ -47,15 +45,11 @@ public class ProductsController : Controller
 		return View(productVm);
 	}
 
-	// GET: Products/Create
 	public IActionResult Create()
 	{
 		return View();
 	}
 
-	// POST: Products/Create
-	// To protect from overposting attacks, enable the specific properties you want to bind to.
-	// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 	[HttpPost]
 	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> Create(ProductViewModel productVm)
@@ -75,7 +69,6 @@ public class ProductsController : Controller
 		return View(productVm);
 	}
 
-	// GET: Products/Edit/5
 	public async Task<IActionResult> Edit(int? id)
 	{
 		if (id == null)
@@ -88,10 +81,6 @@ public class ProductsController : Controller
 		return View(productVm);
 	}
 
-	// POST: Products/Edit/5
-	// To protect from overposting attacks, enable the specific properties you want to bind to.
-	// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-	//[HttpPost]
 	[HttpPost]
 	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> Edit(int id, ProductViewModel productVm)
@@ -101,7 +90,6 @@ public class ProductsController : Controller
 			var client = _httpClientFactory.CreateClient();
 			var json = JsonSerializer.Serialize(productVm);
 			var data = new StringContent(json, Encoding.UTF8, "application/json");
-			//var response = await client.PostAsync($"{_localhosturl}/api/Products/{id}/Edit", data);
 			var response = await client.PutAsync($"{_localhosturl}/api/Products/{id}", data);
 			return RedirectToAction(nameof(Index));
 		}
@@ -109,7 +97,6 @@ public class ProductsController : Controller
 		return View(productVm);
 	}
 
-	// GET: Products/Delete/5
 	public async Task<IActionResult> Delete(int? id)
 	{
 		if (id == null)
@@ -126,7 +113,6 @@ public class ProductsController : Controller
 		return View(productVm);
 	}
 
-	// POST: Products/Delete/5
 	[HttpPost, ActionName("Delete")]
 	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> DeleteConfirmed(int id)

@@ -18,14 +18,12 @@ namespace DynamicPriceCore.Controllers
     public class AuthController : ControllerBase
     {
 		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly SignInManager<ApplicationUser> _signInManager;
 		private readonly IConfiguration _config;
 		private readonly DynamicPriceCoreContext _context;
 
-		public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration config, DynamicPriceCoreContext context)
+		public AuthController(UserManager<ApplicationUser> userManager, IConfiguration config, DynamicPriceCoreContext context)
 		{
 			_userManager = userManager;
-			_signInManager = signInManager;
 			_config = config;
 			_context = context;
 		}
@@ -46,7 +44,7 @@ namespace DynamicPriceCore.Controllers
 				{
 					UserName = registerVm.Username, 
 					Email = registerVm.Email,
-					CompanyId = 1
+					CompanyId = 1	//todo: fixed
 				};
 				
 			}

@@ -34,14 +34,10 @@ public class AuthController : Controller
 		return View();
 	}
 
-	// POST: Products/Create
-	// To protect from overposting attacks, enable the specific properties you want to bind to.
-	// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 	[HttpPost]
 	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> Login(LoginViewModel loginVm)
 	{
-
 		if (ModelState.IsValid)
 		{
 			var client = _httpClientFactory.CreateClient();
@@ -57,7 +53,6 @@ public class AuthController : Controller
 				var dict = JsonSerializer.Deserialize<Dictionary<string, string>>(responseContent);
 				string token = dict["token"];
 
-				// Сохранить токен (например, в куки или localStorage в браузере)
 				HttpContext.Session.SetString("AuthToken", token);
 
 				return RedirectToAction(nameof(Index), "Products");
@@ -67,8 +62,6 @@ public class AuthController : Controller
 				ModelState.AddModelError(string.Empty, "Invalid login attempt.");
 				return View(loginVm);
 			}
-
-			return RedirectToAction(nameof(Index));
 		}
 		return View();
 	}

@@ -20,7 +20,6 @@ public class CompaniesController : ControllerBase
 		_mediator = mediator;
 	}
 
-	//[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "CustomerPolicy")]
 	[HttpGet("/api/ActiveCompanies")]
 	public async Task<ActionResult<IEnumerable<Company>>> GetActiveCompanies(CancellationToken cancellationToken)
 	{

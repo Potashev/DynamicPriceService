@@ -10,7 +10,7 @@ using System.Text.Json;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DynamicPriceClient.Controllers;
-public class CustomerController : Controller
+public class CustomersController : Controller
 {
 	private readonly string _localhosturl = "https://localhost:7140";
 	private readonly IHttpClientFactory _httpClientFactory;
@@ -19,7 +19,7 @@ public class CustomerController : Controller
 		PropertyNameCaseInsensitive = true
 	};
 
-	public CustomerController(IHttpClientFactory httpClientFactory)
+	public CustomersController(IHttpClientFactory httpClientFactory)
 	{
 		_httpClientFactory = httpClientFactory;
 	}
@@ -31,7 +31,7 @@ public class CustomerController : Controller
 		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
 		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-		var response = await client.GetStringAsync($"{_localhosturl}/api/Customer/Info", cts.Token);
+		var response = await client.GetStringAsync($"{_localhosturl}/api/customers/me", cts.Token);
 		var customerInfo = JsonSerializer.Deserialize<CustomerInfoViewModel>(response, _options);
 		return View(customerInfo);
 	}
@@ -50,7 +50,7 @@ public class CustomerController : Controller
 		var json = JsonSerializer.Serialize(balanceViewModel);
 		var data = new StringContent(json, Encoding.UTF8, "application/json");
 
-		var response = await client.PutAsync($"{_localhosturl}/api/Customer/Balance", data);
+		var response = await client.PutAsync($"{_localhosturl}/api/customers/me/balance", data);
 
 		return RedirectToAction(nameof(GetCustomer));
 	}

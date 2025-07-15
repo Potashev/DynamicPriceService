@@ -14,22 +14,22 @@ namespace DynamicPriceCore.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "CustomerPolicy")]
-public class CustomerController : ControllerBase
+public class CustomersController : ControllerBase
 {
 	private readonly IMediator _mediator;
-	public CustomerController(IMediator mediator)
+	public CustomersController(IMediator mediator)
 	{
 		_mediator = mediator;
 	}
 
-	[HttpGet("Info")]
+	[HttpGet("me")]
 	public async Task<ActionResult<CustomerInfoViewModel>> GetCustomerInfo(CancellationToken cancellationToken)
 	{
 		var customerInfo = await _mediator.Send(new GetCustomerInfoQuery(), cancellationToken);
 		return Ok(customerInfo);
 	}
 
-	[HttpPut("Balance")]
+	[HttpPut("me/balance")]
 	public async Task<IActionResult> TopUp([FromBody] BalanceViewModel balanceVm)
 	{
 		await _mediator.Send(new TopUpBalanceCommand(balanceVm));

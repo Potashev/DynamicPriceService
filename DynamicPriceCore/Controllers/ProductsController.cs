@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace DynamicPriceCore.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("api/company/[controller]")]
 	[ApiController]
 	public class ProductsController : ControllerBase
 	{
@@ -19,7 +19,7 @@ namespace DynamicPriceCore.Controllers
 		}
 
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
-		[HttpGet("/api/Products")]
+		[HttpGet]
 		public async Task<ActionResult<IEnumerable<ProductViewModel>>> GetProducts(CancellationToken cancellationToken)
 		{
 			var productsVm = await _mediator.Send(new GetProductsQuery(), cancellationToken);
@@ -49,7 +49,7 @@ namespace DynamicPriceCore.Controllers
 			return Ok(productId);
 		}
 
-		[HttpPost("/api/Products")]
+		[HttpPost]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 		public async Task<ActionResult<int>> Create(ProductViewModel productVm)
 		{

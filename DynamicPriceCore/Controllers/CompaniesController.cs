@@ -20,14 +20,19 @@ public class CompaniesController : ControllerBase
 		_mediator = mediator;
 	}
 
-	[HttpGet("/api/ActiveCompanies")]
-	public async Task<ActionResult<IEnumerable<Company>>> GetActiveCompanies(CancellationToken cancellationToken)
+	[HttpGet]
+	public async Task<ActionResult<IEnumerable<Company>>> GetCompanies([FromQuery] string? status, CancellationToken cancellationToken)
 	{
-		var activeCompanies = await _mediator.Send(new GetActiveCompaniesQuery(), cancellationToken);
-		return Ok(activeCompanies);
+		if (status == "active")
+		{
+			var activeCompanies = await _mediator.Send(new GetActiveCompaniesQuery(), cancellationToken);
+			return Ok(activeCompanies);
+		}
+
+		return StatusCode(StatusCodes.Status501NotImplemented, "Retrieving all companies is not implemented yet.");
 	}
 
-	[HttpGet("/api/ActiveCompanies/{companyId}")]
+	[HttpGet("{companyId}/products")]
 	public async Task<ActionResult<CompanyProductsInfo>> GetCompanyProducts(string companyId, CancellationToken cancellationToken)
 	{
 		var companyProducts = await _mediator.Send(new GetCompanyProductsQuery(companyId), cancellationToken);

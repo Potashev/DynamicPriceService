@@ -25,7 +25,7 @@ public class PriceRulesController : Controller
 		var token = HttpContext.Session.GetString("AuthToken");
 		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-		var response = await client.GetStringAsync($"{_localhosturl}/api/PriceRule");
+		var response = await client.GetStringAsync($"{_localhosturl}/api/company/price-rule");
 		var priceRuleWithStatus = JsonSerializer.Deserialize<PriceRuleWithStatus>(response, _options);
 
 		ViewData["RuleStatus"] = priceRuleWithStatus.IsActive ?
@@ -45,7 +45,7 @@ public class PriceRulesController : Controller
 		var token = HttpContext.Session.GetString("AuthToken");
 		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-		var response = await client.GetStringAsync($"{_localhosturl}/api/PriceRule");
+		var response = await client.GetStringAsync($"{_localhosturl}/api/company/price-rule");
 
 		//to make api more compact, we use prVm with status
 		var priceRuleWithStatus = JsonSerializer.Deserialize<PriceRuleWithStatus>(response, _options);
@@ -64,7 +64,7 @@ public class PriceRulesController : Controller
 
 			var json = JsonSerializer.Serialize(priceRuleVm);
 			var data = new StringContent(json, Encoding.UTF8, "application/json");
-			var response = await client.PutAsync($"{_localhosturl}/api/PriceRule", data);
+			var response = await client.PutAsync($"{_localhosturl}/api/company/price-rule", data);
 
 			return RedirectToAction(nameof(Details));
 		}
@@ -78,7 +78,7 @@ public class PriceRulesController : Controller
 		var token = HttpContext.Session.GetString("AuthToken");
 		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-		var response = await client.GetStringAsync($"{_localhosturl}/api/PriceRule/Run");
+		var response = await client.PostAsync($"{_localhosturl}/api/company/price-rule/run", null);
 		return RedirectToAction(nameof(Details));
 	}
 
@@ -88,7 +88,7 @@ public class PriceRulesController : Controller
 		var token = HttpContext.Session.GetString("AuthToken");
 		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-		var response = await client.GetStringAsync($"{_localhosturl}/api/PriceRule/Stop");
+		var response = await client.PostAsync($"{_localhosturl}/api/company/price-rule/stop", null);
 		return RedirectToAction(nameof(Details));
 	}
 }

@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPriceCore.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+	[Route("api/[controller]")]
+	[ApiController]
     public class AuthController : ControllerBase
     {
 		private readonly IMediator _mediator;
@@ -17,16 +17,15 @@ namespace DynamicPriceCore.Controllers
 		{
 			_mediator = mediator;
 		}
-		
 
-		[HttpPost("/api/Register")]
+		[HttpPost("register")]
 		public async Task<IActionResult> Register([FromBody] RegisterViewModel registerVm)
 		{
 			await _mediator.Send(new RegisterCommand(registerVm));
 			return Ok("User registered successfully");
 		}
 
-		[HttpPost("/api/Login")]
+		[HttpPost("login")]
 		public async Task<IActionResult> Login([FromBody] LoginViewModel loginVm)
 		{
 			var token = await _mediator.Send(new LoginCommand(loginVm));

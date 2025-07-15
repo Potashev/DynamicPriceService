@@ -26,7 +26,7 @@ public class CompaniesController : Controller
 		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
 		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-		var response = await client.GetStringAsync($"{_localhosturl}/api/ActiveCompanies", cts.Token);
+		var response = await client.GetStringAsync($"{_localhosturl}/api/companies?status=active", cts.Token);
 		var activeCompanies = JsonSerializer.Deserialize<IEnumerable<Company>>(response, _options);	//todo: use dto
 		return View(activeCompanies);
 	}
@@ -38,7 +38,7 @@ public class CompaniesController : Controller
 		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
 		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-		var response = await client.GetStringAsync($"{_localhosturl}/api/ActiveCompanies/{id}", cts.Token);
+		var response = await client.GetStringAsync($"{_localhosturl}/api/companies/{id}/products", cts.Token);
 		var companyProductsInfo = JsonSerializer.Deserialize<CompanyProductsInfo>(response, _options);
 		return View(companyProductsInfo);
 	}

@@ -28,7 +28,7 @@ public class ProductsController : Controller
 		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
 		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-		var response = await client.GetStringAsync($"{_localhosturl}/api/Products", cts.Token);
+		var response = await client.GetStringAsync($"{_localhosturl}/api/company/products", cts.Token);
 		var productsVm = JsonSerializer.Deserialize<IEnumerable<ProductViewModel>>(response, _options);
 		return View(productsVm);
 	}
@@ -40,7 +40,7 @@ public class ProductsController : Controller
 			return NotFound();
 		}
 		var client = _httpClientFactory.CreateClient();
-		var response = await client.GetStringAsync($"{_localhosturl}/api/Products/{id}");
+		var response = await client.GetStringAsync($"{_localhosturl}/api/company/products/{id}");
 		var productVm = JsonSerializer.Deserialize<ProductViewModel>(response, _options);
 		return View(productVm);
 	}
@@ -63,7 +63,7 @@ public class ProductsController : Controller
 
 			var json = JsonSerializer.Serialize(productVm);
 			var data = new StringContent(json, Encoding.UTF8, "application/json");
-			var response = await client.PostAsync($"{_localhosturl}/api/Products", data);
+			var response = await client.PostAsync($"{_localhosturl}/api/company/products", data);
 			return RedirectToAction(nameof(Index));
 		}
 		return View(productVm);
@@ -76,7 +76,7 @@ public class ProductsController : Controller
 			return NotFound();
 		}
 		var client = _httpClientFactory.CreateClient();
-		var response = await client.GetStringAsync($"{_localhosturl}/api/Products/{id}");
+		var response = await client.GetStringAsync($"{_localhosturl}/api/company/products/{id}");
 		var productVm = JsonSerializer.Deserialize<ProductViewModel>(response, _options);
 		return View(productVm);
 	}
@@ -90,7 +90,7 @@ public class ProductsController : Controller
 			var client = _httpClientFactory.CreateClient();
 			var json = JsonSerializer.Serialize(productVm);
 			var data = new StringContent(json, Encoding.UTF8, "application/json");
-			var response = await client.PutAsync($"{_localhosturl}/api/Products/{id}", data);
+			var response = await client.PutAsync($"{_localhosturl}/api/company/products/{id}", data);
 			return RedirectToAction(nameof(Index));
 		}
 
@@ -104,7 +104,7 @@ public class ProductsController : Controller
 			return NotFound();
 		}
 		var client = _httpClientFactory.CreateClient();
-		var response = await client.GetStringAsync($"{_localhosturl}/api/Products/{id}");
+		var response = await client.GetStringAsync($"{_localhosturl}/api/company/products/{id}");
 		var productVm = JsonSerializer.Deserialize<ProductViewModel>(response, _options);
 		if (productVm == null)
 		{
@@ -118,7 +118,7 @@ public class ProductsController : Controller
 	public async Task<IActionResult> DeleteConfirmed(int id)
 	{
 		var client = _httpClientFactory.CreateClient();
-		var response = await client.DeleteAsync($"{_localhosturl}/api/Products/{id}");
+		var response = await client.DeleteAsync($"{_localhosturl}/api/company/products/{id}");
 		return RedirectToAction(nameof(Index));
 	}
 }

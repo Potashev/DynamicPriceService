@@ -43,7 +43,7 @@ public class AuthController : Controller
 			var client = _httpClientFactory.CreateClient();
 			var json = JsonSerializer.Serialize(loginVm);
 			var data = new StringContent(json, Encoding.UTF8, "application/json");
-			var response = await client.PostAsync($"{_localhosturl}/api/Login", data);       //bad url?
+			var response = await client.PostAsync($"{_localhosturl}/api/auth/login", data);
 
 			if (response.IsSuccessStatusCode)
 			{

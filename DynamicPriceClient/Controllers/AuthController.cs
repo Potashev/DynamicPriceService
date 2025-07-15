@@ -44,7 +44,7 @@ namespace DynamicPriceClient.Controllers
 			var client = _httpClientFactory.CreateClient();
 			var json = JsonSerializer.Serialize(registerVm);
 			var data = new StringContent(json, Encoding.UTF8, "application/json");
-			var response = await client.PostAsync($"{_localhosturl}/api/Register", data);       //bad url?
+			var response = await client.PostAsync($"{_localhosturl}/api/auth/register", data);
 			return RedirectToAction(nameof(Index));
 		}
 
@@ -66,7 +66,7 @@ namespace DynamicPriceClient.Controllers
 				var client = _httpClientFactory.CreateClient();
 				var json = JsonSerializer.Serialize(loginVm);
 				var data = new StringContent(json, Encoding.UTF8, "application/json");
-				var response = await client.PostAsync($"{_localhosturl}/api/Login", data);       //bad url?
+				var response = await client.PostAsync($"{_localhosturl}/api/auth/login", data);
 
 				if (response.IsSuccessStatusCode)
 				{

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPriceCore.Controllers;
-[Route("api/[controller]")]
+[Route("api/company/price-rule")]
 [ApiController]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 public class PriceRulesController : ControllerBase
@@ -20,28 +20,28 @@ public class PriceRulesController : ControllerBase
 		_mediator = mediator;
 	}
 
-	[HttpGet("/api/PriceRule")]
+	[HttpGet]
 	public async Task<ActionResult<PriceRuleWithStatus>> Get()
 	{
 		return await _mediator.Send(new GetPriceRuleWithStatusQuery());
 	}
 
 	// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-	[HttpPut("/api/PriceRule")]
+	[HttpPut]
 	public async Task<IActionResult> Edit(PriceRuleViewModel priceRuleVm)
 	{
 		var priceRuleId = await _mediator.Send(new EditPriceRuleCommand(priceRuleVm));
 		return Ok(priceRuleId);
 	}
 
-	[HttpGet("/api/PriceRule/Run")]
+	[HttpPost("run")]
 	public async Task<ActionResult> RunPriceReducing()
 	{
 		await _mediator.Send(new PriceReducingCommand(true));
 		return Ok();
 	}
 
-	[HttpGet("/api/PriceRule/Stop")]
+	[HttpPost("stop")]
 	public async Task<ActionResult> StopPriceReducing()
 	{
 		await _mediator.Send(new PriceReducingCommand(false));

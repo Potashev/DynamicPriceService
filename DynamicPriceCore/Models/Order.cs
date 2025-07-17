@@ -13,7 +13,7 @@ public class Order
 
 public enum OrderStatus
 {
-	Cart,
+	Cart,		//todo: obsolete - remove
 	Confirmed,
 	Completed
 }

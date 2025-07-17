@@ -1,6 +1,6 @@
 ﻿namespace DynamicPriceService.ViewModels;
 
-public class OrderProductViewModel
+public class OrderItemViewModel
 {
 	public int Id { get; set; }
 	public ProductViewModel Product { get; set; }

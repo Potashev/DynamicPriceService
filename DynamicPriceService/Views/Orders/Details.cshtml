@@ -10,19 +10,19 @@
 	<thead>
 		<tr>
 			<th>
-				@Html.DisplayNameFor(model => model.OrderProducts.FirstOrDefault().Product.Title)
+				@Html.DisplayNameFor(model => model.OrderItems.FirstOrDefault().Product.Title)
 			</th>
 			<th>
-				@Html.DisplayNameFor(model => model.OrderProducts.FirstOrDefault().Price)
+				@Html.DisplayNameFor(model => model.OrderItems.FirstOrDefault().Price)
 			</th>
 			<th>
-				@Html.DisplayNameFor(model => model.OrderProducts.FirstOrDefault().Quantity)
+				@Html.DisplayNameFor(model => model.OrderItems.FirstOrDefault().Quantity)
 			</th>
 			<th></th>
 		</tr>
 	</thead>
 	<tbody>
-		@foreach (var item in Model.OrderProducts)
+		@foreach (var item in Model.OrderItems)
 		{
 			<tr>
 				<td>

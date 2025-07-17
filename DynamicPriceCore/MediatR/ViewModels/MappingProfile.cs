@@ -3,6 +3,7 @@ using DynamicPriceCore.Models;
 
 namespace DynamicPriceCore.MediatR.ViewModels;
 
+//todo: remove from VM folder
 public class MappingProfile : Profile
 {
 	public MappingProfile()
@@ -19,7 +20,7 @@ public class MappingProfile : Profile
 			.ReverseMap();
 
 		//todo: make mapping for OrderItem and CartItem?
-		//CreateMap<OrderProduct, OrderProductViewModel>()
-		//	.ReverseMap();
+		CreateMap<OrderItem, OrderItemViewModel>()
+			.ReverseMap();
 	}
 }

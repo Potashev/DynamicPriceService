@@ -19,10 +19,6 @@ public class GetCompanyOrdersQueryHandler
 
 	public async Task<IEnumerable<OrderViewModel>> Handle(GetCompanyOrdersQuery request, CancellationToken cancellationToken)
 	{
-		//var companyOrders = await _context.Orders
-		//	.Where(o => o.Company.CompanyUsers.Any(cu => cu.UserId == request.UserId))
-		//	.ToArrayAsync(cancellationToken);
-
 		var manager = await _currentUserService.GetCurrentUserAsync();
 
 		//todo: check

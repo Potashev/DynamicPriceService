@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿ using AutoMapper;
 using DynamicPriceCore.Data;
 using DynamicPriceCore.MediatR.ViewModels;
 using MediatR;
@@ -17,26 +17,25 @@ public class GetCompanyOrderDetailsQueryHandler
 
 	public async Task<OrderViewModel> Handle(GetCompanyOrderDetailsQuery request, CancellationToken cancellationToken)
 	{
-		//var companyOrder = await _context.Orders
-		//	.Where(o => o.OrderId.ToString() == request.OrderId) // perfomance - convert request to int?
-		//	.Include(o => o.OrderProducts)
-		//	.ThenInclude(op => op.Product)
-		//	.FirstOrDefaultAsync(cancellationToken);
+		var companyOrder = await _context.Orders
+			.Where(o => o.OrderId.ToString() == request.OrderId) // perfomance - convert request to int?
+			.Include(o => o.OrderItems)
+			.ThenInclude(op => op.Product)
+			.FirstOrDefaultAsync(cancellationToken);
 
-		//var companyOrderVm = _mapper.Map<OrderViewModel>(companyOrder);
+		var companyOrderVm = _mapper.Map<OrderViewModel>(companyOrder);
 
-		//companyOrderVm.OrderAmount = GetOrderPrice(companyOrderVm);
+		companyOrderVm.OrderAmount = GetOrderPrice(companyOrderVm);
 
-		//return companyOrderVm;
-		return new OrderViewModel();
+		return companyOrderVm;
 	}
 
 	private double GetOrderPrice(OrderViewModel orderVm)
 	{
 		double sum = 0;
-		foreach (var orderProduct in orderVm.OrderProducts)
+		foreach (var orderItem in orderVm.OrderItems)
 		{
-			sum += (double)(orderProduct.Price * orderProduct.Quantity);
+			sum += (double)(orderItem.ProductPrice * orderItem.Quantity);
 		}
 		return sum;
 	}

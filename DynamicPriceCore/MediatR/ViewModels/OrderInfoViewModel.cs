@@ -6,7 +6,7 @@ public class OrderInfoViewModel
 {
 	public int OrderId { get; set; }
 	public Company Company { get; set; }
-	public ICollection<OrderProductViewModel> OrderProducts { get; set; }
+	public ICollection<OrderItemViewModel> OrderItems { get; set; }	//todo: check after replacing from OrderProducts
 	public OrderStatus Status { get; set; }
 	public DateTime? OrderDate { get; set; }
 

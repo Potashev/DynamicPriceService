@@ -56,6 +56,7 @@ public class CompanyOrdersController : ControllerBase
 	}
 
 	[HttpGet("/api/CompanyOrders")]
+	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 	public async Task<ActionResult<IEnumerable<OrderViewModel>>> GetCompanyOrders(CancellationToken cancellationToken)
 	{
 		//update
@@ -64,6 +65,7 @@ public class CompanyOrdersController : ControllerBase
 	}
 
 	[HttpGet("/api/CompanyOrders/{orderId}")]
+	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 	public async Task<ActionResult<OrderViewModel>> GetCompanyOrder(string orderId)
 	{
 		var ordersVm = await _mediator.Send(new GetCompanyOrderDetailsQuery(orderId));
@@ -71,6 +73,7 @@ public class CompanyOrdersController : ControllerBase
 	}
 
 	[HttpGet("/api/CompanyOrders/FindByReceiveKey/{key}")]
+	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 	public async Task<ActionResult<int>> GetCompanyOrderByReceiveKey(string key)
 	{
 		var orderId = await _mediator.Send(new GetOrderIdByReceiveKeyQuery(key));
@@ -78,6 +81,7 @@ public class CompanyOrdersController : ControllerBase
 	}
 
 	[HttpGet("/api/CompanyOrders/{orderId}/Complete")]
+	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 	public async Task<ActionResult<int>> CompleteOrder(string orderId)
 	{
 		var id =  await _mediator.Send(new CompleteOrderCommand(orderId));
@@ -85,6 +89,7 @@ public class CompanyOrdersController : ControllerBase
 	}
 
 	[HttpGet("/api/CompanyOrders/Statistics")]
+	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 	public async Task<ActionResult<OrderStatistics>> GetCompanyStatistics(CancellationToken cancellationToken)
 	{
 		var orderStatistics = await _mediator.Send(new GetCompanyStatisticsQuery(), cancellationToken);

@@ -1,15 +1,15 @@
-﻿using System.Text.Json.Serialization;
+﻿//using System.Text.Json.Serialization;
 
-namespace DynamicPriceCore.Models;
+//namespace DynamicPriceCore.Models;
 
-public class OrderProduct
-{
-	public int Id { get; set; }
-	[JsonIgnore]
-	public Order Order { get; set; }
-	public int OrderId { get; set; }
-	public Product Product { get; set; }
-	public int ProductId { get; set; }
-	public decimal Price { get; set; }
-	public int Quantity { get; set; }
-}
+//public class OrderProduct
+//{
+//	public int Id { get; set; }
+//	[JsonIgnore]
+//	public Order Order { get; set; }
+//	public int OrderId { get; set; }
+//	public Product Product { get; set; }
+//	public int ProductId { get; set; }
+//	public decimal Price { get; set; }
+//	public int Quantity { get; set; }
+//}

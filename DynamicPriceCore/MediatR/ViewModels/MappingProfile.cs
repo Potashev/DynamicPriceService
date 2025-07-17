@@ -17,7 +17,9 @@ public class MappingProfile : Profile
 			.ReverseMap();
 		CreateMap<Order, OrderInfoViewModel>()
 			.ReverseMap();
-		CreateMap<OrderProduct, OrderProductViewModel>()
-			.ReverseMap();
+
+		//todo: make mapping for OrderItem and CartItem?
+		//CreateMap<OrderProduct, OrderProductViewModel>()
+		//	.ReverseMap();
 	}
 }

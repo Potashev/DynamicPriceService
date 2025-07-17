@@ -147,35 +147,6 @@ namespace DynamicPriceCore.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("DynamicPriceCore.Models.OrderProduct", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("OrderProducts");
-                });
-
             modelBuilder.Entity("DynamicPriceCore.Models.PriceDynamic", b =>
                 {
                     b.Property<int>("Id")
@@ -424,25 +395,6 @@ namespace DynamicPriceCore.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("DynamicPriceCore.Models.OrderProduct", b =>
-                {
-                    b.HasOne("DynamicPriceCore.Models.Order", "Order")
-                        .WithMany("OrderProducts")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("DynamicPriceCore.Models.Product", "Product")
-                        .WithMany("OrderProducts")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Order");
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("DynamicPriceCore.Models.PriceDynamic", b =>
                 {
                     b.HasOne("DynamicPriceCore.Models.Product", "Product")
@@ -532,14 +484,14 @@ namespace DynamicPriceCore.Migrations
                     b.Navigation("CompanyUsers");
                 });
 
-            modelBuilder.Entity("DynamicPriceCore.Models.Order", b =>
-                {
-                    b.Navigation("OrderProducts");
-                });
+            //modelBuilder.Entity("DynamicPriceCore.Models.Order", b =>
+            //    {
+            //        b.Navigation("OrderProducts");
+            //    });
 
             modelBuilder.Entity("DynamicPriceCore.Models.Product", b =>
                 {
-                    b.Navigation("OrderProducts");
+                    //b.Navigation("OrderProducts");
 
                     b.Navigation("PriceDynamics");
                 });

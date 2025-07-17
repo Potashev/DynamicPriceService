@@ -22,7 +22,7 @@ public class Product
 
 	//todo: remove after adding order entity
 	public DateTime? LastSellTime { get; set; }
-	[JsonIgnore]
-	public ICollection<OrderProduct> OrderProducts { get; set; }
+	//[JsonIgnore]
+	//public ICollection<OrderProduct> OrderProducts { get; set; } //todo: check removing
 	public ICollection<PriceDynamic> PriceDynamics { get; set; }
 }

@@ -1,4 +1,4 @@
-﻿@model DynamicPriceCore.Models.Order
+﻿@model DynamicPriceCore.Models.Cart
 
 @{
 	ViewData["Title"] = "Cart";
@@ -7,28 +7,28 @@
 <h1>Products cart</h1>
 
 <p>
-	<a asp-action="ConfirmOrder" asp-route-id="@Model?.OrderId" class="btn btn-primary">Confirm order</a>
+	<a asp-action="ConfirmOrder" asp-route-id="@Model?.CartId" class="btn btn-primary">Confirm order</a>
 </p>
 <table class="table">
 	<thead>
 		<tr>
 			<th>
-				@Html.DisplayNameFor(model => model.OrderProducts.FirstOrDefault().Product.Title)
+				@Html.DisplayNameFor(model => model.CartItems.FirstOrDefault().Product.Title)
 			</th>
 			<th>
-				@Html.DisplayNameFor(model => model.OrderProducts.FirstOrDefault().Product.Description)
+				@Html.DisplayNameFor(model => model.CartItems.FirstOrDefault().Product.Description)
 			</th>
 			<th>
-				@Html.DisplayNameFor(model => model.OrderProducts.FirstOrDefault().Quantity)
+				@Html.DisplayNameFor(model => model.CartItems.FirstOrDefault().Quantity)
 			</th>
 			<th>
-				@Html.DisplayNameFor(model => model.OrderProducts.FirstOrDefault().Price)
+				@Html.DisplayNameFor(model => model.CartItems.FirstOrDefault().Product.Price)
 			</th>
 			<th></th>
 		</tr>
 	</thead>
 	<tbody>
-		@foreach (var item in Model.OrderProducts)
+		@foreach (var item in Model.CartItems)
 		{
 			<tr>
 				<td>
@@ -41,7 +41,7 @@
 					@Html.DisplayFor(modelItem => item.Quantity)
 				</td>
 				<td>
-					@Html.DisplayFor(modelItem => item.Price)
+					@Html.DisplayFor(modelItem => item.Product.Price)
 				</td>
 				<td>
 					<a asp-action="AddProduct" asp-route-id="@item.Product?.ProductId">Add</a> |

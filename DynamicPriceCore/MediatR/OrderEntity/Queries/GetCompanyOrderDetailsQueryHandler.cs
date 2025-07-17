@@ -17,17 +17,18 @@ public class GetCompanyOrderDetailsQueryHandler
 
 	public async Task<OrderViewModel> Handle(GetCompanyOrderDetailsQuery request, CancellationToken cancellationToken)
 	{
-		var companyOrder = await _context.Orders
-			.Where(o => o.OrderId.ToString() == request.OrderId) // perfomance - convert request to int?
-			.Include(o => o.OrderProducts)
-			.ThenInclude(op => op.Product)
-			.FirstOrDefaultAsync(cancellationToken);
+		//var companyOrder = await _context.Orders
+		//	.Where(o => o.OrderId.ToString() == request.OrderId) // perfomance - convert request to int?
+		//	.Include(o => o.OrderProducts)
+		//	.ThenInclude(op => op.Product)
+		//	.FirstOrDefaultAsync(cancellationToken);
 
-		var companyOrderVm = _mapper.Map<OrderViewModel>(companyOrder);
+		//var companyOrderVm = _mapper.Map<OrderViewModel>(companyOrder);
 
-		companyOrderVm.OrderAmount = GetOrderPrice(companyOrderVm);
+		//companyOrderVm.OrderAmount = GetOrderPrice(companyOrderVm);
 
-		return companyOrderVm;
+		//return companyOrderVm;
+		return new OrderViewModel();
 	}
 
 	private double GetOrderPrice(OrderViewModel orderVm)

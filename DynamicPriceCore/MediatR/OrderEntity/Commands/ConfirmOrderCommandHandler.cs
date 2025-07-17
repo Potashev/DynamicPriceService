@@ -24,43 +24,44 @@ public class TopUpBalanceCommandHandler
 		var customer = await _currentUserService.GetCurrentUserAsync();
 
 
-		var order = await _context.Orders
-			.Include(o => o.OrderProducts)
-				.ThenInclude(op => op.Product)
-			.Where(o => o.OrderId == request.CartOrderId)
-			.FirstOrDefaultAsync(cancellationToken);
+		//var order = await _context.Orders
+		//	.Include(o => o.OrderProducts)
+		//		.ThenInclude(op => op.Product)
+		//	.Where(o => o.OrderId == request.CartOrderId)
+		//	.FirstOrDefaultAsync(cancellationToken);
 
-		decimal orderTotalAmout = 0;
+		//decimal orderTotalAmout = 0;
 
-		foreach (var orderProduct in order.OrderProducts)
-		{
-			var product = orderProduct.Product;
-			orderProduct.Price = product.Price;
-			product.LastSellTime = DateTime.UtcNow;
-			if (product.Quantity != null)
-				product.Quantity -= orderProduct.Quantity;
+		//foreach (var orderProduct in order.OrderProducts)
+		//{
+		//	var product = orderProduct.Product;
+		//	orderProduct.Price = product.Price;
+		//	product.LastSellTime = DateTime.UtcNow;
+		//	if (product.Quantity != null)
+		//		product.Quantity -= orderProduct.Quantity;
 
-			orderTotalAmout += orderProduct.Quantity * orderProduct.Price;
-		}
+		//	orderTotalAmout += orderProduct.Quantity * orderProduct.Price;
+		//}
 
-		if(customer.Balance >= orderTotalAmout)
-		{
-			customer.Balance -= orderTotalAmout;
+		//if(customer.Balance >= orderTotalAmout)
+		//{
+		//	customer.Balance -= orderTotalAmout;
 
-			order.Status = OrderStatus.Confirmed;
-			order.OrderDate = DateTime.UtcNow;
-			order.ReceiveKey = GenerateReceiveKey();
-		}
-		else
-		{
-			throw new Exception("Top up the balance!");
-		}
+		//	order.Status = OrderStatus.Confirmed;
+		//	order.OrderDate = DateTime.UtcNow;
+		//	order.ReceiveKey = GenerateReceiveKey();
+		//}
+		//else
+		//{
+		//	throw new Exception("Top up the balance!");
+		//}
 
-			await _context.SaveChangesAsync(cancellationToken);
+		//	await _context.SaveChangesAsync(cancellationToken);
 
-		await _increasePriceService.Increase(order.OrderProducts);
+		//await _increasePriceService.Increase(order.OrderProducts);
 
-		return order.ReceiveKey;
+		//return order.ReceiveKey;
+		return 1;
 	}
 
 	private int GenerateReceiveKey() => new Random().Next(100000, 1000000);

@@ -1,4 +1,6 @@
-﻿using DynamicPriceCore.MediatR.OrderEntity.Commands;
+﻿using DynamicPriceCore.MediatR.CartEntity.Commands;
+using DynamicPriceCore.MediatR.CartEntity.Queries;
+using DynamicPriceCore.MediatR.OrderEntity.Commands;
 using DynamicPriceCore.MediatR.OrderEntity.Queries;
 using DynamicPriceCore.Models;
 using MediatR;
@@ -20,19 +22,19 @@ public class CustomerCartsController : ControllerBase
 	}
 
 	[HttpGet("/api/Orders/Cart/{companyId}")]
-	public async Task<ActionResult<Order>> CartOrderDetails(int? companyId, CancellationToken cancellationToken)
+	public async Task<ActionResult<Cart>> GetCartDetails(int? companyId, CancellationToken cancellationToken)
 	{
-		var cartOrder = await _mediator.Send(new GetCartOrderQuery((int)companyId), cancellationToken);
+		var cart = await _mediator.Send(new GetCartDetailsQuery((int)companyId), cancellationToken);
 
-		return cartOrder == null
+		return cart == null
 			? NotFound(new { message = "Cart is empty." })
-			: Ok(cartOrder);
+			: Ok(cart);
 	}
 
 	[HttpGet("/api/Orders/Add/{productId}")]
 	public async Task<ActionResult<Order>> AddProduct(int? productId)
 	{
-		var cartOrder = await _mediator.Send(new AddProductToOrderCommand(productId.ToString()));
+		var cartOrder = await _mediator.Send(new AddProductToCartCommand(productId.ToString()));
 		return Ok(cartOrder);
 	}
 
@@ -40,14 +42,14 @@ public class CustomerCartsController : ControllerBase
 	[HttpGet("/api/Orders/Remove/{productId}")]
 	public async Task<ActionResult<Order>> RemoveProduct(int? productId)
 	{
-		var cartOrder = await _mediator.Send(new RemoveProductFromOrderCommand(productId.ToString()));
+		var cartOrder = await _mediator.Send(new RemoveProductFromCartCommand(productId.ToString()));
 		return Ok(cartOrder);
 	}
 
 	[HttpGet("/api/Orders/Confirm/{cartOrderId}")]
 	public async Task<ActionResult<int>> ConfirmOrder(int? cartOrderId, CancellationToken cancellationToken)
 	{
-		var receiveKey = await _mediator.Send(new ConfirmOrderCommand((int)cartOrderId), cancellationToken);
+		var receiveKey = await _mediator.Send(new ConfirmCartCommand((int)cartOrderId), cancellationToken);
 		return Ok(receiveKey);
 	}
 }

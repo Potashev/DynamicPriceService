@@ -17,34 +17,35 @@ public class IncreasePriceService : IIncreasePriceService
 		_priceHubContext = priceHubContext;
 	}
 
-	public async Task Increase(IEnumerable<OrderProduct> OrderProducts)
+	//todo: check replacing OrderProduct with OrderItem
+	public async Task Increase(IEnumerable<OrderItem> OrderItems)
 	{
 		var company = _context.Products
-			.Where(p => p.ProductId == OrderProducts.FirstOrDefault().ProductId)
+			.Where(p => p.ProductId == OrderItems.FirstOrDefault().ProductId)
 			.Select(p => p.Company).FirstOrDefault();
 
 		var priceRule = _context.PriceRules
 			.FirstOrDefault(p => p.Company.CompanyId == company.CompanyId);
 
-		IncreasePrice(OrderProducts, priceRule);
+		IncreasePrice(OrderItems, priceRule);
 
-		await NoticeOfIncrease(OrderProducts);
+		await NoticeOfIncrease(OrderItems);
 
 		_context.SaveChanges();
 	}
 
-	private void IncreasePrice(IEnumerable<OrderProduct> OrderProducts, PriceRule priceRule)
+	private void IncreasePrice(IEnumerable<OrderItem> OrderItems, PriceRule priceRule)
 	{
-		foreach (var orderProduct in OrderProducts)
+		foreach (var orderProduct in OrderItems)
 		{
 			var product = orderProduct.Product;
 			var increase = product.Price * (decimal)priceRule.Increase * 0.01m * orderProduct.Quantity;
 			product.Price += increase;
 		}
 	}
-	private async Task NoticeOfIncrease(IEnumerable<OrderProduct> OrderProducts)
+	private async Task NoticeOfIncrease(IEnumerable<OrderItem> OrderItems)
 	{
-		foreach (var orderProduct in OrderProducts)
+		foreach (var orderProduct in OrderItems)
 		{
 			var product = orderProduct.Product;
 			await _priceHubContext.Clients.All.SendAsync("ReceivePriceUpdate", product.ProductId, product.Price);
@@ -54,5 +55,5 @@ public class IncreasePriceService : IIncreasePriceService
 
 public interface IIncreasePriceService
 {
-	Task Increase(IEnumerable<OrderProduct> OrderProducts);
+	Task Increase(IEnumerable<OrderItem> OrderItems);
 }

@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DynamicPriceCore.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
+//[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]	//todo - revert
 public class CompanyOrdersController : ControllerBase
 {
 	private readonly IMediator _mediator;
@@ -38,7 +38,7 @@ public class CompanyOrdersController : ControllerBase
 	//	return Ok(cartOrder);
 	//}
 
-	
+
 	//[HttpGet("/api/Orders/Remove/{productId}")]
 	//[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "CustomerPolicy")]
 	//public async Task<ActionResult<Order>> RemoveProduct(int? productId)
@@ -47,13 +47,13 @@ public class CompanyOrdersController : ControllerBase
 	//	return Ok(cartOrder);
 	//}
 
-	//[HttpGet("/api/Orders/Confirm/{cartOrderId}")]
-	//[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "CustomerPolicy")]
-	//public async Task<ActionResult<int>> ConfirmOrder(int? cartOrderId, CancellationToken cancellationToken)
-	//{
-	//	var receiveKey = await _mediator.Send(new ConfirmOrderCommand((int)cartOrderId), cancellationToken);
-	//	return Ok(receiveKey);
-	//}
+	[HttpGet("/api/Orders/Confirm/{cartOrderId}")]
+	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "CustomerPolicy")]
+	public async Task<ActionResult<int>> ConfirmOrder(int? cartOrderId, CancellationToken cancellationToken)
+	{
+		var receiveKey = await _mediator.Send(new ConfirmOrderCommand((int)cartOrderId), cancellationToken);
+		return Ok(receiveKey);
+	}
 
 	[HttpGet("/api/CompanyOrders")]
 	public async Task<ActionResult<IEnumerable<OrderViewModel>>> GetCompanyOrders(CancellationToken cancellationToken)

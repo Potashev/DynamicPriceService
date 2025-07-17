@@ -2,4 +2,4 @@
 
 namespace DynamicPriceCore.MediatR.OrderEntity.Commands;
 
-public record ConfirmOrderCommand(int CartOrderId) : IRequest<int>;
+public record ConfirmOrderCommand(int CartId) : IRequest<int>;

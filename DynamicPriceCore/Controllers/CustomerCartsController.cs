@@ -46,10 +46,10 @@ public class CustomerCartsController : ControllerBase
 		return Ok(cartOrder);
 	}
 
-	[HttpGet("/api/Orders/Confirm/{cartOrderId}")]
-	public async Task<ActionResult<int>> ConfirmOrder(int? cartOrderId, CancellationToken cancellationToken)
-	{
-		var receiveKey = await _mediator.Send(new ConfirmCartCommand((int)cartOrderId), cancellationToken);
-		return Ok(receiveKey);
-	}
+	//[HttpGet("/api/Orders/Confirm/{cartOrderId}")]
+	//public async Task<ActionResult<int>> ConfirmOrder(int? cartOrderId, CancellationToken cancellationToken)
+	//{
+	//	var receiveKey = await _mediator.Send(new ConfirmCartCommand((int)cartOrderId), cancellationToken);
+	//	return Ok(receiveKey);
+	//}
 }

@@ -45,11 +45,4 @@ public class CustomerCartsController : ControllerBase
 		var cartOrder = await _mediator.Send(new RemoveProductFromCartCommand(productId.ToString()));
 		return Ok(cartOrder);
 	}
-
-	//[HttpGet("/api/Orders/Confirm/{cartOrderId}")]
-	//public async Task<ActionResult<int>> ConfirmOrder(int? cartOrderId, CancellationToken cancellationToken)
-	//{
-	//	var receiveKey = await _mediator.Send(new ConfirmCartCommand((int)cartOrderId), cancellationToken);
-	//	return Ok(receiveKey);
-	//}
 }

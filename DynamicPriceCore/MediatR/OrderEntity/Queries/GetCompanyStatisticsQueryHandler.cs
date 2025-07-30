@@ -21,7 +21,6 @@ public class GetCompanyStatisticsQueryHandler
 	{
 		var manager = await _currentUserService.GetCurrentUserAsync();
 
-		//todo: check
 		var companyOrdersWithAmount = await _context.Orders
 			.Where(o => o.Company.CompanyId == manager.CompanyId)
 			.Select(o => new

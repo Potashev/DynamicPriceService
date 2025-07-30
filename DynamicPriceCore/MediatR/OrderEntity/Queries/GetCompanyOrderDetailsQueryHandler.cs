@@ -1,4 +1,4 @@
-﻿ using AutoMapper;
+﻿using AutoMapper;
 using DynamicPriceCore.Data;
 using DynamicPriceCore.MediatR.ViewModels;
 using MediatR;

@@ -17,41 +17,25 @@ public class DynamicPriceCoreContext : IdentityDbContext<ApplicationUser>
 			.HasOne(oi => oi.Product)
 			.WithMany()
 			.HasForeignKey(oi => oi.ProductId)
-			.OnDelete(DeleteBehavior.Restrict); // или NoAction, смысл один: каскада нет
+			.OnDelete(DeleteBehavior.Restrict);
 
 		modelBuilder.Entity<OrderItem>()
 			.HasOne(oi => oi.Order)
 			.WithMany(o => o.OrderItems)
 			.HasForeignKey(oi => oi.OrderId)
-			.OnDelete(DeleteBehavior.Cascade); // Order удаляется -> OrderItems удаляются
+			.OnDelete(DeleteBehavior.Cascade);
 
 		modelBuilder.Entity<CartItem>()
 			.HasOne(ci => ci.Product)
 			.WithMany()
 			.HasForeignKey(ci => ci.ProductId)
-			.OnDelete(DeleteBehavior.NoAction); // или Restrict, аналогично
+			.OnDelete(DeleteBehavior.NoAction);
 
 		modelBuilder.Entity<CartItem>()
 			.HasOne(ci => ci.Cart)
 			.WithMany(c => c.CartItems)
 			.HasForeignKey(ci => ci.CartId)
-			.OnDelete(DeleteBehavior.Cascade); // корзина удаляется -> её items удаляются
-
-
-		//modelBuilder.Entity<OrderProduct>()
-		//	.HasKey(op => op.Id);
-
-		//modelBuilder.Entity<OrderProduct>()
-		//	.HasOne(op => op.Order)
-		//	.WithMany(o => o.OrderProducts)
-		//	.HasForeignKey(op => op.OrderId)
-		//	.OnDelete(DeleteBehavior.NoAction);
-
-		//modelBuilder.Entity<OrderProduct>()
-		//	.HasOne(op => op.Product)
-		//	.WithMany(p => p.OrderProducts)
-		//	.HasForeignKey(op => op.ProductId)
-		//	.OnDelete(DeleteBehavior.NoAction);
+			.OnDelete(DeleteBehavior.Cascade);
 	}
 
 	public DbSet<Company> Companies { get; set; } = default!;
@@ -59,8 +43,7 @@ public class DynamicPriceCoreContext : IdentityDbContext<ApplicationUser>
 	public DbSet<PriceRule> PriceRules { get; set; } = default!;
 	public DbSet<PriceDynamic> PriceDynamics { get; set; } = default!;
 	public DbSet<Cart> Carts { get; set; } = default;
-	public DbSet<Order> Orders { get; set; } = default;
 	public DbSet<CartItem> CartItems { get; set; } = default;
+	public DbSet<Order> Orders { get; set; } = default;
 	public DbSet<OrderItem> OrderItems { get; set; } = default;
-	//public DbSet<OrderProduct> OrderProducts { get; set; } = default;	//todo: obsolete - remove
 }

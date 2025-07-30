@@ -21,14 +21,6 @@ public class GetCartDetailsQueryHandler
 	{
 		var customer = await _currentUserService.GetCurrentUserAsync();
 
-		//var cart = await _context.Orders
-		//	.Include(o => o.Company)
-		//	.Include(o => o.OrderProducts)
-		//		.ThenInclude(op => op.Product)
-		//	.FirstOrDefaultAsync(o => o.Customer.Id == customer.Id
-		//		&& o.Company.CompanyId == request.CompanyId
-		//		&& o.Status == OrderStatus.Cart, cancellationToken);
-
 		var cart = await _context.Carts
 			.Include(c => c.Company)
 			.Include(c => c.CartItems)

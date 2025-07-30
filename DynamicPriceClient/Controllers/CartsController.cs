@@ -8,7 +8,7 @@ using System.Text;
 using System.Text.Json;
 
 namespace DynamicPriceClient.Controllers;
-public class OrdersController : Controller
+public class CartsController : Controller
 {
 	private readonly string _localhosturl = "https://localhost:7140";
 	private readonly IHttpClientFactory _httpClientFactory;
@@ -17,12 +17,12 @@ public class OrdersController : Controller
 		PropertyNameCaseInsensitive = true
 	};
 
-	public OrdersController(IHttpClientFactory httpClientFactory)
+	public CartsController(IHttpClientFactory httpClientFactory)
 	{
 		_httpClientFactory = httpClientFactory;
 	}
 
-	public async Task<IActionResult> OrderDetails(string companyId)
+	public async Task<IActionResult> CartDetails(string companyId)
 	{
 		var client = _httpClientFactory.CreateClient();
 		var token = HttpContext.Session.GetString("AuthToken");
@@ -34,8 +34,8 @@ public class OrdersController : Controller
 		if (response.IsSuccessStatusCode)
 		{
 			var responseBody = await response.Content.ReadAsStringAsync();
-			var cartOrder = JsonSerializer.Deserialize<Order>(responseBody, _options);
-			return View(cartOrder);
+			var cart = JsonSerializer.Deserialize<Cart>(responseBody, _options);
+			return View(cart);
 		}
 		else
 		{
@@ -53,7 +53,7 @@ public class OrdersController : Controller
 		var response = await client.GetStringAsync(url);
 		var cartOrder = JsonSerializer.Deserialize<Order>(response, _options);
 		var companyId = cartOrder.Company.CompanyId;
-		return RedirectToAction(nameof(OrderDetails), new { companyId });
+		return RedirectToAction(nameof(CartDetails), new { companyId });
 	}
 
 	public async Task<IActionResult> RemoveProduct(int? id)
@@ -66,7 +66,7 @@ public class OrdersController : Controller
 		var response = await client.GetStringAsync(url);
 		var cartOrder = JsonSerializer.Deserialize<Order>(response, _options);
 		var companyId = cartOrder.Company.CompanyId;
-		return RedirectToAction(nameof(OrderDetails), new { companyId });
+		return RedirectToAction(nameof(CartDetails), new { companyId });
 	}
 
 	public async Task<IActionResult> ConfirmOrder(int? id)

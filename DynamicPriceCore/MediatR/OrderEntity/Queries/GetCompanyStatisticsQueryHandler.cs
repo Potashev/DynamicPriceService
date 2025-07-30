@@ -19,24 +19,14 @@ public class GetCompanyStatisticsQueryHandler
 
 	public async Task<OrderStatistics> Handle(GetCompanyStatisticsQuery request, CancellationToken cancellationToken)
 	{
-		//var companyOrdersWithAmount = await _context.Orders
-		//	.Where(o => o.Company.CompanyUsers.Any(cu => cu.UserId == request.UserId))
-		//	.Select(o => new
-		//	{
-		//		Order = o,
-		//		OrderAmount = o.OrderProducts.Sum(op => op.Price * op.Quantity)
-		//	})
-		//	.ToArrayAsync(cancellationToken);
-
 		var manager = await _currentUserService.GetCurrentUserAsync();
 
-		//todo: check
 		var companyOrdersWithAmount = await _context.Orders
 			.Where(o => o.Company.CompanyId == manager.CompanyId)
 			.Select(o => new
 			{
 				Order = o,
-				OrderAmount = o.OrderProducts.Sum(op => op.Price * op.Quantity)
+				OrderAmount = o.OrderItems.Sum(op => op.ProductPrice * op.Quantity)
 			})
 			.ToArrayAsync(cancellationToken);
 

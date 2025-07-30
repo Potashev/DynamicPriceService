@@ -19,7 +19,7 @@ public class GetCompanyOrderDetailsQueryHandler
 	{
 		var companyOrder = await _context.Orders
 			.Where(o => o.OrderId.ToString() == request.OrderId) // perfomance - convert request to int?
-			.Include(o => o.OrderProducts)
+			.Include(o => o.OrderItems)
 			.ThenInclude(op => op.Product)
 			.FirstOrDefaultAsync(cancellationToken);
 
@@ -33,9 +33,9 @@ public class GetCompanyOrderDetailsQueryHandler
 	private double GetOrderPrice(OrderViewModel orderVm)
 	{
 		double sum = 0;
-		foreach (var orderProduct in orderVm.OrderProducts)
+		foreach (var orderItem in orderVm.OrderItems)
 		{
-			sum += (double)(orderProduct.Price * orderProduct.Quantity);
+			sum += (double)(orderItem.ProductPrice * orderItem.Quantity);
 		}
 		return sum;
 	}

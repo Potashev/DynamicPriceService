@@ -26,8 +26,8 @@ public class GetCustomerInfoQueryHandler
 
 		var customerOrders = await _context.Orders
 			.Include(o => o.Company)
-			.Include(o => o.OrderProducts)
-				.ThenInclude(op => op.Product)
+			.Include(o => o.OrderItems)			// todo: check
+				.ThenInclude(oi => oi.Product)
 			.Where(o => o.Customer.Id == customer.Id
 				&& (o.Status == OrderStatus.Confirmed || o.Status == OrderStatus.Completed))
 			.ToArrayAsync(cancellationToken);

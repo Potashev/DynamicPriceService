@@ -10,40 +10,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace DynamicPriceCore.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-public class OrdersController : ControllerBase
+public class CompanyOrdersController : ControllerBase
 {
 	private readonly IMediator _mediator;
-	public OrdersController(IMediator mediator)
+	public CompanyOrdersController(IMediator mediator)
 	{
 		_mediator = mediator;
-	}
-
-	[HttpGet("/api/Orders/Cart/{companyId}")]
-	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "CustomerPolicy")]
-	public async Task<ActionResult<Order>> CartOrderDetails(int? companyId, CancellationToken cancellationToken)
-	{
-		var cartOrder = await _mediator.Send(new GetCartOrderQuery((int)companyId), cancellationToken);
-
-		return cartOrder == null 
-			? NotFound(new { message = "Cart is empty." }) 
-			: Ok(cartOrder);
-	}
-
-	[HttpGet("/api/Orders/Add/{productId}")]
-	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "CustomerPolicy")]
-	public async Task<ActionResult<Order>> AddProduct(int? productId)
-	{
-		var cartOrder = await _mediator.Send(new AddProductToOrderCommand(productId.ToString()));
-		return Ok(cartOrder);
-	}
-
-	
-	[HttpGet("/api/Orders/Remove/{productId}")]
-	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "CustomerPolicy")]
-	public async Task<ActionResult<Order>> RemoveProduct(int? productId)
-	{
-		var cartOrder = await _mediator.Send(new RemoveProductFromOrderCommand(productId.ToString()));
-		return Ok(cartOrder);
 	}
 
 	[HttpGet("/api/Orders/Confirm/{cartOrderId}")]

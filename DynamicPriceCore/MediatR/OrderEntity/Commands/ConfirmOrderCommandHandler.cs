@@ -4,61 +4,77 @@ using DynamicPriceCore.Models;
 using DynamicPriceCore.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace DynamicPriceCore.MediatR.OrderEntity.Commands;
 
-public class TopUpBalanceCommandHandler
+public class ConfirmOrderCommandHandler
 	: IRequestHandler<ConfirmOrderCommand, int>
 {
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IIncreasePriceService _increasePriceService;
 	private readonly ICurrentUserService _currentUserService;
 
-	public TopUpBalanceCommandHandler(DynamicPriceCoreContext context, IIncreasePriceService increasePriceService, ICurrentUserService currentUserService)
+	public ConfirmOrderCommandHandler(DynamicPriceCoreContext context, IIncreasePriceService increasePriceService, ICurrentUserService currentUserService)
 		=> (_context, _increasePriceService, _currentUserService) = (context, increasePriceService, currentUserService);
 
 	public async Task<int> Handle(ConfirmOrderCommand request, CancellationToken cancellationToken)
 	{
-		//todo: check that request from customer?
-
 		var customer = await _currentUserService.GetCurrentUserAsync();
 
-
-		var order = await _context.Orders
-			.Include(o => o.OrderProducts)
-				.ThenInclude(op => op.Product)
-			.Where(o => o.OrderId == request.CartOrderId)
+		var cart = await _context.Carts
+			.Include(c => c.Company)
+			.Include(c => c.CartItems)
+				.ThenInclude(ci => ci.Product)
+			.Where(c => c.CartId == request.CartId)
 			.FirstOrDefaultAsync(cancellationToken);
 
-		decimal orderTotalAmout = 0;
+		if (cart == null)
+			throw new Exception("Cart not found.");
 
-		foreach (var orderProduct in order.OrderProducts)
-		{
-			var product = orderProduct.Product;
-			orderProduct.Price = product.Price;
-			product.LastSellTime = DateTime.UtcNow;
-			if (product.Quantity != null)
-				product.Quantity -= orderProduct.Quantity;
+		var orderTotalAmount = cart.CartItems
+			.Sum(ci => ci.Quantity * ci.Product.Price);
 
-			orderTotalAmout += orderProduct.Quantity * orderProduct.Price;
-		}
-
-		if(customer.Balance >= orderTotalAmout)
-		{
-			customer.Balance -= orderTotalAmout;
-
-			order.Status = OrderStatus.Confirmed;
-			order.OrderDate = DateTime.UtcNow;
-			order.ReceiveKey = GenerateReceiveKey();
-		}
-		else
-		{
+		if (customer.Balance < orderTotalAmount)
 			throw new Exception("Top up the balance!");
+
+		customer.Balance -= orderTotalAmount;
+
+		var order = new Order
+		{
+			Customer = customer,
+			Company = cart.Company,
+			Status = OrderStatus.Confirmed,
+			OrderDate = DateTime.UtcNow,
+			ReceiveKey = GenerateReceiveKey(),
+			OrderItems = new List<OrderItem>()
+		};
+
+		foreach (var ci in cart.CartItems)
+		{
+			var product = ci.Product;
+
+			order.OrderItems.Add(new OrderItem
+			{
+				Order = order,
+				Product = product,
+				ProductPrice = product.Price,	// can be changed since ordertotalamount
+				Quantity = ci.Quantity
+			});
+
+			product.LastSellTime = order.OrderDate;
+
+			if (product.Quantity != null)
+				product.Quantity -= ci.Quantity;
 		}
 
-			await _context.SaveChangesAsync(cancellationToken);
 
-		await _increasePriceService.Increase(order.OrderProducts);
+		_context.Orders.Add(order);
+		_context.Carts.Remove(cart);
+
+		await _context.SaveChangesAsync(cancellationToken);
+
+		await _increasePriceService.Increase(order.OrderItems);
 
 		return order.ReceiveKey;
 	}

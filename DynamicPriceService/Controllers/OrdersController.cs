@@ -24,8 +24,8 @@ public class OrdersController : Controller
 		var token = HttpContext.Session.GetString("AuthToken");
 		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-		var response = await client.GetStringAsync($"{_localhosturl}/api/CompanyOrders", cts.Token);
+		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+		var response = await client.GetStringAsync($"{_localhosturl}/api/orders", cts.Token);
 		var ordersVm = JsonSerializer.Deserialize<IEnumerable<OrderViewModel>>(response, _options);
 		return View(ordersVm);
 	}
@@ -36,7 +36,7 @@ public class OrdersController : Controller
 		var token = HttpContext.Session.GetString("AuthToken");
 		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-		var response = await client.GetStringAsync($"{_localhosturl}/api/CompanyOrders/FindByReceiveKey/{key}");
+		var response = await client.GetStringAsync($"{_localhosturl}/api/orders/by-receive-key/{key}");
 
 		//todo: make better
 		if (int.TryParse(response, out int id))
@@ -52,7 +52,7 @@ public class OrdersController : Controller
 		var token = HttpContext.Session.GetString("AuthToken");
 		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-		var response = await client.GetStringAsync($"{_localhosturl}/api/CompanyOrders/{id}");
+		var response = await client.GetStringAsync($"{_localhosturl}/api/orders/{id}");
 		var orderVm = JsonSerializer.Deserialize<OrderViewModel>(response, _options);
 		return View(orderVm);
 	}
@@ -63,7 +63,7 @@ public class OrdersController : Controller
 		var token = HttpContext.Session.GetString("AuthToken");
 		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-		var response = await client.GetStringAsync($"{_localhosturl}/api/CompanyOrders/{orderId}/Complete");
+		var response = await client.PatchAsync($"{_localhosturl}/api/orders/{orderId}/complete", null);
 
 		return RedirectToAction(nameof(Details), new { id = orderId });
 	}
@@ -75,7 +75,7 @@ public class OrdersController : Controller
 		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
 		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-		var response = await client.GetStringAsync($"{_localhosturl}/api/CompanyOrders/Statistics", cts.Token);
+		var response = await client.GetStringAsync($"{_localhosturl}/api/orders/statistics", cts.Token);
 		var orderStatistics = JsonSerializer.Deserialize<OrderStatistics>(response, _options);
 		return View(orderStatistics);
 	}

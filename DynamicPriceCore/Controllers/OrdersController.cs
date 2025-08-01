@@ -10,32 +10,31 @@ using Microsoft.AspNetCore.Mvc;
 namespace DynamicPriceCore.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-public class CompanyOrdersController : ControllerBase
+public class OrdersController : ControllerBase
 {
 	private readonly IMediator _mediator;
-	public CompanyOrdersController(IMediator mediator)
+	public OrdersController(IMediator mediator)
 	{
 		_mediator = mediator;
 	}
 
-	[HttpGet("/api/Orders/Confirm/{cartOrderId}")]
+	[HttpPost]
 	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "CustomerPolicy")]
-	public async Task<ActionResult<int>> ConfirmOrder(int? cartOrderId, CancellationToken cancellationToken)
+	public async Task<ActionResult<int>> ConfirmOrder([FromBody]int? cartOrderId, CancellationToken cancellationToken)
 	{
 		var receiveKey = await _mediator.Send(new ConfirmOrderCommand((int)cartOrderId), cancellationToken);
 		return Ok(receiveKey);
 	}
 
-	[HttpGet("/api/CompanyOrders")]
+	[HttpGet]
 	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 	public async Task<ActionResult<IEnumerable<OrderViewModel>>> GetCompanyOrders(CancellationToken cancellationToken)
 	{
-		//update
 		var ordersVm = await _mediator.Send(new GetCompanyOrdersQuery(), cancellationToken);
 		return Ok(ordersVm);
 	}
 
-	[HttpGet("/api/CompanyOrders/{orderId}")]
+	[HttpGet("{orderId}")]
 	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 	public async Task<ActionResult<OrderViewModel>> GetCompanyOrder(string orderId)
 	{
@@ -43,15 +42,15 @@ public class CompanyOrdersController : ControllerBase
 		return Ok(ordersVm);
 	}
 
-	[HttpGet("/api/CompanyOrders/FindByReceiveKey/{key}")]
+	[HttpGet("by-receive-key/{key}")]
 	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
-	public async Task<ActionResult<int>> GetCompanyOrderByReceiveKey(string key)
+	public async Task<ActionResult<int>> GetOrderByReceiveKey(string key)
 	{
 		var orderId = await _mediator.Send(new GetOrderIdByReceiveKeyQuery(key));
 		return orderId;
 	}
 
-	[HttpGet("/api/CompanyOrders/{orderId}/Complete")]
+	[HttpPatch("{orderId}/complete")]
 	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 	public async Task<ActionResult<int>> CompleteOrder(string orderId)
 	{
@@ -59,7 +58,7 @@ public class CompanyOrdersController : ControllerBase
 		return id;
 	}
 
-	[HttpGet("/api/CompanyOrders/Statistics")]
+	[HttpGet("statistics")]
 	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 	public async Task<ActionResult<OrderStatistics>> GetCompanyStatistics(CancellationToken cancellationToken)
 	{

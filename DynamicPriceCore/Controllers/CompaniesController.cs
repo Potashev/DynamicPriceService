@@ -21,7 +21,7 @@ public class CompaniesController : ControllerBase
 	}
 
 	[HttpGet]
-	public async Task<ActionResult<IEnumerable<Company>>> GetCompanies([FromQuery] string? status, CancellationToken cancellationToken)
+	public async Task<ActionResult<IEnumerable<CompanyViewModel>>> GetCompanies([FromQuery] string? status, CancellationToken cancellationToken)
 	{
 		if (status == "active")
 		{

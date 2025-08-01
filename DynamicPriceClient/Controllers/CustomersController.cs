@@ -1,6 +1,4 @@
-﻿//using DynamicPriceCore.Models;
-using DynamicPriceClient.ViewModels;
-using DynamicPriceCore.Models;
+﻿using DynamicPriceClient.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 using System.Net.Http;

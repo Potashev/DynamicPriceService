@@ -1,4 +1,4 @@
-﻿using DynamicPriceCore.Models;
+﻿using DynamicPriceClient.ViewModels;
 
 namespace DynamicPriceClient.ViewModels;
 
@@ -13,5 +13,5 @@ public class ProductInfoViewModel
 	public int? Quantity { get; set; }
 	public string? Description { get; set; }
 
-	public PriceDynamic[] PriceDynamics { get; set; }
+	public PriceDynamicViewModel[] PriceDynamics { get; set; }
 }

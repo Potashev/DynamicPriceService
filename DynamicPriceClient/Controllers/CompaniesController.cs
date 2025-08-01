@@ -1,5 +1,4 @@
 ﻿using DynamicPriceClient.ViewModels;
-using DynamicPriceCore.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
 using System.Text.Json;
@@ -27,7 +26,7 @@ public class CompaniesController : Controller
 
 		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
 		var response = await client.GetStringAsync($"{_localhosturl}/api/companies?status=active", cts.Token);
-		var activeCompanies = JsonSerializer.Deserialize<IEnumerable<Company>>(response, _options);	//todo: use dto
+		var activeCompanies = JsonSerializer.Deserialize<IEnumerable<CompanyViewModel>>(response, _options);
 		return View(activeCompanies);
 	}
 

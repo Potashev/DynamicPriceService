@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DynamicPriceCore.Data;
+using DynamicPriceCore.MediatR.ViewModels;
 using DynamicPriceCore.Models;
 using DynamicPriceCore.Services;
 using MediatR;
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace DynamicPriceCore.MediatR.CartEntity.Commands;
 
 public class AddProductToCartCommandHadnler
-	: IRequestHandler<AddProductToCartCommand, Cart>
+	: IRequestHandler<AddProductToCartCommand, CartViewModel>
 {
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IMapper _mapper;
@@ -17,7 +18,7 @@ public class AddProductToCartCommandHadnler
 	public AddProductToCartCommandHadnler(DynamicPriceCoreContext context, IMapper mapper, ICurrentUserService currentUserService)
 		=> (_context, _mapper, _currentUserService) = (context, mapper, currentUserService);
 
-	public async Task<Cart> Handle(AddProductToCartCommand request, CancellationToken cancellationToken)
+	public async Task<CartViewModel> Handle(AddProductToCartCommand request, CancellationToken cancellationToken)
 	{
 		var customer = await _currentUserService.GetCurrentUserAsync();
 
@@ -56,7 +57,7 @@ public class AddProductToCartCommandHadnler
 		}
 
 		await _context.SaveChangesAsync(cancellationToken);
-		return cart;
+		return _mapper.Map<CartViewModel>(cart);
 	}
 
 	private async Task<Cart> CreateNewCart(ApplicationUser customer, Company company)

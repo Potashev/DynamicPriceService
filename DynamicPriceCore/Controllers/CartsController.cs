@@ -2,6 +2,7 @@
 using DynamicPriceCore.MediatR.CartEntity.Queries;
 using DynamicPriceCore.MediatR.OrderEntity.Commands;
 using DynamicPriceCore.MediatR.OrderEntity.Queries;
+using DynamicPriceCore.MediatR.ViewModels;
 using DynamicPriceCore.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -13,16 +14,16 @@ namespace DynamicPriceCore.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "CustomerPolicy")]
-public class CustomerCartsController : ControllerBase
+public class CartsController : ControllerBase
 {
 	private readonly IMediator _mediator;
-	public CustomerCartsController(IMediator mediator)
+	public CartsController(IMediator mediator)
 	{
 		_mediator = mediator;
 	}
 
-	[HttpGet("/api/Orders/Cart/{companyId}")]
-	public async Task<ActionResult<Cart>> GetCartDetails(int? companyId, CancellationToken cancellationToken)
+	[HttpGet("{companyId}")]
+	public async Task<ActionResult<CartViewModel>> GetCartDetails(int? companyId, CancellationToken cancellationToken)
 	{
 		var cart = await _mediator.Send(new GetCartDetailsQuery((int)companyId), cancellationToken);
 
@@ -31,18 +32,17 @@ public class CustomerCartsController : ControllerBase
 			: Ok(cart);
 	}
 
-	[HttpGet("/api/Orders/Add/{productId}")]
-	public async Task<ActionResult<Order>> AddProduct(int? productId)
+	[HttpPost("items")]
+	public async Task<ActionResult<int>> AddProduct([FromBody] int? productId)
 	{
-		var cartOrder = await _mediator.Send(new AddProductToCartCommand(productId.ToString()));
-		return Ok(cartOrder);
+		var cart = await _mediator.Send(new AddProductToCartCommand(productId.ToString()));
+		return Ok(cart.Company.CompanyId);
 	}
 
-
-	[HttpGet("/api/Orders/Remove/{productId}")]
-	public async Task<ActionResult<Order>> RemoveProduct(int? productId)
+	[HttpDelete("items/{productId}")]
+	public async Task<ActionResult<int>> RemoveProduct(int? productId)
 	{
-		var cartOrder = await _mediator.Send(new RemoveProductFromCartCommand(productId.ToString()));
-		return Ok(cartOrder);
+		var cart = await _mediator.Send(new RemoveProductFromCartCommand(productId.ToString()));
+		return Ok(cart.Company.CompanyId);
 	}
 }

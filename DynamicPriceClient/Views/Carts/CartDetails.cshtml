@@ -1,4 +1,4 @@
-﻿@model DynamicPriceCore.Models.Cart
+﻿@model DynamicPriceClient.ViewModels.CartViewModel
 
 @{
 	ViewData["Title"] = "Cart";
@@ -7,7 +7,7 @@
 <h1>Products cart</h1>
 
 <p>
-	<a asp-action="ConfirmOrder" asp-route-id="@Model?.CartId" class="btn btn-primary">Confirm order</a>
+	<a asp-action="ConfirmOrder" asp-route-cartId="@Model?.CartId" class="btn btn-primary">Confirm order</a>
 </p>
 <table class="table">
 	<thead>
@@ -44,8 +44,8 @@
 					@Html.DisplayFor(modelItem => item.Product.Price)
 				</td>
 				<td>
-					<a asp-action="AddProduct" asp-route-id="@item.Product?.ProductId">Add</a> |
-					<a asp-action="RemoveProduct" asp-route-id="@item.Product?.ProductId">Remove</a> |
+					<a asp-action="AddProduct" asp-route-productId="@item.Product?.ProductId">Add</a> |
+					<a asp-action="RemoveProduct" asp-route-productId="@item.Product?.ProductId">Remove</a> |
 				</td>
 			</tr>
 		}

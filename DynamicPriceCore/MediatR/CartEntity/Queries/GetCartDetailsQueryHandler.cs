@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DynamicPriceCore.Data;
+using DynamicPriceCore.MediatR.ViewModels;
 using DynamicPriceCore.Models;
 using DynamicPriceCore.Services;
 using MediatR;
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace DynamicPriceCore.MediatR.CartEntity.Queries;
 
 public class GetCartDetailsQueryHandler
-	: IRequestHandler<GetCartDetailsQuery, Cart>
+	: IRequestHandler<GetCartDetailsQuery, CartViewModel>
 {
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IMapper _mapper;
@@ -17,7 +18,7 @@ public class GetCartDetailsQueryHandler
 	public GetCartDetailsQueryHandler(DynamicPriceCoreContext context, IMapper mapper, ICurrentUserService currentUserService)
 		=> (_context, _mapper, _currentUserService) = (context, mapper, currentUserService);
 
-	public async Task<Cart> Handle(GetCartDetailsQuery request, CancellationToken cancellationToken)
+	public async Task<CartViewModel> Handle(GetCartDetailsQuery request, CancellationToken cancellationToken)
 	{
 		var customer = await _currentUserService.GetCurrentUserAsync();
 
@@ -28,6 +29,6 @@ public class GetCartDetailsQueryHandler
 			.FirstOrDefaultAsync(c => c.Customer.Id == customer.Id
 				&& c.Company.CompanyId == request.CompanyId, cancellationToken);
 
-		return cart;
+		return _mapper.Map<CartViewModel>(cart);
 	}
 }

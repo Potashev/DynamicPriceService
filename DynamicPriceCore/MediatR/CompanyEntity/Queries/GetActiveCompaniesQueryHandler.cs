@@ -1,17 +1,20 @@
-﻿using DynamicPriceCore.Models;
+﻿using AutoMapper;
+using DynamicPriceCore.MediatR.ViewModels;
+using DynamicPriceCore.Models;
 using DynamicPriceCore.Services;
 using MediatR;
 
 namespace DynamicPriceCore.MediatR.CompanyEntity.Queries;
 
 public class GetActiveCompaniesQueryHandler
-	: IRequestHandler<GetActiveCompaniesQuery, IEnumerable<Company>>
+	: IRequestHandler<GetActiveCompaniesQuery, IEnumerable<CompanyViewModel>>
 {
 	private readonly IActiveCompaniesService _activeCompaniesService;
+	private readonly IMapper _mapper;
 
-	public GetActiveCompaniesQueryHandler(IActiveCompaniesService activeCompaniesService)
-		=> _activeCompaniesService = activeCompaniesService;
+	public GetActiveCompaniesQueryHandler(IActiveCompaniesService activeCompaniesService, IMapper mapper)
+		=> (_activeCompaniesService, _mapper) = (activeCompaniesService, mapper);
 
-	public async Task<IEnumerable<Company>> Handle(GetActiveCompaniesQuery request, CancellationToken cancellationToken)
-		=> _activeCompaniesService.GetActiveCompanies();
+	public async Task<IEnumerable<CompanyViewModel>> Handle(GetActiveCompaniesQuery request, CancellationToken cancellationToken)
+		=> _mapper.Map<CompanyViewModel[]>(_activeCompaniesService.GetActiveCompanies());
 }

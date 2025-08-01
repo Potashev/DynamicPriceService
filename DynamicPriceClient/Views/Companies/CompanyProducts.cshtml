@@ -19,15 +19,15 @@
 		@foreach (var product in Model.Products)
 		{
 			<tr>
-				<td>@product.Title</td>
+				<td>@product.ProductId</td>
 				<td>
 					<div class="chart-container">
 						<canvas id="chart-@product.ProductId" @* width="100" height="50" *@></canvas>
 					</div>
 				</td>
-				<td id="price-@product.ProductId">@product.Price</td>
+ 				<td id="price-@product.ProductId">@product.Price</td>
 				<td>
-					<a asp-controller="Carts" asp-action="AddProduct" asp-route-id="@product.ProductId">Add to Cart</a>
+					<a asp-controller="Carts" asp-action="AddProduct" asp-route-productId="@product.ProductId">Add to Cart</a>
 				</td>
 			</tr>
 		}

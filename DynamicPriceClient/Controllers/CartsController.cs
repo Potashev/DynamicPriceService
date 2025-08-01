@@ -1,4 +1,4 @@
-﻿using DynamicPriceCore.Models;
+﻿using DynamicPriceClient.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
@@ -27,14 +27,13 @@ public class CartsController : Controller
 		var client = _httpClientFactory.CreateClient();
 		var token = HttpContext.Session.GetString("AuthToken");
 		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
 		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-		var url = $"{_localhosturl}/api/Orders/Cart/{companyId}";
+		var url = $"{_localhosturl}/api/carts/{companyId}";
 		var response = await client.GetAsync(url, cts.Token);
 		if (response.IsSuccessStatusCode)
 		{
 			var responseBody = await response.Content.ReadAsStringAsync();
-			var cart = JsonSerializer.Deserialize<Cart>(responseBody, _options);
+			var cart = JsonSerializer.Deserialize<CartViewModel>(responseBody, _options);
 			return View(cart);
 		}
 		else
@@ -43,42 +42,38 @@ public class CartsController : Controller
 		}
 	}
 
-	public async Task<IActionResult> AddProduct(int? id)
+	public async Task<IActionResult> AddProduct(int? productId)
 	{
 		var client = _httpClientFactory.CreateClient();
 		var token = HttpContext.Session.GetString("AuthToken");
 		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-		var url = $"{_localhosturl}/api/Orders/Add/{id}";
-		var response = await client.GetStringAsync(url);
-		var cartOrder = JsonSerializer.Deserialize<Order>(response, _options);
-		var companyId = cartOrder.Company.CompanyId;
+		var json = JsonSerializer.Serialize(productId);
+		var data = new StringContent(json, Encoding.UTF8, "application/json");
+		var response = await client.PostAsync($"{_localhosturl}/api/carts/items", data);
+		var companyId = JsonSerializer.Deserialize<int>(await response.Content.ReadAsStringAsync());
 		return RedirectToAction(nameof(CartDetails), new { companyId });
 	}
 
-	public async Task<IActionResult> RemoveProduct(int? id)
+	public async Task<IActionResult> RemoveProduct(int? productId)
 	{
 		var client = _httpClientFactory.CreateClient();
 		var token = HttpContext.Session.GetString("AuthToken");
 		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-		var url = $"{_localhosturl}/api/Orders/Remove/{id}";
-		var response = await client.GetStringAsync(url);
-		var cartOrder = JsonSerializer.Deserialize<Order>(response, _options);
-		var companyId = cartOrder.Company.CompanyId;
+		var response = await client.DeleteAsync($"{_localhosturl}/api/carts/items/{productId}");
+		var companyId = JsonSerializer.Deserialize<int>(await response.Content.ReadAsStringAsync());
 		return RedirectToAction(nameof(CartDetails), new { companyId });
 	}
 
-	public async Task<IActionResult> ConfirmOrder(int? id)
+	public async Task<IActionResult> ConfirmOrder(int? cartId)
 	{
 		var client = _httpClientFactory.CreateClient();
 		var token = HttpContext.Session.GetString("AuthToken");
 		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
 		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-		var url = $"{_localhosturl}/api/Orders/Confirm/{id}";
-		var response = await client.GetStringAsync(url,cts.Token);
-		var receiveKey = JsonSerializer.Deserialize<int>(response, _options);
+		var json = JsonSerializer.Serialize(cartId);
+		var data = new StringContent(json, Encoding.UTF8, "application/json");
+		var response = await client.PostAsync($"{_localhosturl}/api/orders", data, cts.Token);
+		var receiveKey = JsonSerializer.Deserialize<int>(await response.Content.ReadAsStringAsync());
 		return Content($"Your receive Key: {receiveKey}");
 	}
 

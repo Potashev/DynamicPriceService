@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DynamicPriceCore.Data;
+using DynamicPriceCore.MediatR.ViewModels;
 using DynamicPriceCore.Models;
 using DynamicPriceCore.Services;
 using MediatR;
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace DynamicPriceCore.MediatR.CartEntity.Commands;
 
 public class RemoveProductFromCartCommandHandler
-	: IRequestHandler<RemoveProductFromCartCommand, Cart>
+	: IRequestHandler<RemoveProductFromCartCommand, CartViewModel>
 {
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IMapper _mapper;
@@ -17,7 +18,7 @@ public class RemoveProductFromCartCommandHandler
 	public RemoveProductFromCartCommandHandler(DynamicPriceCoreContext context, IMapper mapper, ICurrentUserService currentUserService)
 		=> (_context, _mapper, _currentUserService) = (context, mapper, currentUserService);
 
-	public async Task<Cart> Handle(RemoveProductFromCartCommand request, CancellationToken cancellationToken)
+	public async Task<CartViewModel> Handle(RemoveProductFromCartCommand request, CancellationToken cancellationToken)
 	{
 		var customer = await _currentUserService.GetCurrentUserAsync();
 
@@ -35,6 +36,6 @@ public class RemoveProductFromCartCommandHandler
 
 		await _context.SaveChangesAsync(cancellationToken);
 
-		return cartItem.Cart;
+		return _mapper.Map<CartViewModel>(cartItem.Cart);
 	}
 }

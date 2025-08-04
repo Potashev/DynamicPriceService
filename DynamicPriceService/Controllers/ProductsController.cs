@@ -1,35 +1,21 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
-using System.Text;
+﻿using DynamicPriceService.Services;
 using DynamicPriceService.ViewModels;
-using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPriceService.Controllers;
 
 public class ProductsController : Controller
 {
-	private readonly string _localhosturl = "https://localhost:7140";
-	private readonly IHttpClientFactory _httpClientFactory;
-	private readonly JsonSerializerOptions _options = new JsonSerializerOptions
-	{
-		PropertyNameCaseInsensitive = true
-	};
+	private readonly HttpClientService _httpClientService;
 
-	public ProductsController(IHttpClientFactory httpClientFactory, IHttpContextAccessor httpContextAccessor)
+	public ProductsController(HttpClientService httpClientService)
 	{
-		_httpClientFactory = httpClientFactory;
+		_httpClientService = httpClientService;
 	}
 
 	public async Task<IActionResult> Index()
 	{
-		var client = _httpClientFactory.CreateClient();
-
-		var token = HttpContext.Session.GetString("AuthToken");
-		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-		var response = await client.GetStringAsync($"{_localhosturl}/api/company/products", cts.Token);
-		var productsVm = JsonSerializer.Deserialize<IEnumerable<ProductViewModel>>(response, _options);
+		var productsVm = await _httpClientService.GetAsync<IEnumerable<ProductViewModel>>("api/company/products");
 		return View(productsVm);
 	}
 
@@ -39,9 +25,7 @@ public class ProductsController : Controller
 		{
 			return NotFound();
 		}
-		var client = _httpClientFactory.CreateClient();
-		var response = await client.GetStringAsync($"{_localhosturl}/api/company/products/{id}");
-		var productVm = JsonSerializer.Deserialize<ProductViewModel>(response, _options);
+		var productVm = await _httpClientService.GetAsync<ProductViewModel>($"api/company/products/{id}");
 		return View(productVm);
 	}
 
@@ -56,14 +40,7 @@ public class ProductsController : Controller
 	{
 		if (ModelState.IsValid)
 		{
-			var client = _httpClientFactory.CreateClient();
-
-			var token = HttpContext.Session.GetString("AuthToken");
-			client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-			var json = JsonSerializer.Serialize(productVm);
-			var data = new StringContent(json, Encoding.UTF8, "application/json");
-			var response = await client.PostAsync($"{_localhosturl}/api/company/products", data);
+			await _httpClientService.PostAsync("api/company/products", productVm);
 			return RedirectToAction(nameof(Index));
 		}
 		return View(productVm);
@@ -75,9 +52,7 @@ public class ProductsController : Controller
 		{
 			return NotFound();
 		}
-		var client = _httpClientFactory.CreateClient();
-		var response = await client.GetStringAsync($"{_localhosturl}/api/company/products/{id}");
-		var productVm = JsonSerializer.Deserialize<ProductViewModel>(response, _options);
+		var productVm = await _httpClientService.GetAsync<ProductViewModel>($"api/company/products/{id}");
 		return View(productVm);
 	}
 
@@ -87,13 +62,9 @@ public class ProductsController : Controller
 	{
 		if (ModelState.IsValid)
 		{
-			var client = _httpClientFactory.CreateClient();
-			var json = JsonSerializer.Serialize(productVm);
-			var data = new StringContent(json, Encoding.UTF8, "application/json");
-			var response = await client.PutAsync($"{_localhosturl}/api/company/products/{id}", data);
+			await _httpClientService.PutAsync($"api/company/products/{id}", productVm);
 			return RedirectToAction(nameof(Index));
 		}
-
 		return View(productVm);
 	}
 
@@ -103,9 +74,8 @@ public class ProductsController : Controller
 		{
 			return NotFound();
 		}
-		var client = _httpClientFactory.CreateClient();
-		var response = await client.GetStringAsync($"{_localhosturl}/api/company/products/{id}");
-		var productVm = JsonSerializer.Deserialize<ProductViewModel>(response, _options);
+
+		var productVm = await _httpClientService.GetAsync<ProductViewModel>($"api/company/products/{id}");
 		if (productVm == null)
 		{
 			return NotFound();
@@ -117,8 +87,7 @@ public class ProductsController : Controller
 	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> DeleteConfirmed(int id)
 	{
-		var client = _httpClientFactory.CreateClient();
-		var response = await client.DeleteAsync($"{_localhosturl}/api/company/products/{id}");
+		await _httpClientService.DeleteAsync($"api/company/products/{id}");
 		return RedirectToAction(nameof(Index));
 	}
 }

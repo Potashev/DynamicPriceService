@@ -1,4 +1,4 @@
-﻿namespace DynamicPriceClient.Models;
+﻿namespace DynamicPriceClient.ViewModels;
 
 //todo: move to dto?
 public class TokenResponse

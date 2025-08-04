@@ -1,55 +1,26 @@
-﻿using DynamicPriceClient.ViewModels;
+﻿using DynamicPriceClient.Services;
+using DynamicPriceClient.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DynamicPriceClient.Controllers;
 public class CustomersController : Controller
 {
-	private readonly string _localhosturl = "https://localhost:7140";
-	private readonly IHttpClientFactory _httpClientFactory;
-	private readonly JsonSerializerOptions _options = new JsonSerializerOptions
-	{
-		PropertyNameCaseInsensitive = true
-	};
+	private readonly HttpClientService _httpClientService;
 
-	public CustomersController(IHttpClientFactory httpClientFactory)
+	public CustomersController(HttpClientService httpClientService)
 	{
-		_httpClientFactory = httpClientFactory;
+		_httpClientService = httpClientService;
 	}
 
 	public async Task<IActionResult> GetCustomer()
-	{
-		var client = _httpClientFactory.CreateClient();
-		var token = HttpContext.Session.GetString("AuthToken");
-		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-		var response = await client.GetStringAsync($"{_localhosturl}/api/customers/me", cts.Token);
-		var customerInfo = JsonSerializer.Deserialize<CustomerInfoViewModel>(response, _options);
-		return View(customerInfo);
-	}
+		=> View(await _httpClientService.GetAsync<CustomerInfoViewModel>("api/customers/me"));
 
 	[HttpPost, ActionName("TopUpBalance")]
 	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> TopUpBalance(string replenishmentAmount)
 	{
-		var client = _httpClientFactory.CreateClient();
-		var token = HttpContext.Session.GetString("AuthToken");
-		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-		var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-
 		var balanceViewModel = new BalanceViewModel { ReplenishmentAmount = replenishmentAmount };
-		var json = JsonSerializer.Serialize(balanceViewModel);
-		var data = new StringContent(json, Encoding.UTF8, "application/json");
-
-		var response = await client.PutAsync($"{_localhosturl}/api/customers/me/balance", data);
-
+		await _httpClientService.PutAsync("api/customers/me/balance", balanceViewModel);
 		return RedirectToAction(nameof(GetCustomer));
 	}
 

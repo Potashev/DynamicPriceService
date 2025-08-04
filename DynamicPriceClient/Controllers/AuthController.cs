@@ -1,4 +1,4 @@
-﻿using DynamicPriceClient.Models;
+﻿using DynamicPriceClient.Services;
 using DynamicPriceClient.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
@@ -10,16 +10,11 @@ namespace DynamicPriceClient.Controllers
 {
 	public class AuthController : Controller
 	{
-		private readonly string _localhosturl = "https://localhost:7140";
-		private readonly IHttpClientFactory _httpClientFactory;
-		private readonly JsonSerializerOptions _options = new JsonSerializerOptions
-		{
-			PropertyNameCaseInsensitive = true
-		};
+		private readonly HttpClientService _httpClientService;
 
-		public AuthController(IHttpClientFactory httpClientFactory)
+		public AuthController(HttpClientService httpClientService)
 		{
-			_httpClientFactory = httpClientFactory;
+			_httpClientService = httpClientService;
 		}
 
 		public IActionResult Index()
@@ -40,11 +35,7 @@ namespace DynamicPriceClient.Controllers
 		public async Task<IActionResult> RegisterCustomer(RegisterViewModel registerVm)
 		{
 			registerVm.Role = "Customer";   //todo: looks not good
-
-			var client = _httpClientFactory.CreateClient();
-			var json = JsonSerializer.Serialize(registerVm);
-			var data = new StringContent(json, Encoding.UTF8, "application/json");
-			var response = await client.PostAsync($"{_localhosturl}/api/auth/register", data);
+			await _httpClientService.PostAsync("api/auth/register", registerVm);
 			return RedirectToAction(nameof(Index));
 		}
 
@@ -63,25 +54,12 @@ namespace DynamicPriceClient.Controllers
 
 			if (ModelState.IsValid)
 			{
-				var client = _httpClientFactory.CreateClient();
-				var json = JsonSerializer.Serialize(loginVm);
-				var data = new StringContent(json, Encoding.UTF8, "application/json");
-				var response = await client.PostAsync($"{_localhosturl}/api/auth/login", data);
-
-				if (response.IsSuccessStatusCode)
-				{
-					var responseContent = await response.Content.ReadAsStringAsync();
-					var tokenResponse = JsonSerializer.Deserialize<TokenResponse>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-					HttpContext.Session.SetString("AuthToken", tokenResponse.Token);
-
-					return RedirectToAction(nameof(Index), "Companies");
-				}
-				else
-				{
-					ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-					return View(loginVm);
-				}
+				//todo: handle invalid login attempt
+				// ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+				// return View(loginVm);
+				var tokenResponse = await _httpClientService.PostAsync<LoginViewModel, TokenResponse>("api/auth/login", loginVm);
+				HttpContext.Session.SetString("AuthToken", tokenResponse.Token);
+				return RedirectToAction(nameof(Index), "Companies");
 			}
 			return View();
 		}

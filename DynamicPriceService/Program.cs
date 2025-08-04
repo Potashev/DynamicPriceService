@@ -1,5 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using DynamicPriceService.Services;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,8 +14,12 @@ builder.Services.AddSession(options =>
 	options.Cookie.Name = "Manager.Session";   //for using manager and customer in one browser
 });
 
-builder.Services.AddHttpClient();
-builder.Services.AddHttpContextAccessor();  //todo: for temp auth - remove later
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpClient<HttpClientService>(client =>
+{
+	client.BaseAddress = new Uri("https://localhost:7140"); //todo: get from appsettings.json
+	client.DefaultRequestHeaders.Add("Accept", "application/json");
+});
 
 var app = builder.Build();
 

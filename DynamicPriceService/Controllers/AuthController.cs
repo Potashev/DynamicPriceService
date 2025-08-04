@@ -1,4 +1,5 @@
-﻿using DynamicPriceService.ViewModels;
+﻿using DynamicPriceService.Services;
+using DynamicPriceService.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
 using System.Text;
@@ -7,16 +8,11 @@ using System.Text.Json;
 namespace DynamicPriceService.Controllers;
 public class AuthController : Controller
 {
-	private readonly string _localhosturl = "https://localhost:7140";
-	private readonly IHttpClientFactory _httpClientFactory;
-	private readonly JsonSerializerOptions _options = new JsonSerializerOptions
-	{
-		PropertyNameCaseInsensitive = true
-	};
+	private readonly HttpClientService _httpClientService;
 
-	public AuthController(IHttpClientFactory httpClientFactory)
+	public AuthController(HttpClientService httpClientService)
 	{
-		_httpClientFactory = httpClientFactory;
+		_httpClientService = httpClientService;
 	}
 
 	public IActionResult Index()
@@ -40,28 +36,12 @@ public class AuthController : Controller
 	{
 		if (ModelState.IsValid)
 		{
-			var client = _httpClientFactory.CreateClient();
-			var json = JsonSerializer.Serialize(loginVm);
-			var data = new StringContent(json, Encoding.UTF8, "application/json");
-			var response = await client.PostAsync($"{_localhosturl}/api/auth/login", data);
-
-			if (response.IsSuccessStatusCode)
-			{
-				var responseContent = await response.Content.ReadAsStringAsync();
-
-				//todo: compare with client and remove token respose in client
-				var dict = JsonSerializer.Deserialize<Dictionary<string, string>>(responseContent);
-				string token = dict["token"];
-
-				HttpContext.Session.SetString("AuthToken", token);
-
-				return RedirectToAction(nameof(Index), "Products");
-			}
-			else
-			{
-				ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-				return View(loginVm);
-			}
+			//todo: handle invalid login attempt
+			// ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+			// return View(loginVm);
+			var tokenResponse = await _httpClientService.PostAsync<LoginViewModel, TokenResponse>("api/auth/login", loginVm);
+			HttpContext.Session.SetString("AuthToken", tokenResponse.Token);
+			return RedirectToAction(nameof(Index), "Products");
 		}
 		return View();
 	}

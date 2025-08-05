@@ -1,7 +1,7 @@
 ﻿using DynamicPriceCore.MediatR.OrderEntity.Commands;
 using DynamicPriceCore.MediatR.OrderEntity.Queries;
-using DynamicPriceCore.MediatR.ViewModels;
 using DynamicPriceCore.Models;
+using DynamicPriceCore.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;

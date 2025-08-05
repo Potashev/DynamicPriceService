@@ -14,10 +14,11 @@ builder.Services.AddSession(options =>
 	options.Cookie.Name = "Customer.Session";	//for using manager and customer in one browser
 });
 
+var baseUrl = builder.Configuration["ApiSettings:BaseUrl"];
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient<HttpClientService>(client =>
 {
-	client.BaseAddress = new Uri("https://localhost:7140");	//todo: get from appsettings.json
+	client.BaseAddress = new Uri(baseUrl);
 	client.DefaultRequestHeaders.Add("Accept", "application/json");
 });
 

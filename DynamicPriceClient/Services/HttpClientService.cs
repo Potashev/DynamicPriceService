@@ -47,7 +47,10 @@ public class HttpClientService
 		return JsonSerializer.Deserialize<T>(json, _options);
 	}
 
-	public async Task<TResponse?> PostAsync<TRequest, TResponse>(string url, TRequest body, CancellationToken token = default)
+	public async Task<TResponse?> PostAsync<TRequest, TResponse>(
+		string url, 
+		TRequest body, 
+		CancellationToken token = default)
 	{
 		AddAuthHeader();
 

@@ -6,7 +6,7 @@ public class OrderInfoViewModel
 {
 	public int OrderId { get; set; }
 	public CompanyViewModel Company { get; set; }
-	public ICollection<OrderProductViewModel> OrderProducts { get; set; }
+	public ICollection<OrderItemViewModel> OrderItems { get; set; }
 	public OrderStatus Status { get; set; }
 	public DateTime? OrderDate { get; set; }
 
@@ -15,7 +15,6 @@ public class OrderInfoViewModel
 
 public enum OrderStatus
 {
-	Cart,       //todo: obsolete - remove
 	Confirmed,
 	Completed
 }

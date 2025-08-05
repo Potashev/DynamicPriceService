@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 using DynamicPriceService.ViewModels;
-using System.Text;
-using System.Net.Http.Headers;
 using DynamicPriceService.Services;
 
 namespace DynamicPriceService.Controllers;

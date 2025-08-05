@@ -1,10 +1,6 @@
 ﻿using DynamicPriceClient.Services;
 using DynamicPriceClient.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
 
 namespace DynamicPriceClient.Controllers
 {
@@ -17,19 +13,11 @@ namespace DynamicPriceClient.Controllers
 			_httpClientService = httpClientService;
 		}
 
-		public IActionResult Index()
-		{
-			return View();
-		}
-
 		public IActionResult RegisterCustomer()
 		{
 			return View();
 		}
 
-		// POST: Products/Create
-		// To protect from overposting attacks, enable the specific properties you want to bind to.
-		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> RegisterCustomer(RegisterViewModel registerVm)
@@ -44,9 +32,6 @@ namespace DynamicPriceClient.Controllers
 			return View();
 		}
 
-		// POST: Products/Create
-		// To protect from overposting attacks, enable the specific properties you want to bind to.
-		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> LoginCustomer(LoginViewModel loginVm)
@@ -63,7 +48,5 @@ namespace DynamicPriceClient.Controllers
 			}
 			return View();
 		}
-
-
 	}
 }

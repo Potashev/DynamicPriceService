@@ -1,5 +1,5 @@
-﻿using DynamicPriceCore.MediatR.ViewModels;
-using DynamicPriceCore.Models;
+﻿using DynamicPriceCore.Models;
+using DynamicPriceCore.ViewModels;
 using MediatR;
 
 namespace DynamicPriceCore.MediatR.CartEntity.Commands;

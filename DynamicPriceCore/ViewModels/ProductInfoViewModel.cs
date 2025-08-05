@@ -1,6 +1,6 @@
 ﻿using DynamicPriceCore.Models;
 
-namespace DynamicPriceCore.MediatR.ViewModels;
+namespace DynamicPriceCore.ViewModels;
 
 /// <summary>
 /// Dto продукта для покупателя.

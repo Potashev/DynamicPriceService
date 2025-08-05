@@ -17,11 +17,6 @@ public class PriceReducingCommandHandler
 
 	public async Task<bool> Handle(PriceReducingCommand request, CancellationToken cancellationToken)
 	{
-		//var company = await _context.CompanyUsers
-		//	.Where(cu => cu.UserId == request.UserId)
-		//	.Select(cu => cu.Company)
-		//	.FirstOrDefaultAsync(cancellationToken);
-
 		var manager = await _currentUserService.GetCurrentUserAsync();
 		var company = manager.Company;
 

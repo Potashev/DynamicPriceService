@@ -1,6 +1,6 @@
 ﻿using DynamicPriceCore.MediatR.PriceRuleEntity.Commands;
 using DynamicPriceCore.MediatR.PriceRuleEntity.Queries;
-using DynamicPriceCore.MediatR.ViewModels;
+using DynamicPriceCore.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -26,7 +26,6 @@ public class PriceRulesController : ControllerBase
 		return await _mediator.Send(new GetPriceRuleWithStatusQuery());
 	}
 
-	// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
 	[HttpPut]
 	public async Task<IActionResult> Edit(PriceRuleViewModel priceRuleVm)
 	{

@@ -1,6 +1,6 @@
 ﻿using DynamicPriceCore.Models;
 
-namespace DynamicPriceCore.MediatR.ViewModels;
+namespace DynamicPriceCore.ViewModels;
 
 public class OrderViewModel
 {

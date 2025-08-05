@@ -1,4 +1,4 @@
-﻿namespace DynamicPriceCore.MediatR.ViewModels;
+﻿namespace DynamicPriceCore.ViewModels;
 
 public class RegisterViewModel
 {

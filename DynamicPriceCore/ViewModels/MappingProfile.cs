@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
 using DynamicPriceCore.Models;
 
-namespace DynamicPriceCore.MediatR.ViewModels;
+namespace DynamicPriceCore.ViewModels;
 
-//todo: remove from VM folder
 public class MappingProfile : Profile
 {
 	public MappingProfile()

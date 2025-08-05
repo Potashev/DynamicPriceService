@@ -1,15 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using DynamicPriceCore.MediatR.ProductEntity.Queries;
-using DynamicPriceCore.MediatR.ViewModels;
 using DynamicPriceCore.MediatR.ProductEntity.Commands;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using DynamicPriceCore.ViewModels;
 
 namespace DynamicPriceCore.Controllers
 {
 	[Route("api/company/[controller]")]
 	[ApiController]
+	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 	public class ProductsController : ControllerBase
 	{
 		private readonly IMediator _mediator;
@@ -18,7 +19,6 @@ namespace DynamicPriceCore.Controllers
 			_mediator = mediator;
 		}
 
-		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 		[HttpGet]
 		public async Task<ActionResult<IEnumerable<ProductViewModel>>> GetProducts(CancellationToken cancellationToken)
 		{
@@ -27,7 +27,6 @@ namespace DynamicPriceCore.Controllers
 		}
 
 		[HttpGet("{id}")]
-		//todo: add authrize
 		public async Task<ActionResult<ProductViewModel>> GetProduct(int id)
 		{
 			var productVm = await _mediator.Send(new GetProductDetailsQuery((int)id));
@@ -38,7 +37,6 @@ namespace DynamicPriceCore.Controllers
 		}
 
 		[HttpPut("{id}")]
-		//todo: add authrize
 		public async Task<IActionResult> Edit(int id, ProductViewModel productVm)
 		{
 			if (id != productVm.ProductId)
@@ -50,7 +48,6 @@ namespace DynamicPriceCore.Controllers
 		}
 
 		[HttpPost]
-		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 		public async Task<ActionResult<int>> Create(ProductViewModel productVm)
 		{
 			var productId = await _mediator.Send(new CreateProductCommand(productVm));
@@ -58,7 +55,6 @@ namespace DynamicPriceCore.Controllers
 		}
 
 		[HttpDelete("{id}")]
-		//todo: add authrize
 		public async Task<IActionResult> Delete(int id)
 		{
 			await _mediator.Send(new DeleteProductCommand(id));

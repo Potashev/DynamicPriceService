@@ -47,7 +47,10 @@ public class HttpClientService
 		return JsonSerializer.Deserialize<T>(json, _options);
 	}
 
-	public async Task<TResponse?> PostAsync<TRequest, TResponse>(string url, TRequest body, CancellationToken token = default)
+	public async Task<TResponse?> PostAsync<TRequest, TResponse>(
+		string url, 
+		TRequest body, 
+		CancellationToken token = default)
 	{
 		AddAuthHeader();
 
@@ -76,8 +79,8 @@ public class HttpClientService
 	}
 
 	public async Task PostAsync(
-	string url,
-	CancellationToken token = default)
+		string url,
+		CancellationToken token = default)
 	{
 		AddAuthHeader();
 
@@ -147,8 +150,5 @@ public class HttpClientService
 
 		var response = await _client.DeleteAsync(url, GetCancellationToken(token));
 		response.EnsureSuccessStatusCode();
-
-		//var responseJson = await response.Content.ReadAsStringAsync();
-		//return JsonSerializer.Deserialize<TResponse>(responseJson, _options);
 	}
 }

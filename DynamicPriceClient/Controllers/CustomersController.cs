@@ -15,6 +15,7 @@ public class CustomersController : Controller
 	public async Task<IActionResult> GetCustomer()
 		=> View(await _httpClientService.GetAsync<CustomerInfoViewModel>("api/customers/me"));
 
+
 	[HttpPost, ActionName("TopUpBalance")]
 	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> TopUpBalance(string replenishmentAmount)

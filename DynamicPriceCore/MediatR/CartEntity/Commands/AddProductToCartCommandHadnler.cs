@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using DynamicPriceCore.Data;
-using DynamicPriceCore.MediatR.ViewModels;
 using DynamicPriceCore.Models;
 using DynamicPriceCore.Services;
+using DynamicPriceCore.ViewModels;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

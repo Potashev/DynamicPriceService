@@ -83,7 +83,7 @@ public class ProductsController : Controller
 		return View(productVm);
 	}
 
-	[HttpPost, ActionName("Delete")]
+	[HttpPost]
 	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> DeleteConfirmed(int id)
 	{

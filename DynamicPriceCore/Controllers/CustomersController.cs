@@ -2,8 +2,8 @@
 using DynamicPriceCore.MediatR.CustomerEntity.Commands;
 using DynamicPriceCore.MediatR.CustomerEntity.Queries;
 using DynamicPriceCore.MediatR.PriceRuleEntity.Commands;
-using DynamicPriceCore.MediatR.ViewModels;
 using DynamicPriceCore.Models;
+using DynamicPriceCore.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;

@@ -12,7 +12,6 @@ public class OrderViewModel
 
 public enum OrderStatus
 {
-	Cart,
 	Confirmed,
 	Completed
 }

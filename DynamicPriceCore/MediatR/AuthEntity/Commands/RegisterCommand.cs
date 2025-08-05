@@ -1,4 +1,4 @@
-﻿using DynamicPriceCore.MediatR.ViewModels;
+﻿using DynamicPriceCore.ViewModels;
 using MediatR;
 
 namespace DynamicPriceCore.MediatR.AuthEntity.Commands;

@@ -1,9 +1,6 @@
 ﻿using DynamicPriceService.Services;
 using DynamicPriceService.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Http;
-using System.Text;
-using System.Text.Json;
 
 namespace DynamicPriceService.Controllers;
 public class AuthController : Controller
@@ -13,16 +10,6 @@ public class AuthController : Controller
 	public AuthController(HttpClientService httpClientService)
 	{
 		_httpClientService = httpClientService;
-	}
-
-	public IActionResult Index()
-	{
-		return View();
-	}
-
-	public IActionResult Register()
-	{
-		return View();
 	}
 
 	public IActionResult Login()

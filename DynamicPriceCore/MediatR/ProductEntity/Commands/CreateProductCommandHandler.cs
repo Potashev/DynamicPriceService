@@ -22,11 +22,6 @@ public class CreateProductCommandHandler
 	{
 		var manager = await _currentUserService.GetCurrentUserAsync();
 
-		//var company = await _context.CompanyUsers
-		//	.Where(cu => cu.UserId == request.UserId)
-		//	.Select(cu => cu.Company)
-		//	.FirstOrDefaultAsync(cancellationToken);
-
 		var product = _mapper.Map<Product>(request.ProductVm);
 		product.Company = manager.Company;
 		product.LastSellTime = DateTime.UtcNow;

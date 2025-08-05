@@ -1,7 +1,7 @@
 ﻿using DynamicPriceCore.Data;
 using DynamicPriceCore.MediatR.AuthEntity.Commands;
 using DynamicPriceCore.MediatR.CompanyEntity.Queries;
-using DynamicPriceCore.MediatR.ViewModels;
+using DynamicPriceCore.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

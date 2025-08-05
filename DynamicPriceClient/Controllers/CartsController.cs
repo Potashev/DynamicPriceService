@@ -1,12 +1,6 @@
 ﻿using DynamicPriceClient.Services;
 using DynamicPriceClient.ViewModels;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
 
 namespace DynamicPriceClient.Controllers;
 public class CartsController : Controller

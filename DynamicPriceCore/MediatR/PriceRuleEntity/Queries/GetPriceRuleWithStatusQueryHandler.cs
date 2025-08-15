@@ -22,11 +22,12 @@ public class GetPriceRuleWithStatusQueryHandler
 		var manager = await _currentUserService.GetCurrentUserAsync();
 
 		var priceRule = await _context.PriceRules
-			   .Where(pr => pr.Company.CompanyId == manager.CompanyId)
-			   .FirstOrDefaultAsync(cancellationToken);
+			.Include(pr => pr.Company)
+			.Where(pr => pr.Company.CompanyId == manager.CompanyId)
+			.FirstOrDefaultAsync(cancellationToken);
 
 		var priceRuleVm = _mapper.Map<PriceRuleViewModel>(priceRule);
-		var status = _activeCompaniesService.IsActive(priceRule.Company);
+		var status = _activeCompaniesService.IsActive(priceRule.Company.CompanyId);
 
 		return new PriceRuleWithStatus(priceRuleVm, status);
 	}

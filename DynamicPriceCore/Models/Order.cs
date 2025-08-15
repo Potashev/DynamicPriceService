@@ -3,7 +3,8 @@
 public class Order
 {
 	public int OrderId { get; set; }
-	public ApplicationUser Customer { get; set; }
+	//public ApplicationUser Customer { get; set; }
+	public string CustomerId { get; set; }
 	public Company Company { get; set; }
 	public ICollection<OrderItem> OrderItems { get; set; }
     public OrderStatus Status { get; set; }

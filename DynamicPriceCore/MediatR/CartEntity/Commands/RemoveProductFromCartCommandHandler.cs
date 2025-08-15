@@ -24,7 +24,7 @@ public class RemoveProductFromCartCommandHandler
 
 		var cartItem = await _context.CartItems
 			.Where(ci => ci.ProductId.ToString() == request.ProductId
-				&& ci.Cart.Customer.Id == customer.Id)
+				&& ci.Cart.CustomerId == customer.Id)
 			.Include(ci => ci.Cart)
 				.ThenInclude(c => c.Company)
 			.FirstOrDefaultAsync(cancellationToken);

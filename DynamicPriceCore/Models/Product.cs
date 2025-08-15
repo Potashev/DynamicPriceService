@@ -12,6 +12,7 @@ public class Product
 {
 	public int ProductId { get; set; }
 	public Company Company { get; set; }
+	public int? CompanyId { get; set; }
 	public string Title { get; set; }
 
 	[Precision(18, 2)]
@@ -22,7 +23,5 @@ public class Product
 
 	//todo: remove after adding order entity
 	public DateTime? LastSellTime { get; set; }
-	//[JsonIgnore]
-	//public ICollection<OrderProduct> OrderProducts { get; set; } //todo: check removing
 	public ICollection<PriceDynamic> PriceDynamics { get; set; }
 }

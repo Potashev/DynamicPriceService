@@ -10,7 +10,7 @@ public class CurrentUserService : ICurrentUserService
 {
 	private readonly IHttpContextAccessor _httpContextAccessor;
 	private readonly UserManager<ApplicationUser> _userManager;
-	private readonly DynamicPriceCoreContext _context;
+	//private readonly DynamicPriceCoreContext _context;
 
 	public CurrentUserService(
 		IHttpContextAccessor httpContextAccessor,
@@ -19,7 +19,7 @@ public class CurrentUserService : ICurrentUserService
 	{
 		_httpContextAccessor = httpContextAccessor;
 		_userManager = userManager;
-		_context = context;
+		//_context = context;
 	}
 
 	public string? UserId =>
@@ -50,9 +50,12 @@ public class CurrentUserService : ICurrentUserService
 	public async Task<ApplicationUser?> GetCurrentUserAsync()
 	{
 		//todo: check
-		return await _context.Users
-			.Include(m => m.Company)
-			.FirstOrDefaultAsync(m => m.Id == UserId);
+		//return await _context.Users
+		//	.Include(m => m.Company)
+		//	.FirstOrDefaultAsync(m => m.Id == UserId);
+
+		//temp
+		return await _userManager.FindByIdAsync(UserId ?? string.Empty);
 	}
 }
 

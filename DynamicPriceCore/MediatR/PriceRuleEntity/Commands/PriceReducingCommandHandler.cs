@@ -18,19 +18,21 @@ public class PriceReducingCommandHandler
 	public async Task<bool> Handle(PriceReducingCommand request, CancellationToken cancellationToken)
 	{
 		var manager = await _currentUserService.GetCurrentUserAsync();
-		var company = manager.Company;
+
+		//var company = manager.Company;
+		var companyId = (int)manager.CompanyId;
 
 		if (request.IsRunCommand)
 		{
-			if(!_activeCompaniesService.IsActive(company))
-				_activeCompaniesService.AddRequest(company);
+			if(!_activeCompaniesService.IsActive(companyId))
+				_activeCompaniesService.AddRequest(companyId);
 		}
 		else
-			_activeCompaniesService.RemoveRequest(company);
+			_activeCompaniesService.RemoveRequest(companyId);
 
 		//temp solution to show actual status after request
 		Thread.Sleep(1000);
 
-		return _activeCompaniesService.IsActive(company);
+		return _activeCompaniesService.IsActive(companyId);
 	}
 }

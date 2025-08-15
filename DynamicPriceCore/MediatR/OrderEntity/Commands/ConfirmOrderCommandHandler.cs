@@ -42,7 +42,7 @@ public class ConfirmOrderCommandHandler
 
 		var order = new Order
 		{
-			Customer = customer,
+			CustomerId = customer.Id,
 			Company = cart.Company,
 			Status = OrderStatus.Confirmed,
 			OrderDate = DateTime.UtcNow,

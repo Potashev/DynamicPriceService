@@ -14,7 +14,10 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DynamicPriceCoreContext>(options =>
-	options.UseSqlServer(builder.Configuration.GetConnectionString("DynamicPriceCoreContext") ?? throw new InvalidOperationException("Connection string 'DynamicPriceCoreContext' not found.")));
+	options.UseSqlServer(builder.Configuration.GetConnectionString("DynamicPriceDb") ?? throw new InvalidOperationException("Connection string 'DynamicPriceDb' not found.")));
+
+builder.Services.AddDbContext<IdentityContext>(options =>
+	options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityDb")));
 
 
 builder.Services.AddAuthentication(options =>
@@ -47,7 +50,7 @@ builder.Services.AddAuthorization(options =>
 });
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-	.AddEntityFrameworkStores<DynamicPriceCoreContext>()
+	.AddEntityFrameworkStores<IdentityContext>()
 	.AddDefaultTokenProviders();
 
 builder.Services.AddControllers();
@@ -121,7 +124,20 @@ if (app.Environment.IsDevelopment())
 	app.UseSwagger();
 	app.UseSwaggerUI();
 
-	app.ApplyMigrations();
+	//app.ApplyMigrations();
+	using (var scope = app.Services.CreateScope())
+	{
+		var services = scope.ServiceProvider;
+
+		var dynamicPriceDb = services.GetRequiredService<DynamicPriceCoreContext>();
+		dynamicPriceDb.Database.Migrate();
+
+		var identityDb = services.GetRequiredService<IdentityContext>();
+		identityDb.Database.Migrate();
+
+		await DbInitializer.SeedAllAsync(services);
+	}
+
 }
 
 app.UseHttpsRedirection();
@@ -139,8 +155,9 @@ app.MapHub<PriceHub>("/priceHub");
 using (var scope = app.Services.CreateScope())
 {
 	var services = scope.ServiceProvider;
-	await DbInitializer.SeedRolesAsync(services);
-	await DbInitializer.SeedUsersAsync(services);
+	//await DbInitializer.SeedRolesAsync(services);
+	//await DbInitializer.SeedUsersAsync(services);
+	await DbInitializer.SeedAllAsync(services);
 }
 
 app.Run();

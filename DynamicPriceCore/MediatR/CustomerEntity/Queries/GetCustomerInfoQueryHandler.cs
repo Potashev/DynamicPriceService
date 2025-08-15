@@ -28,7 +28,7 @@ public class GetCustomerInfoQueryHandler
 			.Include(o => o.Company)
 			.Include(o => o.OrderItems)			// todo: check
 				.ThenInclude(oi => oi.Product)
-			.Where(o => o.Customer.Id == customer.Id
+			.Where(o => o.CustomerId == customer.Id
 				&& (o.Status == OrderStatus.Confirmed || o.Status == OrderStatus.Completed))
 			.ToArrayAsync(cancellationToken);
 

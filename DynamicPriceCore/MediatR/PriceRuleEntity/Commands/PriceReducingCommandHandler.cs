@@ -8,18 +8,16 @@ namespace DynamicPriceCore.MediatR.PriceRuleEntity.Commands;
 public class PriceReducingCommandHandler
 	: IRequestHandler<PriceReducingCommand, bool>
 {
-	private DynamicPriceCoreContext _context;
 	private IActiveCompaniesService _activeCompaniesService;
 	private readonly ICurrentUserService _currentUserService;
 
-	public PriceReducingCommandHandler(DynamicPriceCoreContext context, IActiveCompaniesService activeCompaniesService, ICurrentUserService currentUserService)
-		=> (_context, _activeCompaniesService, _currentUserService) = (context, activeCompaniesService, currentUserService);
+	public PriceReducingCommandHandler(IActiveCompaniesService activeCompaniesService, ICurrentUserService currentUserService)
+		=> (_activeCompaniesService, _currentUserService) = (activeCompaniesService, currentUserService);
 
 	public async Task<bool> Handle(PriceReducingCommand request, CancellationToken cancellationToken)
 	{
 		var manager = await _currentUserService.GetCurrentUserAsync();
 
-		//var company = manager.Company;
 		var companyId = (int)manager.CompanyId;
 
 		if (request.IsRunCommand)

@@ -2,7 +2,6 @@
 using DynamicPriceCore.Models;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.CodeAnalysis;
-using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPriceCore.Services;
 

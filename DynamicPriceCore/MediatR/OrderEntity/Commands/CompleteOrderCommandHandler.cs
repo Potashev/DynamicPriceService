@@ -10,10 +10,9 @@ public class CompleteOrderCommandHandler
 	: IRequestHandler<CompleteOrderCommand, int>
 {
 	private readonly DynamicPriceCoreContext _context;
-	private readonly IIncreasePriceService _increasePriceService;
 
-	public CompleteOrderCommandHandler(DynamicPriceCoreContext context, IIncreasePriceService increasePriceService)
-		=> (_context, _increasePriceService) = (context, increasePriceService);
+	public CompleteOrderCommandHandler(DynamicPriceCoreContext context)
+		=> _context = context;
 
 	public async Task<int> Handle(CompleteOrderCommand request, CancellationToken cancellationToken)
 	{
@@ -22,7 +21,7 @@ public class CompleteOrderCommandHandler
 			.FirstOrDefaultAsync(cancellationToken);
 
 		order.Status = OrderStatus.Completed;
-		order.ReceiveKey = 0;	//todo: think about nullable
+		order.ReceiveKey = 0;	//todo: think about nullable?
 
 		await _context.SaveChangesAsync(cancellationToken);
 

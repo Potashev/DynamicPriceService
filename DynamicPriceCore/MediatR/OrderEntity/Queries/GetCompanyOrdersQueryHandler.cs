@@ -25,7 +25,6 @@ public class GetCompanyOrdersQueryHandler
 			.Where(o => o.Company.CompanyId == manager.CompanyId)
 			.ToArrayAsync(cancellationToken);
 
-
 		return _mapper.Map<OrderViewModel[]>(companyOrders);
 	}
 }

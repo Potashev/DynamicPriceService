@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using DynamicPriceCore.Data;
+﻿using DynamicPriceCore.Data;
 using DynamicPriceCore.Services;
 using DynamicPriceCore.ViewModels;
 using MediatR;
@@ -11,11 +10,10 @@ public class GetCompanyStatisticsQueryHandler
 	: IRequestHandler<GetCompanyStatisticsQuery, OrderStatistics>
 {
 	private readonly DynamicPriceCoreContext _context;
-	private readonly IMapper _mapper;
 	private readonly ICurrentUserService _currentUserService;
 
-	public GetCompanyStatisticsQueryHandler(DynamicPriceCoreContext context, IMapper mapper, ICurrentUserService currentUserService)
-		=> (_context, _mapper, _currentUserService) = (context, mapper, currentUserService);
+	public GetCompanyStatisticsQueryHandler(DynamicPriceCoreContext context, ICurrentUserService currentUserService)
+		=> (_context, _currentUserService) = (context, currentUserService);
 
 	public async Task<OrderStatistics> Handle(GetCompanyStatisticsQuery request, CancellationToken cancellationToken)
 	{

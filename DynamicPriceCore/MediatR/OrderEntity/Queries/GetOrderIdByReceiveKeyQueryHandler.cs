@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DynamicPriceCore.Data;
+using DynamicPriceCore.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,15 +10,18 @@ public class GetOrderIdByReceiveKeyQueryHandler
 	: IRequestHandler<GetOrderIdByReceiveKeyQuery, int>
 {
 	private readonly DynamicPriceCoreContext _context;
-	private readonly IMapper _mapper;
+	private readonly ICurrentUserService _currentUserService;
 
-	public GetOrderIdByReceiveKeyQueryHandler(DynamicPriceCoreContext context, IMapper mapper)
-		=> (_context, _mapper) = (context, mapper);
+	public GetOrderIdByReceiveKeyQueryHandler(DynamicPriceCoreContext context, ICurrentUserService currentUserService)
+		=> (_context, _currentUserService) = (context, currentUserService);
 
 	public async Task<int> Handle(GetOrderIdByReceiveKeyQuery request, CancellationToken cancellationToken)
 	{
+		var manager = await _currentUserService.GetCurrentUserAsync();
+
 		var orderId = await _context.Orders
-			.Where(o => o.ReceiveKey.ToString() == request.ReceiveKey)  //todo: add additional filter or make uniq key
+			//todo: check and add additional filter or make uniq key
+			.Where(o => o.ReceiveKey.ToString() == request.ReceiveKey && o.Company.CompanyId == manager.CompanyId)
 			.Select(o => o.OrderId)
 			.FirstOrDefaultAsync(cancellationToken);
 

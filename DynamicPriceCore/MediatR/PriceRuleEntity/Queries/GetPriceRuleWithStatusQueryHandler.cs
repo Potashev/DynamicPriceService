@@ -21,9 +21,10 @@ public class GetPriceRuleWithStatusQueryHandler
 	{
 		var manager = await _currentUserService.GetCurrentUserAsync();
 
+		//todo: check
 		var priceRule = await _context.PriceRules
-			.Include(pr => pr.Company)
 			.Where(pr => pr.Company.CompanyId == manager.CompanyId)
+			.Include(pr => pr.Company)
 			.FirstOrDefaultAsync(cancellationToken);
 
 		var priceRuleVm = _mapper.Map<PriceRuleViewModel>(priceRule);

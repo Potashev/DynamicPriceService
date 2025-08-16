@@ -21,7 +21,6 @@ public class GetProductDetailsQueryHandler
 	{
 		var manager = await _currentUserService.GetCurrentUserAsync();
 
-		//todo: check
 		var product = await _context.Products
 			.FirstOrDefaultAsync(product => product.ProductId == request.ProductId && product.CompanyId == manager.CompanyId, cancellationToken);
 		return _mapper.Map<ProductViewModel>(product);

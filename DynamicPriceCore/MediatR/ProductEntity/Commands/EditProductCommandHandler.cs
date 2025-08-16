@@ -21,7 +21,7 @@ public class EditProductCommandHandler
 		var manager = await _currentUserService.GetCurrentUserAsync();
 
 		var updatedProductVm = request.ProductVm;
-		//todo: check
+
 		var product = await _context.Products
 			.FirstOrDefaultAsync(p => p.ProductId == updatedProductVm.ProductId && p.CompanyId == manager.CompanyId, cancellationToken);
 

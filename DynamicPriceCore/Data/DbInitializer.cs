@@ -6,19 +6,18 @@ using Microsoft.Extensions.DependencyInjection;
 namespace DynamicPriceCore.Data;
 
 /// <summary>
-/// Provides methods for seeding test users data into the database.
+/// Provides methods for seeding test data into the stores.
 /// </summary>
 public static class DbInitializer
 {
 	private const string RoleManager = "Manager";
 	private const string RoleCustomer = "Customer";
 
-	public static async Task SeedAllAsync(IServiceProvider services)
+	public static async Task SeedDataAsync(IServiceProvider services)
 	{
-		// порядок важен
 		await SeedRolesAsync(services);
-		await SeedDomainAsync(services);   // компании/товары/правила
-		await SeedUsersAsync(services);    // пользователи + роли + привязка к компаниям
+		await SeedDomainAsync(services);
+		await SeedUsersAsync(services);
 	}
 
 	public static async Task SeedRolesAsync(IServiceProvider serviceProvider)
@@ -36,26 +35,16 @@ public static class DbInitializer
 	{
 		var db = sp.GetRequiredService<DynamicPriceCoreContext>();
 
-		//var companies = new Company[]
-		//{
-		//	new Company { Title = "Автозапчасти" },
-		//	new Company { Title = "Копыта" }
-		//};
-
-		// Компании (идемпотентно)
 		if (!await db.Companies.AnyAsync())
 		{
 			db.Companies.AddRange(
 				new Company { Title = "Автозапчасти" },
 				new Company { Title = "Копыта" }
 			);
-
-			//db.Companies.AddRange(companies);
-
+			
 			await db.SaveChangesAsync();
 		}
 
-		// Правила
 		if (!await db.PriceRules.AnyAsync())
 		{
 			db.PriceRules.AddRange(
@@ -65,7 +54,6 @@ public static class DbInitializer
 			await db.SaveChangesAsync();
 		}
 
-		// Товары
 		if (!await db.Products.AnyAsync())
 		{
 			var now = DateTime.UtcNow;
@@ -86,7 +74,6 @@ public static class DbInitializer
 	{
 		var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-		// Customer
 		var customerEmail = "customer@test.com";
 		var customer = await userManager.FindByEmailAsync(customerEmail);
 		if (customer is null)
@@ -106,13 +93,11 @@ public static class DbInitializer
 		if (!await userManager.IsInRoleAsync(customer, RoleCustomer))
 			await userManager.AddToRoleAsync(customer, RoleCustomer);
 
-		// Manager 1 (CompanyId = 1)
 		await EnsureManagerAsync(userManager,
 			email: "manager@test.com",
 			userName: "Man1",
 			companyId: 1);
 
-		// Manager 2 (CompanyId = 2)
 		await EnsureManagerAsync(userManager,
 			email: "manager2@test.com",
 			userName: "Man2",
@@ -137,7 +122,6 @@ public static class DbInitializer
 				throw new InvalidOperationException(string.Join("; ", result.Errors.Select(e => e.Description)));
 		}
 
-		// Если у существующего менеджера ещё не установлен CompanyId — проставим
 		if (user.CompanyId != companyId)
 		{
 			user.CompanyId = companyId;

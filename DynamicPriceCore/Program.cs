@@ -17,7 +17,7 @@ builder.Services.AddDbContext<DynamicPriceCoreContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("DynamicPriceDb") ?? throw new InvalidOperationException("Connection string 'DynamicPriceDb' not found.")));
 
 builder.Services.AddDbContext<IdentityContext>(options =>
-	options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityDb")));
+	options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityDb") ?? throw new InvalidOperationException("Connection string 'IdentityDb' not found.")));
 
 
 builder.Services.AddAuthentication(options =>
@@ -135,29 +135,16 @@ if (app.Environment.IsDevelopment())
 		var identityDb = services.GetRequiredService<IdentityContext>();
 		identityDb.Database.Migrate();
 
-		await DbInitializer.SeedAllAsync(services);
+		await DbInitializer.SeedDataAsync(services);
 	}
 
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.UseCors("AllowSpecificOrigins");
-
 app.MapHub<PriceHub>("/priceHub");
-
-using (var scope = app.Services.CreateScope())
-{
-	var services = scope.ServiceProvider;
-	//await DbInitializer.SeedRolesAsync(services);
-	//await DbInitializer.SeedUsersAsync(services);
-	await DbInitializer.SeedAllAsync(services);
-}
 
 app.Run();

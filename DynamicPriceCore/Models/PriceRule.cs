@@ -7,6 +7,7 @@ public class PriceRule
 {
 	public int PriceRuleId { get; set; }
 	public Company Company { get; set; }
+	public int? CompanyId { get; set; }
 
 	/// <summary>
 	/// Повышение цены продукта (в %).

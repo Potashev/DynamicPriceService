@@ -1,10 +1,8 @@
-﻿using AutoMapper;
-using DynamicPriceCore.Data;
+﻿using DynamicPriceCore.Data;
 using DynamicPriceCore.Models;
 using DynamicPriceCore.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace DynamicPriceCore.MediatR.OrderEntity.Commands;
 
@@ -23,10 +21,10 @@ public class ConfirmOrderCommandHandler
 		var customer = await _currentUserService.GetCurrentUserAsync();
 
 		var cart = await _context.Carts
+			.Where(c => c.CartId == request.CartId && c.CustomerId == customer.Id)  //todo: check
 			.Include(c => c.Company)
 			.Include(c => c.CartItems)
 				.ThenInclude(ci => ci.Product)
-			.Where(c => c.CartId == request.CartId)
 			.FirstOrDefaultAsync(cancellationToken);
 
 		if (cart == null)
@@ -42,7 +40,7 @@ public class ConfirmOrderCommandHandler
 
 		var order = new Order
 		{
-			Customer = customer,
+			CustomerId = customer.Id,
 			Company = cart.Company,
 			Status = OrderStatus.Confirmed,
 			OrderDate = DateTime.UtcNow,
@@ -58,7 +56,7 @@ public class ConfirmOrderCommandHandler
 			{
 				Order = order,
 				Product = product,
-				ProductPrice = product.Price,	// can be changed since ordertotalamount
+				ProductPrice = product.Price,	// can be changed since ordertotalamount?
 				Quantity = ci.Quantity
 			});
 

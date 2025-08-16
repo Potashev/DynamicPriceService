@@ -26,7 +26,7 @@ public class GetCartDetailsQueryHandler
 			.Include(c => c.Company)
 			.Include(c => c.CartItems)
 				.ThenInclude(ci => ci.Product)
-			.FirstOrDefaultAsync(c => c.Customer.Id == customer.Id
+			.FirstOrDefaultAsync(c => c.CustomerId == customer.Id
 				&& c.Company.CompanyId == request.CompanyId, cancellationToken);
 
 		return _mapper.Map<CartViewModel>(cart);

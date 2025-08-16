@@ -23,7 +23,8 @@ public class CreateProductCommandHandler
 		var manager = await _currentUserService.GetCurrentUserAsync();
 
 		var product = _mapper.Map<Product>(request.ProductVm);
-		product.Company = manager.Company;
+
+		product.CompanyId = manager.CompanyId;
 		product.LastSellTime = DateTime.UtcNow;
 
 		await _context.Products.AddAsync(product, cancellationToken);

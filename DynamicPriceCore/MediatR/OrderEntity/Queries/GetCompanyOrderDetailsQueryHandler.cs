@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DynamicPriceCore.Data;
+using DynamicPriceCore.Services;
 using DynamicPriceCore.ViewModels;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -11,16 +12,19 @@ public class GetCompanyOrderDetailsQueryHandler
 {
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IMapper _mapper;
+	private readonly ICurrentUserService _currentUserService;
 
-	public GetCompanyOrderDetailsQueryHandler(DynamicPriceCoreContext context, IMapper mapper)
-		=> (_context, _mapper) = (context, mapper);
+	public GetCompanyOrderDetailsQueryHandler(DynamicPriceCoreContext context, IMapper mapper, ICurrentUserService currentUserService)
+		=> (_context, _mapper, _currentUserService) = (context, mapper, currentUserService);
 
 	public async Task<OrderViewModel> Handle(GetCompanyOrderDetailsQuery request, CancellationToken cancellationToken)
 	{
+		var manager = await _currentUserService.GetCurrentUserAsync();
+
 		var companyOrder = await _context.Orders
-			.Where(o => o.OrderId.ToString() == request.OrderId) // perfomance - convert request to int?
+			.Where(o => o.OrderId.ToString() == request.OrderId && o.Company.CompanyId == manager.CompanyId) //todo: check and perfomance - convert request to int?
 			.Include(o => o.OrderItems)
-			.ThenInclude(op => op.Product)
+				.ThenInclude(op => op.Product)
 			.FirstOrDefaultAsync(cancellationToken);
 
 		var companyOrderVm = _mapper.Map<OrderViewModel>(companyOrder);

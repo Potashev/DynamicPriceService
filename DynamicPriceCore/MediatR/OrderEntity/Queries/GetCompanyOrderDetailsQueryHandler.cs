@@ -20,7 +20,7 @@ public class GetCompanyOrderDetailsQueryHandler
 		var companyOrder = await _context.Orders
 			.Where(o => o.OrderId.ToString() == request.OrderId) // perfomance - convert request to int?
 			.Include(o => o.OrderItems)
-			.ThenInclude(op => op.Product)
+				.ThenInclude(op => op.Product)
 			.FirstOrDefaultAsync(cancellationToken);
 
 		var companyOrderVm = _mapper.Map<OrderViewModel>(companyOrder);

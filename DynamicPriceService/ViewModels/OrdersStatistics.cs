@@ -1,6 +1,6 @@
 ﻿namespace DynamicPriceService.ViewModels;
 
-public class OrderStatistics
+public class OrdersStatistics
 {
     public int OrdersQuantity { get; set; }
     public double? TotalAmount { get; set; }

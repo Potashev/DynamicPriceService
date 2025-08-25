@@ -21,17 +21,17 @@ public interface ICoreApiClient
 	Task RegisterCustomer(RegisterViewModel registerVm);
 
 	[Post("/api/auth/login")]
-	Task<TokenResponse> LoginCustomer(LoginViewModel loginrVm);
+	Task<TokenResponse> LoginCustomer(LoginViewModel loginVm);
 
 	[Get("/api/carts/{companyId}")]
 	Task<CartViewModel> GetCartDetails(string companyId);
 
 	[Post("/api/carts/items")]
-	Task<int> AddProduct(int productId);
+	Task<int> AddProduct([Body] int productId);
 
 	[Delete("/api/carts/items/{productId}")]
 	Task<int> DeleteProduct(int productId);
 
 	[Post("/api/orders")]
-	Task<int> ConfirmOrder(int cartId);
+	Task<int> ConfirmOrder([Body] int cartId);
 }

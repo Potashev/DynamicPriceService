@@ -11,9 +11,7 @@ namespace DynamicPriceClient.Controllers
 		private readonly ICoreApiClient _coreApiClient;
 
 		public AuthController(ICoreApiClient coreApiClient)
-		{
-			_coreApiClient = coreApiClient;
-		}
+			=> _coreApiClient = coreApiClient;
 
 		public IActionResult RegisterCustomer()
 		{

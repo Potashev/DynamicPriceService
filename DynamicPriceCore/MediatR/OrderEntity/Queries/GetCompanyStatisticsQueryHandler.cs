@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace DynamicPriceCore.MediatR.OrderEntity.Queries;
 
 public class GetCompanyStatisticsQueryHandler
-	: IRequestHandler<GetCompanyStatisticsQuery, OrderStatistics>
+	: IRequestHandler<GetCompanyStatisticsQuery, OrdersStatistics>
 {
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IMapper _mapper;
@@ -17,7 +17,7 @@ public class GetCompanyStatisticsQueryHandler
 	public GetCompanyStatisticsQueryHandler(DynamicPriceCoreContext context, IMapper mapper, ICurrentUserService currentUserService)
 		=> (_context, _mapper, _currentUserService) = (context, mapper, currentUserService);
 
-	public async Task<OrderStatistics> Handle(GetCompanyStatisticsQuery request, CancellationToken cancellationToken)
+	public async Task<OrdersStatistics> Handle(GetCompanyStatisticsQuery request, CancellationToken cancellationToken)
 	{
 		var manager = await _currentUserService.GetCurrentUserAsync();
 
@@ -31,7 +31,7 @@ public class GetCompanyStatisticsQueryHandler
 			.ToArrayAsync(cancellationToken);
 
 
-		var orderStatistics = new OrderStatistics();
+		var orderStatistics = new OrdersStatistics();
 		orderStatistics.OrdersQuantity = companyOrdersWithAmount.Length;
 		orderStatistics.TotalAmount = companyOrdersWithAmount.Sum(o => o.OrderAmount);
 		orderStatistics.AverageOrderAmount = companyOrdersWithAmount.Average(o => o.OrderAmount);

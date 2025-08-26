@@ -38,8 +38,8 @@ public class OrdersController : ControllerBase
 	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 	public async Task<ActionResult<OrderViewModel>> GetCompanyOrder(string orderId)
 	{
-		var ordersVm = await _mediator.Send(new GetCompanyOrderDetailsQuery(orderId));
-		return Ok(ordersVm);
+		var orderVm = await _mediator.Send(new GetCompanyOrderDetailsQuery(orderId));
+		return Ok(orderVm);
 	}
 
 	[HttpGet("by-receive-key/{key}")]
@@ -60,7 +60,7 @@ public class OrdersController : ControllerBase
 
 	[HttpGet("statistics")]
 	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
-	public async Task<ActionResult<OrderStatistics>> GetCompanyStatistics(CancellationToken cancellationToken)
+	public async Task<ActionResult<OrdersStatistics>> GetCompanyStatistics(CancellationToken cancellationToken)
 	{
 		var orderStatistics = await _mediator.Send(new GetCompanyStatisticsQuery(), cancellationToken);
 		return Ok(orderStatistics);

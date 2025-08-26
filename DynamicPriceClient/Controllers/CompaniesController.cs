@@ -1,22 +1,19 @@
-﻿using DynamicPriceClient.Services;
-using DynamicPriceClient.ViewModels;
+﻿using DynamicPriceClient.ApiClients;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Http.Headers;
-using System.Text.Json;
 
 namespace DynamicPriceClient.Controllers;
 public class CompaniesController : Controller
 {
-	private readonly HttpClientService _httpClientService;
+	private readonly ICoreApiClient _coreApiClient;
 
-	public CompaniesController(HttpClientService httpClientService)
+	public CompaniesController(ICoreApiClient coreApiClient)
     {
-		_httpClientService = httpClientService;
+		_coreApiClient = coreApiClient;
 	}
 
 	public async Task<IActionResult> Index()
-		=> View(await _httpClientService.GetAsync<IEnumerable<CompanyViewModel>>("api/companies?status=active"));
+		=> View(await _coreApiClient.GetCompanies());
 
 	public async Task<IActionResult> CompanyProducts(int? id)
-		=> View(await _httpClientService.GetAsync<CompanyProductsInfo>($"api/companies/{id}/products"));
+		=> View(await _coreApiClient.GetCompanyProducts((int)id));
 }

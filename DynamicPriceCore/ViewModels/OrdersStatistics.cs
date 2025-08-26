@@ -1,6 +1,6 @@
 ﻿namespace DynamicPriceCore.ViewModels;
 
-public class OrderStatistics
+public class OrdersStatistics
 {
     public int OrdersQuantity { get; set; }
     public decimal TotalAmount { get; set; }

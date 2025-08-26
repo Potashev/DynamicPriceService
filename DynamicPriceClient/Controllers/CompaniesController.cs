@@ -1,9 +1,5 @@
 ﻿using DynamicPriceClient.ApiClients;
-using DynamicPriceClient.Services;
-using DynamicPriceClient.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Http.Headers;
-using System.Text.Json;
 
 namespace DynamicPriceClient.Controllers;
 public class CompaniesController : Controller
@@ -17,9 +13,6 @@ public class CompaniesController : Controller
 
 	public async Task<IActionResult> Index()
 		=> View(await _coreApiClient.GetCompanies());
-
-	//public async Task<IActionResult> CompanyProducts(int? id)
-	//	=> View(await _httpClientService.GetAsync<CompanyProductsInfo>($"api/companies/{id}/products"));
 
 	public async Task<IActionResult> CompanyProducts(int? id)
 		=> View(await _coreApiClient.GetCompanyProducts((int)id));

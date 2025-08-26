@@ -1,5 +1,4 @@
 ﻿using DynamicPriceService.ApiClients;
-using DynamicPriceService.Services;
 using DynamicPriceService.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,7 +6,6 @@ namespace DynamicPriceService.Controllers;
 
 public class ProductsController : Controller
 {
-	//private readonly HttpClientService _httpClientService;
 	private readonly ICoreApiClient _coreApiClient;
 
 	public ProductsController(ICoreApiClient coreApiClient)
@@ -15,7 +13,6 @@ public class ProductsController : Controller
 
 	public async Task<IActionResult> Index()
 	{
-		//var productsVm = await _httpClientService.GetAsync<IEnumerable<ProductViewModel>>("api/company/products");
 		var productsVm = await _coreApiClient.GetProducts();
 		return View(productsVm);
 	}
@@ -41,7 +38,6 @@ public class ProductsController : Controller
 	{
 		if (ModelState.IsValid)
 		{
-			//await _httpClientService.PostAsync("api/company/products", productVm);
 			await _coreApiClient.CreateProduct(productVm);
 			return RedirectToAction(nameof(Index));
 		}
@@ -64,7 +60,6 @@ public class ProductsController : Controller
 	{
 		if (ModelState.IsValid)
 		{
-			//await _httpClientService.PutAsync($"api/company/products/{id}", productVm);
 			await _coreApiClient.UpdateProduct(id, productVm);
 			return RedirectToAction(nameof(Index));
 		}

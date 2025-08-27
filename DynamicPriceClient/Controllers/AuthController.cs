@@ -1,4 +1,5 @@
-﻿using DynamicPriceClient.ApiClients;
+﻿using DynamicPrice.Client.Common;
+using DynamicPriceClient.ApiClients;
 using DynamicPriceClient.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,9 +8,13 @@ namespace DynamicPriceClient.Controllers
 	public class AuthController : Controller
 	{
 		private readonly ICoreApiClient _coreApiClient;
+		private readonly IAuthTokenStore _authTokenStore;
 
-		public AuthController(ICoreApiClient coreApiClient)
-			=> _coreApiClient = coreApiClient;
+		public AuthController(IAuthTokenStore authTokenStore, ICoreApiClient coreApiClient)
+		{
+			_authTokenStore = authTokenStore;
+			_coreApiClient = coreApiClient;
+		}
 
 		public IActionResult RegisterCustomer()
 		{
@@ -42,7 +47,7 @@ namespace DynamicPriceClient.Controllers
 				// return View(loginVm);
 
 				var tokenResponse = await _coreApiClient.LoginCustomer(loginVm);
-				HttpContext.Session.SetString("AuthToken", tokenResponse.Token);
+				_authTokenStore.SetToken(tokenResponse.Token);
 				return RedirectToAction(nameof(Index), "Companies");
 			}
 			return View();

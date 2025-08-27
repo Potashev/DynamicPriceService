@@ -1,4 +1,5 @@
-﻿using DynamicPriceService.ApiClients;
+﻿using DynamicPrice.Client.Common;
+using DynamicPriceService.ApiClients;
 using Refit;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,9 +15,8 @@ builder.Services.AddSession(options =>
 });
 
 var baseUrl = builder.Configuration["ApiSettings:BaseUrl"];
-builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddTransient<AuthHeaderHandler>();
+builder.Services.AddClientCommon();
 
 builder.Services.AddRefitClient<ICoreApiClient>()
 	.ConfigureHttpClient(client =>

@@ -25,6 +25,7 @@ public class CurrentUserService : ICurrentUserService
 		_config = config;
 	}
 
+	//todo: use _userManager instead HttpContext?
 	public string? UserId
 		=> _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -42,6 +43,9 @@ public class CurrentUserService : ICurrentUserService
 
 		var roles = await _userManager.GetRolesAsync(user);
 		var token = GenerateJwtToken(user, roles);
+
+		_httpContextAccessor.HttpContext.Response.Cookies.Append("tests", token);
+
 		return token;
 	}
 

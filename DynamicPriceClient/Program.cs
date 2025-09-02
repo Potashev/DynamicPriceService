@@ -25,6 +25,7 @@ builder.Services.AddRefitClient<ICoreApiClient>()
 	{
 		client.BaseAddress = new Uri(baseUrl);
 		client.DefaultRequestHeaders.Add("Accept", "application/json");
+		client.Timeout = TimeSpan.FromSeconds(30);
 	})
 	.AddHttpMessageHandler<AuthHeaderHandler>();
 

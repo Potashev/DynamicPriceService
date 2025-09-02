@@ -3,6 +3,7 @@ using DynamicPriceCore.Extensions;
 using DynamicPriceCore.Models;
 using DynamicPriceCore.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Quartz;
 using System;
+using System.IO;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,6 +41,19 @@ builder.Services.AddAuthentication(options =>
 
 		ValidateLifetime = true,
 		ClockSkew = TimeSpan.Zero
+	};
+
+	options.Events = new JwtBearerEvents
+	{
+		OnMessageReceived = context =>
+		{
+			var accessToken = context.Request.Cookies["tests"];
+			if (!string.IsNullOrEmpty(accessToken))
+			{
+				context.Token = accessToken;
+			}
+			return Task.CompletedTask;
+		}
 	};
 });
 
@@ -141,6 +156,14 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCookiePolicy(new CookiePolicyOptions
+{
+	MinimumSameSitePolicy = SameSiteMode.Strict,
+	HttpOnly = HttpOnlyPolicy.Always,
+	Secure = CookieSecurePolicy.Always
+});
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

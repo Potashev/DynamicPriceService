@@ -3,11 +3,11 @@ using DynamicPriceClient.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPriceClient.Controllers;
-public class CustomersController : Controller
+public class CustomerController : Controller
 {
 	private readonly ICoreApiClient _coreApiClient;
 
-	public CustomersController(ICoreApiClient coreApiClient)
+	public CustomerController(ICoreApiClient coreApiClient)
 	{
 		_coreApiClient = coreApiClient;
 	}

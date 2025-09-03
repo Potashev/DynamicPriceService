@@ -11,10 +11,10 @@ public interface ICoreApiClient
 	[Get("/api/companies/{companyId}/products")]
 	Task<CompanyProductsInfo> GetCompanyProducts(int companyId);
 
-	[Get("/api/customers/me")]
+	[Get("/api/customer/me")]
 	Task<CustomerInfoViewModel> GetCustomer();
 
-	[Put("/api/customers/me/balance")]
+	[Put("/api/customer/me/balance")]
 	Task TopUpBalance(BalanceViewModel balanceVm);
 
 	[Post("/api/auth/register")]
@@ -23,13 +23,13 @@ public interface ICoreApiClient
 	[Post("/api/auth/login")]
 	Task<TokenResponse> LoginCustomer(LoginViewModel loginVm);
 
-	[Get("/api/carts/{companyId}")]
+	[Get("/api/cart?company-id={companyId}")]
 	Task<CartViewModel> GetCartDetails(string companyId);
 
-	[Post("/api/carts/items")]
+	[Post("/api/cart/items")]
 	Task<int> AddProduct([Body] int productId);
 
-	[Delete("/api/carts/items/{productId}")]
+	[Delete("/api/cart/items/{productId}")]
 	Task<int> DeleteProduct(int productId);
 
 	[Post("/api/orders")]

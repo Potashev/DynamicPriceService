@@ -2,11 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPriceClient.Controllers;
-public class CartsController : Controller
+public class CartController : Controller
 {
 	private readonly ICoreApiClient _coreApiClient;
 
-	public CartsController(ICoreApiClient coreApiClient)
+	public CartController(ICoreApiClient coreApiClient)
 	{
 		_coreApiClient = coreApiClient;
 	}

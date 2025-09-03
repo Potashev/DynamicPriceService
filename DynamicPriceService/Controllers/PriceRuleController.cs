@@ -3,11 +3,11 @@ using DynamicPriceService.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPriceService.Controllers;
-public class PriceRulesController : Controller
+public class PriceRuleController : Controller
 {
 	private readonly ICoreApiClient _coreApiClient;
 
-	public PriceRulesController(ICoreApiClient coreApiClient)
+	public PriceRuleController(ICoreApiClient coreApiClient)
 		=> _coreApiClient = coreApiClient;
 
 	public async Task<IActionResult> Details()

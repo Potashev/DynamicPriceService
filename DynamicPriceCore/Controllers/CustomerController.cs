@@ -14,10 +14,10 @@ namespace DynamicPriceCore.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "CustomerPolicy")]
-public class CustomersController : ControllerBase
+public class CustomerController : ControllerBase
 {
 	private readonly IMediator _mediator;
-	public CustomersController(IMediator mediator)
+	public CustomerController(IMediator mediator)
 	{
 		_mediator = mediator;
 	}

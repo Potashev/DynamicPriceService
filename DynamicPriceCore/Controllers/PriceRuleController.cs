@@ -11,11 +11,11 @@ namespace DynamicPriceCore.Controllers;
 [Route("api/company/price-rule")]
 [ApiController]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
-public class PriceRulesController : ControllerBase
+public class PriceRuleController : ControllerBase
 {
 	private readonly IMediator _mediator;
 
-	public PriceRulesController(IMediator mediator)
+	public PriceRuleController(IMediator mediator)
 	{
 		_mediator = mediator;
 	}

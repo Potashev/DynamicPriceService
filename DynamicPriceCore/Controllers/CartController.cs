@@ -14,18 +14,18 @@ namespace DynamicPriceCore.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "CustomerPolicy")]
-public class CartsController : ControllerBase
+public class CartController : ControllerBase
 {
 	private readonly IMediator _mediator;
-	public CartsController(IMediator mediator)
+	public CartController(IMediator mediator)
 	{
 		_mediator = mediator;
 	}
 
-	[HttpGet("{companyId}")]
-	public async Task<ActionResult<CartViewModel>> GetCartDetails(int? companyId, CancellationToken cancellationToken)
+	[HttpGet]
+	public async Task<ActionResult<CartViewModel>> GetCartDetails([FromQuery(Name = "company-id")] string companyId, CancellationToken cancellationToken)
 	{
-		var cart = await _mediator.Send(new GetCartDetailsQuery((int)companyId), cancellationToken);
+		var cart = await _mediator.Send(new GetCartDetailsQuery(Convert.ToInt32(companyId)), cancellationToken);
 
 		return cart == null
 			? NotFound(new { message = "Cart is empty." })

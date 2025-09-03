@@ -124,7 +124,7 @@ builder.Services.AddSingleton<IActiveCompaniesService, ActiveCompaniesService>()
 builder.Services.AddTransient<IIncreasePriceService, IncreasePriceService>();   //todo: change
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddQuartz(q => q.AddJobAndTrigger<ReducePriceJob>(builder.Configuration));
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
@@ -157,6 +157,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+//todo: cookie - set expired
 app.UseCookiePolicy(new CookiePolicyOptions
 {
 	MinimumSameSitePolicy = SameSiteMode.Strict,

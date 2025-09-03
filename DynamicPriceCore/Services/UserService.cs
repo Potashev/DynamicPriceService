@@ -9,13 +9,13 @@ using System.Text;
 
 namespace DynamicPriceCore.Services;
 
-public class CurrentUserService : ICurrentUserService
+public class UserService : IUserService
 {
 	private readonly IHttpContextAccessor _httpContextAccessor;
 	private readonly UserManager<ApplicationUser> _userManager;
 	private readonly IConfiguration _config;
 
-	public CurrentUserService(
+	public UserService(
 		IHttpContextAccessor httpContextAccessor,
 		UserManager<ApplicationUser> userManager,
 		IConfiguration config)
@@ -34,6 +34,9 @@ public class CurrentUserService : ICurrentUserService
 
 	public async Task<ApplicationUser?> GetCurrentUserAsync()
 		=> await _userManager.FindByIdAsync(UserId ?? string.Empty);
+
+	public async Task<string> GetUserNameByIdAsync(string userId)
+		=> (await _userManager.FindByIdAsync(userId))?.UserName ?? string.Empty;
 
 	public async Task<string> LoginUserAsync(string username, string password)
 	{
@@ -110,13 +113,13 @@ public class CurrentUserService : ICurrentUserService
 	}
 }
 
-// rename to IUserService?
-public interface ICurrentUserService
+public interface IUserService
 {
 	string? UserId { get; }
 	string? Role { get; }
 	Task<ApplicationUser?> GetCurrentUserAsync();
 	Task UpdateCurrentUserAsync();
+	Task<string> GetUserNameByIdAsync(string userId);
 	Task RegisterUserAsync(string username, string password, string email, string role);
 	Task<string> LoginUserAsync(string username, string password);
 }

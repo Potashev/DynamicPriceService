@@ -9,14 +9,14 @@ public class PriceReducingCommandHandler
 	: IRequestHandler<PriceReducingCommand, bool>
 {
 	private IActiveCompaniesService _activeCompaniesService;
-	private readonly ICurrentUserService _currentUserService;
+	private readonly IUserService _userService;
 
-	public PriceReducingCommandHandler(IActiveCompaniesService activeCompaniesService, ICurrentUserService currentUserService)
-		=> (_activeCompaniesService, _currentUserService) = (activeCompaniesService, currentUserService);
+	public PriceReducingCommandHandler(IActiveCompaniesService activeCompaniesService, IUserService userService)
+		=> (_activeCompaniesService, _userService) = (activeCompaniesService, userService);
 
 	public async Task<bool> Handle(PriceReducingCommand request, CancellationToken cancellationToken)
 	{
-		var manager = await _currentUserService.GetCurrentUserAsync();
+		var manager = await _userService.GetCurrentUserAsync();
 
 		var companyId = (int)manager.CompanyId;
 

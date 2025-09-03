@@ -9,14 +9,14 @@ public class DeleteProductCommandHandler
 	: IRequestHandler<DeleteProductCommand>
 {
 	private readonly DynamicPriceCoreContext _context;
-	private readonly ICurrentUserService _currentUserService;
+	private readonly IUserService _userService;
 
-	public DeleteProductCommandHandler(DynamicPriceCoreContext context, ICurrentUserService currentUserService)
-		=> (_context, _currentUserService) = (context, currentUserService);
+	public DeleteProductCommandHandler(DynamicPriceCoreContext context, IUserService userService)
+		=> (_context, _userService) = (context, userService);
 
 	public async Task Handle(DeleteProductCommand request, CancellationToken cancellationToken)
 	{
-		var manager = await _currentUserService.GetCurrentUserAsync();
+		var manager = await _userService.GetCurrentUserAsync();
 
 		var product = await _context.Products
 			.FirstOrDefaultAsync(p =>  p.ProductId == request.ProductId && p.CompanyId == manager.CompanyId, cancellationToken);

@@ -12,14 +12,14 @@ public class GetCompanyOrderDetailsQueryHandler
 {
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IMapper _mapper;
-	private readonly ICurrentUserService _currentUserService;
+	private readonly IUserService _userService;
 
-	public GetCompanyOrderDetailsQueryHandler(DynamicPriceCoreContext context, IMapper mapper, ICurrentUserService currentUserService)
-		=> (_context, _mapper, _currentUserService) = (context, mapper, currentUserService);
+	public GetCompanyOrderDetailsQueryHandler(DynamicPriceCoreContext context, IMapper mapper, IUserService userService)
+		=> (_context, _mapper, _userService) = (context, mapper, userService);
 
 	public async Task<OrderViewModel> Handle(GetCompanyOrderDetailsQuery request, CancellationToken cancellationToken)
 	{
-		var manager = await _currentUserService.GetCurrentUserAsync();
+		var manager = await _userService.GetCurrentUserAsync();
 
 		var companyOrder = await _context.Orders
 			.Where(o => o.OrderId.ToString() == request.OrderId && o.Company.CompanyId == manager.CompanyId) //todo: check and perfomance - convert request to int?
@@ -29,7 +29,8 @@ public class GetCompanyOrderDetailsQueryHandler
 
 		var companyOrderVm = _mapper.Map<OrderViewModel>(companyOrder);
 
-		companyOrderVm.OrderAmount = GetOrderPrice(companyOrderVm);
+		companyOrderVm.CustomerName = await _userService.GetUserNameByIdAsync(companyOrderVm.CustomerId);
+		companyOrderVm.OrderAmount = GetOrderPrice(companyOrderVm);	//todo: add extension for ordervm or linq?
 
 		return companyOrderVm;
 	}

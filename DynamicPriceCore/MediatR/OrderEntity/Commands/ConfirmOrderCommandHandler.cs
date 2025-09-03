@@ -11,14 +11,14 @@ public class ConfirmOrderCommandHandler
 {
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IIncreasePriceService _increasePriceService;
-	private readonly ICurrentUserService _currentUserService;
+	private readonly IUserService _userService;
 
-	public ConfirmOrderCommandHandler(DynamicPriceCoreContext context, IIncreasePriceService increasePriceService, ICurrentUserService currentUserService)
-		=> (_context, _increasePriceService, _currentUserService) = (context, increasePriceService, currentUserService);
+	public ConfirmOrderCommandHandler(DynamicPriceCoreContext context, IIncreasePriceService increasePriceService, IUserService userService)
+		=> (_context, _increasePriceService, _userService) = (context, increasePriceService, userService);
 
 	public async Task<int> Handle(ConfirmOrderCommand request, CancellationToken cancellationToken)
 	{
-		var customer = await _currentUserService.GetCurrentUserAsync();
+		var customer = await _userService.GetCurrentUserAsync();
 
 		var cart = await _context.Carts
 			.Where(c => c.CartId == request.CartId && c.CustomerId == customer.Id)  //todo: check
@@ -71,7 +71,7 @@ public class ConfirmOrderCommandHandler
 		_context.Carts.Remove(cart);
 
 		await _context.SaveChangesAsync(cancellationToken);
-
+		await _userService.UpdateCurrentUserAsync();
 		await _increasePriceService.Increase(order.OrderItems);
 
 		return order.ReceiveKey;

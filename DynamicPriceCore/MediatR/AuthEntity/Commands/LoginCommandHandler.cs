@@ -13,17 +13,11 @@ namespace DynamicPriceCore.MediatR.AuthEntity.Commands;
 public class LoginCommandHandler
 	: IRequestHandler<LoginCommand, string>
 {
-	private readonly ICurrentUserService _currentUserService;
+	private readonly IUserService _userService;
 
-	public LoginCommandHandler(ICurrentUserService currentUserService)
-		=> _currentUserService = currentUserService;
+	public LoginCommandHandler(IUserService userService)
+		=> _userService = userService;
 
 	public async Task<string> Handle(LoginCommand request, CancellationToken cancellationToken)
-	{
-		var userName = request.loginVm.Username;
-		var password = request.loginVm.Password;
-
-		var token = await _currentUserService.LoginUserAsync(userName, password);
-		return token;
-	}
+		=> await _userService.LoginUserAsync(request.loginVm.Username, request.loginVm.Password);
 }

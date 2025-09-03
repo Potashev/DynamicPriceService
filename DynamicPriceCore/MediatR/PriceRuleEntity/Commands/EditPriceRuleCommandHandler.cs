@@ -11,14 +11,14 @@ public class EditPriceRuleCommandHandler
 {
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IMapper _mapper;
-	private readonly ICurrentUserService _currentUserService;
+	private readonly IUserService _userService;
 
-	public EditPriceRuleCommandHandler(DynamicPriceCoreContext context, IMapper mapper, ICurrentUserService currentUserService)
-		=> (_context, _mapper, _currentUserService) = (context, mapper, currentUserService);
+	public EditPriceRuleCommandHandler(DynamicPriceCoreContext context, IMapper mapper, IUserService userService)
+		=> (_context, _mapper, _userService) = (context, mapper, userService);
 
 	public async Task<int> Handle(EditPriceRuleCommand request, CancellationToken cancellationToken)
 	{
-		var manager = await _currentUserService.GetCurrentUserAsync();
+		var manager = await _userService.GetCurrentUserAsync();
 
 		var updatedPriceRuleVm = request.PriceRuleVm;
 		var priceRule = await _context.PriceRules

@@ -13,14 +13,14 @@ namespace DynamicPriceCore.MediatR.CustomerEntity.Commands;
 public class TopUpBalanceCommandHandler
 	: IRequestHandler<TopUpBalanceCommand>
 {
-	private readonly ICurrentUserService _currentUserService;
+	private readonly IUserService _userService;
 
-	public TopUpBalanceCommandHandler(ICurrentUserService currentUserService)
-		=> _currentUserService = currentUserService;
+	public TopUpBalanceCommandHandler(IUserService userService)
+		=> _userService = userService;
 
 	public async Task Handle(TopUpBalanceCommand request, CancellationToken cancellationToken)
 	{
-		var customer = await _currentUserService.GetCurrentUserAsync();
+		var customer = await _userService.GetCurrentUserAsync();
 
 		if (customer == null) { }
 
@@ -29,6 +29,6 @@ public class TopUpBalanceCommandHandler
 		customer.Balance += replenishmentAmount;
 
 		// can user be changed since last GetCurrentUserAsync?
-		await _currentUserService.UpdateCurrentUserAsync();
+		await _userService.UpdateCurrentUserAsync();
 	}
 }

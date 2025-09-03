@@ -13,13 +13,13 @@ public class GetPriceRuleWithStatusQueryHandler
 	private IMapper _mapper;
 	private DynamicPriceCoreContext _context;
 	private IActiveCompaniesService _activeCompaniesService;
-	private readonly ICurrentUserService _currentUserService;
+	private readonly IUserService _userService;
 
-	public GetPriceRuleWithStatusQueryHandler(IMapper mapper, DynamicPriceCoreContext context, IActiveCompaniesService activeCompaniesService, ICurrentUserService currentUserService)
-		=> (_mapper, _context, _activeCompaniesService, _currentUserService) = (mapper, context, activeCompaniesService, currentUserService);
+	public GetPriceRuleWithStatusQueryHandler(IMapper mapper, DynamicPriceCoreContext context, IActiveCompaniesService activeCompaniesService, IUserService userService)
+		=> (_mapper, _context, _activeCompaniesService, _userService) = (mapper, context, activeCompaniesService, userService);
 	public async Task<PriceRuleWithStatus> Handle(GetPriceRuleWithStatusQuery request, CancellationToken cancellationToken)
 	{
-		var manager = await _currentUserService.GetCurrentUserAsync();
+		var manager = await _userService.GetCurrentUserAsync();
 
 		var priceRule = await _context.PriceRules
 			.Where(pr => pr.Company.CompanyId == manager.CompanyId)

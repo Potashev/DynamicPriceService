@@ -15,14 +15,14 @@ public class GetCustomerInfoQueryHandler
 {
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IMapper _mapper;
-	private readonly ICurrentUserService _currentUserService;
+	private readonly IUserService _userService;
 
-	public GetCustomerInfoQueryHandler(DynamicPriceCoreContext context, IMapper mapper, ICurrentUserService currentUserService)
-		=> (_context, _mapper, _currentUserService) = (context, mapper, currentUserService);
+	public GetCustomerInfoQueryHandler(DynamicPriceCoreContext context, IMapper mapper, IUserService userService)
+		=> (_context, _mapper, _userService) = (context, mapper, userService);
 
 	public async Task<CustomerInfoViewModel> Handle(GetCustomerInfoQuery request, CancellationToken cancellationToken)
 	{
-		var customer = await _currentUserService.GetCurrentUserAsync();
+		var customer = await _userService.GetCurrentUserAsync();
 
 		var customerOrders = await _context.Orders
 			.Include(o => o.Company)

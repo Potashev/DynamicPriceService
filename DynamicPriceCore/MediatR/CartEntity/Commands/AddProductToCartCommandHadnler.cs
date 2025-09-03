@@ -13,14 +13,14 @@ public class AddProductToCartCommandHadnler
 {
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IMapper _mapper;
-	private readonly ICurrentUserService _currentUserService;
+	private readonly IUserService _userService;
 
-	public AddProductToCartCommandHadnler(DynamicPriceCoreContext context, IMapper mapper, ICurrentUserService currentUserService)
-		=> (_context, _mapper, _currentUserService) = (context, mapper, currentUserService);
+	public AddProductToCartCommandHadnler(DynamicPriceCoreContext context, IMapper mapper, IUserService userService)
+		=> (_context, _mapper, _userService) = (context, mapper, userService);
 
 	public async Task<CartViewModel> Handle(AddProductToCartCommand request, CancellationToken cancellationToken)
 	{
-		var customer = await _currentUserService.GetCurrentUserAsync();
+		var customer = await _userService.GetCurrentUserAsync();
 
 		var product = await _context.Products
 			.Include(p => p.Company)

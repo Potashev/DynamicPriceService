@@ -10,14 +10,14 @@ public class GetCompanyStatisticsQueryHandler
 	: IRequestHandler<GetCompanyStatisticsQuery, OrdersStatistics>
 {
 	private readonly DynamicPriceCoreContext _context;
-	private readonly ICurrentUserService _currentUserService;
+	private readonly IUserService _userService;
 
-	public GetCompanyStatisticsQueryHandler(DynamicPriceCoreContext context, ICurrentUserService currentUserService)
-		=> (_context, _currentUserService) = (context, currentUserService);
+	public GetCompanyStatisticsQueryHandler(DynamicPriceCoreContext context, IUserService userService)
+		=> (_context, _userService) = (context, userService);
 
 	public async Task<OrdersStatistics> Handle(GetCompanyStatisticsQuery request, CancellationToken cancellationToken)
 	{
-		var manager = await _currentUserService.GetCurrentUserAsync();
+		var manager = await _userService.GetCurrentUserAsync();
 
 		var companyOrdersWithAmount = await _context.Orders
 			.Where(o => o.Company.CompanyId == manager.CompanyId)

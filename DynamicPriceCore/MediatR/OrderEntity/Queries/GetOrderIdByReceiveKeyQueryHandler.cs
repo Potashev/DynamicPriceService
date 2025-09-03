@@ -10,14 +10,14 @@ public class GetOrderIdByReceiveKeyQueryHandler
 	: IRequestHandler<GetOrderIdByReceiveKeyQuery, int>
 {
 	private readonly DynamicPriceCoreContext _context;
-	private readonly ICurrentUserService _currentUserService;
+	private readonly IUserService _userService;
 
-	public GetOrderIdByReceiveKeyQueryHandler(DynamicPriceCoreContext context, ICurrentUserService currentUserService)
-		=> (_context, _currentUserService) = (context, currentUserService);
+	public GetOrderIdByReceiveKeyQueryHandler(DynamicPriceCoreContext context, IUserService userService)
+		=> (_context, _userService) = (context, userService);
 
 	public async Task<int> Handle(GetOrderIdByReceiveKeyQuery request, CancellationToken cancellationToken)
 	{
-		var manager = await _currentUserService.GetCurrentUserAsync();
+		var manager = await _userService.GetCurrentUserAsync();
 
 		var orderId = await _context.Orders
 			//todo: check and add additional filter or make uniq key

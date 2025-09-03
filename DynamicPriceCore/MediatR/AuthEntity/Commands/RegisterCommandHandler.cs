@@ -6,13 +6,13 @@ namespace DynamicPriceCore.MediatR.AuthEntity.Commands;
 public class RegisterCommandHandler
 	: IRequestHandler<RegisterCommand>
 {
-	private readonly ICurrentUserService _currentUserService;
+	private readonly IUserService _userService;
 
-	public RegisterCommandHandler(ICurrentUserService currentUserService)
-		=> _currentUserService = currentUserService;
+	public RegisterCommandHandler(IUserService userService)
+		=> _userService = userService;
 
 	public async Task Handle(RegisterCommand request, CancellationToken cancellationToken)
-		=> await _currentUserService.RegisterUserAsync(
+		=> await _userService.RegisterUserAsync(
 			request.registerVm.Username,
 			request.registerVm.Password,
 			request.registerVm.Email,

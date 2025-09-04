@@ -1,4 +1,4 @@
-﻿@model DynamicPriceService.ViewModels.OrderViewModel
+﻿@model DynamicPriceClient.ViewModels.OrderInfoViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -13,10 +13,10 @@
 				@Html.DisplayNameFor(model => model.OrderItems.FirstOrDefault().Product.Title)
 			</th>
 			<th>
-				@Html.DisplayNameFor(model => model.OrderItems.FirstOrDefault().ProductPrice)
+				@Html.DisplayNameFor(model => model.OrderItems.FirstOrDefault().Quantity)
 			</th>
 			<th>
-				@Html.DisplayNameFor(model => model.OrderItems.FirstOrDefault().Quantity)
+				@Html.DisplayNameFor(model => model.OrderItems.FirstOrDefault().ProductPrice)
 			</th>
 			<th></th>
 		</tr>
@@ -29,14 +29,14 @@
 					@Html.DisplayFor(modelItem => item.Product.Title)
 				</td>
 				<td>
-					@Html.DisplayFor(modelItem => item.ProductPrice)
-				</td>
-				<td>
 					@Html.DisplayFor(modelItem => item.Quantity)
 				</td>
 				<td>
-					<a asp-controller="Products" asp-action="Details" asp-route-id="@item.Product.ProductId">Details</a>
+					@Html.DisplayFor(modelItem => item.ProductPrice)
 				</td>
+@* 				<td>
+					<a asp-controller="Products" asp-action="Details" asp-route-id="@item.Product.ProductId">Details</a>
+				</td> *@
 			</tr>
 		}
 	</tbody>
@@ -53,10 +53,10 @@
 			@Html.DisplayFor(model => model.OrderDate)
 		</dd>
 		<dt class="col-sm-2">
-			@Html.DisplayNameFor(model => model.CustomerName)
+			@Html.DisplayNameFor(model => model.Company.Title)
 		</dt>
 		<dd class="col-sm-10">
-			@Html.DisplayFor(model => model.CustomerName)
+			@Html.DisplayFor(model => model.Company.Title)
 		</dd>
 		<dt class="col-sm-2">
 			@Html.DisplayNameFor(model => model.OrderTotal)
@@ -71,16 +71,16 @@
 			@Html.DisplayFor(model => model.Status)
 		</dd>
 	</dl>
-	@if (Model.Status == OrderStatus.Confirmed)
+	@if (Model.Status == DynamicPriceClient.ViewModels.OrderStatus.Confirmed)
 	{
-		<form asp-action="CompleteOrder" method="post">
+		<form asp-action="CancelOrder" method="post">
 			<input type="hidden" name="orderId" value="@Model.OrderId" />
-			<button type="submit" class="btn btn-primary">Complete Order</button> |
-			<a asp-action="Index">Back to List</a>
+			<button type="submit" class="btn btn-danger">Cancel Order</button> |
+			<a asp-controller="Customer" asp-action="Index">Back to List</a>
 		</form>
 	}
 	else
 	{
-		<a asp-action="Index">Back to List</a>
+		<a asp-controller="Customer" asp-action="Index">Back to List</a>
 	}
 </div>

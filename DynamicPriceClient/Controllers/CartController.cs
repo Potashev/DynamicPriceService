@@ -30,10 +30,11 @@ public class CartController : Controller
 		return RedirectToAction(nameof(CartDetails), new { companyId });
 	}
 
-	public async Task<IActionResult> ConfirmOrder(int cartId)
-	{
-		var receiveKey = await _coreApiClient.ConfirmOrder(cartId);
-		return Content($"Your receive Key: {receiveKey}");
-	}
+	//todo: move to OrdersController?
+	//public async Task<IActionResult> ConfirmOrder(int cartId)
+	//{
+	//	var receiveKey = await _coreApiClient.ConfirmOrder(cartId);
+	//	return Content($"Your receive Key: {receiveKey}");
+	//}
 
 }

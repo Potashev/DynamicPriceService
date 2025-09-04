@@ -32,7 +32,7 @@ public class GetCompanyStatisticsQueryHandler
 		var orderStatistics = new OrdersStatistics();
 		orderStatistics.OrdersQuantity = companyOrdersWithAmount.Length;
 		orderStatistics.TotalAmount = companyOrdersWithAmount.Sum(o => o.OrderAmount);
-		orderStatistics.AverageOrderAmount = companyOrdersWithAmount.Average(o => o.OrderAmount);
+		orderStatistics.AverageOrderTotal = companyOrdersWithAmount.Average(o => o.OrderAmount);
 
 		return orderStatistics;
 	}

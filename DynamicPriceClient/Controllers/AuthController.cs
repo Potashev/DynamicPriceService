@@ -27,7 +27,7 @@ namespace DynamicPriceClient.Controllers
 		{
 			registerVm.Role = "Customer";   //todo: looks not good
 			await _coreApiClient.RegisterCustomer(registerVm);
-			return RedirectToAction(nameof(Index));
+			return RedirectToAction(nameof(LoginCustomer));
 		}
 
 		public IActionResult LoginCustomer()

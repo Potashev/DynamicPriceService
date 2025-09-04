@@ -8,7 +8,7 @@ namespace DynamicPriceCore.Models;
 /// <summary>
 /// Продукт компании.
 /// </summary>
-public class Product
+public class Product    //todo: rename to Item?
 {
 	public int ProductId { get; set; }
 	public Company Company { get; set; }

@@ -2,6 +2,7 @@
 
 namespace DynamicPriceCore.ViewModels;
 
+//todo: rename?
 public class OrderInfoViewModel
 {
 	public int OrderId { get; set; }
@@ -10,5 +11,5 @@ public class OrderInfoViewModel
 	public OrderStatus Status { get; set; }
 	public DateTime? OrderDate { get; set; }
 
-	public double? OrderAmount { get; set; }
+	public decimal? OrderTotal { get; set; }
 }

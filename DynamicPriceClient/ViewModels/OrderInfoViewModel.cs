@@ -1,4 +1,5 @@
 ﻿using DynamicPriceClient.ViewModels;
+using System.ComponentModel.DataAnnotations;
 
 namespace DynamicPriceClient.ViewModels;
 
@@ -8,9 +9,12 @@ public class OrderInfoViewModel
 	public CompanyViewModel Company { get; set; }
 	public ICollection<OrderItemViewModel> OrderItems { get; set; }
 	public OrderStatus Status { get; set; }
+
+	[Display(Name = "Order date")]
 	public DateTime? OrderDate { get; set; }
 
-	public double? OrderAmount { get; set; }
+	[Display(Name = "Order total")]
+	public decimal? OrderTotal { get; set; }
 }
 
 public enum OrderStatus

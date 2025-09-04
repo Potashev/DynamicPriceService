@@ -30,17 +30,17 @@ public class GetCompanyOrderDetailsQueryHandler
 		var companyOrderVm = _mapper.Map<OrderViewModel>(companyOrder);
 
 		companyOrderVm.CustomerName = await _userService.GetUserNameByIdAsync(companyOrderVm.CustomerId);
-		companyOrderVm.OrderAmount = GetOrderPrice(companyOrderVm);	//todo: add extension for ordervm or linq?
+		companyOrderVm.OrderTotal = GetOrderPrice(companyOrderVm);	//todo: add extension for ordervm or linq?
 
 		return companyOrderVm;
 	}
 
-	private double GetOrderPrice(OrderViewModel orderVm)
+	private decimal GetOrderPrice(OrderViewModel orderVm)
 	{
-		double sum = 0;
+		decimal sum = 0;
 		foreach (var orderItem in orderVm.OrderItems)
 		{
-			sum += (double)(orderItem.ProductPrice * orderItem.Quantity);
+			sum += (decimal)(orderItem.ProductPrice * orderItem.Quantity);
 		}
 		return sum;
 	}

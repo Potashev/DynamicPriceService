@@ -1,8 +1,15 @@
-﻿namespace DynamicPriceService.ViewModels;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DynamicPriceService.ViewModels;
 
 public class OrdersStatistics
 {
-    public int OrdersQuantity { get; set; }
-    public double? TotalAmount { get; set; }
-    public double? AverageOrderAmount { get; set; }
+	[Display(Name = "Orders quantity")]
+	public int OrdersQuantity { get; set; }
+
+	[Display(Name = "Total amount")]
+	public double? TotalAmount { get; set; }
+
+	[Display(Name = "Average order total")]
+	public double? AverageOrderTotal { get; set; }
 }

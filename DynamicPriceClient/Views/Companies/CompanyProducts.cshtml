@@ -10,7 +10,8 @@
 	<thead>
 		<tr>
 			<th>@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Title)</th>
-			<th>Price dynamics</th>
+			<th>@Html.DisplayNameFor(model => model.Products.FirstOrDefault().PriceDynamics)</th>
+			@* <th>Price dynamics</th> *@
 			<th>@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Price)</th>
 			<th></th>
 		</tr>

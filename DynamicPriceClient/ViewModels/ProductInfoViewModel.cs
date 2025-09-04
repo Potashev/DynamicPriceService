@@ -1,4 +1,5 @@
 ﻿using DynamicPriceClient.ViewModels;
+using System.ComponentModel.DataAnnotations;
 
 namespace DynamicPriceClient.ViewModels;
 
@@ -8,10 +9,13 @@ namespace DynamicPriceClient.ViewModels;
 public class ProductInfoViewModel
 {
 	public int ProductId { get; set; }
+
+	[Display(Name = "Product")]
 	public string Title { get; set; }
 	public double Price { get; set; }
 	public int? Quantity { get; set; }
 	public string? Description { get; set; }
 
+	[Display(Name = "Price dynamics")]
 	public PriceDynamicViewModel[] PriceDynamics { get; set; }
 }

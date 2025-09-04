@@ -10,5 +10,5 @@ public class OrderViewModel
 	public ICollection<OrderItemViewModel> OrderItems { get; set; }
 	public OrderStatus Status { get; set; }
 	public DateTime? OrderDate { get; set; }
-	public double? OrderAmount { get; set; }    // additional prop
+	public decimal? OrderTotal { get; set; }    // additional prop
 }

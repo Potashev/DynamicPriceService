@@ -12,7 +12,7 @@ public class CustomerController : Controller
 		_coreApiClient = coreApiClient;
 	}
 
-	public async Task<IActionResult> GetCustomer()
+	public async Task<IActionResult> Index()
 		=> View(await _coreApiClient.GetCustomer());
 
 
@@ -22,6 +22,6 @@ public class CustomerController : Controller
 	{
 		var balanceViewModel = new BalanceViewModel { ReplenishmentAmount = replenishmentAmount };
 		await _coreApiClient.TopUpBalance(balanceViewModel);
-		return RedirectToAction(nameof(GetCustomer));
+		return RedirectToAction(nameof(Index));
 	}
 }

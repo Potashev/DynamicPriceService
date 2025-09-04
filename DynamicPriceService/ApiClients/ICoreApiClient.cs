@@ -35,18 +35,18 @@ public interface ICoreApiClient
 	[Post("/api/company/price-rule/stop")]
 	Task StopPriceReducing();
 
-	[Get("/api/orders")]
+	[Get("/api/company/orders")]
 	Task<IEnumerable<OrderViewModel>> GetOrders();
 
-	[Get("/api/orders/{id}")]
+	[Get("/api/company/orders/{id}")]
 	Task<OrderViewModel> GetOrder(int id);
 
-	[Get("/api/orders/by-receive-key/{key}")]
+	[Get("/api/company/orders/by-receive-key/{key}")]
 	Task<int> GetOrderIdByReceiveKey(string key);
 
-	[Patch("/api/orders/{orderId}/complete")]
+	[Patch("/api/company/orders/{orderId}/complete")]
 	Task CompleteOrder(string orderId);
 
-	[Get("/api/orders/statistics")]
+	[Get("/api/company/orders/statistics")]
 	Task<OrdersStatistics> GetOrdersStatistics();
 }

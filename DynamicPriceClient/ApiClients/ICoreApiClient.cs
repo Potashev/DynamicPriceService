@@ -32,6 +32,12 @@ public interface ICoreApiClient
 	[Delete("/api/cart/items/{productId}")]
 	Task<int> DeleteProduct(int productId);
 
-	[Post("/api/orders")]
+	[Post("/api/customer/order/confirm")]
 	Task<int> ConfirmOrder([Body] int cartId);
+
+	[Get("/api/customer/order/{orderId}")]
+	Task<OrderInfoViewModel> OrderDetails(int orderId);
+
+	//[Post("/api/orders")]
+	//Task<int> CancelOrder([Body] int cartId);
 }

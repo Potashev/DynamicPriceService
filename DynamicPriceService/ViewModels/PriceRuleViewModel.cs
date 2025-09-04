@@ -1,9 +1,13 @@
-﻿namespace DynamicPriceService.ViewModels;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DynamicPriceService.ViewModels;
 
 public class PriceRuleViewModel
 {
 	public int PriceRuleId { get; set; }
 	public double Increase { get; set; }
 	public double Reduction { get; set; }
+
+	[Display(Name = "No sell time")]
 	public TimeSpan? NoSellTime { get; set; }
 }

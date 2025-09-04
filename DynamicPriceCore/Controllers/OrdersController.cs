@@ -1,6 +1,5 @@
 ﻿using DynamicPriceCore.MediatR.OrderEntity.Commands;
 using DynamicPriceCore.MediatR.OrderEntity.Queries;
-using DynamicPriceCore.Models;
 using DynamicPriceCore.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -8,7 +7,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPriceCore.Controllers;
-[Route("api/[controller]")]
+//[Route("api/[controller]")]
+//todo: separate CompanyOrders and CustomerOrder controllers?
 [ApiController]
 public class OrdersController : ControllerBase
 {
@@ -18,15 +18,24 @@ public class OrdersController : ControllerBase
 		_mediator = mediator;
 	}
 
-	[HttpPost]
+	[HttpPost("api/customer/order/confirm")]
 	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "CustomerPolicy")]
-	public async Task<ActionResult<int>> ConfirmOrder([FromBody]int? cartOrderId, CancellationToken cancellationToken)
+	public async Task<ActionResult<int>> ConfirmOrder([FromBody]int? cartId, CancellationToken cancellationToken)
 	{
-		var receiveKey = await _mediator.Send(new ConfirmOrderCommand((int)cartOrderId), cancellationToken);
+		var receiveKey = await _mediator.Send(new ConfirmOrderCommand((int)cartId), cancellationToken);
 		return Ok(receiveKey);
 	}
 
-	[HttpGet]
+	[HttpGet("api/customer/order/{orderId}")]
+	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "CustomerPolicy")]
+	public async Task<ActionResult<OrderInfoViewModel>> GetCustomerOrder(string orderId)
+	{
+		var orderVm = await _mediator.Send(new GetCustomerOrderDetailsQuery(orderId));
+		return Ok(orderVm);
+	}
+
+	//[HttpGet]
+	[HttpGet("api/company/orders")]
 	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 	public async Task<ActionResult<IEnumerable<OrderViewModel>>> GetCompanyOrders(CancellationToken cancellationToken)
 	{
@@ -34,7 +43,8 @@ public class OrdersController : ControllerBase
 		return Ok(ordersVm);
 	}
 
-	[HttpGet("{orderId}")]
+	//[HttpGet("{orderId}")]
+	[HttpGet("api/company/orders/{orderId}")]
 	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 	public async Task<ActionResult<OrderViewModel>> GetCompanyOrder(string orderId)
 	{
@@ -42,7 +52,8 @@ public class OrdersController : ControllerBase
 		return Ok(orderVm);
 	}
 
-	[HttpGet("by-receive-key/{key}")]
+	//[HttpGet("by-receive-key/{key}")]
+	[HttpGet("api/company/orders/by-receive-key/{key}")]
 	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 	public async Task<ActionResult<int>> GetOrderByReceiveKey(string key)
 	{
@@ -50,7 +61,8 @@ public class OrdersController : ControllerBase
 		return orderId;
 	}
 
-	[HttpPatch("{orderId}/complete")]
+	//[HttpPatch("{orderId}/complete")]
+	[HttpPatch("api/company/orders/{orderId}/complete")]
 	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 	public async Task<ActionResult<int>> CompleteOrder(string orderId)
 	{
@@ -58,7 +70,8 @@ public class OrdersController : ControllerBase
 		return id;
 	}
 
-	[HttpGet("statistics")]
+	//[HttpGet("statistics")]
+	[HttpGet("api/company/orders/statistics")]
 	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 	public async Task<ActionResult<OrdersStatistics>> GetCompanyStatistics(CancellationToken cancellationToken)
 	{

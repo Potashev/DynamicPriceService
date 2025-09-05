@@ -1,0 +1,13 @@
+﻿@{
+	ViewData["Title"] = "Receive Key";
+}
+
+<h2>Receive Key</h2>
+
+<div class="alert alert-success mt-3">
+	<strong>Your receive key:</strong> @ViewBag.ReceiveKey
+</div>
+
+<a asp-action="Details" asp-route-id="@ViewBag.OrderId" class="btn btn-secondary mt-2">
+	Back to Order
+</a>

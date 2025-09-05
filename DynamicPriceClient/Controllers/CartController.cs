@@ -11,7 +11,7 @@ public class CartController : Controller
 		_coreApiClient = coreApiClient;
 	}
 
-	public async Task<IActionResult> CartDetails(string companyId)
+	public async Task<IActionResult> Details(string companyId)
 	{
 		//todo: handle empty cart
 		var cart = await _coreApiClient.GetCartDetails(companyId);
@@ -21,20 +21,12 @@ public class CartController : Controller
 	public async Task<IActionResult> AddProduct(int productId)
 	{
 		var companyId = await _coreApiClient.AddProduct(productId);
-		return RedirectToAction(nameof(CartDetails), new { companyId });
+		return RedirectToAction(nameof(Details), new { companyId });
 	}
 
 	public async Task<IActionResult> RemoveProduct(int productId)
 	{
 		var companyId = await _coreApiClient.DeleteProduct(productId);
-		return RedirectToAction(nameof(CartDetails), new { companyId });
+		return RedirectToAction(nameof(Details), new { companyId });
 	}
-
-	//todo: move to OrdersController?
-	//public async Task<IActionResult> ConfirmOrder(int cartId)
-	//{
-	//	var receiveKey = await _coreApiClient.ConfirmOrder(cartId);
-	//	return Content($"Your receive Key: {receiveKey}");
-	//}
-
 }

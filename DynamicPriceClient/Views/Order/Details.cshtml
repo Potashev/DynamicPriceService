@@ -13,10 +13,10 @@
 				@Html.DisplayNameFor(model => model.OrderItems.FirstOrDefault().Product.Title)
 			</th>
 			<th>
-				@Html.DisplayNameFor(model => model.OrderItems.FirstOrDefault().Quantity)
+				@Html.DisplayNameFor(model => model.OrderItems.FirstOrDefault().ProductPrice)
 			</th>
 			<th>
-				@Html.DisplayNameFor(model => model.OrderItems.FirstOrDefault().ProductPrice)
+				@Html.DisplayNameFor(model => model.OrderItems.FirstOrDefault().Quantity)
 			</th>
 			<th></th>
 		</tr>
@@ -29,10 +29,10 @@
 					@Html.DisplayFor(modelItem => item.Product.Title)
 				</td>
 				<td>
-					@Html.DisplayFor(modelItem => item.Quantity)
+					@Html.DisplayFor(modelItem => item.ProductPrice)
 				</td>
 				<td>
-					@Html.DisplayFor(modelItem => item.ProductPrice)
+					@Html.DisplayFor(modelItem => item.Quantity)
 				</td>
 @* 				<td>
 					<a asp-controller="Products" asp-action="Details" asp-route-id="@item.Product.ProductId">Details</a>
@@ -73,11 +73,18 @@
 	</dl>
 	@if (Model.Status == DynamicPriceClient.ViewModels.OrderStatus.Confirmed)
 	{
-		<form asp-action="CancelOrder" method="post">
+		<form asp-action="GetReceiveKey" method="get" style="display:inline;">
+			<input type="hidden" name="receiveKey" value="@Model.ReceiveKey" />
 			<input type="hidden" name="orderId" value="@Model.OrderId" />
-			<button type="submit" class="btn btn-danger">Cancel Order</button> |
-			<a asp-controller="Customer" asp-action="Index">Back to List</a>
+			<button type="submit" class="btn btn-primary">Receive Key</button>
 		</form>
+		<span> | </span>
+		<form asp-action="CancelOrder" method="post" style="display:inline;">
+			<input type="hidden" name="orderId" value="@Model.OrderId" />
+			<button type="submit" class="btn btn-danger">Cancel Order</button>
+		</form>
+		<span> | </span>
+		<a asp-controller="Customer" asp-action="Index">Back to List</a>
 	}
 	else
 	{

@@ -15,6 +15,9 @@ public class OrderInfoViewModel
 
 	[Display(Name = "Order total")]
 	public decimal? OrderTotal { get; set; }
+
+	[Display(Name = "Receive key")]
+	public int? ReceiveKey { get; set; }
 }
 
 public enum OrderStatus

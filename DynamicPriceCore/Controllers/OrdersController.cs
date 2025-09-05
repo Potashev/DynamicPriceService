@@ -22,8 +22,8 @@ public class OrdersController : ControllerBase
 	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "CustomerPolicy")]
 	public async Task<ActionResult<int>> ConfirmOrder([FromBody]int? cartId, CancellationToken cancellationToken)
 	{
-		var receiveKey = await _mediator.Send(new ConfirmOrderCommand((int)cartId), cancellationToken);
-		return Ok(receiveKey);
+		var orderId = await _mediator.Send(new ConfirmOrderCommand((int)cartId), cancellationToken);
+		return Ok(orderId);
 	}
 
 	[HttpGet("api/customer/order/{orderId}")]

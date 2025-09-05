@@ -74,7 +74,7 @@ public class ConfirmOrderCommandHandler
 		await _userService.UpdateCurrentUserAsync();
 		await _increasePriceService.Increase(order.OrderItems);
 
-		return order.ReceiveKey;
+		return order.OrderId;
 	}
 
 	private int GenerateReceiveKey() => new Random().Next(100000, 1000000);

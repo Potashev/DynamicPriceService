@@ -10,6 +10,6 @@ public class OrderInfoViewModel
 	public ICollection<OrderItemViewModel> OrderItems { get; set; }
 	public OrderStatus Status { get; set; }
 	public DateTime? OrderDate { get; set; }
-
 	public decimal? OrderTotal { get; set; }
+	public int? ReceiveKey { get; set; }
 }

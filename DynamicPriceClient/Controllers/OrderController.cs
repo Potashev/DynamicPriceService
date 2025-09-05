@@ -11,8 +11,8 @@ public class OrderController : Controller
 
 	public async Task<IActionResult> Confirm(int cartId)
 	{
-		var receiveKey = await _coreApiClient.ConfirmOrder(cartId);
-		return Content($"Your receive Key: {receiveKey}");
+		var orderId = await _coreApiClient.ConfirmOrder(cartId);
+		return RedirectToAction(nameof(Details), new { id = orderId });
 	}
 
 	public async Task<IActionResult> Details(int id)
@@ -23,8 +23,14 @@ public class OrderController : Controller
 
 	public async Task<IActionResult> Cancel(string orderId)
 	{
+		//todo: implement
 		return Ok();
-		//await _coreApiClient.CompleteOrder(orderId);
-		//return RedirectToAction(nameof(Details), new { id = orderId });
+	}
+
+	public async Task<IActionResult> GetReceiveKey(int orderId, int receiveKey)
+	{
+		ViewBag.OrderId = orderId;
+		ViewBag.ReceiveKey = receiveKey;
+		return View();
 	}
 }

@@ -21,10 +21,10 @@ public class OrderController : Controller
 		return View(orderVm);
 	}
 
-	public async Task<IActionResult> Cancel(string orderId)
+	public async Task<IActionResult> Cancel(int orderId)
 	{
-		//todo: implement
-		return Ok();
+		await _coreApiClient.CancelOrder(orderId);
+		return RedirectToAction(nameof(Details), new { id = orderId });
 	}
 
 	public async Task<IActionResult> GetReceiveKey(int orderId, int receiveKey)

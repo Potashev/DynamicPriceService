@@ -29,7 +29,7 @@ public class GetCompanyOrderDetailsQueryHandler
 
 		var companyOrderVm = _mapper.Map<OrderViewModel>(companyOrder);
 
-		companyOrderVm.CustomerName = await _userService.GetUserNameByIdAsync(companyOrderVm.CustomerId);
+		companyOrderVm.CustomerName = (await _userService.GetUserByIdAsync(companyOrderVm.CustomerId)).UserName;
 		companyOrderVm.OrderTotal = GetOrderPrice(companyOrderVm);	//todo: add extension for ordervm or linq?
 
 		return companyOrderVm;

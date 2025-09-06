@@ -30,7 +30,13 @@ public class OrdersController : Controller
 		return View(orderVm);
 	}
 
-	public async Task<IActionResult> CompleteOrder(string orderId)
+	public async Task<IActionResult> ReadyForReceive(string orderId)
+	{
+		await _coreApiClient.ReadyForReceiveOrder(orderId);
+		return RedirectToAction(nameof(Details), new { id = orderId });
+	}
+
+	public async Task<IActionResult> Complete(string orderId)
 	{
 		await _coreApiClient.CompleteOrder(orderId);
 		return RedirectToAction(nameof(Details), new { id = orderId });

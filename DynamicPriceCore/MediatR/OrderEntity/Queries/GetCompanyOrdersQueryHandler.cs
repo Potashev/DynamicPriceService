@@ -29,7 +29,7 @@ public class GetCompanyOrdersQueryHandler
 
 		foreach (var orderVm in companyOrdersVm) 
 		{
-			orderVm.CustomerName = await _userService.GetUserNameByIdAsync(orderVm.CustomerId);
+			orderVm.CustomerName = (await _userService.GetUserByIdAsync(orderVm.CustomerId)).UserName;
 		}
 
 		return companyOrdersVm;

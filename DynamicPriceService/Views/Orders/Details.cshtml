@@ -1,4 +1,5 @@
-﻿@model DynamicPriceService.ViewModels.OrderViewModel
+﻿@using DynamicPrice.Client.Common
+@model DynamicPriceService.ViewModels.OrderViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -71,16 +72,25 @@
 			@Html.DisplayFor(model => model.Status)
 		</dd>
 	</dl>
-	@if (Model.Status == OrderStatus.Confirmed)
+
+	@if (Model.Status is OrderStatus.Confirmed or OrderStatus.Ready)
 	{
-		<form asp-action="CompleteOrder" method="post">
+		<form asp-action="ReadyForReceive" method="get" style="display:inline;">
 			<input type="hidden" name="orderId" value="@Model.OrderId" />
-			<button type="submit" class="btn btn-primary">Complete Order</button> |
-			<a asp-action="Index">Back to List</a>
+			<button type="submit" class="btn btn-primary"
+					@(Model.Status is OrderStatus.Ready ? "disabled" : null)>
+				Ready for receive
+			</button>
 		</form>
+		<span> | </span>
+		<form asp-action="Complete" method="post" style="display:inline;">
+			<input type="hidden" name="orderId" value="@Model.OrderId" />
+			<button type="submit" class="btn btn-primary"
+					@(Model.Status is OrderStatus.Confirmed ? "disabled" : null)>
+				Complete
+			</button>
+		</form>
+		<span> | </span>
 	}
-	else
-	{
-		<a asp-action="Index">Back to List</a>
-	}
+	<a asp-action="Index">Back to List</a>
 </div>

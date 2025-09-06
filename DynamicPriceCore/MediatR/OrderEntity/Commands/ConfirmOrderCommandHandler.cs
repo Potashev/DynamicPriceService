@@ -21,7 +21,7 @@ public class ConfirmOrderCommandHandler
 		var customer = await _userService.GetCurrentUserAsync();
 
 		var cart = await _context.Carts
-			.Where(c => c.CartId == request.CartId && c.CustomerId == customer.Id)  //todo: check
+			.Where(c => c.CartId == request.CartId && c.CustomerId == customer.Id)
 			.Include(c => c.Company)
 			.Include(c => c.CartItems)
 				.ThenInclude(ci => ci.Product)
@@ -30,13 +30,14 @@ public class ConfirmOrderCommandHandler
 		if (cart == null)
 			throw new Exception("Cart not found.");
 
+		// todo: add total amount to order model?
 		var orderTotalAmount = cart.CartItems
 			.Sum(ci => ci.Quantity * ci.Product.Price);
 
-		if (customer.Balance < orderTotalAmount)
-			throw new Exception("Top up the balance!");
+		//if (customer.Balance < orderTotalAmount)		// COMPLETE
+		//	throw new Exception("Top up the balance!");
 
-		customer.Balance -= orderTotalAmount;
+		//customer.Balance -= orderTotalAmount;
 
 		var order = new Order
 		{
@@ -44,7 +45,7 @@ public class ConfirmOrderCommandHandler
 			Company = cart.Company,
 			Status = OrderStatus.Confirmed,
 			OrderDate = DateTime.UtcNow,
-			ReceiveKey = GenerateReceiveKey(),
+			//ReceiveKey = GenerateReceiveKey(),	// READY
 			OrderItems = new List<OrderItem>()
 		};
 
@@ -60,7 +61,7 @@ public class ConfirmOrderCommandHandler
 				Quantity = ci.Quantity
 			});
 
-			product.LastSellTime = order.OrderDate;
+			//product.LastSellTime = order.OrderDate;	// COMPLETE
 
 			if (product.Quantity != null)
 				product.Quantity -= ci.Quantity;
@@ -68,14 +69,14 @@ public class ConfirmOrderCommandHandler
 
 
 		_context.Orders.Add(order);
-		_context.Carts.Remove(cart);
+		_context.Carts.Remove(cart);	//cartitems removes too?
 
 		await _context.SaveChangesAsync(cancellationToken);
-		await _userService.UpdateCurrentUserAsync();
-		await _increasePriceService.Increase(order.OrderItems);
+		//await _userService.UpdateCurrentUserAsync();				// COMPLETE
+		//await _increasePriceService.Increase(order.OrderItems);	// COMPLETE
 
 		return order.OrderId;
 	}
 
-	private int GenerateReceiveKey() => new Random().Next(100000, 1000000);
+	//private int GenerateReceiveKey() => new Random().Next(100000, 1000000);	// READY
 }

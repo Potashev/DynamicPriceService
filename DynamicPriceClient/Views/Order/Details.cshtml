@@ -1,4 +1,5 @@
-﻿@model DynamicPriceClient.ViewModels.OrderInfoViewModel
+﻿@using DynamicPrice.Client.Common
+@model DynamicPriceClient.ViewModels.OrderInfoViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -71,23 +72,23 @@
 			@Html.DisplayFor(model => model.Status)
 		</dd>
 	</dl>
-	@if (Model.Status == DynamicPriceClient.ViewModels.OrderStatus.Confirmed)
+
+	@if (Model.Status is OrderStatus.Confirmed or OrderStatus.Ready)
 	{
 		<form asp-action="GetReceiveKey" method="get" style="display:inline;">
 			<input type="hidden" name="receiveKey" value="@Model.ReceiveKey" />
 			<input type="hidden" name="orderId" value="@Model.OrderId" />
-			<button type="submit" class="btn btn-primary">Receive Key</button>
+			<button type="submit" class="btn btn-primary"
+					@(Model.Status is OrderStatus.Confirmed ? "disabled" : null)>
+				Receive Key
+			</button>
 		</form>
 		<span> | </span>
-		<form asp-action="CancelOrder" method="post" style="display:inline;">
+		<form asp-action="Cancel" method="post" style="display:inline;">
 			<input type="hidden" name="orderId" value="@Model.OrderId" />
 			<button type="submit" class="btn btn-danger">Cancel Order</button>
 		</form>
 		<span> | </span>
-		<a asp-controller="Customer" asp-action="Index">Back to List</a>
 	}
-	else
-	{
-		<a asp-controller="Customer" asp-action="Index">Back to List</a>
-	}
+	<a asp-controller="Customer" asp-action="Index">Back to List</a>
 </div>

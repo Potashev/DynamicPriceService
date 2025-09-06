@@ -44,6 +44,9 @@ public interface ICoreApiClient
 	[Get("/api/company/orders/by-receive-key/{key}")]
 	Task<int> GetOrderIdByReceiveKey(string key);
 
+	[Patch("/api/company/orders/{orderId}/ready")]
+	Task ReadyForReceiveOrder(string orderId);
+
 	[Patch("/api/company/orders/{orderId}/complete")]
 	Task CompleteOrder(string orderId);
 

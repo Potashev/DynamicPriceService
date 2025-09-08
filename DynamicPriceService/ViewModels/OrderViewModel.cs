@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DynamicPrice.Client.Common;
+using System.ComponentModel.DataAnnotations;
 
 namespace DynamicPriceService.ViewModels;
 
@@ -19,8 +20,10 @@ public class OrderViewModel
 	public decimal? OrderTotal { get; set; }
 }
 
-public enum OrderStatus
-{
-	Confirmed,
-	Completed
-}
+//public enum OrderStatus
+//{
+//	Confirmed,
+//	Ready,
+//	Completed,
+//	Cancelled
+//}

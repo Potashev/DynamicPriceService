@@ -29,7 +29,7 @@ public class GetCustomerInfoQueryHandler
 			.Include(o => o.OrderItems)			// todo: check
 				.ThenInclude(oi => oi.Product)
 			.Where(o => o.CustomerId == customer.Id
-				&& (o.Status == OrderStatus.Confirmed || o.Status == OrderStatus.Completed))
+				/*&& (o.Status == OrderStatus.Confirmed || o.Status == OrderStatus.Completed)*/)
 			.ToArrayAsync(cancellationToken);
 
 		var ordersVm = _mapper.Map<OrderInfoViewModel[]>(customerOrders);

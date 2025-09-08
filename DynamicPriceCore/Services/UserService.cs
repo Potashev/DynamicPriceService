@@ -35,8 +35,11 @@ public class UserService : IUserService
 	public async Task<ApplicationUser?> GetCurrentUserAsync()
 		=> await _userManager.FindByIdAsync(UserId ?? string.Empty);
 
-	public async Task<string> GetUserNameByIdAsync(string userId)
-		=> (await _userManager.FindByIdAsync(userId))?.UserName ?? string.Empty;
+	//public async Task<string> GetUserNameByIdAsync(string userId)
+	//	=> (await _userManager.FindByIdAsync(userId))?.UserName ?? string.Empty;
+
+	public async Task<ApplicationUser> GetUserByIdAsync(string userId)
+	=> await _userManager.FindByIdAsync(userId);
 
 	public async Task<string> LoginUserAsync(string username, string password)
 	{
@@ -90,6 +93,9 @@ public class UserService : IUserService
 		await _userManager.UpdateAsync(user);
 	}
 
+	public async Task UpdateUserAsync(ApplicationUser user)
+		=> await _userManager.UpdateAsync(user);
+
 	private string GenerateJwtToken(ApplicationUser user, IList<string> roles)
 	{
 		var claims = new List<Claim>
@@ -119,7 +125,9 @@ public interface IUserService
 	string? Role { get; }
 	Task<ApplicationUser?> GetCurrentUserAsync();
 	Task UpdateCurrentUserAsync();
-	Task<string> GetUserNameByIdAsync(string userId);
+	Task UpdateUserAsync(ApplicationUser user);
+	//Task<string> GetUserNameByIdAsync(string userId);
+	Task<ApplicationUser> GetUserByIdAsync(string userId);
 	Task RegisterUserAsync(string username, string password, string email, string role);
 	Task<string> LoginUserAsync(string username, string password);
 }

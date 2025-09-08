@@ -1,4 +1,5 @@
 ﻿using DynamicPriceClient.ViewModels;
+using Microsoft.AspNetCore.Mvc;
 using Refit;
 
 namespace DynamicPriceClient.ApiClients;
@@ -35,9 +36,9 @@ public interface ICoreApiClient
 	[Post("/api/customer/order/confirm")]
 	Task<int> ConfirmOrder([Body] int cartId);
 
+	[Patch("/api/customer/order/cancel")]
+	Task CancelOrder([Body] int orderId);
+
 	[Get("/api/customer/order/{orderId}")]
 	Task<OrderInfoViewModel> OrderDetails(int orderId);
-
-	//[Post("/api/orders")]
-	//Task<int> CancelOrder([Body] int cartId);
 }

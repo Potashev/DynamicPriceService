@@ -1,6 +1,8 @@
-﻿using DynamicPriceCore.MediatR.OrderEntity.Commands;
+﻿using DynamicPrice.Core.MediatR.OrderEntity.Commands;
+using DynamicPriceCore.MediatR.OrderEntity.Commands;
 using DynamicPriceCore.MediatR.OrderEntity.Queries;
 using DynamicPriceCore.ViewModels;
+using Humanizer;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -23,6 +25,14 @@ public class OrdersController : ControllerBase
 	public async Task<ActionResult<int>> ConfirmOrder([FromBody]int? cartId, CancellationToken cancellationToken)
 	{
 		var orderId = await _mediator.Send(new ConfirmOrderCommand((int)cartId), cancellationToken);
+		return Ok(orderId);
+	}
+
+	[HttpPatch("api/customer/order/cancel")]
+	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "CustomerPolicy")]
+	public async Task<ActionResult<int>> CancelOrder([FromBody] int? orderId, CancellationToken cancellationToken)
+	{
+		await _mediator.Send(new CancelOrderCommand((int)orderId), cancellationToken);
 		return Ok(orderId);
 	}
 
@@ -59,6 +69,14 @@ public class OrdersController : ControllerBase
 	{
 		var orderId = await _mediator.Send(new GetOrderIdByReceiveKeyQuery(key));
 		return orderId;
+	}
+
+	[HttpPatch("api/company/orders/{orderId}/ready")]
+	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
+	public async Task<ActionResult> ReadyForReceive(string orderId)
+	{
+		await _mediator.Send(new ReadyForReceiveOrderCommand(orderId));
+		return Ok();
 	}
 
 	//[HttpPatch("{orderId}/complete")]

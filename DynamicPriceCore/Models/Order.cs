@@ -14,5 +14,7 @@ public class Order
 public enum OrderStatus
 {
 	Confirmed,
-	Completed
+	Ready,
+	Completed,
+	Canceled
 }

@@ -1,4 +1,5 @@
-﻿using DynamicPriceClient.ViewModels;
+﻿using DynamicPrice.Client.Common;
+using DynamicPriceClient.ViewModels;
 using System.ComponentModel.DataAnnotations;
 
 namespace DynamicPriceClient.ViewModels;
@@ -20,8 +21,10 @@ public class OrderInfoViewModel
 	public int? ReceiveKey { get; set; }
 }
 
-public enum OrderStatus
-{
-	Confirmed,
-	Completed
-}
+//public enum OrderStatus
+//{
+//	Confirmed,
+//	Ready,
+//	Completed,
+//	Cancelled
+//}

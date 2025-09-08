@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
 using DynamicPriceCore.Data;
-using DynamicPriceCore.MediatR.CustomerEntity.Queries;
-using DynamicPriceCore.Models;
 using DynamicPriceCore.Services;
 using DynamicPriceCore.ViewModels;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using OrderStatus = DynamicPriceCore.Models.OrderStatus;
 
 namespace DynamicPriceCore.MediatR.CustomerEntity.Queries;
 
@@ -26,10 +23,10 @@ public class GetCustomerInfoQueryHandler
 
 		var customerOrders = await _context.Orders
 			.Include(o => o.Company)
-			.Include(o => o.OrderItems)			// todo: check
+			.Include(o => o.OrderItems)
 				.ThenInclude(oi => oi.Product)
-			.Where(o => o.CustomerId == customer.Id
-				/*&& (o.Status == OrderStatus.Confirmed || o.Status == OrderStatus.Completed)*/)
+			.Where(o => o.CustomerId == customer.Id)
+			.OrderByDescending(o => o.OrderDate)
 			.ToArrayAsync(cancellationToken);
 
 		var ordersVm = _mapper.Map<OrderInfoViewModel[]>(customerOrders);

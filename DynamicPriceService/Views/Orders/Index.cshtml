@@ -1,7 +1,11 @@
-﻿@model IEnumerable<DynamicPriceService.ViewModels.OrderViewModel>
+﻿@using DynamicPrice.Client.Common
+@model IEnumerable<DynamicPriceService.ViewModels.OrderViewModel>
 
 @{
     ViewData["Title"] = "Index";
+	var confirmedOrders = Model
+		.Where(o => o.Status == OrderStatus.Confirmed)
+		.OrderBy(o => o.OrderDate);
 }
 
 
@@ -17,8 +21,40 @@
 	</div>
 </div>
 
+@if (confirmedOrders.Any())
+{
+	<h2>Confirmed</h2>
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>@Html.DisplayNameFor(model => model.OrderDate)</th>
+				<th>@Html.DisplayNameFor(model => model.CustomerName)</th>
+				<th></th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in confirmedOrders)
+			{
+				<tr>
+					<td>@Html.DisplayFor(modelItem => item.OrderDate)</td>
+					<td>@Html.DisplayFor(modelItem => item.CustomerName)</td>
+					<td>
+						<form asp-action="ReadyForReceive" asp-route-orderId="@item.OrderId" method="post" style="display:inline;">
+							<button type="submit" class="btn btn-primary btn-sm">Ready for receive</button>
+						</form>
+					</td>
+					<td>
+						<a asp-action="Details" asp-route-id="@item.OrderId">Details</a>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
 <h2>Orders history</h2>
-<table class="table">
+<table class="table table-striped">
     <thead>
         <tr>
             <th>

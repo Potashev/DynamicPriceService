@@ -1,7 +1,11 @@
-﻿@model DynamicPriceClient.ViewModels.CustomerInfoViewModel
+﻿@using DynamicPrice.Client.Common
+@model DynamicPriceClient.ViewModels.CustomerInfoViewModel
 
 @{
 	ViewData["Title"] = "Customer info";
+	var readyForReceiveOrders = Model.Orders
+		.Where(o => o.Status == OrderStatus.Ready)
+		.OrderBy(o => o.OrderDate);
 }
 
 <div>
@@ -29,8 +33,42 @@
 	<input type="submit" value="Top up" class="btn btn-primary" />
 </form>
 
+@if (readyForReceiveOrders.Any())
+{
+	<h2>Ready for receive</h2>
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>@Html.DisplayNameFor(model => model.Orders.FirstOrDefault().Company.Title)</th>
+				<th>@Html.DisplayNameFor(model => model.Orders.FirstOrDefault().OrderDate)</th>
+				<th></th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in readyForReceiveOrders)
+			{
+				<tr>
+					<td>@Html.DisplayFor(modelItem => item.Company.Title)</td>
+					<td>@Html.DisplayFor(modelItem => item.OrderDate)</td>
+					<td>
+						<form asp-controller="Order" asp-action="GetReceiveKey" method="get" style="display:inline;">
+							<input type="hidden" name="receiveKey" value="@item.ReceiveKey" />
+							<input type="hidden" name="orderId" value="@item.OrderId" />
+							<button type="submit" class="btn btn-primary btn-sm">Receive Key</button>
+						</form>
+					</td>
+					<td>
+						<a asp-controller="Order" asp-action="Details" asp-route-id="@item.OrderId">Details</a>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
 <h2>Orders history</h2>
-<table class="table">
+<table class="table table-striped">
 	<thead>
 		<tr>
 			<th>

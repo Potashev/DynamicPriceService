@@ -75,7 +75,7 @@
 
 	@if (Model.Status is OrderStatus.Confirmed or OrderStatus.Ready)
 	{
-		<form asp-action="ReadyForReceive" method="get" style="display:inline;">
+		<form asp-action="ReadyForReceive" method="post" style="display:inline;">
 			<input type="hidden" name="orderId" value="@Model.OrderId" />
 			<button type="submit" class="btn btn-primary"
 					@(Model.Status is OrderStatus.Ready ? "disabled" : null)>

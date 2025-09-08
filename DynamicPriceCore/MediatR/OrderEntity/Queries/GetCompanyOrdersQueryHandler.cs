@@ -23,6 +23,7 @@ public class GetCompanyOrdersQueryHandler
 
 		var companyOrders = await _context.Orders
 			.Where(o => o.Company.CompanyId == manager.CompanyId)
+			.OrderByDescending(o => o.OrderDate)
 			.ToArrayAsync(cancellationToken);
 
 		var companyOrdersVm = _mapper.Map<OrderViewModel[]>(companyOrders);

@@ -19,11 +19,3 @@ public class OrderViewModel
 	[Display(Name = "Order total")]
 	public decimal? OrderTotal { get; set; }
 }
-
-//public enum OrderStatus
-//{
-//	Confirmed,
-//	Ready,
-//	Completed,
-//	Cancelled
-//}

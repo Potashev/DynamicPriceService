@@ -20,11 +20,3 @@ public class OrderInfoViewModel
 	[Display(Name = "Receive key")]
 	public int? ReceiveKey { get; set; }
 }
-
-//public enum OrderStatus
-//{
-//	Confirmed,
-//	Ready,
-//	Completed,
-//	Cancelled
-//}

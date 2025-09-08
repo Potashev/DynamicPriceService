@@ -6,6 +6,7 @@ namespace DynamicPriceCore.ViewModels;
 public class OrderInfoViewModel
 {
 	public int OrderId { get; set; }
+	public string Number { get; set; }
 	public Company Company { get; set; }
 	public ICollection<OrderItemViewModel> OrderItems { get; set; }
 	public OrderStatus Status { get; set; }

@@ -39,6 +39,7 @@
 	<table class="table table-striped">
 		<thead>
 			<tr>
+				<th>@Html.DisplayNameFor(model => model.Orders.FirstOrDefault().Number)</th>
 				<th>@Html.DisplayNameFor(model => model.Orders.FirstOrDefault().Company.Title)</th>
 				<th>@Html.DisplayNameFor(model => model.Orders.FirstOrDefault().OrderDate)</th>
 				<th></th>
@@ -49,6 +50,7 @@
 			@foreach (var item in readyForReceiveOrders)
 			{
 				<tr>
+					<td>@Html.DisplayFor(modelItem => item.Number)</td>
 					<td>@Html.DisplayFor(modelItem => item.Company.Title)</td>
 					<td>@Html.DisplayFor(modelItem => item.OrderDate)</td>
 					<td>
@@ -71,15 +73,10 @@
 <table class="table table-striped">
 	<thead>
 		<tr>
-			<th>
-				@Html.DisplayNameFor(model => model.Orders.FirstOrDefault().Company.Title)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Orders.FirstOrDefault().OrderDate)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Orders.FirstOrDefault().Status)
-			</th>
+			<th>@Html.DisplayNameFor(model => model.Orders.FirstOrDefault().Number)</th>
+			<th>@Html.DisplayNameFor(model => model.Orders.FirstOrDefault().Company.Title)</th>
+			<th>@Html.DisplayNameFor(model => model.Orders.FirstOrDefault().OrderDate)</th>
+			<th>@Html.DisplayNameFor(model => model.Orders.FirstOrDefault().Status)</th>
 			<th></th>
 		</tr>
 	</thead>
@@ -87,18 +84,11 @@
 		@foreach (var item in Model.Orders)
 		{
 			<tr>
-				<td>
-					@Html.DisplayFor(modelItem => item.Company.Title)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.OrderDate)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.Status)
-				</td>
-				<td>
-					<a asp-controller="Order" asp-action="Details" asp-route-id="@item.OrderId">Details</a>
-				</td>
+				<td>@Html.DisplayFor(modelItem => item.Number)</td>
+				<td>@Html.DisplayFor(modelItem => item.Company.Title)</td>
+				<td>@Html.DisplayFor(modelItem => item.OrderDate)</td>
+				<td>@Html.DisplayFor(modelItem => item.Status)</td>
+				<td><a asp-controller="Order" asp-action="Details" asp-route-id="@item.OrderId">Details</a></td>
 			</tr>
 		}
 	</tbody>

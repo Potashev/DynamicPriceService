@@ -10,11 +10,10 @@ public class ConfirmOrderCommandHandler
 	: IRequestHandler<ConfirmOrderCommand, int>
 {
 	private readonly DynamicPriceCoreContext _context;
-	private readonly IIncreasePriceService _increasePriceService;
 	private readonly IUserService _userService;
 
-	public ConfirmOrderCommandHandler(DynamicPriceCoreContext context, IIncreasePriceService increasePriceService, IUserService userService)
-		=> (_context, _increasePriceService, _userService) = (context, increasePriceService, userService);
+	public ConfirmOrderCommandHandler(DynamicPriceCoreContext context, IUserService userService)
+		=> (_context, _userService) = (context, userService);
 
 	public async Task<int> Handle(ConfirmOrderCommand request, CancellationToken cancellationToken)
 	{
@@ -30,22 +29,13 @@ public class ConfirmOrderCommandHandler
 		if (cart == null)
 			throw new Exception("Cart not found.");
 
-		// todo: add total amount to order model?
-		var orderTotalAmount = cart.CartItems
-			.Sum(ci => ci.Quantity * ci.Product.Price);
-
-		//if (customer.Balance < orderTotalAmount)		// COMPLETE
-		//	throw new Exception("Top up the balance!");
-
-		//customer.Balance -= orderTotalAmount;
-
 		var order = new Order
 		{
+			Number = GenerateOrderNumber(),
 			CustomerId = customer.Id,
 			Company = cart.Company,
 			Status = OrderStatus.Confirmed,
 			OrderDate = DateTime.UtcNow,
-			//ReceiveKey = GenerateReceiveKey(),	// READY
 			OrderItems = new List<OrderItem>()
 		};
 
@@ -57,11 +47,9 @@ public class ConfirmOrderCommandHandler
 			{
 				Order = order,
 				Product = product,
-				ProductPrice = product.Price,	// can be changed since ordertotalamount?
+				ProductPrice = product.Price,
 				Quantity = ci.Quantity
 			});
-
-			//product.LastSellTime = order.OrderDate;	// COMPLETE
 
 			if (product.Quantity != null)
 				product.Quantity -= ci.Quantity;
@@ -72,11 +60,21 @@ public class ConfirmOrderCommandHandler
 		_context.Carts.Remove(cart);	//cartitems removes too?
 
 		await _context.SaveChangesAsync(cancellationToken);
-		//await _userService.UpdateCurrentUserAsync();				// COMPLETE
-		//await _increasePriceService.Increase(order.OrderItems);	// COMPLETE
 
 		return order.OrderId;
 	}
 
-	//private int GenerateReceiveKey() => new Random().Next(100000, 1000000);	// READY
+	// todo: add test for uniqueness
+	// Example: "3C-48291"
+	private static string GenerateOrderNumber()
+	{
+		var guidBytes = Guid.NewGuid().ToByteArray();
+
+		int firstDigit = guidBytes[0] % 10;
+		char letter = (char)('A' + (guidBytes[1] % 26));
+		int numberPart = BitConverter.ToInt32(guidBytes, 2) & 0x7FFFFFFF;
+		string lastDigits = (numberPart % 100000).ToString("D5");
+
+		return $"{firstDigit}{letter}-{lastDigits}";
+	}
 }

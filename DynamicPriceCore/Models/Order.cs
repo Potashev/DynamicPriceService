@@ -1,8 +1,15 @@
-﻿namespace DynamicPriceCore.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
+namespace DynamicPriceCore.Models;
+
+[Index(nameof(Number), IsUnique = true)]
 public class Order
 {
 	public int OrderId { get; set; }
+
+	[MaxLength(20)]
+	public string Number { get; set; }
 	public string CustomerId { get; set; }
 	public Company Company { get; set; }
 	public ICollection<OrderItem> OrderItems { get; set; }

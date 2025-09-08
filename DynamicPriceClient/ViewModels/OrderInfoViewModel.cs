@@ -7,6 +7,9 @@ namespace DynamicPriceClient.ViewModels;
 public class OrderInfoViewModel
 {
 	public int OrderId { get; set; }
+
+	[Display(Name = "Order number")]
+	public string Number { get; set; }
 	public CompanyViewModel Company { get; set; }
 	public ICollection<OrderItemViewModel> OrderItems { get; set; }
 	public OrderStatus Status { get; set; }

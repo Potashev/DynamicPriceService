@@ -1,19 +1,16 @@
-﻿using DynamicPriceClient.ApiClients;
+﻿using DynamicPrice.Customer.Controllers;
+using DynamicPriceClient.ApiClients;
 using DynamicPriceClient.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPriceClient.Controllers;
-public class CustomerController : Controller
+public class CustomerController : BaseController
 {
-	private readonly ICoreApiClient _coreApiClient;
-
 	public CustomerController(ICoreApiClient coreApiClient)
-	{
-		_coreApiClient = coreApiClient;
-	}
+		: base(coreApiClient) { }
 
 	public async Task<IActionResult> Index()
-		=> View(await _coreApiClient.GetCustomer());
+		=> View(await CoreApiClient.GetCustomer());
 
 
 	[HttpPost, ActionName("TopUpBalance")]
@@ -21,7 +18,7 @@ public class CustomerController : Controller
 	public async Task<IActionResult> TopUpBalance(string replenishmentAmount)
 	{
 		var balanceViewModel = new BalanceViewModel { ReplenishmentAmount = replenishmentAmount };
-		await _coreApiClient.TopUpBalance(balanceViewModel);
+		await CoreApiClient.TopUpBalance(balanceViewModel);
 		return RedirectToAction(nameof(Index));
 	}
 }

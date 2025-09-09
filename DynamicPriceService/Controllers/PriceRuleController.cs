@@ -1,18 +1,17 @@
-﻿using DynamicPriceService.ApiClients;
+﻿using DynamicPrice.Manager.Controllers;
+using DynamicPriceService.ApiClients;
 using DynamicPriceService.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPriceService.Controllers;
-public class PriceRuleController : Controller
+public class PriceRuleController : BaseController
 {
-	private readonly ICoreApiClient _coreApiClient;
-
 	public PriceRuleController(ICoreApiClient coreApiClient)
-		=> _coreApiClient = coreApiClient;
+		: base(coreApiClient) { }
 
 	public async Task<IActionResult> Details()
 	{
-		var priceRuleWithStatus = await _coreApiClient.GetPriceRule();
+		var priceRuleWithStatus = await CoreApiClient.GetPriceRule();
 
 		ViewData["RuleStatus"] = priceRuleWithStatus.IsActive ?
 			"Running" :
@@ -28,7 +27,7 @@ public class PriceRuleController : Controller
 			return NotFound();
 		}
 
-		var priceRuleWithStatus = await _coreApiClient.GetPriceRule();
+		var priceRuleWithStatus = await CoreApiClient.GetPriceRule();
 
 		return View(priceRuleWithStatus.PriceRuleVm);
 	}
@@ -39,7 +38,7 @@ public class PriceRuleController : Controller
 	{
 		if (ModelState.IsValid)
 		{
-			await _coreApiClient.UpdatePriceRule(priceRuleVm);
+			await CoreApiClient.UpdatePriceRule(priceRuleVm);
 			return RedirectToAction(nameof(Details));
 		}
 
@@ -48,13 +47,13 @@ public class PriceRuleController : Controller
 
 	public async Task<IActionResult> Run()
 	{
-		await _coreApiClient.RunPriceReducing();
+		await CoreApiClient.RunPriceReducing();
 		return RedirectToAction(nameof(Details));
 	}
 
 	public async Task<IActionResult> Stop()
 	{
-		await _coreApiClient.StopPriceReducing();
+		await CoreApiClient.StopPriceReducing();
 		return RedirectToAction(nameof(Details));
 	}
 }

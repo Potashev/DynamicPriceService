@@ -1,19 +1,16 @@
-﻿using DynamicPriceClient.ApiClients;
+﻿using DynamicPrice.Customer.Controllers;
+using DynamicPriceClient.ApiClients;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPriceClient.Controllers;
-public class CompaniesController : Controller
+public class CompaniesController : BaseController
 {
-	private readonly ICoreApiClient _coreApiClient;
-
 	public CompaniesController(ICoreApiClient coreApiClient)
-    {
-		_coreApiClient = coreApiClient;
-	}
+		: base(coreApiClient) { }
 
 	public async Task<IActionResult> Index()
-		=> View(await _coreApiClient.GetCompanies());
+		=> View(await CoreApiClient.GetCompanies());
 
 	public async Task<IActionResult> CompanyProducts(int? id)
-		=> View(await _coreApiClient.GetCompanyProducts((int)id));
+		=> View(await CoreApiClient.GetCompanyProducts((int)id));
 }

@@ -1,11 +1,11 @@
 ﻿namespace DynamicPriceCore.ViewModels;
 public class CompanyProductsInfo
 {
-	public string CompanyId { get; set; }
+	public CompanyViewModel Company { get; set; }
 	public ProductInfoViewModel[] Products { get; set; }
-    public CompanyProductsInfo(string companyId, ProductInfoViewModel[] ProductsInfoVm) 
+    public CompanyProductsInfo(CompanyViewModel companyVm, ProductInfoViewModel[] ProductsInfoVm) 
     {
-        CompanyId = companyId;
+        Company = companyVm;
 		Products = ProductsInfoVm;
 	}
 

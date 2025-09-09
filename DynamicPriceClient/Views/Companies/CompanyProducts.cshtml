@@ -1,12 +1,12 @@
 ﻿@model DynamicPriceClient.ViewModels.CompanyProductsInfo
 
-<h1>Product Prices</h1>
+<h1>@Model.Company.Title</h1>
 
 <p>
-	<a asp-controller="Cart" asp-action="Details" asp-route-companyId="@Model.CompanyId">Cart Details</a>
+	<a asp-controller="Cart" asp-action="Details" asp-route-companyId="@Model.Company.CompanyId">Cart Details</a>
 </p>
 
-<table class="table">
+<table class="table table-striped">
 	<thead>
 		<tr>
 			<th>@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Title)</th>

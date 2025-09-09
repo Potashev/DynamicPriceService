@@ -1,18 +1,18 @@
 ﻿using DynamicPrice.Client.Common;
+using DynamicPrice.Manager.Controllers;
 using DynamicPriceService.ApiClients;
 using DynamicPriceService.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPriceService.Controllers;
-public class AuthController : Controller
+public class AuthController : BaseController
 {
-	private readonly ICoreApiClient _coreApiClient;
 	private readonly IAuthTokenStore _authTokenStore;
 
 	public AuthController(IAuthTokenStore authTokenStore, ICoreApiClient coreApiClient)
+		: base(coreApiClient)
 	{
 		_authTokenStore = authTokenStore;
-		_coreApiClient = coreApiClient;
 	}
 
 	public IActionResult Login()
@@ -30,7 +30,7 @@ public class AuthController : Controller
 			// ModelState.AddModelError(string.Empty, "Invalid login attempt.");
 			// return View(loginVm);
 
-			var tokenResponse = await _coreApiClient.LoginManager(loginVm);
+			var tokenResponse = await CoreApiClient.LoginManager(loginVm);
 
 			_authTokenStore.SetToken(tokenResponse.Token);
 

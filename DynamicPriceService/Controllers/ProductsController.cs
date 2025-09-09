@@ -1,19 +1,18 @@
-﻿using DynamicPriceService.ApiClients;
+﻿using DynamicPrice.Manager.Controllers;
+using DynamicPriceService.ApiClients;
 using DynamicPriceService.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPriceService.Controllers;
 
-public class ProductsController : Controller
+public class ProductsController : BaseController
 {
-	private readonly ICoreApiClient _coreApiClient;
-
-	public ProductsController(ICoreApiClient coreApiClient)
-		=> _coreApiClient = coreApiClient;
+	public ProductsController(ICoreApiClient coreApiClient) 
+		: base(coreApiClient) { }
 
 	public async Task<IActionResult> Index()
 	{
-		var productsVm = await _coreApiClient.GetProducts();
+		var productsVm = await CoreApiClient.GetProducts();
 		return View(productsVm);
 	}
 
@@ -23,7 +22,7 @@ public class ProductsController : Controller
 		{
 			return NotFound();
 		}
-		var productVm = await _coreApiClient.GetProduct((int)id);
+		var productVm = await CoreApiClient.GetProduct((int)id);
 		return View(productVm);
 	}
 
@@ -38,7 +37,7 @@ public class ProductsController : Controller
 	{
 		if (ModelState.IsValid)
 		{
-			await _coreApiClient.CreateProduct(productVm);
+			await CoreApiClient.CreateProduct(productVm);
 			return RedirectToAction(nameof(Index));
 		}
 		return View(productVm);
@@ -50,7 +49,7 @@ public class ProductsController : Controller
 		{
 			return NotFound();
 		}
-		var productVm = await _coreApiClient.GetProduct((int)id);
+		var productVm = await CoreApiClient.GetProduct((int)id);
 		return View(productVm);
 	}
 
@@ -60,7 +59,7 @@ public class ProductsController : Controller
 	{
 		if (ModelState.IsValid)
 		{
-			await _coreApiClient.UpdateProduct(id, productVm);
+			await CoreApiClient.UpdateProduct(id, productVm);
 			return RedirectToAction(nameof(Index));
 		}
 		return View(productVm);
@@ -73,7 +72,7 @@ public class ProductsController : Controller
 			return NotFound();
 		}
 
-		var productVm = await _coreApiClient.GetProduct((int)id);
+		var productVm = await CoreApiClient.GetProduct((int)id);
 		if (productVm == null)
 		{
 			return NotFound();
@@ -85,7 +84,7 @@ public class ProductsController : Controller
 	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> DeleteConfirmed(int id)
 	{
-		await _coreApiClient.DeleteProduct((int)id);
+		await CoreApiClient.DeleteProduct((int)id);
 		return RedirectToAction(nameof(Index));
 	}
 }

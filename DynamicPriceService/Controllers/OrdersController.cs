@@ -1,49 +1,45 @@
-﻿using DynamicPriceService.ApiClients;
+﻿using DynamicPrice.Manager.Controllers;
+using DynamicPriceService.ApiClients;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPriceService.Controllers;
-public class OrdersController : Controller
+public class OrdersController : BaseController
 {
-	private readonly ICoreApiClient _coreApiClient;
-
 	public OrdersController(ICoreApiClient coreApiClient)
-		=> _coreApiClient = coreApiClient;
+		: base(coreApiClient) { }
 
 	public async Task<IActionResult> Index()
 	{
-		var ordersVm = await _coreApiClient.GetOrders();
+		var ordersVm = await CoreApiClient.GetOrders();
 		return View(ordersVm);
 	}
 
 	public async Task<IActionResult> FindByReceiveKey(string key)
 	{
-		var orderId = await _coreApiClient.GetOrderIdByReceiveKey(key);
-
-		//var orderVm = await _coreApiClient.GetOrderByReceiveKey(key);
-		//return View(nameof(Details), orderVm);
+		var orderId = await CoreApiClient.GetOrderIdByReceiveKey(key);
 		return RedirectToAction(nameof(Details), new { id = orderId });
 	}
 
 	public async Task<IActionResult> Details(int id)
 	{
-		var orderVm = await _coreApiClient.GetOrder(id);
+		var orderVm = await CoreApiClient.GetOrder(id);
 		return View(orderVm);
 	}
 
 	public async Task<IActionResult> ReadyForReceive(string orderId)
 	{
-		await _coreApiClient.ReadyForReceiveOrder(orderId);
+		await CoreApiClient.ReadyForReceiveOrder(orderId);
 		return RedirectToAction(nameof(Details), new { id = orderId });
 	}
 
 	public async Task<IActionResult> Complete(string orderId)
 	{
-		await _coreApiClient.CompleteOrder(orderId);
+		await CoreApiClient.CompleteOrder(orderId);
 		return RedirectToAction(nameof(Details), new { id = orderId });
 	}
 
 	public async Task<IActionResult> Statistics()
 	{
-		return View(await _coreApiClient.GetOrdersStatistics());
+		return View(await CoreApiClient.GetOrdersStatistics());
 	} 
 }

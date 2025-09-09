@@ -17,12 +17,20 @@ public class GetCompanyProductsQueryHandler
 
 	public async Task<CompanyProductsInfo> Handle(GetCompanyProductsQuery request, CancellationToken cancellationToken)
 	{
+
+		var company = await _context.Companies
+			.FirstOrDefaultAsync(c => c.CompanyId.ToString() == request.CompanyId, cancellationToken);
+
+		if (company == null)
+			throw new KeyNotFoundException($"Company with ID {request.CompanyId} not found.");
+
 		var products = await _context.Products
-			.Where(p => p.Company.CompanyId.ToString() == request.CompanyId)
+			.Where(p => p.CompanyId == company.CompanyId)
 			.Include(p => p.PriceDynamics)  //todo: set lenght?
 			.ToArrayAsync(cancellationToken);
 
+		var companyVm = _mapper.Map<CompanyViewModel>(company);
 		var productsInfoVm = _mapper.Map<ProductInfoViewModel[]>(products);
-		return new CompanyProductsInfo(request.CompanyId, productsInfoVm);
+		return new CompanyProductsInfo(companyVm, productsInfoVm);
 	}
 }

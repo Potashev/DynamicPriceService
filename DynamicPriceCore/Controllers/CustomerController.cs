@@ -29,6 +29,12 @@ public class CustomerController : ControllerBase
 		return Ok(customerInfo);
 	}
 
+	//public async Task<ActionResult<string>> GetCustomerName(CancellationToken cancellationToken)
+	//{
+	//	var customerInfo = await _mediator.Send(new GetCustomerInfoQuery(), cancellationToken);
+	//	return Ok(customerInfo.Name);
+	//}
+
 	[HttpPut("me/balance")]
 	public async Task<IActionResult> TopUp([FromBody] BalanceViewModel balanceVm)
 	{

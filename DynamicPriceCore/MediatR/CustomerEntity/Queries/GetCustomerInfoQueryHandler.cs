@@ -34,6 +34,7 @@ public class GetCustomerInfoQueryHandler
 		var customerInfo = new CustomerInfoViewModel
 		{
 			Name = customer.UserName,
+			Email = customer.Email,
 			Balance = customer.Balance,
 			Orders = ordersVm
 		};

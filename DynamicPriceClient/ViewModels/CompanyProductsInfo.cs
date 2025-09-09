@@ -2,7 +2,7 @@
 
 public class CompanyProductsInfo
 {
-    public string CompanyId { get; set; }
+    public CompanyViewModel Company { get; set; }
 	public ProductInfoViewModel[] Products { get; set; }
 	
 }

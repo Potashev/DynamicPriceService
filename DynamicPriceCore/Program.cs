@@ -130,13 +130,14 @@ builder.Services.AddSingleton<IEventBus>(sp =>
 });
 
 builder.Services.AddSingleton<IActiveCompaniesService, ActiveCompaniesService>();
+builder.Services.AddHostedService<ReducePriceWorker>();
 builder.Services.AddTransient<IIncreasePriceService, IncreasePriceService>();   //todo: change
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserService, UserService>();
 
-builder.Services.AddQuartz(q => q.AddJobAndTrigger<ReducePriceJob>(builder.Configuration));
-builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+//builder.Services.AddQuartz(q => q.AddJobAndTrigger<ReducePriceJob>(builder.Configuration));
+//builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
 
 var app = builder.Build();

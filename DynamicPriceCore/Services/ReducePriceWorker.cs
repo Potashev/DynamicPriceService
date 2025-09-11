@@ -6,7 +6,6 @@ using RabbitMQ.Client.Events;
 using System.Collections.Concurrent;
 using System.Text;
 using System.Text.Json;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 public class ReducePriceWorker : BackgroundService
 {
@@ -40,6 +39,14 @@ public class ReducePriceWorker : BackgroundService
 
 		await _channel.QueueBindAsync(queue: QueueName, exchange: ExchangeName, routingKey: "company.monitoring");
 		await _channel.QueueBindAsync(queue: QueueName, exchange: ExchangeName, routingKey: "company.monitoring.stop");
+
+		//todo: check
+		await _channel.QueueDeclareAsync(
+			queue: "price.reduce",
+			durable: true,
+			exclusive: false,
+			autoDelete: false,
+			arguments: null);
 
 		var consumer = new AsyncEventingBasicConsumer(_channel);
 		consumer.ReceivedAsync += async (_, ea) =>
@@ -95,19 +102,37 @@ public class ReducePriceWorker : BackgroundService
 				using var scope = _serviceProvider.CreateScope();
 				var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
 
-				var priceRule = context.PriceRules.Where(pr => pr.Company.CompanyId == companyId).FirstOrDefault();
+				var priceRule = await context.PriceRules
+					.Where(pr => pr.Company.CompanyId == companyId)
+					.FirstOrDefaultAsync(token);
 
-				var productsToReduceQuery = from p in context.Products
-											where
-										   p.Company.CompanyId == companyId &&
-										   EF.Functions.DateDiffSecond(p.LastSellTime, DateTime.UtcNow) > priceRule.NoSellTime.Value.TotalSeconds
-											select p;
-				var productsToReduce = productsToReduceQuery.ToList();
-
-				foreach (var product in productsToReduce)
+				if (priceRule == null)
 				{
-					Console.WriteLine($"[ReducePriceWorker] Продукт {product.ProductId} у компании {companyId} — кандидат на снижение цены");
-					// тут отправляем в очередь "price.reduce"
+					Console.WriteLine($"[ReducePriceWorker] Для компании {companyId} нет правила цены. Пропускаем.");
+					await Task.Delay(TimeSpan.FromSeconds(10), token);
+					continue;
+				}
+
+				var productsToReduce = await context.Products
+					.Where(p =>
+						p.Company.CompanyId == companyId &&
+						EF.Functions.DateDiffSecond(p.LastSellTime, DateTime.UtcNow) > priceRule.NoSellTime.Value.TotalSeconds)
+					.Select(p => p.ProductId)
+					.ToListAsync(token);
+
+				foreach (var productId in productsToReduce)
+				{
+					Console.WriteLine($"[ReducePriceWorker] Найден продукт {productId} компании {companyId} — отправляем в очередь на снижение цены");
+
+					var message = new PriceReduceMessage(productId);
+					var json = JsonSerializer.Serialize(message);
+					var body = Encoding.UTF8.GetBytes(json);
+
+					// публикуем событие
+					await _channel!.BasicPublishAsync(
+						exchange: "",
+						routingKey: "price.reduce", // отдельная очередь
+						body: body);
 				}
 
 				await Task.Delay(TimeSpan.FromSeconds(10), token);
@@ -118,6 +143,9 @@ public class ReducePriceWorker : BackgroundService
 			Console.WriteLine($"[ReducePriceWorker] Мониторинг компании {companyId} остановлен.");
 		}
 	}
+
+	public record PriceReduceMessage(int ProductId);
+
 
 	public record CompanyPayload(int CompanyId);
 }

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace DynamicPriceCore.MediatR.PriceRuleEntity.Commands;
 
 public class PriceReducingCommandHandler
-	: IRequestHandler<PriceReducingCommand, bool>
+	: IRequestHandler<PriceReducingCommand>
 {
 	//private IActiveCompaniesService _activeCompaniesService;
 	private readonly IUserService _userService;
@@ -16,32 +16,17 @@ public class PriceReducingCommandHandler
 	public PriceReducingCommandHandler(IUserService userService, IEventBus eventBus)
 		=> (_userService, _eventBus) = (userService, eventBus);
 
-	public async Task<bool> Handle(PriceReducingCommand request, CancellationToken cancellationToken)
+	public async Task Handle(PriceReducingCommand request, CancellationToken cancellationToken)
 	{
 		var manager = await _userService.GetCurrentUserAsync();
 
 		var companyId = (int)manager.CompanyId;
-
-		//if (request.IsRunCommand)
-		//{
-		//	if(!_activeCompaniesService.IsActive(companyId))
-		//		_activeCompaniesService.AddRequest(companyId);
-		//}
-		//else
-		//	_activeCompaniesService.RemoveRequest(companyId);
-
-		////temp solution to show actual status after request
-		//Thread.Sleep(1000);
-
-		//return _activeCompaniesService.IsActive(companyId);
 
 		if (request.IsRunCommand)
 			await _eventBus.PublishAsync(new CompanyMonitoringStarted(companyId), "company.start");
 		else
 			await _eventBus.PublishAsync(new CompanyMonitoringStopped(companyId), "company.stop");
 
-		// Здесь возвращаем "последний известный статус", который может быть ещё не обновлён в сервисе.
-		//return _activeCompaniesService.IsActive(companyId);
-		return true;
+		return;
 	}
 }

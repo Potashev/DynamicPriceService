@@ -1,4 +1,5 @@
-﻿using DynamicPriceCore.Data;
+﻿using DynamicPrice.Core.Services;
+using DynamicPriceCore.Data;
 using DynamicPriceCore.Extensions;
 using DynamicPriceCore.Models;
 using DynamicPriceCore.Services;
@@ -131,6 +132,7 @@ builder.Services.AddSingleton<IEventBus>(sp =>
 
 builder.Services.AddSingleton<IActiveCompaniesService, ActiveCompaniesService>();
 builder.Services.AddHostedService<ReducePriceWorker>();
+builder.Services.AddHostedService<ChangePriceService>();
 builder.Services.AddTransient<IIncreasePriceService, IncreasePriceService>();   //todo: change
 
 builder.Services.AddHttpContextAccessor();

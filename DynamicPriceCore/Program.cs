@@ -120,6 +120,15 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
 
+// 1️⃣ Регистрируем EventBus
+builder.Services.AddSingleton<IEventBus>(sp =>
+{
+	var config = sp.GetRequiredService<IConfiguration>();
+	var connStr = config.GetConnectionString("RabbitMQ")
+				  ?? "amqp://guest:guest@localhost:5672/";
+	return new RabbitMqEventBus(connStr);
+});
+
 builder.Services.AddSingleton<IActiveCompaniesService, ActiveCompaniesService>();
 builder.Services.AddTransient<IIncreasePriceService, IncreasePriceService>();   //todo: change
 

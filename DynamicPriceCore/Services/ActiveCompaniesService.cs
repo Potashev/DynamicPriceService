@@ -60,8 +60,7 @@ public class ActiveCompaniesService : IActiveCompaniesService, IAsyncDisposable
 					{
 						if (_activeCompanies.TryAdd(evt.CompanyId, true))
 						{
-							// 🔥 сразу публикуем в отдельную очередь, чтобы воркер начал мониторинг
-							await _eventBus.PublishAsync(new { CompanyId = evt.CompanyId }, "company.monitoring");
+							await _eventBus.PublishAsync(new { evt.CompanyId }, "company.monitoring");
 						}
 					}
 				}
@@ -70,9 +69,10 @@ public class ActiveCompaniesService : IActiveCompaniesService, IAsyncDisposable
 					var evt = JsonSerializer.Deserialize<CompanyMonitoringStopped>(json);
 					if (evt != null)
 					{
-						_activeCompanies.TryRemove(evt.CompanyId, out _);
-						// ❗️Можно отправить событие "остановки мониторинга"
-						await _eventBus.PublishAsync(new { CompanyId = evt.CompanyId }, "company.monitoring.stop");
+						if (_activeCompanies.TryRemove(evt.CompanyId, out _))
+						{
+							await _eventBus.PublishAsync(new { evt.CompanyId }, "company.monitoring.stop");
+						}
 					}
 				}
 
@@ -86,6 +86,7 @@ public class ActiveCompaniesService : IActiveCompaniesService, IAsyncDisposable
 
 		await _channel.BasicConsumeAsync(queue: QueueName, autoAck: false, consumer: consumer);
 	}
+
 
 	public IEnumerable<Company> GetActiveCompanies()
 	{

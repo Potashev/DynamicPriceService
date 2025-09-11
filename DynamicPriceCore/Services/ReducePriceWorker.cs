@@ -3,8 +3,10 @@ using DynamicPriceCore.Models;
 using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using System.Collections.Concurrent;
 using System.Text;
 using System.Text.Json;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 public class ReducePriceWorker : BackgroundService
 {
@@ -13,17 +15,18 @@ public class ReducePriceWorker : BackgroundService
 	private IConnection? _connection;
 	private IChannel? _channel;
 
+	// словарь активных циклов мониторинга
+	private readonly ConcurrentDictionary<int, CancellationTokenSource> _companyMonitors = new();
+
 	private const string ExchangeName = "company_monitoring_exchange";
 	private const string QueueName = "company_monitoring_worker";
 
 	public ReducePriceWorker(IServiceProvider serviceProvider, IConfiguration config)
 	{
 		_serviceProvider = serviceProvider;
-
-		var rabbitMqConnStr = config.GetConnectionString("RabbitMQ") ?? "amqp://guest:guest@localhost:5672/";
 		_factory = new ConnectionFactory
 		{
-			Uri = new Uri(rabbitMqConnStr)
+			Uri = new Uri(config.GetConnectionString("RabbitMQ") ?? "amqp://guest:guest@localhost:5672/")
 		};
 	}
 
@@ -34,7 +37,9 @@ public class ReducePriceWorker : BackgroundService
 
 		await _channel.ExchangeDeclareAsync(exchange: ExchangeName, type: ExchangeType.Direct, durable: true);
 		await _channel.QueueDeclareAsync(queue: QueueName, durable: true, exclusive: false, autoDelete: false);
+
 		await _channel.QueueBindAsync(queue: QueueName, exchange: ExchangeName, routingKey: "company.monitoring");
+		await _channel.QueueBindAsync(queue: QueueName, exchange: ExchangeName, routingKey: "company.monitoring.stop");
 
 		var consumer = new AsyncEventingBasicConsumer(_channel);
 		consumer.ReceivedAsync += async (_, ea) =>
@@ -43,46 +48,74 @@ public class ReducePriceWorker : BackgroundService
 			var payload = JsonSerializer.Deserialize<CompanyPayload>(json);
 
 			if (payload != null)
-				await StartMonitoringForCompanyAsync(payload.CompanyId, stoppingToken);
+			{
+				if (ea.RoutingKey == "company.monitoring")
+					StartMonitoringForCompany(payload.CompanyId);
+				else if (ea.RoutingKey == "company.monitoring.stop")
+					StopMonitoringForCompany(payload.CompanyId);
+			}
 
-			await _channel.BasicAckAsync(ea.DeliveryTag, false);
+			await _channel!.BasicAckAsync(ea.DeliveryTag, false);
 		};
 
 		await _channel.BasicConsumeAsync(queue: QueueName, autoAck: false, consumer: consumer);
 	}
 
-	private async Task StartMonitoringForCompanyAsync(int companyId, CancellationToken token)
+	private void StartMonitoringForCompany(int companyId)
 	{
-		Console.WriteLine($"[ReducePriceWorker] Старт мониторинга для компании {companyId}");
-
-		while (!token.IsCancellationRequested)
+		if (_companyMonitors.ContainsKey(companyId))
 		{
-			using var scope = _serviceProvider.CreateScope();
-			var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
+			Console.WriteLine($"[ReducePriceWorker] Мониторинг уже запущен для {companyId}");
+			return;
+		}
 
-			var priceRule = context.PriceRules.Where(pr => pr.Company.CompanyId == companyId).FirstOrDefault();
+		var cts = new CancellationTokenSource();
+		if (_companyMonitors.TryAdd(companyId, cts))
+		{
+			Console.WriteLine($"[ReducePriceWorker] Старт мониторинга для компании {companyId}");
+			_ = Task.Run(() => MonitorLoop(companyId, cts.Token));
+		}
+	}
 
-			var productsToReduceQuery = from p in context.Products
-										where
-									   p.Company.CompanyId == companyId &&
-									   EF.Functions.DateDiffSecond(p.LastSellTime, DateTime.UtcNow) > priceRule.NoSellTime.Value.TotalSeconds
-										select p;
+	private void StopMonitoringForCompany(int companyId)
+	{
+		if (_companyMonitors.TryRemove(companyId, out var cts))
+		{
+			Console.WriteLine($"[ReducePriceWorker] Остановка мониторинга для компании {companyId}");
+			cts.Cancel();
+		}
+	}
 
-			var productsToReduce = productsToReduceQuery.ToList();
-
-
-			// 🔍 Получаем продукты для этой компании и проверяем на "простой"
-			//var products = context.Products
-			//	.Where(p => p.CompanyId == companyId /* и условия простоя */)
-			//	.ToList();
-
-			foreach (var product in productsToReduce)
+	private async Task MonitorLoop(int companyId, CancellationToken token)
+	{
+		try
+		{
+			while (!token.IsCancellationRequested)
 			{
-				Console.WriteLine($"[ReducePriceWorker] Нашли продукт для снижения цены: {product.ProductId}");
-				// тут можно публиковать событие в очередь "price.reduce"
-			}
+				using var scope = _serviceProvider.CreateScope();
+				var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
 
-			await Task.Delay(TimeSpan.FromSeconds(10), token); // например, каждые 10 сек
+				var priceRule = context.PriceRules.Where(pr => pr.Company.CompanyId == companyId).FirstOrDefault();
+
+				var productsToReduceQuery = from p in context.Products
+											where
+										   p.Company.CompanyId == companyId &&
+										   EF.Functions.DateDiffSecond(p.LastSellTime, DateTime.UtcNow) > priceRule.NoSellTime.Value.TotalSeconds
+											select p;
+				var productsToReduce = productsToReduceQuery.ToList();
+
+				foreach (var product in productsToReduce)
+				{
+					Console.WriteLine($"[ReducePriceWorker] Продукт {product.ProductId} у компании {companyId} — кандидат на снижение цены");
+					// тут отправляем в очередь "price.reduce"
+				}
+
+				await Task.Delay(TimeSpan.FromSeconds(10), token);
+			}
+		}
+		catch (OperationCanceledException)
+		{
+			Console.WriteLine($"[ReducePriceWorker] Мониторинг компании {companyId} остановлен.");
 		}
 	}
 

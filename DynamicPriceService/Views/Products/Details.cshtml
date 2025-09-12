@@ -1,48 +1,66 @@
 ﻿@model DynamicPriceService.ViewModels.ProductViewModel
 
 @{
-    ViewData["Title"] = "Details";
+	ViewData["Title"] = "Details";
 }
 
 <h1>Details</h1>
 
 <div>
-    <h4>Product</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MinimumPrice)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MinimumPrice)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Quantity)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Quantity)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-    </dl>
+	<h4>Product</h4>
+	<hr />
+	<dl class="row">
+		<dt class="col-sm-2">@Html.DisplayNameFor(model => model.Title)</dt>
+		<dd class="col-sm-10">@Html.DisplayFor(model => model.Title)</dd>
+
+		<dt class="col-sm-2">@Html.DisplayNameFor(model => model.Price)</dt>
+		<dd class="col-sm-10" id="price-@Model.ProductId">@Html.DisplayFor(model => model.Price)</dd>
+
+		<dt class="col-sm-2">@Html.DisplayNameFor(model => model.MinimumPrice)</dt>
+		<dd class="col-sm-10">@Html.DisplayFor(model => model.MinimumPrice)</dd>
+
+		<dt class="col-sm-2">@Html.DisplayNameFor(model => model.Quantity)</dt>
+		<dd class="col-sm-10">@Html.DisplayFor(model => model.Quantity)</dd>
+
+		<dt class="col-sm-2">@Html.DisplayNameFor(model => model.Description)</dt>
+		<dd class="col-sm-10">@Html.DisplayFor(model => model.Description)</dd>
+	</dl>
 </div>
+
+<div class="chart-container">
+	<canvas id="chart-@Model.ProductId"></canvas>
+</div>
+
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.ProductId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+	<a asp-action="Edit" asp-route-id="@Model?.ProductId">Edit</a> |
+	<a asp-action="Index">Back to List</a>
 </div>
+
+<!-- ОБЯЗАТЕЛЬНО добавляем Chart.js и SignalR -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
+
+<!-- Подключаем RCL с графиками -->
+<link rel="stylesheet" href="~/_content/DynamicPrice.Client.Drawing/css/price-monitor.css" />
+<script type="module" src="~/_content/DynamicPrice.Client.Drawing/js/price-monitor.js"></script>
+
+<script type="module">
+	import { PriceMonitor } from '/_content/DynamicPrice.Client.Drawing/js/price-monitor.js';
+
+	const priceMonitor = new PriceMonitor("https://localhost:7140/priceHub");
+	await priceMonitor.init();
+
+	priceMonitor.registerChart(
+		@Model.ProductId,
+		"chart-@Model.ProductId",
+		@Html.Raw(Json.Serialize(Model.PriceDynamics.Select(d => d.Price)))
+	);
+</script>
+
+<style>
+	.chart-container {
+		width: 600px;
+		height: 300px;
+		margin: 20px 0;
+	}
+</style>

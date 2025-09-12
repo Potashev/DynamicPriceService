@@ -13,4 +13,7 @@ public class ProductViewModel
 	public double MinimumPrice { get; set; }
 	public int? Quantity { get; set; }
 	public string? Description { get; set; }
+
+	[Display(Name = "Price dynamics")]
+	public PriceDynamicViewModel[] PriceDynamics { get; set; }
 }

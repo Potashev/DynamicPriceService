@@ -1,4 +1,5 @@
-﻿using DynamicPriceCore.Data;
+﻿using DynamicPrice.Core.Rabbit;
+using DynamicPriceCore.Data;
 using DynamicPriceCore.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -6,31 +7,26 @@ using Microsoft.EntityFrameworkCore;
 namespace DynamicPriceCore.MediatR.PriceRuleEntity.Commands;
 
 public class PriceReducingCommandHandler
-	: IRequestHandler<PriceReducingCommand, bool>
+	: IRequestHandler<PriceReducingCommand>
 {
-	private IActiveCompaniesService _activeCompaniesService;
+	//private IActiveCompaniesService _activeCompaniesService;
 	private readonly IUserService _userService;
+	private readonly IEventBus _eventBus;
 
-	public PriceReducingCommandHandler(IActiveCompaniesService activeCompaniesService, IUserService userService)
-		=> (_activeCompaniesService, _userService) = (activeCompaniesService, userService);
+	public PriceReducingCommandHandler(IUserService userService, IEventBus eventBus)
+		=> (_userService, _eventBus) = (userService, eventBus);
 
-	public async Task<bool> Handle(PriceReducingCommand request, CancellationToken cancellationToken)
+	public async Task Handle(PriceReducingCommand request, CancellationToken cancellationToken)
 	{
 		var manager = await _userService.GetCurrentUserAsync();
 
 		var companyId = (int)manager.CompanyId;
 
 		if (request.IsRunCommand)
-		{
-			if(!_activeCompaniesService.IsActive(companyId))
-				_activeCompaniesService.AddRequest(companyId);
-		}
+			await _eventBus.PublishAsync(new CompanyMonitoringStarted(companyId), "company.start");
 		else
-			_activeCompaniesService.RemoveRequest(companyId);
+			await _eventBus.PublishAsync(new CompanyMonitoringStopped(companyId), "company.stop");
 
-		//temp solution to show actual status after request
-		Thread.Sleep(1000);
-
-		return _activeCompaniesService.IsActive(companyId);
+		return;
 	}
 }

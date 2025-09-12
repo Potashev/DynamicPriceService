@@ -1,4 +1,5 @@
-﻿using DynamicPriceCore.Data;
+﻿using DynamicPrice.Core.Services;
+using DynamicPriceCore.Data;
 using DynamicPriceCore.Extensions;
 using DynamicPriceCore.Models;
 using DynamicPriceCore.Services;
@@ -120,14 +121,25 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
 
+// 1️⃣ Регистрируем EventBus
+builder.Services.AddSingleton<IEventBus>(sp =>
+{
+	var config = sp.GetRequiredService<IConfiguration>();
+	var connStr = config.GetConnectionString("RabbitMQ")
+				  ?? "amqp://guest:guest@localhost:5672/";
+	return new RabbitMqEventBus(connStr);
+});
+
 builder.Services.AddSingleton<IActiveCompaniesService, ActiveCompaniesService>();
+builder.Services.AddHostedService<ReducePriceWorker>();
+builder.Services.AddHostedService<ChangePriceService>();
 builder.Services.AddTransient<IIncreasePriceService, IncreasePriceService>();   //todo: change
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserService, UserService>();
 
-builder.Services.AddQuartz(q => q.AddJobAndTrigger<ReducePriceJob>(builder.Configuration));
-builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+//builder.Services.AddQuartz(q => q.AddJobAndTrigger<ReducePriceJob>(builder.Configuration));
+//builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
 
 var app = builder.Build();

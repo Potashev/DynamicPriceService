@@ -38,7 +38,31 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
 
-<script>
+<link rel="stylesheet" href="~/_content/DynamicPrice.Client.Drawing/css/price-monitor.css" />
+<script type="module" src="~/_content/DynamicPrice.Client.Drawing/js/price-monitor.js"></script>
+
+<script type="module">
+	import { PriceMonitor } from '/_content/DynamicPrice.Client.Drawing/js/price-monitor.js';
+
+	// Инициализация мониторинга цен
+	const priceMonitor = new PriceMonitor("https://localhost:7140/priceHub");
+	await priceMonitor.init(); // подключение к SignalR
+
+	// Регистрируем каждый продукт из модели
+	@foreach (var product in Model.Products)
+	{
+			<text>
+				priceMonitor.registerChart(
+					@product.ProductId,
+					"chart-@product.ProductId",
+					@Html.Raw(Json.Serialize(product.PriceDynamics.Select(d => d.Price)))
+				);
+			</text>
+	}
+</script>
+
+
+@* <script>
 	var connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7140/priceHub").build();
 
 	var charts = {};
@@ -118,9 +142,9 @@
 
 			charts[productId] = chart;
 		}
-</script>
+</script> *@
 
-<style>
+@* <style>
 	.chart-container {
 		width: 340pt;
 		height: 175pt;
@@ -131,4 +155,4 @@
 		box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
 		border-radius: 5px;
 	}
-</style>
+</style> *@

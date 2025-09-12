@@ -42,6 +42,8 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+app.UseDynamicPriceClientCommon();
+
 app.UseRouting();
 
 app.UseSession();

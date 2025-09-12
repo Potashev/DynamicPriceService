@@ -6,12 +6,14 @@
 	<a asp-controller="Cart" asp-action="Details" asp-route-companyId="@Model.Company.CompanyId">Cart Details</a>
 </p>
 
+<!-- ✅ подключаем наш компонент из RCL -->
+<price-monitor hub-url="/priceHub" history-days="3"></price-monitor>
+
 <table class="table table-striped">
 	<thead>
 		<tr>
 			<th>@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Title)</th>
 			<th>@Html.DisplayNameFor(model => model.Products.FirstOrDefault().PriceDynamics)</th>
-			@* <th>Price dynamics</th> *@
 			<th>@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Price)</th>
 			<th></th>
 		</tr>
@@ -23,102 +25,30 @@
 				<td>@product.Title</td>
 				<td>
 					<div class="chart-container">
-						<canvas id="chart-@product.ProductId" @* width="100" height="50" *@></canvas>
+						<canvas id="chart-@product.ProductId"></canvas>
 					</div>
-				</td>
- 				<td id="price-@product.ProductId">@product.Price</td>
-				<td>
-					<a asp-controller="Cart" asp-action="AddProduct" asp-route-productId="@product.ProductId">Add to Cart</a>
-				</td>
-			</tr>
-		}
+
+					<!-- ✅ регистрация чарта через JS из RCL -->
+					<script>
+						PriceMonitor.registerChart(@product.ProductId,
+							@Html.Raw(Json.Serialize(
+								Model.Products
+										.First(p => p.ProductId == product.ProductId)
+										.PriceDynamics
+										.Select(d => new { price = d.Price, date = d.Date })
+												)));
+				</script>
+			</td>
+			<td id="price-@product.ProductId">@product.Price</td>
+			<td>
+				<a asp-controller="Cart" asp-action="AddProduct" asp-route-productId="@product.ProductId">
+					Add to Cart
+				</a>
+			</td>
+		</tr>
+				}
 	</tbody>
 </table>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
-
-<script>
-	var connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7140/priceHub").build();
-
-	var charts = {};
-
-	connection.start().then(function () {
-		console.log("SignalR connected");
-	}).catch(function (err) {
-		console.error("SignalR connection error: ", err);
-	});
-
-	connection.on("ReceivePriceUpdate", function (productId, newPrice) {
-		updateChart(productId, newPrice);
-		updatePriceLabel(productId, newPrice);
-	});
-
-	function updateChart(productId, newPrice) {
-		var chart = charts[productId];
-		if (chart) {
-			chart.data.datasets[0].data.push(newPrice);
-			chart.data.labels.push(new Date().toLocaleTimeString());
-
-			if (chart.data.datasets[0].data.length > 100) {
-				chart.data.datasets[0].data.shift();
-				chart.data.labels.shift();
-			}
-
-			chart.update();
-		}
-	}
-
-	function updatePriceLabel(productId, newPrice) {
-		document.getElementById('price-' + productId).innerText = newPrice;
-	}
-
-	@foreach (var product in Model.Products)
-	{
-		<text>
-				drawChart(@product.ProductId, @Html.Raw(Json.Serialize(product.PriceDynamics.Select(d => new { Price = d.Price }))));
-		</text>
-	}
-
-		function drawChart(productId, priceDynamics) {
-			var ctx = document.getElementById('chart-' + productId).getContext('2d');
-
-			var prices = priceDynamics.map(item => item.price);
-
-			console.log("Prices: ", prices);
-
-			var chart = new Chart(ctx, {
-				type: 'line',
-				data: {
-					labels: Array.from({ length: prices.length }, (_, i) => `T${i + 1}`),
-					datasets: [{
-						label: 'Price Change',
-						data: prices,
-						// backgroundColor: gradient,
-						borderColor: 'rgba(75, 192, 192, 1)',
-						borderWidth: 2,
-						fill: true,
-						pointRadius: 1
-					}]
-				},
-				options: {
-					scales: {
-						x: { display: false },
-						y: { display: false }
-					},
-					plugins: {
-						legend: { display: false }
-					},
-					animation: {
-						duration: 300,
-						easing: 'linear'
-					}
-				}
-			});
-
-			charts[productId] = chart;
-		}
-</script>
 
 <style>
 	.chart-container {

@@ -1,6 +1,9 @@
-﻿export class PriceMonitor {
-	constructor(hubUrl) {
+﻿import { PriceMonitorConfig } from './price-monitor-config.js';
+
+export class PriceMonitor {
+	constructor(hubUrl, config = new PriceMonitorConfig()) {
 		this.hubUrl = hubUrl;
+		this.config = config;
 		this.connection = null;
 		this.charts = {};
 	}
@@ -10,10 +13,9 @@
 			.withUrl(this.hubUrl)
 			.build();
 
-		// Обработчик получения новых цен
 		this.connection.on("ReceivePriceUpdate", (productId, newPrice) => {
 			this.updateChart(productId, newPrice);
-			this.updatePriceLabel(productId, newPrice); // <--- обновление цены
+			this.updatePriceLabel(productId, newPrice);
 		});
 
 		await this.connection.start();
@@ -21,6 +23,11 @@
 	}
 
 	registerChart(productId, canvasId, initialData = []) {
+		// Обрезаем данные сразу при инициализации
+		if (initialData.length > this.config.maxPoints) {
+			initialData = initialData.slice(-this.config.maxPoints);
+		}
+
 		const ctx = document.getElementById(canvasId).getContext("2d");
 		const chart = new Chart(ctx, {
 			type: 'line',
@@ -31,12 +38,14 @@
 					data: initialData,
 					borderColor: 'rgba(75, 192, 192, 1)',
 					fill: true,
-					pointRadius: 1
+					pointRadius: 1,
+					...this.config.datasetOptions
 				}]
 			},
 			options: {
 				scales: { x: { display: false }, y: { display: false } },
-				plugins: { legend: { display: false } }
+				plugins: { legend: { display: false } },
+				...this.config.chartOptions
 			}
 		});
 		this.charts[productId] = chart;
@@ -46,17 +55,21 @@
 		const chart = this.charts[productId];
 		if (!chart) return;
 
-		chart.data.datasets[0].data.push(newPrice);
-		chart.data.labels.push(new Date().toLocaleTimeString());
-		if (chart.data.datasets[0].data.length > 100) {
+		// Сначала удаляем лишние точки (если их уже maxPoints)
+		if (chart.data.datasets[0].data.length >= this.config.maxPoints) {
 			chart.data.datasets[0].data.shift();
 			chart.data.labels.shift();
 		}
+
+		// Потом добавляем новую точку
+		chart.data.datasets[0].data.push(newPrice);
+		chart.data.labels.push(new Date().toLocaleTimeString());
+
 		chart.update();
 	}
 
 	updatePriceLabel(productId, newPrice) {
 		const el = document.getElementById(`price-${productId}`);
-		if (el) el.innerText = newPrice.toFixed(2); // можно форматировать
+		if (el) el.innerText = newPrice.toFixed(2);
 	}
 }

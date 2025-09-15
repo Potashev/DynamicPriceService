@@ -46,8 +46,16 @@
 
 <script type="module">
 	import { PriceMonitor } from '/_content/DynamicPrice.Client.Drawing/js/price-monitor.js';
+	import { PriceMonitorConfig } from '/_content/DynamicPrice.Client.Drawing/js/price-monitor-config.js';
 
-	const priceMonitor = new PriceMonitor("https://localhost:7140/priceHub");
+	const config = new PriceMonitorConfig({
+		maxPoints: 100,
+		chartOptions: {
+			scales: { y: { display: true }, x: { display: false } }
+		}
+	});
+
+	const priceMonitor = new PriceMonitor("https://localhost:7140/priceHub", config);
 	await priceMonitor.init();
 
 	priceMonitor.registerChart(

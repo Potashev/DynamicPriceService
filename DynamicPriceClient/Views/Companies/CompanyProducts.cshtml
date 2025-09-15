@@ -43,12 +43,18 @@
 
 <script type="module">
 	import { PriceMonitor } from '/_content/DynamicPrice.Client.Drawing/js/price-monitor.js';
+	import { PriceMonitorConfig } from '/_content/DynamicPrice.Client.Drawing/js/price-monitor-config.js';
 
-	// Инициализация мониторинга цен
-	const priceMonitor = new PriceMonitor("https://localhost:7140/priceHub");
-	await priceMonitor.init(); // подключение к SignalR
+	const config = new PriceMonitorConfig({
+		maxPoints: 20,
+		chartOptions: {
+			scales: { y: { display: false }, x: { display: false } }
+		}
+	});
 
-	// Регистрируем каждый продукт из модели
+	const priceMonitor = new PriceMonitor("https://localhost:7140/priceHub", config);
+	await priceMonitor.init();
+
 	@foreach (var product in Model.Products)
 	{
 			<text>
@@ -60,99 +66,3 @@
 			</text>
 	}
 </script>
-
-
-@* <script>
-	var connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7140/priceHub").build();
-
-	var charts = {};
-
-	connection.start().then(function () {
-		console.log("SignalR connected");
-	}).catch(function (err) {
-		console.error("SignalR connection error: ", err);
-	});
-
-	connection.on("ReceivePriceUpdate", function (productId, newPrice) {
-		updateChart(productId, newPrice);
-		updatePriceLabel(productId, newPrice);
-	});
-
-	function updateChart(productId, newPrice) {
-		var chart = charts[productId];
-		if (chart) {
-			chart.data.datasets[0].data.push(newPrice);
-			chart.data.labels.push(new Date().toLocaleTimeString());
-
-			if (chart.data.datasets[0].data.length > 100) {
-				chart.data.datasets[0].data.shift();
-				chart.data.labels.shift();
-			}
-
-			chart.update();
-		}
-	}
-
-	function updatePriceLabel(productId, newPrice) {
-		document.getElementById('price-' + productId).innerText = newPrice;
-	}
-
-	@foreach (var product in Model.Products)
-	{
-		<text>
-				drawChart(@product.ProductId, @Html.Raw(Json.Serialize(product.PriceDynamics.Select(d => new { Price = d.Price }))));
-		</text>
-	}
-
-		function drawChart(productId, priceDynamics) {
-			var ctx = document.getElementById('chart-' + productId).getContext('2d');
-
-			var prices = priceDynamics.map(item => item.price);
-
-			console.log("Prices: ", prices);
-
-			var chart = new Chart(ctx, {
-				type: 'line',
-				data: {
-					labels: Array.from({ length: prices.length }, (_, i) => `T${i + 1}`),
-					datasets: [{
-						label: 'Price Change',
-						data: prices,
-						// backgroundColor: gradient,
-						borderColor: 'rgba(75, 192, 192, 1)',
-						borderWidth: 2,
-						fill: true,
-						pointRadius: 1
-					}]
-				},
-				options: {
-					scales: {
-						x: { display: false },
-						y: { display: false }
-					},
-					plugins: {
-						legend: { display: false }
-					},
-					animation: {
-						duration: 300,
-						easing: 'linear'
-					}
-				}
-			});
-
-			charts[productId] = chart;
-		}
-</script> *@
-
-@* <style>
-	.chart-container {
-		width: 340pt;
-		height: 175pt;
-		border: 1px solid #ccc;
-		padding: 5px;
-		margin: 10px 0;
-		background-color: #f0f0f0;
-		box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-		border-radius: 5px;
-	}
-</style> *@

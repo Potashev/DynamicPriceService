@@ -26,7 +26,10 @@
 						<canvas id="chart-@product.ProductId" @* width="100" height="50" *@></canvas>
 					</div>
 				</td>
- 				<td id="price-@product.ProductId">@product.Price</td>
+				<td>
+					<span id="price-@product.ProductId">@product.Price</span>
+					<span id="price-change-@product.ProductId" class="price-change"></span>
+				</td>
 				<td>
 					<a asp-controller="Cart" asp-action="AddProduct" asp-route-productId="@product.ProductId">Add to Cart</a>
 				</td>
@@ -61,8 +64,23 @@
 				priceMonitor.registerChart(
 					@product.ProductId,
 					"chart-@product.ProductId",
-					@Html.Raw(Json.Serialize(product.PriceDynamics.Select(d => d.Price)))
+						@Html.Raw(Json.Serialize(product.PriceDynamics.Select(d => new { date = d.Date, price = d.Price })))
 				);
 			</text>
 	}
 </script>
+
+<style>
+	.price-change {
+		margin-left: 8px;
+		font-weight: bold;
+	}
+
+	.price-up {
+		color: green;
+	}
+
+	.price-down {
+		color: red;
+	}
+</style>

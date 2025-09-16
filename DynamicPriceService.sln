@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamicPrice.Core", "Dynami
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicPrice.Customer", "DynamicPriceClient\DynamicPrice.Customer.csproj", "{1C9C53A1-F452-4CBC-9C20-015F288C271C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicPrice.Client.Common", "DynamicPrice.Client.Drawing\DynamicPrice.Client.Common.csproj", "{22D9A141-8EF9-4358-B7A2-E7736D687758}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicPrice.Client.Common", "DynamicPrice.Client.Common\DynamicPrice.Client.Common.csproj", "{22D9A141-8EF9-4358-B7A2-E7736D687758}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

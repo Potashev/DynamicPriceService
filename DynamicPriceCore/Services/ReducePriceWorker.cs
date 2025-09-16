@@ -135,7 +135,7 @@ public class ReducePriceWorker : BackgroundService
 						body: body);
 				}
 
-				await Task.Delay(TimeSpan.FromSeconds(10), token);
+				await Task.Delay(TimeSpan.FromSeconds(1), token);
 			}
 		}
 		catch (OperationCanceledException)

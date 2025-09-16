@@ -8,4 +8,5 @@ public class ProductViewModel
 	public double MinimumPrice { get; set; }
 	public int? Quantity { get; set; }
 	public string? Description { get; set; }
+	public PriceDynamicViewModel[] PriceDynamics { get; set; }
 }

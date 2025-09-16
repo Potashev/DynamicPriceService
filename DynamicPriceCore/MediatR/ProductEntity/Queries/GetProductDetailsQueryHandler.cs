@@ -22,6 +22,7 @@ public class GetProductDetailsQueryHandler
 		var manager = await _userService.GetCurrentUserAsync();
 
 		var product = await _context.Products
+			.Include(p => p.PriceDynamics)
 			.FirstOrDefaultAsync(product => product.ProductId == request.ProductId && product.CompanyId == manager.CompanyId, cancellationToken);
 		return _mapper.Map<ProductViewModel>(product);
 	}

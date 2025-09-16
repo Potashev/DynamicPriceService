@@ -26,7 +26,8 @@ public class CookiesAuthTokenStore : IAuthTokenStore
 		=> _contextAccessor = contextAccessor ?? throw new ArgumentNullException(nameof(contextAccessor));
 
 	//public async Task<string> GetToken()
-	//	=> _contextAccessor.HttpContext.Session.GetString("AuthToken");
+	//	=> _contextAccessor.HttpContext.Request.Cookies.TryGetValue("test", out var token) ? token : string.Empty;
+
 	public async Task<string> GetToken()
 		=> string.Empty;
 

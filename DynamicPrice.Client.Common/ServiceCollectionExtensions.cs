@@ -8,7 +8,6 @@ public static class ServiceCollectionExtensions
 	public static IServiceCollection AddClientCommon(this IServiceCollection services)
 	{
 		services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-		//services.TryAddScoped<IAuthTokenStore, SessionAuthTokenStore>();
 		services.TryAddScoped<IAuthTokenStore, CookiesAuthTokenStore>();
 		services.AddTransient<AuthHeaderHandler>();
 

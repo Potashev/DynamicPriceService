@@ -6,6 +6,9 @@
 
 <h1>Details</h1>
 
+<!-- Подключаем ресурсы PriceMonitor -->
+<price-monitor-resources />
+
 <div>
 	<h4>Product</h4>
 	<hr />
@@ -30,46 +33,15 @@
 	</dl>
 </div>
 
-<div class="chart-container">
-	<canvas id="chart-@Model.ProductId"></canvas>
-</div>
+	<price-monitor product-id="@Model.ProductId"
+				   price="@Model.Price"
+				   dynamics="@Model.PriceDynamics">
+	</price-monitor>
 
 <div>
 	<a asp-action="Edit" asp-route-id="@Model?.ProductId">Edit</a> |
 	<a asp-action="Index">Back to List</a>
 </div>
-
-<!-- Подключаем Chart.js и SignalR -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
-
-<!-- Подключаем наш RCL для мониторинга цен -->
-<link rel="stylesheet" href="~/_content/DynamicPrice.Client.Common/css/price-monitor.css" />
-<script type="module" src="~/_content/DynamicPrice.Client.Common/js/price-monitor.js"></script>
-
-<script type="module">
-	import { PriceMonitor } from '/_content/DynamicPrice.Client.Common/js/price-monitor.js';
-	import { PriceMonitorConfig } from '/_content/DynamicPrice.Client.Common/js/price-monitor-config.js';
-
-	const config = new PriceMonitorConfig({
-		maxPoints: 100,
-		chartOptions: {
-			scales: {
-				y: { display: true },
-				x: { display: true }
-			}
-		}
-	});
-
-	const priceMonitor = new PriceMonitor("https://localhost:7140/priceHub", config);
-	await priceMonitor.init();
-
-	priceMonitor.registerChart(
-		@Model.ProductId,
-		"chart-@Model.ProductId",
-		@Html.Raw(Json.Serialize(Model.PriceDynamics.Select(d => new { date = d.Date, price = d.Price })))
-	);
-</script>
 
 <style>
 	.chart-container {

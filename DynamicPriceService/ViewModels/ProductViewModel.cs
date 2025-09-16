@@ -6,7 +6,7 @@ public class ProductViewModel
 {
 	public int ProductId { get; set; }
 	public string Title { get; set; }
-	public double Price { get; set; }
+	public decimal Price { get; set; }
 
 
 	[Display(Name = "Minimum price")]

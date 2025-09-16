@@ -9,9 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamicPrice.Core", "Dynami
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicPrice.Customer", "DynamicPriceClient\DynamicPrice.Customer.csproj", "{1C9C53A1-F452-4CBC-9C20-015F288C271C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicPrice.Client.Common", "DynamicPrice.Client.Common\DynamicPrice.Client.Common.csproj", "{845406AC-EA9A-4F87-BE05-7F13E00BEF3A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicPrice.Client.Drawing", "DynamicPrice.Client.Drawing\DynamicPrice.Client.Drawing.csproj", "{22D9A141-8EF9-4358-B7A2-E7736D687758}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicPrice.Client.Common", "DynamicPrice.Client.Drawing\DynamicPrice.Client.Common.csproj", "{22D9A141-8EF9-4358-B7A2-E7736D687758}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,10 +29,6 @@ Global
 		{1C9C53A1-F452-4CBC-9C20-015F288C271C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C9C53A1-F452-4CBC-9C20-015F288C271C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C9C53A1-F452-4CBC-9C20-015F288C271C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{845406AC-EA9A-4F87-BE05-7F13E00BEF3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{845406AC-EA9A-4F87-BE05-7F13E00BEF3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{845406AC-EA9A-4F87-BE05-7F13E00BEF3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{845406AC-EA9A-4F87-BE05-7F13E00BEF3A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{22D9A141-8EF9-4358-B7A2-E7736D687758}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{22D9A141-8EF9-4358-B7A2-E7736D687758}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22D9A141-8EF9-4358-B7A2-E7736D687758}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -15,8 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DynamicPrice.Client.Common\DynamicPrice.Client.Common.csproj" />
-    <ProjectReference Include="..\DynamicPrice.Client.Drawing\DynamicPrice.Client.Drawing.csproj" />
+    <ProjectReference Include="..\DynamicPrice.Client.Drawing\DynamicPrice.Client.Common.csproj" />
   </ItemGroup>
 
 </Project>

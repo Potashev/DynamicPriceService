@@ -1,4 +1,4 @@
-﻿namespace DynamicPrice.Client.Drawing;
+﻿namespace DynamicPrice.Client.Common;
 
 public class PriceHubClientOptions
 {

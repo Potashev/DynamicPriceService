@@ -8,3 +8,15 @@
 	box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
 	border-radius: 5px;
 }
+.price-change {
+	margin-left: 8px;
+	font-weight: bold;
+}
+
+.price-up {
+	color: green;
+}
+
+.price-down {
+	color: red;
+}

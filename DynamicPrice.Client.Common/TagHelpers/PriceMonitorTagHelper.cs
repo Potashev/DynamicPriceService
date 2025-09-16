@@ -20,7 +20,12 @@ namespace DynamicPrice.Client.Common.TagHelpers
 			output.TagName = "div"; // оборачиваем всё в контейнер
 			output.Attributes.SetAttribute("class", "price-monitor");
 
-			var dynamicsJson = JsonSerializer.Serialize(Dynamics ?? Enumerable.Empty<object>());
+			var dynamicsJson = JsonSerializer.Serialize(
+				Dynamics?.Select(d => new {
+					date = (DateTime)d.GetType().GetProperty("Date")!.GetValue(d)!,
+					price = (decimal)d.GetType().GetProperty("Price")!.GetValue(d)!
+				}) ?? Enumerable.Empty<object>()
+			);
 
 			output.Content.SetHtmlContent($@"
                 <div class=""chart-container"">

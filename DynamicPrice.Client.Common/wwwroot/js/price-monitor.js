@@ -1,12 +1,15 @@
-﻿import { PriceMonitorConfig } from './price-monitor-config.js';
-
-export class PriceMonitor {
-	constructor(hubUrl, config = new PriceMonitorConfig()) {
+﻿export class PriceMonitor {
+	constructor(hubUrl, config = {}) {
 		this.hubUrl = hubUrl;
-		this.config = config;
+		this.config = {
+			maxPoints: config.maxPoints ?? 100,
+			chartOptions: config.chartOptions ?? {},
+			datasetOptions: config.datasetOptions ?? {}
+		};
 		this.connection = null;
 		this.charts = {};
-		this.lastPrices = {}; // храним последнюю цену для каждого продукта
+		this.lastPrices = {};
+		this.chartMaxPoints = {}; // локальный maxPoints для каждого графика
 	}
 
 	async init() {
@@ -24,8 +27,10 @@ export class PriceMonitor {
 	}
 
 	registerChart(productId, canvasId, initialData = [], options = {}) {
-		// Локальный maxPoints берём из options или глобального конфига
 		const maxPoints = options.maxPoints ?? this.config.maxPoints;
+
+		// сохраняем maxPoints для этого графика
+		this.chartMaxPoints[productId] = maxPoints;
 
 		if (initialData.length > maxPoints) {
 			initialData = initialData.slice(-maxPoints);
@@ -38,8 +43,8 @@ export class PriceMonitor {
 
 		const ctx = document.getElementById(canvasId).getContext("2d");
 
-		// Локальный конфиг для передачи в Chart.js
-		const localConfig = new PriceMonitorConfig({
+		// локальный конфиг для Chart.js
+		const localConfig = {
 			maxPoints: maxPoints,
 			chartOptions: {
 				...this.config.chartOptions,
@@ -49,7 +54,7 @@ export class PriceMonitor {
 				...this.config.datasetOptions,
 				...(options.datasetOptions || {})
 			}
-		});
+		};
 
 		const chart = new Chart(ctx, {
 			type: 'line',
@@ -77,19 +82,17 @@ export class PriceMonitor {
 		this.charts[productId] = chart;
 	}
 
-
-
 	updateChart(productId, newPrice) {
 		const chart = this.charts[productId];
 		if (!chart) return;
 
-		// удаляем лишние точки, если достигнут maxPoints
-		if (chart.data.datasets[0].data.length >= this.config.maxPoints) {
+		const maxPoints = this.chartMaxPoints[productId] ?? this.config.maxPoints;
+
+		if (chart.data.datasets[0].data.length >= maxPoints) {
 			chart.data.datasets[0].data.shift();
 			chart.data.labels.shift();
 		}
 
-		// добавляем новую точку
 		chart.data.datasets[0].data.push(newPrice);
 		chart.data.labels.push(new Date().toLocaleTimeString());
 
@@ -107,11 +110,9 @@ export class PriceMonitor {
 
 		if (!changeEl || prevPrice === null || prevPrice === undefined) return;
 
-		// вычисляем процент изменения
 		const diff = newPrice - prevPrice;
 		const percentChange = (diff / prevPrice) * 100;
 
-		// очищаем классы перед установкой новых
 		changeEl.classList.remove("price-up", "price-down");
 
 		if (diff > 0) {

@@ -15,10 +15,12 @@ await monitor.init();
 document.querySelectorAll("[data-price-monitor]").forEach(el => {
 	const productId = el.dataset.productId;
 	const data = JSON.parse(el.dataset.initialData || "[]");
+	const options = el.dataset.options ? JSON.parse(el.dataset.options) : {};
 
 	monitor.registerChart(
 		productId,
 		el.id || `chart-${productId}`,
-		data
+		data,
+		options
 	);
 });

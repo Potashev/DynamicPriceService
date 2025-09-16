@@ -1,41 +1,65 @@
 ﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 using System.Text.Json;
 
-namespace DynamicPrice.Client.Common.TagHelpers
+[HtmlTargetElement("price-monitor")]
+public class PriceMonitorTagHelper : TagHelper
 {
-	[HtmlTargetElement("price-monitor")]
-	public class PriceMonitorTagHelper : TagHelper
+	[HtmlAttributeName("product-id")]
+	public int ProductId { get; set; }
+
+	[HtmlAttributeName("price")]
+	public decimal Price { get; set; }
+
+	[HtmlAttributeName("dynamics")]
+	public IEnumerable<dynamic>? Dynamics { get; set; }
+
+	[HtmlAttributeName("max-points")]
+	public int? MaxPoints { get; set; }
+
+	[HtmlAttributeName("show-axes")]
+	public bool? ShowAxes { get; set; }
+
+	[HtmlAttributeName("show-grid")]
+	public bool? ShowGrid { get; set; }
+
+	public override void Process(TagHelperContext context, TagHelperOutput output)
 	{
-		[HtmlAttributeName("product-id")]
-		public int ProductId { get; set; }
+		output.TagName = "div";
+		output.Attributes.SetAttribute("class", "chart-container");
 
-		[HtmlAttributeName("price")]
-		public decimal Price { get; set; }
+		var dynamicsJson = JsonSerializer.Serialize(
+			Dynamics?.Select(d => new { date = d.Date, price = d.Price }) ?? Enumerable.Empty<object>()
+		);
 
-		[HtmlAttributeName("dynamics")]
-		public IEnumerable<object>? Dynamics { get; set; }
-
-		public override void Process(TagHelperContext context, TagHelperOutput output)
+		var options = new
 		{
-			output.TagName = "div"; // оборачиваем всё в контейнер
-			output.Attributes.SetAttribute("class", "price-monitor");
+			maxPoints = MaxPoints ?? 10,
+			chartOptions = new
+			{
+				scales = new
+				{
+					y = new
+					{
+						display = ShowAxes ?? false,
+						grid = new { display = ShowGrid ?? false }
+					},
+					x = new
+					{
+						display = ShowAxes ?? false,
+						grid = new { display = ShowGrid ?? false }
+					}
+				}
+			}
+		};
 
-			var dynamicsJson = JsonSerializer.Serialize(
-				Dynamics?.Select(d => new {
-					date = (DateTime)d.GetType().GetProperty("Date")!.GetValue(d)!,
-					price = (decimal)d.GetType().GetProperty("Price")!.GetValue(d)!
-				}) ?? Enumerable.Empty<object>()
-			);
+		var optionsJson = JsonSerializer.Serialize(options);
 
-			output.Content.SetHtmlContent($@"
-                <div class=""chart-container"">
-                    <canvas id=""chart-{ProductId}""
-                            data-price-monitor=""true""
-                            data-product-id=""{ProductId}""
-                            data-price=""{Price}""
-                            data-initial-data='{dynamicsJson}'></canvas>
-                </div>
-            ");
-		}
+		output.Content.SetHtmlContent($@"
+            <canvas id=""chart-{ProductId}""
+                    data-price-monitor=""true""
+                    data-product-id=""{ProductId}""
+                    data-initial-data='{dynamicsJson}'
+                    data-options='{optionsJson}'></canvas>
+        ");
 	}
 }

@@ -33,10 +33,13 @@
 	</dl>
 </div>
 
-	<price-monitor product-id="@Model.ProductId"
-				   price="@Model.Price"
-				   dynamics="@Model.PriceDynamics">
-	</price-monitor>
+<price-monitor product-id="@Model.ProductId"
+			   price="@Model.Price"
+			   dynamics="@Model.PriceDynamics"
+			   max-points="10"
+			   show-axes="true"
+			   show-grid="true">
+</price-monitor>
 
 <div>
 	<a asp-action="Edit" asp-route-id="@Model?.ProductId">Edit</a> |

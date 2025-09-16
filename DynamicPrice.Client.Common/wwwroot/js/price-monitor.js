@@ -23,19 +23,34 @@ export class PriceMonitor {
 		console.log("PriceMonitor connected to SignalR");
 	}
 
-	registerChart(productId, canvasId, initialData = []) {
-		// initialData: массив объектов { date, price }
-		if (initialData.length > this.config.maxPoints) {
-			initialData = initialData.slice(-this.config.maxPoints);
+	registerChart(productId, canvasId, initialData = [], options = {}) {
+		// Локальный maxPoints берём из options или глобального конфига
+		const maxPoints = options.maxPoints ?? this.config.maxPoints;
+
+		if (initialData.length > maxPoints) {
+			initialData = initialData.slice(-maxPoints);
 		}
 
 		const labels = initialData.map(d => new Date(d.date).toLocaleTimeString());
 		const prices = initialData.map(d => d.price);
 
-		// сохраняем последнюю цену для корректного расчета динамики при обновлениях
 		this.lastPrices[productId] = prices.length > 0 ? prices[prices.length - 1] : null;
 
 		const ctx = document.getElementById(canvasId).getContext("2d");
+
+		// Локальный конфиг для передачи в Chart.js
+		const localConfig = new PriceMonitorConfig({
+			maxPoints: maxPoints,
+			chartOptions: {
+				...this.config.chartOptions,
+				...(options.chartOptions || {})
+			},
+			datasetOptions: {
+				...this.config.datasetOptions,
+				...(options.datasetOptions || {})
+			}
+		});
+
 		const chart = new Chart(ctx, {
 			type: 'line',
 			data: {
@@ -46,7 +61,7 @@ export class PriceMonitor {
 					borderColor: 'rgba(75, 192, 192, 1)',
 					fill: true,
 					pointRadius: 1,
-					...this.config.datasetOptions
+					...localConfig.datasetOptions
 				}]
 			},
 			options: {
@@ -55,12 +70,14 @@ export class PriceMonitor {
 					y: { display: false }
 				},
 				plugins: { legend: { display: false } },
-				...this.config.chartOptions
+				...localConfig.chartOptions
 			}
 		});
 
 		this.charts[productId] = chart;
 	}
+
+
 
 	updateChart(productId, newPrice) {
 		const chart = this.charts[productId];

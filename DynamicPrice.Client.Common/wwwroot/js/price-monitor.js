@@ -1,10 +1,10 @@
 ﻿export class PriceMonitor {
-	constructor(hubUrl, config = {}) {
+	constructor(hubUrl) {
 		this.hubUrl = hubUrl;
 		this.config = {
-			maxPoints: config.maxPoints ?? 100,
-			chartOptions: config.chartOptions ?? {},
-			datasetOptions: config.datasetOptions ?? {}
+			maxPoints: 100,
+			chartOptions: {},
+			datasetOptions: {}
 		};
 		this.connection = null;
 		this.charts = {};
@@ -43,17 +43,14 @@
 
 		const ctx = document.getElementById(canvasId).getContext("2d");
 
-		// локальный конфиг для Chart.js
-		const localConfig = {
-			maxPoints: maxPoints,
-			chartOptions: {
-				...this.config.chartOptions,
-				...(options.chartOptions || {})
-			},
-			datasetOptions: {
-				...this.config.datasetOptions,
-				...(options.datasetOptions || {})
-			}
+		const localChartOptions = {
+			...this.config.chartOptions,
+			...(options.chartOptions || {})
+		};
+
+		const localDatasetOptions = {
+			...this.config.datasetOptions,
+			...(options.datasetOptions || {})
 		};
 
 		const chart = new Chart(ctx, {
@@ -61,21 +58,26 @@
 			data: {
 				labels: labels,
 				datasets: [{
-					label: 'Price Change',
+					//label: 'Price Change',
 					data: prices,
 					borderColor: 'rgba(75, 192, 192, 1)',
 					fill: true,
 					pointRadius: 1,
-					...localConfig.datasetOptions
+					...localDatasetOptions
 				}]
 			},
 			options: {
+				//animation: false,
+				responsive: true,
+				plugins: {
+					legend: { display: false },
+					//tooltip: { enabled: false }
+				},
 				scales: {
 					x: { display: false },
 					y: { display: false }
 				},
-				plugins: { legend: { display: false } },
-				...localConfig.chartOptions
+				...localChartOptions
 			}
 		});
 

@@ -7,7 +7,7 @@ namespace DynamicPrice.Client.Common.TagHelpers
 	{
 		public override void Process(TagHelperContext context, TagHelperOutput output)
 		{
-			output.TagName = null; // самозакрывающийся тег, ничего лишнего
+			output.TagName = null;
 			output.Content.SetHtmlContent($@"
                 <script src=""https://cdn.jsdelivr.net/npm/chart.js""></script>
                 <script src=""https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js""></script>

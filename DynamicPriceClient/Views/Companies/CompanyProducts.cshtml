@@ -6,12 +6,14 @@
 	<a asp-controller="Cart" asp-action="Details" asp-route-companyId="@Model.Company.CompanyId">Cart Details</a>
 </p>
 
+<!-- Подключаем ресурсы PriceMonitor -->
+<price-monitor-resources />
+
 <table class="table table-striped">
 	<thead>
 		<tr>
 			<th>@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Title)</th>
 			<th>@Html.DisplayNameFor(model => model.Products.FirstOrDefault().PriceDynamics)</th>
-			@* <th>Price dynamics</th> *@
 			<th>@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Price)</th>
 			<th></th>
 		</tr>
@@ -22,9 +24,10 @@
 			<tr>
 				<td>@product.Title</td>
 				<td>
-					<div class="chart-container">
-						<canvas id="chart-@product.ProductId" @* width="100" height="50" *@></canvas>
-					</div>
+					<price-monitor product-id="@product.ProductId"
+								   price="@product.Price"
+								   dynamics="@product.PriceDynamics">
+					</price-monitor>
 				</td>
 				<td>
 					<span id="price-@product.ProductId">@product.Price</span>
@@ -37,38 +40,6 @@
 		}
 	</tbody>
 </table>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
-
-<link rel="stylesheet" href="~/_content/DynamicPrice.Client.Common/css/price-monitor.css" />
-<script type="module" src="~/_content/DynamicPrice.Client.Common/js/price-monitor.js"></script>
-
-<script type="module">
-	import { PriceMonitor } from '/_content/DynamicPrice.Client.Common/js/price-monitor.js';
-	import { PriceMonitorConfig } from '/_content/DynamicPrice.Client.Common/js/price-monitor-config.js';
-
-	const config = new PriceMonitorConfig({
-		maxPoints: 20,
-		chartOptions: {
-			scales: { y: { display: false }, x: { display: false } }
-		}
-	});
-
-	const priceMonitor = new PriceMonitor("https://localhost:7140/priceHub", config);
-	await priceMonitor.init();
-
-	@foreach (var product in Model.Products)
-	{
-			<text>
-				priceMonitor.registerChart(
-					@product.ProductId,
-					"chart-@product.ProductId",
-						@Html.Raw(Json.Serialize(product.PriceDynamics.Select(d => new { date = d.Date, price = d.Price })))
-				);
-			</text>
-	}
-</script>
 
 <style>
 	.price-change {

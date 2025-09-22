@@ -20,8 +20,6 @@ public class CompanyMonitor
 
 		if (priceRule == null) return new List<int>();
 
-		Thread.Sleep(10);
-
 		return await _context.Products
 			.Where(p =>
 				p.Company.CompanyId == companyId &&

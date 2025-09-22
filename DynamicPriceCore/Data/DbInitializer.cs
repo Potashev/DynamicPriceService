@@ -1,4 +1,5 @@
-﻿using DynamicPriceCore.Models;
+﻿using DynamicPrice.Core.Data;
+using DynamicPriceCore.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -66,8 +67,17 @@ public static class DbInitializer
 				new Product { CompanyId = 2, Title = "Хлеб", Price = 50, MinimumPrice = 40, LastSellTime = now },
 				new Product { CompanyId = 2, Title = "Молоко", Price = 100, MinimumPrice = 80, LastSellTime = now }
 			);
+
+			//var products = DataGenerator.GenerateProducts(companyId: 1, count: 10);
+			//db.Products.AddRange(products);
+
 			await db.SaveChangesAsync();
 		}
+
+		//todo: remove later;
+		//var products = DataGenerator.GenerateProducts(companyId: 1, count: 10);
+		//db.Products.AddRange(products);
+		//await db.SaveChangesAsync();
 	}
 
 	public static async Task SeedUsersAsync(IServiceProvider serviceProvider)

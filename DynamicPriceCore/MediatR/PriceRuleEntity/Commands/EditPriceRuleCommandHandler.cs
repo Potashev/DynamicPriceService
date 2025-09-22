@@ -22,7 +22,6 @@ public class EditPriceRuleCommandHandler
 
 		var updatedPriceRuleVm = request.PriceRuleVm;
 		var priceRule = await _context.PriceRules
-			//todo: check
 			.FirstOrDefaultAsync(pr => pr.PriceRuleId == updatedPriceRuleVm.PriceRuleId && pr.Company.CompanyId == manager.CompanyId, cancellationToken);
 
 		if (priceRule != null)

@@ -9,7 +9,6 @@ namespace DynamicPriceCore.MediatR.PriceRuleEntity.Commands;
 public class PriceReducingCommandHandler
 	: IRequestHandler<PriceReducingCommand>
 {
-	//private IActiveCompaniesService _activeCompaniesService;
 	private readonly IUserService _userService;
 	private readonly IEventBus _eventBus;
 

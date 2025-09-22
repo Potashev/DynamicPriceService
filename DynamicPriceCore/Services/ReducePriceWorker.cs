@@ -1,4 +1,5 @@
-﻿using DynamicPriceCore.Data;
+﻿using DynamicPrice.Core.Services;
+using DynamicPriceCore.Data;
 using DynamicPriceCore.Models;
 using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
@@ -14,7 +15,6 @@ public class ReducePriceWorker : BackgroundService
 	private IConnection? _connection;
 	private IChannel? _channel;
 
-	// словарь активных циклов мониторинга
 	private readonly ConcurrentDictionary<int, CancellationTokenSource> _companyMonitors = new();
 
 	private const string ExchangeName = "company_monitoring_exchange";
@@ -102,23 +102,28 @@ public class ReducePriceWorker : BackgroundService
 				using var scope = _serviceProvider.CreateScope();
 				var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
 
-				var priceRule = await context.PriceRules
-					.Where(pr => pr.Company.CompanyId == companyId)
-					.FirstOrDefaultAsync(token);
+				//var priceRule = await context.PriceRules
+				//	.Where(pr => pr.Company.CompanyId == companyId)
+				//	.FirstOrDefaultAsync(token);
 
-				if (priceRule == null)
-				{
-					Console.WriteLine($"[ReducePriceWorker] Для компании {companyId} нет правила цены. Пропускаем.");
-					await Task.Delay(TimeSpan.FromSeconds(10), token);
-					continue;
-				}
+				//if (priceRule == null)
+				//{
+				//	Console.WriteLine($"[ReducePriceWorker] Для компании {companyId} нет правила цены. Пропускаем.");
+				//	await Task.Delay(TimeSpan.FromSeconds(10), token);
+				//	continue;
+				//}
 
-				var productsToReduce = await context.Products
-					.Where(p =>
-						p.Company.CompanyId == companyId &&
-						EF.Functions.DateDiffSecond(p.LastSellTime, DateTime.UtcNow) > priceRule.NoSellTime.Value.TotalSeconds)
-					.Select(p => p.ProductId)
-					.ToListAsync(token);
+				//var productsToReduce = await context.Products
+				//	.Where(p =>
+				//		p.Company.CompanyId == companyId &&
+				//		EF.Functions.DateDiffSecond(p.LastSellTime, DateTime.UtcNow) > priceRule.NoSellTime.Value.TotalSeconds)
+				//	.Select(p => p.ProductId)
+				//	.ToListAsync(token);
+
+				var monitor = new CompanyMonitor(context);
+				var productsToReduce = await monitor.FindProductsToReduceAsync(companyId, token);
+
+				if (productsToReduce is null) { } //todo: handle
 
 				foreach (var productId in productsToReduce)
 				{
@@ -128,10 +133,9 @@ public class ReducePriceWorker : BackgroundService
 					var json = JsonSerializer.Serialize(message);
 					var body = Encoding.UTF8.GetBytes(json);
 
-					// публикуем событие
 					await _channel!.BasicPublishAsync(
 						exchange: "",
-						routingKey: "price.reduce", // отдельная очередь
+						routingKey: "price.reduce",
 						body: body);
 				}
 
@@ -145,7 +149,5 @@ public class ReducePriceWorker : BackgroundService
 	}
 
 	public record PriceReduceMessage(int ProductId);
-
-
 	public record CompanyPayload(int CompanyId);
 }

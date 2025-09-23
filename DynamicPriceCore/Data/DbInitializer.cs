@@ -75,7 +75,7 @@ public static class DbInitializer
 		}
 
 		//todo: remove later;
-		//var products = DataGenerator.GenerateProducts(companyId: 1, count: 10);
+		//var products = DataGenerator.GenerateProducts(companyId: 1, count: 100);
 		//db.Products.AddRange(products);
 		//await db.SaveChangesAsync();
 	}

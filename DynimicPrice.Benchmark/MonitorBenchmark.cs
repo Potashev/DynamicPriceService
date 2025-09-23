@@ -17,6 +17,9 @@ public class MonitorBenchmark
 	[Params(1)]
 	public int CompanyId;
 
+	[Params(5, 10, 25, 50, 100)]
+	public int ProductsCount;
+
 	[GlobalSetup]
 	public void Setup()
 	{
@@ -33,7 +36,9 @@ public class MonitorBenchmark
 	[Benchmark]
 	public async Task RunMonitorIteration()
 	{
-		// замеряем только EF-запросы и фильтрацию продуктов
-		await _monitor.FindProductsToReduceAsync(_companyId, CancellationToken.None);
+		await _monitor.FindProductsToReduceAsync(
+			_companyId,
+			CancellationToken.None,
+			ProductsCount);
 	}
 }

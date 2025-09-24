@@ -1,4 +1,5 @@
-﻿using DynamicPrice.Core.Services;
+﻿using DynamicPrice.Core.Benchmark;
+using DynamicPrice.Core.Services;
 using DynamicPriceCore.Data;
 using DynamicPriceCore.Models;
 using Microsoft.EntityFrameworkCore;
@@ -99,26 +100,23 @@ public class ReducePriceWorker : BackgroundService
 		{
 			while (!token.IsCancellationRequested)
 			{
+				//temp solution
+				if (companyId == 1)
+				{
+					if (!DPBenchmark.IsStarted)
+						DPBenchmark.Start();
+					else
+					{
+						if (!DPBenchmark.IsFinished)
+						{
+							DPBenchmark.Stop();
+							DPBenchmark.Report();
+						}
+					}
+				}
+
 				using var scope = _serviceProvider.CreateScope();
 				var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
-
-				//var priceRule = await context.PriceRules
-				//	.Where(pr => pr.Company.CompanyId == companyId)
-				//	.FirstOrDefaultAsync(token);
-
-				//if (priceRule == null)
-				//{
-				//	Console.WriteLine($"[ReducePriceWorker] Для компании {companyId} нет правила цены. Пропускаем.");
-				//	await Task.Delay(TimeSpan.FromSeconds(10), token);
-				//	continue;
-				//}
-
-				//var productsToReduce = await context.Products
-				//	.Where(p =>
-				//		p.Company.CompanyId == companyId &&
-				//		EF.Functions.DateDiffSecond(p.LastSellTime, DateTime.UtcNow) > priceRule.NoSellTime.Value.TotalSeconds)
-				//	.Select(p => p.ProductId)
-				//	.ToListAsync(token);
 
 				var monitor = new CompanyMonitor(context);
 				var productsToReduce = await monitor.FindProductsToReduceAsync(companyId, token);
@@ -139,7 +137,7 @@ public class ReducePriceWorker : BackgroundService
 						body: body);
 				}
 
-				await Task.Delay(TimeSpan.FromSeconds(1), token);
+				//await Task.Delay(TimeSpan.FromSeconds(1), token);
 			}
 		}
 		catch (OperationCanceledException)

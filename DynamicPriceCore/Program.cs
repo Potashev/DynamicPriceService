@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Prometheus;
 using Quartz;
 using System;
 using System.IO;
@@ -186,8 +187,10 @@ app.UseCookiePolicy(new CookiePolicyOptions
 
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapControllers();
 app.UseCors("AllowSpecificOrigins");
+
+app.MapMetrics();
+app.MapControllers();
 app.MapHub<PriceHub>("/priceHub");
 
 app.Run();

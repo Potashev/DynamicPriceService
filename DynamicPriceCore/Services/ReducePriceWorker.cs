@@ -24,6 +24,14 @@ public class ReducePriceWorker : BackgroundService
 		{
 			LabelNames = new[] { "companyId" }
 		});
+	private static readonly Histogram MonitorWaitDuration = Metrics
+	.CreateHistogram("dp_company_monitor_wait_seconds",
+		"Время ожидания до следующего мониторинга компании",
+		new HistogramConfiguration
+		{
+			LabelNames = new[] { "companyId" }
+		});
+	private readonly ConcurrentDictionary<int, DateTime> _lastMonitorEnd = new();
 
 	private readonly ConcurrentDictionary<int, CancellationTokenSource> _companyMonitors = new();
 
@@ -109,6 +117,14 @@ public class ReducePriceWorker : BackgroundService
 		{
 			while (!token.IsCancellationRequested)
 			{
+				var now = DateTime.UtcNow;
+
+				if (_lastMonitorEnd.TryGetValue(companyId, out var lastEnd))
+				{
+					var waitSeconds = (now - lastEnd).TotalSeconds;
+					MonitorWaitDuration.WithLabels(companyId.ToString()).Observe(waitSeconds);
+				}
+
 				// temp solution
 				using (MonitorDuration.WithLabels(companyId.ToString()).NewTimer())
 				{
@@ -150,6 +166,9 @@ public class ReducePriceWorker : BackgroundService
 					}
 
 				}
+
+				_lastMonitorEnd[companyId] = DateTime.UtcNow;
+
 				await Task.Delay(TimeSpan.FromSeconds(1), token);
 			}
 		}

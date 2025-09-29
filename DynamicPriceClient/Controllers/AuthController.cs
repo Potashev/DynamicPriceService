@@ -25,7 +25,7 @@ namespace DynamicPriceClient.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> RegisterCustomer(RegisterViewModel registerVm)
 		{
-			registerVm.Role = "Customer";   //todo: looks not good
+			registerVm.Role = "Manager";   //todo: looks not good
 			await CoreApiClient.RegisterCustomer(registerVm);
 			return RedirectToAction(nameof(LoginCustomer));
 		}

@@ -71,7 +71,7 @@ public class UserService : IUserService
 				break;
 
 			case "Manager":
-				user.CompanyId = 1; //todo: replace with actual
+				user.CompanyId = 3; //todo: replace with actual
 				break;
 
 			default:

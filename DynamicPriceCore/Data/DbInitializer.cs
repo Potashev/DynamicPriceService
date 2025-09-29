@@ -40,7 +40,8 @@ public static class DbInitializer
 		{
 			db.Companies.AddRange(
 				new Company { Title = "Автозапчасти" },
-				new Company { Title = "Копыта" }
+				new Company { Title = "Копыта" },
+				new Company { Title = "Рога" }
 			);
 			
 			await db.SaveChangesAsync();
@@ -50,7 +51,8 @@ public static class DbInitializer
 		{
 			db.PriceRules.AddRange(
 				new PriceRule { CompanyId = 1, Increase = 1, Reduction = 1, NoSellTime = TimeSpan.FromSeconds(10) },
-				new PriceRule { CompanyId = 2, Increase = 1, Reduction = 1, NoSellTime = TimeSpan.FromSeconds(10) }
+				new PriceRule { CompanyId = 2, Increase = 1, Reduction = 1, NoSellTime = TimeSpan.FromSeconds(10) },
+				new PriceRule { CompanyId = 3, Increase = 1, Reduction = 1, NoSellTime = TimeSpan.FromSeconds(10) }
 			);
 			await db.SaveChangesAsync();
 		}
@@ -75,9 +77,12 @@ public static class DbInitializer
 		}
 
 		//todo: remove later;
-		//var products = DataGenerator.GenerateProducts(companyId: 1, count: 100);
-		//db.Products.AddRange(products);
-		//await db.SaveChangesAsync();
+		//var products2 = DataGenerator.GenerateProducts(companyId: 2, count: 100);
+		//db.Products.AddRange(products2);
+		//var products3 = DataGenerator.GenerateProducts(companyId: 3, count: 1000);
+		//db.Products.AddRange(products3);
+
+		await db.SaveChangesAsync();
 	}
 
 	public static async Task SeedUsersAsync(IServiceProvider serviceProvider)

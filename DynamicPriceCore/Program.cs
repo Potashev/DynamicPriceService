@@ -190,6 +190,7 @@ app.UseAuthorization();
 app.UseCors("AllowSpecificOrigins");
 
 app.MapMetrics();
+app.UseHttpMetrics();
 app.MapControllers();
 app.MapHub<PriceHub>("/priceHub");
 

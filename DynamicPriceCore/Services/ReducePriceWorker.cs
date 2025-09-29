@@ -3,6 +3,7 @@ using DynamicPrice.Core.Services;
 using DynamicPriceCore.Data;
 using DynamicPriceCore.Models;
 using Microsoft.EntityFrameworkCore;
+using Prometheus;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Collections.Concurrent;
@@ -15,6 +16,14 @@ public class ReducePriceWorker : BackgroundService
 	private readonly ConnectionFactory _factory;
 	private IConnection? _connection;
 	private IChannel? _channel;
+
+	private static readonly Histogram MonitorDuration = Metrics
+	.CreateHistogram("dp_company_monitor_duration_seconds",
+		"Время выполнения мониторинга компании",
+		new HistogramConfiguration
+		{
+			LabelNames = new[] { "companyId" }
+		});
 
 	private readonly ConcurrentDictionary<int, CancellationTokenSource> _companyMonitors = new();
 
@@ -100,44 +109,48 @@ public class ReducePriceWorker : BackgroundService
 		{
 			while (!token.IsCancellationRequested)
 			{
-				//temp solution
-				if (companyId == 1)
+				// temp solution
+				using (MonitorDuration.WithLabels(companyId.ToString()).NewTimer())
 				{
-					if (!DPBenchmark.IsStarted)
-						DPBenchmark.Start();
-					else
+					//temp solution
+					if (companyId == 1)
 					{
-						if (!DPBenchmark.IsFinished)
+						if (!DPBenchmark.IsStarted)
+							DPBenchmark.Start();
+						else
 						{
-							DPBenchmark.Stop();
-							DPBenchmark.Report();
+							if (!DPBenchmark.IsFinished)
+							{
+								DPBenchmark.Stop();
+								DPBenchmark.Report();
+							}
 						}
 					}
+
+					using var scope = _serviceProvider.CreateScope();
+					var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
+
+					var monitor = new CompanyMonitor(context);
+					var productsToReduce = await monitor.FindProductsToReduceAsync(companyId, token);
+
+					if (productsToReduce is null) { } //todo: handle
+
+					foreach (var productId in productsToReduce)
+					{
+						Console.WriteLine($"[ReducePriceWorker] Найден продукт {productId} компании {companyId} — отправляем в очередь на снижение цены");
+
+						var message = new PriceReduceMessage(productId);
+						var json = JsonSerializer.Serialize(message);
+						var body = Encoding.UTF8.GetBytes(json);
+
+						await _channel!.BasicPublishAsync(
+							exchange: "",
+							routingKey: "price.reduce",
+							body: body);
+					}
+
 				}
-
-				using var scope = _serviceProvider.CreateScope();
-				var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
-
-				var monitor = new CompanyMonitor(context);
-				var productsToReduce = await monitor.FindProductsToReduceAsync(companyId, token);
-
-				if (productsToReduce is null) { } //todo: handle
-
-				foreach (var productId in productsToReduce)
-				{
-					Console.WriteLine($"[ReducePriceWorker] Найден продукт {productId} компании {companyId} — отправляем в очередь на снижение цены");
-
-					var message = new PriceReduceMessage(productId);
-					var json = JsonSerializer.Serialize(message);
-					var body = Encoding.UTF8.GetBytes(json);
-
-					await _channel!.BasicPublishAsync(
-						exchange: "",
-						routingKey: "price.reduce",
-						body: body);
-				}
-
-				//await Task.Delay(TimeSpan.FromSeconds(1), token);
+				await Task.Delay(TimeSpan.FromSeconds(1), token);
 			}
 		}
 		catch (OperationCanceledException)

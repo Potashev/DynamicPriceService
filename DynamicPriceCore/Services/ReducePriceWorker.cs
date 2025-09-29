@@ -153,9 +153,9 @@ public class ReducePriceWorker : BackgroundService
 
 					foreach (var productId in productsToReduce)
 					{
-						Console.WriteLine($"[ReducePriceWorker] Найден продукт {productId} компании {companyId} — отправляем в очередь на снижение цены");
+						//Console.WriteLine($"[ReducePriceWorker] Найден продукт {productId} компании {companyId} — отправляем в очередь на снижение цены");
 
-						var message = new PriceReduceMessage(productId);
+						var message = new PriceReduceMessage(productId, companyId);
 						var json = JsonSerializer.Serialize(message);
 						var body = Encoding.UTF8.GetBytes(json);
 
@@ -174,10 +174,10 @@ public class ReducePriceWorker : BackgroundService
 		}
 		catch (OperationCanceledException)
 		{
-			Console.WriteLine($"[ReducePriceWorker] Мониторинг компании {companyId} остановлен.");
+			//Console.WriteLine($"[ReducePriceWorker] Мониторинг компании {companyId} остановлен.");
 		}
 	}
 
-	public record PriceReduceMessage(int ProductId);
+	public record PriceReduceMessage(int ProductId, int CompanyId);
 	public record CompanyPayload(int CompanyId);
 }

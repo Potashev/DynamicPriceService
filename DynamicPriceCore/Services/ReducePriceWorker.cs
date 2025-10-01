@@ -117,64 +117,48 @@ public class ReducePriceWorker : BackgroundService
 		{
 			while (!token.IsCancellationRequested)
 			{
-				var now = DateTime.UtcNow;
-
-				if (_lastMonitorEnd.TryGetValue(companyId, out var lastEnd))
-				{
-					var waitSeconds = (now - lastEnd).TotalSeconds;
-					MonitorWaitDuration.WithLabels(companyId.ToString()).Observe(waitSeconds);
-				}
-
-				// temp solution
+				// --- Мониторинг ---
 				using (MonitorDuration.WithLabels(companyId.ToString()).NewTimer())
 				{
-					//temp solution
-					if (companyId == 1)
-					{
-						if (!DPBenchmark.IsStarted)
-							DPBenchmark.Start();
-						else
-						{
-							if (!DPBenchmark.IsFinished)
-							{
-								DPBenchmark.Stop();
-								DPBenchmark.Report();
-							}
-						}
-					}
-
 					using var scope = _serviceProvider.CreateScope();
 					var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
 
 					var monitor = new CompanyMonitor(context);
 					var productsToReduce = await monitor.FindProductsToReduceAsync(companyId, token);
 
-					if (productsToReduce is null) { } //todo: handle
-
-					foreach (var productId in productsToReduce)
+					if (productsToReduce != null)
 					{
-						//Console.WriteLine($"[ReducePriceWorker] Найден продукт {productId} компании {companyId} — отправляем в очередь на снижение цены");
+						foreach (var productId in productsToReduce)
+						{
+							var message = new PriceReduceMessage(productId, companyId);
+							var json = JsonSerializer.Serialize(message);
+							var body = Encoding.UTF8.GetBytes(json);
 
-						var message = new PriceReduceMessage(productId, companyId);
-						var json = JsonSerializer.Serialize(message);
-						var body = Encoding.UTF8.GetBytes(json);
-
-						await _channel!.BasicPublishAsync(
-							exchange: "",
-							routingKey: "price.reduce",
-							body: body);
+							await _channel!.BasicPublishAsync(
+								exchange: "",
+								routingKey: "price.reduce",
+								body: body);
+						}
 					}
-
 				}
 
+				// --- Зафиксировать окончание мониторинга ---
 				_lastMonitorEnd[companyId] = DateTime.UtcNow;
 
+				// --- Ждём до следующего цикла ---
 				await Task.Delay(TimeSpan.FromSeconds(1), token);
+
+				// --- Измеряем ожидание ---
+				if (_lastMonitorEnd.TryGetValue(companyId, out var lastEnd))
+				{
+					var waitSeconds = (DateTime.UtcNow - lastEnd).TotalSeconds;
+					MonitorWaitDuration.WithLabels(companyId.ToString()).Observe(waitSeconds);
+				}
 			}
 		}
 		catch (OperationCanceledException)
 		{
-			//Console.WriteLine($"[ReducePriceWorker] Мониторинг компании {companyId} остановлен.");
+			// ignore
 		}
 	}
 

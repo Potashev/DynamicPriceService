@@ -2,6 +2,7 @@
 using DynamicPriceCore.Models;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Prometheus;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
@@ -17,6 +18,14 @@ public class ChangePriceService : BackgroundService
 	private IChannel? _channel;
 
 	private readonly IHubContext<PriceHub> _priceHubContext;
+
+	private static readonly Histogram ChangePriceDuration = Metrics
+	.CreateHistogram("dp_changeprice_duration_seconds",
+		"Время обработки события изменения цены",
+		new HistogramConfiguration
+		{
+			LabelNames = new[] { "companyId" }
+		});
 
 	public ChangePriceService(IServiceProvider serviceProvider, IConfiguration config, IHubContext<PriceHub> priceHubContext)	//todo: remove PriceHub?
 	{
@@ -44,7 +53,10 @@ public class ChangePriceService : BackgroundService
 
 			if (msg != null)
 			{
-				await HandlePriceReduction(msg);
+				using (ChangePriceDuration.WithLabels(msg.CompanyId.ToString()).NewTimer())
+				{
+					await HandlePriceReduction(msg);
+				}
 			}
 
 			await _channel.BasicAckAsync(ea.DeliveryTag, false);
@@ -102,6 +114,7 @@ public class ChangePriceService : BackgroundService
 		return price;
 	}
 
-	public record PriceReduceMessage(int ProductId);
+	//todo: think about remove companyId from message
+	public record PriceReduceMessage(int ProductId, int CompanyId);
 }
 

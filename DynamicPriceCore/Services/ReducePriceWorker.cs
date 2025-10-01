@@ -1,6 +1,9 @@
-﻿using DynamicPriceCore.Data;
+﻿using DynamicPrice.Core.Benchmark;
+using DynamicPrice.Core.Services;
+using DynamicPriceCore.Data;
 using DynamicPriceCore.Models;
 using Microsoft.EntityFrameworkCore;
+using Prometheus;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Collections.Concurrent;
@@ -14,7 +17,22 @@ public class ReducePriceWorker : BackgroundService
 	private IConnection? _connection;
 	private IChannel? _channel;
 
-	// словарь активных циклов мониторинга
+	private static readonly Histogram MonitorDuration = Metrics
+	.CreateHistogram("dp_company_monitor_duration_seconds",
+		"Время выполнения мониторинга компании",
+		new HistogramConfiguration
+		{
+			LabelNames = new[] { "companyId" }
+		});
+	private static readonly Histogram MonitorWaitDuration = Metrics
+	.CreateHistogram("dp_company_monitor_wait_seconds",
+		"Время ожидания до следующего мониторинга компании",
+		new HistogramConfiguration
+		{
+			LabelNames = new[] { "companyId" }
+		});
+	private readonly ConcurrentDictionary<int, DateTime> _lastMonitorEnd = new();
+
 	private readonly ConcurrentDictionary<int, CancellationTokenSource> _companyMonitors = new();
 
 	private const string ExchangeName = "company_monitoring_exchange";
@@ -99,53 +117,51 @@ public class ReducePriceWorker : BackgroundService
 		{
 			while (!token.IsCancellationRequested)
 			{
-				using var scope = _serviceProvider.CreateScope();
-				var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
-
-				var priceRule = await context.PriceRules
-					.Where(pr => pr.Company.CompanyId == companyId)
-					.FirstOrDefaultAsync(token);
-
-				if (priceRule == null)
+				// --- Мониторинг ---
+				using (MonitorDuration.WithLabels(companyId.ToString()).NewTimer())
 				{
-					Console.WriteLine($"[ReducePriceWorker] Для компании {companyId} нет правила цены. Пропускаем.");
-					await Task.Delay(TimeSpan.FromSeconds(10), token);
-					continue;
+					using var scope = _serviceProvider.CreateScope();
+					var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
+
+					var monitor = new CompanyMonitor(context);
+					var productsToReduce = await monitor.FindProductsToReduceAsync(companyId, token);
+
+					if (productsToReduce != null)
+					{
+						foreach (var productId in productsToReduce)
+						{
+							var message = new PriceReduceMessage(productId, companyId);
+							var json = JsonSerializer.Serialize(message);
+							var body = Encoding.UTF8.GetBytes(json);
+
+							await _channel!.BasicPublishAsync(
+								exchange: "",
+								routingKey: "price.reduce",
+								body: body);
+						}
+					}
 				}
 
-				var productsToReduce = await context.Products
-					.Where(p =>
-						p.Company.CompanyId == companyId &&
-						EF.Functions.DateDiffSecond(p.LastSellTime, DateTime.UtcNow) > priceRule.NoSellTime.Value.TotalSeconds)
-					.Select(p => p.ProductId)
-					.ToListAsync(token);
+				// --- Зафиксировать окончание мониторинга ---
+				_lastMonitorEnd[companyId] = DateTime.UtcNow;
 
-				foreach (var productId in productsToReduce)
-				{
-					Console.WriteLine($"[ReducePriceWorker] Найден продукт {productId} компании {companyId} — отправляем в очередь на снижение цены");
-
-					var message = new PriceReduceMessage(productId);
-					var json = JsonSerializer.Serialize(message);
-					var body = Encoding.UTF8.GetBytes(json);
-
-					// публикуем событие
-					await _channel!.BasicPublishAsync(
-						exchange: "",
-						routingKey: "price.reduce", // отдельная очередь
-						body: body);
-				}
-
+				// --- Ждём до следующего цикла ---
 				await Task.Delay(TimeSpan.FromSeconds(1), token);
+
+				// --- Измеряем ожидание ---
+				if (_lastMonitorEnd.TryGetValue(companyId, out var lastEnd))
+				{
+					var waitSeconds = (DateTime.UtcNow - lastEnd).TotalSeconds;
+					MonitorWaitDuration.WithLabels(companyId.ToString()).Observe(waitSeconds);
+				}
 			}
 		}
 		catch (OperationCanceledException)
 		{
-			Console.WriteLine($"[ReducePriceWorker] Мониторинг компании {companyId} остановлен.");
+			// ignore
 		}
 	}
 
-	public record PriceReduceMessage(int ProductId);
-
-
+	public record PriceReduceMessage(int ProductId, int CompanyId);
 	public record CompanyPayload(int CompanyId);
 }

@@ -1,4 +1,5 @@
-﻿using DynamicPriceCore.Models;
+﻿using DynamicPrice.Core.Data;
+using DynamicPriceCore.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,7 +40,8 @@ public static class DbInitializer
 		{
 			db.Companies.AddRange(
 				new Company { Title = "Автозапчасти" },
-				new Company { Title = "Копыта" }
+				new Company { Title = "Копыта" },
+				new Company { Title = "Рога" }
 			);
 			
 			await db.SaveChangesAsync();
@@ -49,7 +51,8 @@ public static class DbInitializer
 		{
 			db.PriceRules.AddRange(
 				new PriceRule { CompanyId = 1, Increase = 1, Reduction = 1, NoSellTime = TimeSpan.FromSeconds(10) },
-				new PriceRule { CompanyId = 2, Increase = 1, Reduction = 1, NoSellTime = TimeSpan.FromSeconds(10) }
+				new PriceRule { CompanyId = 2, Increase = 1, Reduction = 1, NoSellTime = TimeSpan.FromSeconds(10) },
+				new PriceRule { CompanyId = 3, Increase = 1, Reduction = 1, NoSellTime = TimeSpan.FromSeconds(10) }
 			);
 			await db.SaveChangesAsync();
 		}
@@ -66,8 +69,20 @@ public static class DbInitializer
 				new Product { CompanyId = 2, Title = "Хлеб", Price = 50, MinimumPrice = 40, LastSellTime = now },
 				new Product { CompanyId = 2, Title = "Молоко", Price = 100, MinimumPrice = 80, LastSellTime = now }
 			);
+
+			//var products = DataGenerator.GenerateProducts(companyId: 1, count: 10);
+			//db.Products.AddRange(products);
+
 			await db.SaveChangesAsync();
 		}
+
+		//todo: remove later;
+		//var products2 = DataGenerator.GenerateProducts(companyId: 2, count: 100);
+		//db.Products.AddRange(products2);
+		//var products3 = DataGenerator.GenerateProducts(companyId: 3, count: 1000);
+		//db.Products.AddRange(products3);
+
+		await db.SaveChangesAsync();
 	}
 
 	public static async Task SeedUsersAsync(IServiceProvider serviceProvider)

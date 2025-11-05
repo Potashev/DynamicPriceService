@@ -1,4 +1,5 @@
-﻿using DynamicPriceCore.Data;
+﻿using DynamicPrice.Core.Rabbit;
+using DynamicPriceCore.Data;
 using DynamicPriceCore.Models;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -115,6 +116,6 @@ public class ChangePriceService : BackgroundService
 	}
 
 	//todo: think about remove companyId from message
-	public record PriceReduceMessage(int ProductId, int CompanyId);
+	//public record PriceReduceMessage(int ProductId, int CompanyId);
 }
 

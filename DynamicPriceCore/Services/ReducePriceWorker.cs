@@ -1,4 +1,5 @@
 ﻿using DynamicPrice.Core.Benchmark;
+using DynamicPrice.Core.Rabbit;
 using DynamicPrice.Core.Services;
 using DynamicPriceCore.Data;
 using DynamicPriceCore.Models;
@@ -162,6 +163,6 @@ public class ReducePriceWorker : BackgroundService
 		}
 	}
 
-	public record PriceReduceMessage(int ProductId, int CompanyId);
-	public record CompanyPayload(int CompanyId);
+	//public record PriceReduceMessage(int ProductId, int CompanyId);
+	//public record CompanyPayload(int CompanyId);
 }

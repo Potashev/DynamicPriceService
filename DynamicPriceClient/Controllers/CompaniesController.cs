@@ -11,12 +11,6 @@ public class CompaniesController : BaseController
 	public async Task<IActionResult> Index()
 		=> View(await CoreApiClient.GetCompanies());
 
-	//public async Task<IActionResult> Index()
-	//{
-	//	var res = await CoreApiClient.GetCompanies();
-	//	return View();
-	//}
-
 	public async Task<IActionResult> CompanyProducts(int? id)
 		=> View(await CoreApiClient.GetCompanyProducts((int)id));
 }

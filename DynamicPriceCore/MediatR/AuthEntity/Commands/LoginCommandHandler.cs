@@ -1,12 +1,5 @@
-﻿using DynamicPriceCore.Data;
-using DynamicPriceCore.Models;
-using DynamicPriceCore.Services;
+﻿using DynamicPriceCore.Services;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace DynamicPriceCore.MediatR.AuthEntity.Commands;
 

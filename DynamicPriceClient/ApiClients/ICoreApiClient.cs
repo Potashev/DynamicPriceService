@@ -1,5 +1,4 @@
 ﻿using DynamicPriceClient.ViewModels;
-using Microsoft.AspNetCore.Mvc;
 using Refit;
 
 namespace DynamicPriceClient.ApiClients;

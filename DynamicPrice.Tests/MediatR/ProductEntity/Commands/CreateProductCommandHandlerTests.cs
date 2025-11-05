@@ -2,8 +2,6 @@
 using Moq;
 using FluentAssertions;
 using AutoMapper;
-using System.Threading;
-using System.Threading.Tasks;
 using DynamicPriceCore.MediatR.ProductEntity.Commands;
 using DynamicPriceCore.Data;
 using DynamicPriceCore.Models;

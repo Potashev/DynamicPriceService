@@ -1,11 +1,5 @@
-﻿using AutoMapper;
-using DynamicPriceCore.Data;
-using DynamicPriceCore.MediatR.CustomerEntity.Commands;
-using DynamicPriceCore.Models;
-using DynamicPriceCore.Services;
+﻿using DynamicPriceCore.Services;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
 namespace DynamicPriceCore.MediatR.CustomerEntity.Commands;
@@ -28,7 +22,6 @@ public class TopUpBalanceCommandHandler
 
 		customer.Balance += replenishmentAmount;
 
-		// can user be changed since last GetCurrentUserAsync?
 		await _userService.UpdateCurrentUserAsync();
 	}
 }

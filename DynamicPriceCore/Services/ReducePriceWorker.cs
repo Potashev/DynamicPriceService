@@ -1,8 +1,6 @@
-﻿using DynamicPrice.Core.Benchmark;
-using DynamicPrice.Core.Rabbit;
+﻿using DynamicPrice.Core.Rabbit;
 using DynamicPrice.Core.Services;
 using DynamicPriceCore.Data;
-using DynamicPriceCore.Models;
 using Microsoft.EntityFrameworkCore;
 using Prometheus;
 using RabbitMQ.Client;
@@ -118,7 +116,6 @@ public class ReducePriceWorker : BackgroundService
 		{
 			while (!token.IsCancellationRequested)
 			{
-				// --- Мониторинг ---
 				using (MonitorDuration.WithLabels(companyId.ToString()).NewTimer())
 				{
 					using var scope = _serviceProvider.CreateScope();
@@ -143,13 +140,10 @@ public class ReducePriceWorker : BackgroundService
 					}
 				}
 
-				// --- Зафиксировать окончание мониторинга ---
 				_lastMonitorEnd[companyId] = DateTime.UtcNow;
 
-				// --- Ждём до следующего цикла ---
 				await Task.Delay(TimeSpan.FromSeconds(1), token);
 
-				// --- Измеряем ожидание ---
 				if (_lastMonitorEnd.TryGetValue(companyId, out var lastEnd))
 				{
 					var waitSeconds = (DateTime.UtcNow - lastEnd).TotalSeconds;
@@ -159,10 +153,7 @@ public class ReducePriceWorker : BackgroundService
 		}
 		catch (OperationCanceledException)
 		{
-			// ignore
+
 		}
 	}
-
-	//public record PriceReduceMessage(int ProductId, int CompanyId);
-	//public record CompanyPayload(int CompanyId);
 }

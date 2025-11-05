@@ -1,14 +1,12 @@
 ﻿using DynamicPrice.Core.MediatR.ManagerEntity.Queries;
-using DynamicPriceCore.MediatR.CustomerEntity.Queries;
 using DynamicPriceCore.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Core.Controllers;
-//[Route("api/[controller]")]
+
 [ApiController]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 public class ManagerController : ControllerBase

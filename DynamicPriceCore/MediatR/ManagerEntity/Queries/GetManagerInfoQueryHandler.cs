@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using DynamicPrice.Core.ViewModels;
 using DynamicPriceCore.Data;
-using DynamicPriceCore.MediatR.CustomerEntity.Queries;
 using DynamicPriceCore.Services;
 using DynamicPriceCore.ViewModels;
 using MediatR;

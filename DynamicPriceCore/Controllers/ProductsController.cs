@@ -6,59 +6,58 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using DynamicPriceCore.ViewModels;
 
-namespace DynamicPriceCore.Controllers
+namespace DynamicPriceCore.Controllers;
+
+[Route("api/company/[controller]")]
+[ApiController]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
+public class ProductsController : ControllerBase
 {
-	[Route("api/company/[controller]")]
-	[ApiController]
-	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
-	public class ProductsController : ControllerBase
+	private readonly IMediator _mediator;
+	public ProductsController(IMediator mediator)
 	{
-		private readonly IMediator _mediator;
-		public ProductsController(IMediator mediator)
-		{
-			_mediator = mediator;
-		}
+		_mediator = mediator;
+	}
 
-		[HttpGet]
-		public async Task<ActionResult<IEnumerable<ProductViewModel>>> GetProducts(CancellationToken cancellationToken)
-		{
-			var productsVm = await _mediator.Send(new GetProductsQuery(), cancellationToken);
-			return Ok(productsVm);
-		}
+	[HttpGet]
+	public async Task<ActionResult<IEnumerable<ProductViewModel>>> GetProducts(CancellationToken cancellationToken)
+	{
+		var productsVm = await _mediator.Send(new GetProductsQuery(), cancellationToken);
+		return Ok(productsVm);
+	}
 
-		[HttpGet("{id}")]
-		public async Task<ActionResult<ProductViewModel>> GetProduct(int id)
-		{
-			var productVm = await _mediator.Send(new GetProductDetailsQuery((int)id));
+	[HttpGet("{id}")]
+	public async Task<ActionResult<ProductViewModel>> GetProduct(int id)
+	{
+		var productVm = await _mediator.Send(new GetProductDetailsQuery((int)id));
 
-			return productVm == null ?
-				NotFound() :
-				productVm;
-		}
+		return productVm == null ?
+			NotFound() :
+			productVm;
+	}
 
-		[HttpPut("{id}")]
-		public async Task<IActionResult> Edit(int id, ProductViewModel productVm)
+	[HttpPut("{id}")]
+	public async Task<IActionResult> Edit(int id, ProductViewModel productVm)
+	{
+		if (id != productVm.ProductId)
 		{
-			if (id != productVm.ProductId)
-			{
-				return BadRequest();
-			}
-			var productId = await _mediator.Send(new EditProductCommand(productVm));
-			return Ok(productId);
+			return BadRequest();
 		}
+		var productId = await _mediator.Send(new EditProductCommand(productVm));
+		return Ok(productId);
+	}
 
-		[HttpPost]
-		public async Task<ActionResult<int>> Create(ProductViewModel productVm)
-		{
-			var productId = await _mediator.Send(new CreateProductCommand(productVm));
-			return Ok(productId);
-		}
+	[HttpPost]
+	public async Task<ActionResult<int>> Create(ProductViewModel productVm)
+	{
+		var productId = await _mediator.Send(new CreateProductCommand(productVm));
+		return Ok(productId);
+	}
 
-		[HttpDelete("{id}")]
-		public async Task<IActionResult> Delete(int id)
-		{
-			await _mediator.Send(new DeleteProductCommand(id));
-			return Ok();
-		}
+	[HttpDelete("{id}")]
+	public async Task<IActionResult> Delete(int id)
+	{
+		await _mediator.Send(new DeleteProductCommand(id));
+		return Ok();
 	}
 }

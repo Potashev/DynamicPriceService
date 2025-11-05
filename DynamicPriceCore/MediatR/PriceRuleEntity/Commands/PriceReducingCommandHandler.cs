@@ -1,8 +1,6 @@
 ﻿using DynamicPrice.Core.Rabbit;
-using DynamicPriceCore.Data;
 using DynamicPriceCore.Services;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPriceCore.MediatR.PriceRuleEntity.Commands;
 

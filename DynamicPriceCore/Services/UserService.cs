@@ -35,9 +35,6 @@ public class UserService : IUserService
 	public async Task<ApplicationUser?> GetCurrentUserAsync()
 		=> await _userManager.FindByIdAsync(UserId ?? string.Empty);
 
-	//public async Task<string> GetUserNameByIdAsync(string userId)
-	//	=> (await _userManager.FindByIdAsync(userId))?.UserName ?? string.Empty;
-
 	public async Task<ApplicationUser> GetUserByIdAsync(string userId)
 	=> await _userManager.FindByIdAsync(userId);
 
@@ -126,7 +123,6 @@ public interface IUserService
 	Task<ApplicationUser?> GetCurrentUserAsync();
 	Task UpdateCurrentUserAsync();
 	Task UpdateUserAsync(ApplicationUser user);
-	//Task<string> GetUserNameByIdAsync(string userId);
 	Task<ApplicationUser> GetUserByIdAsync(string userId);
 	Task RegisterUserAsync(string username, string password, string email, string role);
 	Task<string> LoginUserAsync(string username, string password);

@@ -1,19 +1,14 @@
 ﻿using DynamicPrice.Core.Services;
 using DynamicPriceCore.Data;
-using DynamicPriceCore.Extensions;
 using DynamicPriceCore.Models;
 using DynamicPriceCore.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Prometheus;
 using Quartz;
-using System;
-using System.IO;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);

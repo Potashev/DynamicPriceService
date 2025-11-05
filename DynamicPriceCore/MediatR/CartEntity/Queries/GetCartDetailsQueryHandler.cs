@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using DynamicPriceCore.Data;
-using DynamicPriceCore.Models;
 using DynamicPriceCore.Services;
 using DynamicPriceCore.ViewModels;
 using MediatR;

@@ -2,14 +2,13 @@
 using DynamicPriceCore.MediatR.OrderEntity.Commands;
 using DynamicPriceCore.MediatR.OrderEntity.Queries;
 using DynamicPriceCore.ViewModels;
-using Humanizer;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPriceCore.Controllers;
-//[Route("api/[controller]")]
+
 //todo: separate CompanyOrders and CustomerOrder controllers?
 [ApiController]
 public class OrdersController : ControllerBase
@@ -44,7 +43,6 @@ public class OrdersController : ControllerBase
 		return Ok(orderVm);
 	}
 
-	//[HttpGet]
 	[HttpGet("api/company/orders")]
 	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 	public async Task<ActionResult<IEnumerable<OrderViewModel>>> GetCompanyOrders(CancellationToken cancellationToken)
@@ -53,7 +51,6 @@ public class OrdersController : ControllerBase
 		return Ok(ordersVm);
 	}
 
-	//[HttpGet("{orderId}")]
 	[HttpGet("api/company/orders/{orderId}")]
 	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 	public async Task<ActionResult<OrderViewModel>> GetCompanyOrder(string orderId)
@@ -62,7 +59,6 @@ public class OrdersController : ControllerBase
 		return Ok(orderVm);
 	}
 
-	//[HttpGet("by-receive-key/{key}")]
 	[HttpGet("api/company/orders/by-receive-key/{key}")]
 	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 	public async Task<ActionResult<int>> GetOrderByReceiveKey(string key)
@@ -79,7 +75,6 @@ public class OrdersController : ControllerBase
 		return Ok();
 	}
 
-	//[HttpPatch("{orderId}/complete")]
 	[HttpPatch("api/company/orders/{orderId}/complete")]
 	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 	public async Task<ActionResult<int>> CompleteOrder(string orderId)
@@ -88,7 +83,6 @@ public class OrdersController : ControllerBase
 		return id;
 	}
 
-	//[HttpGet("statistics")]
 	[HttpGet("api/company/orders/statistics")]
 	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 	public async Task<ActionResult<OrdersStatistics>> GetCompanyStatistics(CancellationToken cancellationToken)

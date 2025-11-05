@@ -3,8 +3,6 @@ using DynamicPriceCore.Data;
 using DynamicPriceCore.Models;
 using DynamicPriceCore.Services;
 using MediatR;
-using Microsoft.CodeAnalysis;
-using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPriceCore.MediatR.ProductEntity.Commands;
 

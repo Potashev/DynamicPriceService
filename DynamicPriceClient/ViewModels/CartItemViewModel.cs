@@ -6,6 +6,7 @@ public class CartItemViewModel
 {
 	public int Id { get; set; }
 	public int CartId { get; set; }
+
 	[JsonIgnore]
 	public CartViewModel Cart { get; set; }
 

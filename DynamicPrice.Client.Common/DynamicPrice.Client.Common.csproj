@@ -16,7 +16,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.Build" Version="17.14.28" />
+	  <PackageReference Include="Microsoft.Build" Version="18.0.2" />
 	</ItemGroup>
 
 </Project>

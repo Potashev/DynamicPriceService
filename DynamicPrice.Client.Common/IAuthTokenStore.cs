@@ -25,14 +25,14 @@ public class CookiesAuthTokenStore : IAuthTokenStore
 	public CookiesAuthTokenStore(IHttpContextAccessor contextAccessor)
 		=> _contextAccessor = contextAccessor ?? throw new ArgumentNullException(nameof(contextAccessor));
 
-	//public async Task<string> GetToken()
-	//	=> _contextAccessor.HttpContext.Request.Cookies.TryGetValue("test", out var token) ? token : string.Empty;
-
 	public async Task<string> GetToken()
-		=> string.Empty;
+		=> _contextAccessor.HttpContext.Request.Cookies.TryGetValue("test", out var token) ? token : string.Empty;
 
-	public async Task SetToken(string authToken) { }
-		//=> _contextAccessor.HttpContext.Response.Cookies.Append("test", authToken);
+	//public async Task<string> GetToken()
+	//	=> string.Empty;
+
+	public async Task SetToken(string authToken)
+		=> _contextAccessor.HttpContext.Response.Cookies.Append("test", authToken);
 }
 
 public interface IAuthTokenStore

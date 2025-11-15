@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Net;
+using System.Net.Http.Headers;
 
 namespace DynamicPrice.Client.Common;
 
@@ -18,6 +19,33 @@ public class AuthHeaderHandler : DelegatingHandler
 		if (!string.IsNullOrEmpty(token))
 			request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-		return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
+		try
+		{
+			return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
+		}
+		catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+		{
+			throw;
+		}
+		catch (HttpRequestException ex)
+		{
+			var response = new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)
+			{
+				RequestMessage = request,
+				ReasonPhrase = "Network error"
+			};
+			response.Content = new StringContent("Network error: " + ex.Message);
+			return response;
+		}
+		catch (Exception ex)
+		{
+			var response = new HttpResponseMessage(HttpStatusCode.BadGateway)
+			{
+				RequestMessage = request,
+				ReasonPhrase = "Unexpected error"
+			};
+			response.Content = new StringContent("Unexpected error: " + ex.Message);
+			return response;
+		}
 	}
 }

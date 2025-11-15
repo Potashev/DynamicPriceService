@@ -17,11 +17,11 @@ public class CreateProductCommandHandlerTests
 
 	public CreateProductCommandHandlerTests()
 	{
-		var config = new MapperConfiguration(cfg =>
-		{
-			cfg.CreateMap<ProductViewModel, Product>();
-		});
-		_mapper = config.CreateMapper();
+		//var config = new MapperConfiguration(cfg =>
+		//{
+		//	cfg.CreateMap<ProductViewModel, Product>();
+		//});
+		//_mapper = config.CreateMapper();
 	}
 
 	[Fact]

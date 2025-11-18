@@ -11,6 +11,21 @@ public class DynamicPriceCoreContext : DbContext
 	{
 		base.OnModelCreating(modelBuilder);
 
+		modelBuilder.Entity<ActiveCompany>(b =>
+		{
+			b.HasKey(ac => ac.CompanyId);
+
+			b.Property(ac => ac.StartedAt)
+				.IsRequired();
+
+			b.Property(ac => ac.LastMonitoring);
+
+			b.HasOne(ac => ac.Company)
+			 .WithOne()
+			 .HasForeignKey<ActiveCompany>(ac => ac.CompanyId)
+			 .OnDelete(DeleteBehavior.Cascade);
+		});
+
 		modelBuilder.Entity<OrderItem>()
 			.HasOne(oi => oi.Product)
 			.WithMany()
@@ -37,6 +52,7 @@ public class DynamicPriceCoreContext : DbContext
 	}
 
 	public DbSet<Company> Companies { get; set; } = default!;
+	public DbSet<ActiveCompany> ActiveCompanies { get; set; } = default!;
 	public DbSet<Product> Products { get; set; } = default!;
 	public DbSet<PriceRule> PriceRules { get; set; } = default!;
 	public DbSet<PriceDynamic> PriceDynamics { get; set; } = default!;

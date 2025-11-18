@@ -124,6 +124,7 @@ builder.Services.AddMassTransit(x =>
 });
 
 builder.Services.AddSingleton<IActiveCompaniesService, ActiveCompaniesService>();
+//builder.Services.AddHostedService<ActiveCompaniesService>();
 builder.Services.AddHostedService<ReducePriceWorker>();
 builder.Services.AddHostedService<ChangePriceService>();
 builder.Services.AddTransient<IIncreasePriceService, IncreasePriceService>();   //todo: change

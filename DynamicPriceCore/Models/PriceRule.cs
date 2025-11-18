@@ -23,4 +23,6 @@ public class PriceRule
 	/// Допустимое время "простоя" продукта. Если превысили - снижаем цену (см. ReducePriceService).
 	/// </summary>
 	public TimeSpan? NoSellTime { get; set; }
+
+	//todo: think about about monitor waiting config - time before next monitoring as active company
 }

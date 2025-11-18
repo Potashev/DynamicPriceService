@@ -123,7 +123,8 @@ builder.Services.AddMassTransit(x =>
 	});
 });
 
-builder.Services.AddSingleton<IActiveCompaniesService, ActiveCompaniesService>();
+//builder.Services.AddSingleton<IActiveCompaniesService, ActiveCompaniesService>();
+builder.Services.AddSingleton<ActiveCompaniesService>();
 //builder.Services.AddHostedService<ActiveCompaniesService>();
 builder.Services.AddHostedService<ReducePriceWorker>();
 builder.Services.AddHostedService<ChangePriceService>();

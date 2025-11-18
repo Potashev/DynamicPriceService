@@ -3,6 +3,7 @@ using DynamicPriceCore.Data;
 using DynamicPriceCore.Models;
 using DynamicPriceCore.Services;
 using DynamicPriceCore.ViewModels;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Identity;
@@ -15,12 +16,11 @@ using Quartz;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddDbContext<DynamicPriceCoreContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("DynamicPriceDb") ?? throw new InvalidOperationException("Connection string 'DynamicPriceDb' not found.")));
-
 builder.Services.AddDbContext<IdentityContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityDb") ?? throw new InvalidOperationException("Connection string 'IdentityDb' not found.")));
-
 
 builder.Services.AddAuthentication(options =>
 {
@@ -33,12 +33,10 @@ builder.Services.AddAuthentication(options =>
 	{
 		ValidateIssuerSigningKey = true,
 		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
-
 		ValidateIssuer = true,
 		ValidateAudience = true,
 		ValidIssuer = "TestIssuer",
 		ValidAudience = "TestAudience",
-
 		ValidateLifetime = true,
 		ClockSkew = TimeSpan.Zero
 	};
@@ -108,6 +106,21 @@ builder.Services.AddSingleton<IEventBus>(sp =>
 	var connStr = config.GetConnectionString("RabbitMQ")
 				  ?? "amqp://guest:guest@localhost:5672/";
 	return new RabbitMqEventBus(connStr);
+});
+
+builder.Services.AddMassTransit(x =>
+{
+    // A Transport
+    //x.UsingRabbitMq((context, cfg) =>
+    //{
+    //});
+
+	x.AddConsumer<ActiveCompaniesService>();
+
+	x.UsingInMemory((context, cfg) =>
+	{
+		cfg.ConfigureEndpoints(context);
+	});
 });
 
 builder.Services.AddSingleton<IActiveCompaniesService, ActiveCompaniesService>();

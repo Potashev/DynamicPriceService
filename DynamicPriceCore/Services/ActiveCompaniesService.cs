@@ -1,15 +1,17 @@
-﻿using DynamicPriceCore.Data;
+﻿using DynamicPrice.Core.Rabbit;
+using DynamicPriceCore.Data;
 using DynamicPriceCore.Models;
+using MassTransit;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Collections.Concurrent;
 using System.Text;
 using System.Text.Json;
-using DynamicPrice.Core.Rabbit;
 
 namespace DynamicPriceCore.Services;
 
-public class ActiveCompaniesService : IActiveCompaniesService, IAsyncDisposable
+//todo: make as background service
+public class ActiveCompaniesService : IActiveCompaniesService, IConsumer<CompanyMonitoringEvent>, IAsyncDisposable
 {
 	private readonly IServiceProvider _serviceProvider;
 	private readonly IEventBus _eventBus;
@@ -24,68 +26,85 @@ public class ActiveCompaniesService : IActiveCompaniesService, IAsyncDisposable
 
 	public ActiveCompaniesService(IServiceProvider serviceProvider, IConfiguration config, IEventBus eventBus)
 	{
-		_serviceProvider = serviceProvider;
-		_eventBus = eventBus;
+		//_serviceProvider = serviceProvider;
+		//_eventBus = eventBus;
 
-		var rabbitMqConnStr = config.GetConnectionString("RabbitMQ") ?? "amqp://guest:guest@localhost:5672/";
-		_factory = new ConnectionFactory
-		{
-			Uri = new Uri(rabbitMqConnStr)
-		};
+		//var rabbitMqConnStr = config.GetConnectionString("RabbitMQ") ?? "amqp://guest:guest@localhost:5672/";
+		//_factory = new ConnectionFactory
+		//{
+		//	Uri = new Uri(rabbitMqConnStr)
+		//};
 
-		_ = Task.Run(StartConsumerAsync);
+		//_ = Task.Run(StartConsumerAsync);
 	}
 
-	public async Task StartConsumerAsync()
-	{
-		_connection = await _factory.CreateConnectionAsync();
-		_channel = await _connection.CreateChannelAsync();
-
-		await _channel.ExchangeDeclareAsync(exchange: ExchangeName, type: ExchangeType.Direct, durable: true);
-		await _channel.QueueDeclareAsync(queue: QueueName, durable: true, exclusive: false, autoDelete: false);
-		await _channel.QueueBindAsync(queue: QueueName, exchange: ExchangeName, routingKey: "company.start");
-		await _channel.QueueBindAsync(queue: QueueName, exchange: ExchangeName, routingKey: "company.stop");
-
-		var consumer = new AsyncEventingBasicConsumer(_channel);
-		consumer.ReceivedAsync += async (sender, ea) =>
+    public async Task Consume(ConsumeContext<CompanyMonitoringEvent> context)
+    {
+		var companyId = context.Message.CompanyId;
+		var monitoringEvent = context.Message.Event;
+		if (monitoringEvent == "started")
 		{
-			try
-			{
-				var json = Encoding.UTF8.GetString(ea.Body.ToArray());
+			//добавляем в базу
+		}
+		else if (monitoringEvent == "stopped")
+		{
+            //удаляем из базы
+        }
+		//сохраняем изменения
 
-				if (ea.RoutingKey == "company.start")
-				{
-					var evt = JsonSerializer.Deserialize<CompanyMonitoringStarted>(json);
-					if (evt != null)
-					{
-						if (_activeCompanies.TryAdd(evt.CompanyId, true))
-						{
-							await _eventBus.PublishAsync(new { evt.CompanyId }, "company.monitoring");
-						}
-					}
-				}
-				else if (ea.RoutingKey == "company.stop")
-				{
-					var evt = JsonSerializer.Deserialize<CompanyMonitoringStopped>(json);
-					if (evt != null)
-					{
-						if (_activeCompanies.TryRemove(evt.CompanyId, out _))
-						{
-							await _eventBus.PublishAsync(new { evt.CompanyId }, "company.monitoring.stop");
-						}
-					}
-				}
+        //await context.Publish<CompanyMonitoringEvent>(new { context.Message.CompanyId });
+    }
 
-				await _channel!.BasicAckAsync(ea.DeliveryTag, multiple: false);
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine($"[ActiveCompaniesService] Error handling message: {ex}");
-			}
-		};
+ //   public async Task StartConsumerAsync()
+	//{
+	//	_connection = await _factory.CreateConnectionAsync();
+	//	_channel = await _connection.CreateChannelAsync();
 
-		await _channel.BasicConsumeAsync(queue: QueueName, autoAck: false, consumer: consumer);
-	}
+	//	await _channel.ExchangeDeclareAsync(exchange: ExchangeName, type: ExchangeType.Direct, durable: true);
+	//	await _channel.QueueDeclareAsync(queue: QueueName, durable: true, exclusive: false, autoDelete: false);
+	//	await _channel.QueueBindAsync(queue: QueueName, exchange: ExchangeName, routingKey: "company.start");
+	//	await _channel.QueueBindAsync(queue: QueueName, exchange: ExchangeName, routingKey: "company.stop");
+
+	//	var consumer = new AsyncEventingBasicConsumer(_channel);
+	//	consumer.ReceivedAsync += async (sender, ea) =>
+	//	{
+	//		try
+	//		{
+	//			var json = Encoding.UTF8.GetString(ea.Body.ToArray());
+
+	//			if (ea.RoutingKey == "company.start")
+	//			{
+	//				var evt = JsonSerializer.Deserialize<CompanyMonitoringStarted>(json);
+	//				if (evt != null)
+	//				{
+	//					if (_activeCompanies.TryAdd(evt.CompanyId, true))
+	//					{
+	//						await _eventBus.PublishAsync(new { evt.CompanyId }, "company.monitoring");
+	//					}
+	//				}
+	//			}
+	//			else if (ea.RoutingKey == "company.stop")
+	//			{
+	//				var evt = JsonSerializer.Deserialize<CompanyMonitoringStopped>(json);
+	//				if (evt != null)
+	//				{
+	//					if (_activeCompanies.TryRemove(evt.CompanyId, out _))
+	//					{
+	//						await _eventBus.PublishAsync(new { evt.CompanyId }, "company.monitoring.stop");
+	//					}
+	//				}
+	//			}
+
+	//			await _channel!.BasicAckAsync(ea.DeliveryTag, multiple: false);
+	//		}
+	//		catch (Exception ex)
+	//		{
+	//			Console.WriteLine($"[ActiveCompaniesService] Error handling message: {ex}");
+	//		}
+	//	};
+
+	//	await _channel.BasicConsumeAsync(queue: QueueName, autoAck: false, consumer: consumer);
+	//}
 
 
 	public IEnumerable<Company> GetActiveCompanies()

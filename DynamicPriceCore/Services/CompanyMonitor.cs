@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPrice.Core.Services;
 
+//todo: obsolete
 public class CompanyMonitor
 {
 	private readonly DynamicPriceCoreContext _context;

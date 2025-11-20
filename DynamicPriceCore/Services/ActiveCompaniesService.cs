@@ -2,15 +2,10 @@
 using DynamicPriceCore.Data;
 using DynamicPriceCore.Models;
 using MassTransit;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
-using System.Collections.Concurrent;
-using System.Text;
-using System.Text.Json;
 
 namespace DynamicPriceCore.Services;
 
-//todo: make as background service
+//todo: make as background service?
 public class ActiveCompaniesService : IConsumer<CompanyMonitoringEvent>
 {
 	private readonly IServiceProvider _serviceProvider;
@@ -47,7 +42,5 @@ public class ActiveCompaniesService : IConsumer<CompanyMonitoringEvent>
 		}
 
         await context.SaveChangesAsync();
-
-        //await context.Publish<CompanyMonitoringEvent>(new { context.Message.CompanyId });
     }
 }

@@ -9,11 +9,11 @@ public class PriceReducingCommandHandler
 	: IRequestHandler<PriceReducingCommand>
 {
 	private readonly IUserService _userService;
-	private readonly IEventBus _eventBus;
+	//private readonly IEventBus _eventBus;
 	private readonly IPublishEndpoint _publishEndpoint;
 
-    public PriceReducingCommandHandler(IUserService userService, IEventBus eventBus, IPublishEndpoint publishEndpoint)
-		=> (_userService, _eventBus, _publishEndpoint) = (userService, eventBus, publishEndpoint);
+    public PriceReducingCommandHandler(IUserService userService, IPublishEndpoint publishEndpoint)
+		=> (_userService, _publishEndpoint) = (userService, publishEndpoint);
 
 	public async Task Handle(PriceReducingCommand request, CancellationToken cancellationToken)
 	{

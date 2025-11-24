@@ -19,7 +19,7 @@ public class ReducePriceWorker : BackgroundService
     //private IConnection? _connection;
     //private IChannel? _channel;
 
-    private readonly IPublishEndpoint _publishEndpoint;
+    //private readonly IPublishEndpoint _publishEndpoint;
 
     private static readonly Histogram MonitorDuration = Metrics
     .CreateHistogram("dp_company_monitor_duration_seconds",
@@ -42,10 +42,10 @@ public class ReducePriceWorker : BackgroundService
     private const string ExchangeName = "company_monitoring_exchange";
     private const string QueueName = "company_monitoring_worker";
 
-    public ReducePriceWorker(IServiceProvider serviceProvider, IPublishEndpoint publishEndpoint, IConfiguration config)
+    public ReducePriceWorker(IServiceProvider serviceProvider, IConfiguration config)
     {
         _serviceProvider = serviceProvider;
-        _publishEndpoint = publishEndpoint;
+        //_publishEndpoint = publishEndpoint;
 
         //_factory = new ConnectionFactory
         //{
@@ -99,36 +99,42 @@ public class ReducePriceWorker : BackgroundService
             //todo: need while?
             while (!token.IsCancellationRequested)
             {
-                using (MonitorDuration.WithLabels().NewTimer())
+                //using (MonitorDuration.WithLabels().NewTimer())
+                //{
+                using var scope = _serviceProvider.CreateScope();
+                var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
+                //todo: check
+                var publishEndpoint = scope.ServiceProvider.GetRequiredService<IPublishEndpoint>();
+
+
+                //todo: check - need contains companyId
+                //var priceRules = await (from pr in context.PriceRules.AsNoTracking()
+                //                        join ac in context.ActiveCompanies.AsNoTracking()
+                //                            on pr.CompanyId equals ac.CompanyId
+                //                        select pr)
+                //    .ToListAsync(token);
+
+                await foreach (var p in FindProductsToReduceAsync(context, token))
                 {
-                    using var scope = _serviceProvider.CreateScope();
-                    var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
-
-                    //todo: check - need contains companyId
-                    var priceRules = await (from pr in context.PriceRules.AsNoTracking()
-                                            join ac in context.ActiveCompanies.AsNoTracking()
-                                                on pr.CompanyId equals ac.CompanyId
-                                            select pr)
-                        .ToListAsync(token);
-
-                    await foreach (var p in FindProductsToReduceAsync(context, priceRules, token))
-                    {
-                        await _publishEndpoint.Publish(new PriceReduceMessage(p.ProductId, p.CompanyId), token);    //todo: pass companyId or just productId
+                    await publishEndpoint.Publish(new PriceReduceMessage(p.ProductId, p.CompanyId), token);    //todo: pass companyId or just productId
 
 
-                        //var message = new PriceReduceMessage(productId, companyId);
-                        //var json = JsonSerializer.Serialize(message);
-                        //var body = Encoding.UTF8.GetBytes(json);
+                    //var message = new PriceReduceMessage(productId, companyId);
+                    //var json = JsonSerializer.Serialize(message);
+                    //var body = Encoding.UTF8.GetBytes(json);
 
-                        //await _channel!.BasicPublishAsync(
-                        //    exchange: "",
-                        //    routingKey: "price.reduce",
-                        //    body: body);
-                    }
+                    //await _channel!.BasicPublishAsync(
+                    //    exchange: "",
+                    //    routingKey: "price.reduce",
+                    //    body: body);
                 }
+                //}
 
                 //todo: remove?
                 await Task.Delay(TimeSpan.FromSeconds(1), token);
+
+                //todo: return back metrics
+
 
                 //_lastMonitorEnd[companyId] = DateTime.UtcNow;
 
@@ -148,22 +154,44 @@ public class ReducePriceWorker : BackgroundService
     }
 
     private async IAsyncEnumerable<Product> FindProductsToReduceAsync(
-        DynamicPriceCoreContext context,
-        List<PriceRule> priceRules,
-        CancellationToken token,
-        int? productsCount = null)
+    DynamicPriceCoreContext context,
+    CancellationToken token,
+    int? productsCount = null)
     {
-        var now = DateTime.UtcNow;
+        // 1. PriceRules + ActiveCompanies + seconds
+        var priceRulesQuery =
+            from pr in context.PriceRules.AsNoTracking()
+            join ac in context.ActiveCompanies.AsNoTracking()
+                on pr.CompanyId equals ac.CompanyId
+            //where pr.NoSellTime
+            select new
+            {
+                pr.CompanyId,
+                Seconds = pr.NoSellSeconds
+            };
 
-        var companyIds = priceRules?
+        var priceRules = await
+            (from pr in context.PriceRules.AsNoTracking()
+            join ac in context.ActiveCompanies.AsNoTracking()
+                on pr.CompanyId equals ac.CompanyId
+            //where pr.NoSellTime.HasValue
+            select new
+            {
+                pr.CompanyId,
+                Seconds = pr.NoSellSeconds
+            }).ToListAsync();
+
+        // 2. Собираем ID компаний с активными правилами
+        var companyIds = priceRules
             .Where(pr => pr.CompanyId.HasValue)
             .Select(pr => pr.CompanyId!.Value)
             .Distinct()
             .ToList();
 
-        if (companyIds == null || companyIds.Count == 0)
+        if (companyIds.Count == 0)
             yield break;
 
+        // 3. Продукты этих компаний
         var productsQuery = context.Products
             .AsNoTracking()
             .Where(p => p.CompanyId.HasValue && companyIds.Contains(p.CompanyId.Value));
@@ -171,20 +199,193 @@ public class ReducePriceWorker : BackgroundService
         if (productsCount.HasValue)
             productsQuery = productsQuery.Take(productsCount.Value);
 
-        //todo: check
-        var query = from p in productsQuery
-                    join pr in context.PriceRules.AsNoTracking()
-                        on p.CompanyId equals pr.CompanyId
-                    where pr.NoSellTime.HasValue &&
-                          (
-                            p.LastSellTime == null ||
-                            EF.Functions.DateDiffSecond(p.LastSellTime.Value, now) >
-                            (int)pr.NoSellTime.Value.TotalSeconds
-                          )
-                          select p;
-        await foreach (var product in query.AsAsyncEnumerable().WithCancellation(token))
+        var now = DateTime.UtcNow;
+
+        //work
+        var query =
+            from p in productsQuery
+            join pr in priceRulesQuery
+                on p.CompanyId equals pr.CompanyId
+            where EF.Functions.DateDiffSecond(p.LastSellTime.Value, now) > 0
+            select p;
+
+        //not work - cannot translate
+        var query2 =
+            from p in productsQuery
+            join pr in priceRulesQuery
+                on p.CompanyId equals pr.CompanyId
+            where EF.Functions.DateDiffSecond(p.LastSellTime.Value, now) > pr.Seconds
+            select p;
+
+
+        //var query2 = productsQuery
+        //    .Join(priceRules,
+        //        p => p.CompanyId,
+        //        pr => pr.CompanyId,
+        //        (p, pr) => new { p, pr })
+        //    .AsAsyncEnumerable()
+        //    .Where(x => x.p.LastSellTime != null
+        //                && EF.Functions.DateDiffSecond(x.p.LastSellTime.Value, now) > x.pr.Seconds)
+        //    .Select(x => x.p);
+
+        //(p, pr) new { Product = p, Rule = pr });
+
+        // 5. Выдаём поток
+        await foreach (var product in query2.AsAsyncEnumerable().WithCancellation(token))
             yield return product;
+        //await foreach (var product in query2.WithCancellation(token))
+        //    yield return product;
+
     }
+
+
+    //private async IAsyncEnumerable<Product> FindProductsToReduceAsync(
+    //DynamicPriceCoreContext context,
+    //CancellationToken token,
+    //int? productsCount = null)
+    //{
+    //    // 1. Загружаем правила в память + преобразуем TimeSpan → Seconds
+    //    var rules = await (from pr in context.PriceRules.AsNoTracking()
+    //                       join ac in context.ActiveCompanies.AsNoTracking()
+    //                           on pr.CompanyId equals ac.CompanyId
+    //                       where pr.NoSellTime.HasValue
+    //                       select new
+    //                       {
+    //                           pr.CompanyId,
+    //                           Seconds = (int)pr.NoSellTime.Value.TotalSeconds
+    //                       })
+    //                      .ToListAsync(token);
+
+    //    if (rules.Count == 0)
+    //        yield break;
+
+    //    // 2. Список компаний, у которых есть активные правила
+    //    var companyIds = rules
+    //        .Where(r => r.CompanyId.HasValue)
+    //        .Select(r => r.CompanyId!.Value)
+    //        .Distinct()
+    //        .ToList();
+
+    //    if (companyIds.Count == 0)
+    //        yield break;
+
+    //    // 3. Продукты этих компаний
+    //    var productsQuery = context.Products
+    //        .AsNoTracking()
+    //        .Where(p => p.CompanyId.HasValue
+    //                    && companyIds.Contains(p.CompanyId.Value));
+
+    //    if (productsCount.HasValue)
+    //        productsQuery = productsQuery.Take(productsCount.Value);
+
+    //    var now = DateTime.UtcNow;
+
+    //    // 4. Выполняем выборку продуктов из DB
+    //    //    (все сложные правила — на стороне .NET)
+    //    var products = await productsQuery.ToListAsync(token);
+
+    //    // 5. Соединяем с правилами в памяти + фильтруем
+    //    foreach (var product in products)
+    //    {
+    //        var rule = rules.FirstOrDefault(r => r.CompanyId == product.CompanyId);
+    //        if (rule == null)
+    //            continue;
+
+    //        if (product.LastSellTime == null)
+    //            continue;
+
+    //        var diffSeconds = (now - product.LastSellTime.Value).TotalSeconds;
+
+    //        if (diffSeconds > rule.Seconds)
+    //            yield return product;
+    //    }
+    //}
+
+    //todo: old
+    //private async IAsyncEnumerable<Product> FindProductsToReduceAsync(
+    //    DynamicPriceCoreContext context,
+    //    //List<PriceRule> priceRules,
+    //    CancellationToken token,
+    //    int? productsCount = null)
+    //{
+
+    //    var priceRulesQuery = from pr in context.PriceRules.AsNoTracking()
+    //                                 join ac in context.ActiveCompanies.AsNoTracking()
+    //                                     on pr.CompanyId equals ac.CompanyId
+    //                                 select pr;
+    //                            //.ToListAsync(token);    
+
+    //    var companyIds = priceRulesQuery?
+    //        .Where(pr => pr.CompanyId.HasValue)
+    //        .Select(pr => pr.CompanyId!.Value)
+    //        .Distinct()
+    //        .ToList();
+
+    //    if (companyIds == null || companyIds.Count == 0)
+    //        yield break;
+
+    //    var productsQuery = context.Products
+    //        .AsNoTracking()
+    //        .Where(p => p.CompanyId.HasValue && companyIds.Contains(p.CompanyId.Value));
+
+    //    if (productsCount.HasValue)
+    //        productsQuery = productsQuery.Take(productsCount.Value);
+
+    //    var now = DateTime.UtcNow;
+
+    //    //todo: check
+    //    //var query = from p in productsQuery
+    //    //            join pr in context.PriceRules.AsNoTracking()
+    //    //                on p.CompanyId equals pr.CompanyId
+    //    //            where pr.NoSellTime.HasValue &&
+    //    //                  (
+    //    //                    p.LastSellTime == null ||
+    //    //                    EF.Functions.DateDiffSecond(p.LastSellTime.Value, now) >
+    //    //                    (int)pr.NoSellTime.Value.TotalSeconds
+    //    //                  )
+    //    //                  select p;
+
+    //    //work
+    //    //var query = from p in productsQuery
+    //    //            join pr in context.PriceRules.AsNoTracking()
+    //    //                on p.CompanyId equals pr.CompanyId
+    //    //            where pr.NoSellTime.HasValue
+    //    //            select p;
+
+    //    //not work
+    //    //var query =
+    //    //    from p in productsQuery
+    //    //    join pr in context.PriceRules.AsNoTracking()
+    //    //        on p.CompanyId equals pr.CompanyId
+    //    //    where p.LastSellTime < now - pr.NoSellTime
+    //    //    select p;
+
+    //    //var query =
+    //    //    from p in productsQuery
+    //    //    join pr in context.PriceRules.AsNoTracking()
+    //    //        on p.CompanyId equals pr.CompanyId
+    //    //    where pr.NoSellTime.HasValue &&
+    //    //          (
+    //    //              p.LastSellTime == null ||
+    //    //              EF.Functions.DateDiffSecond(p.LastSellTime.Value, now) >
+    //    //              (int)pr.NoSellTime.Value.TotalSeconds
+    //    //          )
+    //    //    select p;
+
+    //    var query =
+    //        from p in productsQuery
+    //        join pr in context.PriceRules.AsNoTracking()
+    //            on p.CompanyId equals pr.CompanyId
+    //        where EF.Functions.DateDiffSecond(p.LastSellTime.Value, now) >
+    //                 (int)pr.NoSellTime.Value.TotalSeconds
+    //        select p;
+
+    //    //var productsToReduce = query.ToList();
+
+    //    //await foreach (var product in query.AsAsyncEnumerable().WithCancellation(token))
+    //    await foreach (var product in query.AsAsyncEnumerable().WithCancellation(token))
+    //        yield return product;
+    //}
 
     //private async Task<List<int>> FindProductsToReduceAsyncObsolete(
     //int companyId,

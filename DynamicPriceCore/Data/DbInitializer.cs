@@ -50,9 +50,9 @@ public static class DbInitializer
 		if (!await db.PriceRules.AnyAsync())
 		{
 			db.PriceRules.AddRange(
-				new PriceRule { CompanyId = 1, Increase = 1, Reduction = 1, NoSellTime = TimeSpan.FromSeconds(10) },
-				new PriceRule { CompanyId = 2, Increase = 1, Reduction = 1, NoSellTime = TimeSpan.FromSeconds(10) },
-				new PriceRule { CompanyId = 3, Increase = 1, Reduction = 1, NoSellTime = TimeSpan.FromSeconds(10) }
+				new PriceRule { CompanyId = 1, Increase = 1, Reduction = 1, NoSellSeconds = 10 },
+				new PriceRule { CompanyId = 2, Increase = 1, Reduction = 1, NoSellSeconds = 10 },
+				new PriceRule { CompanyId = 3, Increase = 1, Reduction = 1, NoSellSeconds = 10 }
 			);
 			await db.SaveChangesAsync();
 		}

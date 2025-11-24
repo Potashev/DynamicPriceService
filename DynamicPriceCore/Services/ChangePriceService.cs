@@ -1,6 +1,7 @@
 ﻿using DynamicPrice.Core.Rabbit;
 using DynamicPriceCore.Data;
 using DynamicPriceCore.Models;
+using MassTransit;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Prometheus;
@@ -11,7 +12,7 @@ using System.Text.Json;
 
 namespace DynamicPrice.Core.Services;
 
-public class ChangePriceService : BackgroundService
+public class ChangePriceService : IConsumer<PriceReduceEvent>
 {
 	private readonly IServiceProvider _serviceProvider;
 	private readonly ConnectionFactory _factory;
@@ -39,34 +40,20 @@ public class ChangePriceService : BackgroundService
 		_priceHubContext = priceHubContext;
 	}
 
-	protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-	{
-		_connection = await _factory.CreateConnectionAsync();
-		_channel = await _connection.CreateChannelAsync();
+    public async Task Consume(ConsumeContext<PriceReduceEvent> context)
+    {
+		var message = context.Message;
 
-		await _channel.QueueDeclareAsync("price.reduce", durable: true, exclusive: false, autoDelete: false);
+        if (message != null)
+        {
+            using (ChangePriceDuration.WithLabels(message.CompanyId.ToString()).NewTimer())
+            {
+                await HandlePriceReduction(message);
+            }
+        }
+    }
 
-		var consumer = new AsyncEventingBasicConsumer(_channel);
-		consumer.ReceivedAsync += async (_, ea) =>
-		{
-			var json = Encoding.UTF8.GetString(ea.Body.ToArray());
-			var msg = JsonSerializer.Deserialize<PriceReduceMessage>(json);
-
-			if (msg != null)
-			{
-				using (ChangePriceDuration.WithLabels(msg.CompanyId.ToString()).NewTimer())
-				{
-					await HandlePriceReduction(msg);
-				}
-			}
-
-			await _channel.BasicAckAsync(ea.DeliveryTag, false);
-		};
-
-		await _channel.BasicConsumeAsync("price.reduce", autoAck: false, consumer: consumer);
-	}
-
-	private async Task HandlePriceReduction(PriceReduceMessage msg)
+	private async Task HandlePriceReduction(PriceReduceEvent msg)
 	{
 		using var scope = _serviceProvider.CreateScope();
 		var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
@@ -115,7 +102,7 @@ public class ChangePriceService : BackgroundService
 		return price;
 	}
 
-	//todo: think about remove companyId from message
-	//public record PriceReduceMessage(int ProductId, int CompanyId);
+    //todo: think about remove companyId from message
+    //public record PriceReduceMessage(int ProductId, int CompanyId);
 }
 

@@ -106,27 +106,9 @@ public class ReducePriceWorker : BackgroundService
                 //todo: check
                 var publishEndpoint = scope.ServiceProvider.GetRequiredService<IPublishEndpoint>();
 
-
-                //todo: check - need contains companyId
-                //var priceRules = await (from pr in context.PriceRules.AsNoTracking()
-                //                        join ac in context.ActiveCompanies.AsNoTracking()
-                //                            on pr.CompanyId equals ac.CompanyId
-                //                        select pr)
-                //    .ToListAsync(token);
-
                 await foreach (var p in FindProductsToReduceAsync(context, token))
                 {
-                    await publishEndpoint.Publish(new PriceReduceMessage(p.ProductId, p.CompanyId), token);    //todo: pass companyId or just productId
-
-
-                    //var message = new PriceReduceMessage(productId, companyId);
-                    //var json = JsonSerializer.Serialize(message);
-                    //var body = Encoding.UTF8.GetBytes(json);
-
-                    //await _channel!.BasicPublishAsync(
-                    //    exchange: "",
-                    //    routingKey: "price.reduce",
-                    //    body: body);
+                    await publishEndpoint.Publish(new PriceReduceEvent(p.ProductId, p.CompanyId), token);    //todo: pass companyId or just productId
                 }
                 //}
 
@@ -158,12 +140,10 @@ public class ReducePriceWorker : BackgroundService
     CancellationToken token,
     int? productsCount = null)
     {
-        // 1. PriceRules + ActiveCompanies + seconds
         var priceRulesQuery =
             from pr in context.PriceRules.AsNoTracking()
             join ac in context.ActiveCompanies.AsNoTracking()
                 on pr.CompanyId equals ac.CompanyId
-            //where pr.NoSellTime
             select pr;
 
         var priceRules = await
@@ -177,7 +157,6 @@ public class ReducePriceWorker : BackgroundService
                 Seconds = pr.NoSellSeconds
             }).ToListAsync();
 
-        // 2. Собираем ID компаний с активными правилами
         var companyIds = priceRules
             .Where(pr => pr.CompanyId.HasValue)
             .Select(pr => pr.CompanyId!.Value)
@@ -196,16 +175,6 @@ public class ReducePriceWorker : BackgroundService
             productsQuery = productsQuery.Take(productsCount.Value);
 
         var now = DateTime.UtcNow;
-
-        //work
-        //var query =
-        //    from p in productsQuery
-        //    join pr in priceRulesQuery
-        //        on p.CompanyId equals pr.CompanyId
-        //    where EF.Functions.DateDiffSecond(p.LastSellTime.Value, now) > 0
-        //    select p;
-
-        //not work - cannot translate
         var query =
             from p in productsQuery
             join pr in priceRulesQuery
@@ -213,25 +182,8 @@ public class ReducePriceWorker : BackgroundService
             where EF.Functions.DateDiffSecond(p.LastSellTime.Value, now) > pr.NoSellSeconds
             select p;
 
-
-        //var query2 = productsQuery
-        //    .Join(priceRules,
-        //        p => p.CompanyId,
-        //        pr => pr.CompanyId,
-        //        (p, pr) => new { p, pr })
-        //    .AsAsyncEnumerable()
-        //    .Where(x => x.p.LastSellTime != null
-        //                && EF.Functions.DateDiffSecond(x.p.LastSellTime.Value, now) > x.pr.Seconds)
-        //    .Select(x => x.p);
-
-        //(p, pr) new { Product = p, Rule = pr });
-
-        // 5. Выдаём поток
         await foreach (var product in query.AsAsyncEnumerable().WithCancellation(token))
             yield return product;
-        //await foreach (var product in query2.WithCancellation(token))
-        //    yield return product;
-
     }
 
 

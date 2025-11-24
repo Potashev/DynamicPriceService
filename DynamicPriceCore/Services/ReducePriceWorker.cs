@@ -164,11 +164,7 @@ public class ReducePriceWorker : BackgroundService
             join ac in context.ActiveCompanies.AsNoTracking()
                 on pr.CompanyId equals ac.CompanyId
             //where pr.NoSellTime
-            select new
-            {
-                pr.CompanyId,
-                Seconds = pr.NoSellSeconds
-            };
+            select pr;
 
         var priceRules = await
             (from pr in context.PriceRules.AsNoTracking()
@@ -202,19 +198,19 @@ public class ReducePriceWorker : BackgroundService
         var now = DateTime.UtcNow;
 
         //work
+        //var query =
+        //    from p in productsQuery
+        //    join pr in priceRulesQuery
+        //        on p.CompanyId equals pr.CompanyId
+        //    where EF.Functions.DateDiffSecond(p.LastSellTime.Value, now) > 0
+        //    select p;
+
+        //not work - cannot translate
         var query =
             from p in productsQuery
             join pr in priceRulesQuery
                 on p.CompanyId equals pr.CompanyId
-            where EF.Functions.DateDiffSecond(p.LastSellTime.Value, now) > 0
-            select p;
-
-        //not work - cannot translate
-        var query2 =
-            from p in productsQuery
-            join pr in priceRulesQuery
-                on p.CompanyId equals pr.CompanyId
-            where EF.Functions.DateDiffSecond(p.LastSellTime.Value, now) > pr.Seconds
+            where EF.Functions.DateDiffSecond(p.LastSellTime.Value, now) > pr.NoSellSeconds
             select p;
 
 
@@ -231,7 +227,7 @@ public class ReducePriceWorker : BackgroundService
         //(p, pr) new { Product = p, Rule = pr });
 
         // 5. Выдаём поток
-        await foreach (var product in query2.AsAsyncEnumerable().WithCancellation(token))
+        await foreach (var product in query.AsAsyncEnumerable().WithCancellation(token))
             yield return product;
         //await foreach (var product in query2.WithCancellation(token))
         //    yield return product;

@@ -9,12 +9,12 @@ public class PriceRule
 {
 	public int PriceRuleId { get; set; }
 	public Company Company { get; set; }
-	public int? CompanyId { get; set; }
+	public int? CompanyId { get; set; }     //todo: make required
 
-	/// <summary>
-	/// Повышение цены продукта (в %).
-	/// </summary>
-	public double Increase { get; set; }
+    /// <summary>
+    /// Повышение цены продукта (в %).
+    /// </summary>
+    public double Increase { get; set; }
 
 	/// <summary>
 	/// Снижение цены продукта (в %).

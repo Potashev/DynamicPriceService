@@ -15,10 +15,6 @@ namespace DynamicPrice.Core.Services;
 public class ChangePriceService : IConsumer<PriceReduceEvent>
 {
 	private readonly IServiceProvider _serviceProvider;
-	private readonly ConnectionFactory _factory;
-	private IConnection? _connection;
-	private IChannel? _channel;
-
 	private readonly IHubContext<PriceHub> _priceHubContext;
 
 	private static readonly Histogram ChangePriceDuration = Metrics
@@ -32,10 +28,10 @@ public class ChangePriceService : IConsumer<PriceReduceEvent>
 	public ChangePriceService(IServiceProvider serviceProvider, IConfiguration config, IHubContext<PriceHub> priceHubContext)	//todo: remove PriceHub?
 	{
 		_serviceProvider = serviceProvider;
-		_factory = new ConnectionFactory
-		{
-			Uri = new Uri(config.GetConnectionString("RabbitMQ") ?? "amqp://guest:guest@localhost:5672/")
-		};
+		//_factory = new ConnectionFactory
+		//{
+		//	Uri = new Uri(config.GetConnectionString("RabbitMQ") ?? "amqp://guest:guest@localhost:5672/")
+		//};
 
 		_priceHubContext = priceHubContext;
 	}

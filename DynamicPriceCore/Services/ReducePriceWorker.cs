@@ -45,53 +45,7 @@ public class ReducePriceWorker : BackgroundService
     public ReducePriceWorker(IServiceProvider serviceProvider, IConfiguration config)
     {
         _serviceProvider = serviceProvider;
-        //_publishEndpoint = publishEndpoint;
-
-        //_factory = new ConnectionFactory
-        //{
-        //    Uri = new Uri(config.GetConnectionString("RabbitMQ") ?? "amqp://guest:guest@localhost:5672/")
-        //};
     }
-
-    //protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    //{
-    //	_connection = await _factory.CreateConnectionAsync();
-    //	_channel = await _connection.CreateChannelAsync();
-
-    //	await _channel.ExchangeDeclareAsync(exchange: ExchangeName, type: ExchangeType.Direct, durable: true);
-    //	await _channel.QueueDeclareAsync(queue: QueueName, durable: true, exclusive: false, autoDelete: false);
-
-    //	await _channel.QueueBindAsync(queue: QueueName, exchange: ExchangeName, routingKey: "company.monitoring");
-    //	await _channel.QueueBindAsync(queue: QueueName, exchange: ExchangeName, routingKey: "company.monitoring.stop");
-
-    //	//todo: check
-    //	await _channel.QueueDeclareAsync(
-    //		queue: "price.reduce",
-    //		durable: true,
-    //		exclusive: false,
-    //		autoDelete: false,
-    //		arguments: null);
-
-    //	var consumer = new AsyncEventingBasicConsumer(_channel);
-    //	consumer.ReceivedAsync += async (_, ea) =>
-    //	{
-    //		var json = Encoding.UTF8.GetString(ea.Body.ToArray());
-    //		var payload = JsonSerializer.Deserialize<CompanyPayload>(json);
-
-    //		if (payload != null)
-    //		{
-    //			if (ea.RoutingKey == "company.monitoring")
-    //				StartMonitoringForCompany(payload.CompanyId);
-    //			else if (ea.RoutingKey == "company.monitoring.stop")
-    //				StopMonitoringForCompany(payload.CompanyId);
-    //		}
-
-    //		await _channel!.BasicAckAsync(ea.DeliveryTag, false);
-    //	};
-
-    //	await _channel.BasicConsumeAsync(queue: QueueName, autoAck: false, consumer: consumer);
-    //}
-
     protected override async Task ExecuteAsync(CancellationToken token)
     {
         try

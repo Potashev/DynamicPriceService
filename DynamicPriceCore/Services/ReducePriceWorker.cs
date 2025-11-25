@@ -1,25 +1,15 @@
 ﻿using DynamicPrice.Core.Rabbit;
-using DynamicPrice.Core.Services;
 using DynamicPriceCore.Data;
 using DynamicPriceCore.Models;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Prometheus;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
 using System.Collections.Concurrent;
-using System.Text;
-using System.Text.Json;
-using System.Threading;
+using System.Threading.Tasks;
 
 public class ReducePriceWorker : BackgroundService
 {
     private readonly IServiceProvider _serviceProvider;
-    //private readonly ConnectionFactory _factory;
-    //private IConnection? _connection;
-    //private IChannel? _channel;
-
-    //private readonly IPublishEndpoint _publishEndpoint;
 
     private static readonly Histogram MonitorDuration = Metrics
     .CreateHistogram("dp_company_monitor_duration_seconds",
@@ -37,15 +27,11 @@ public class ReducePriceWorker : BackgroundService
         });
     private readonly ConcurrentDictionary<int, DateTime> _lastMonitorEnd = new();
 
-    private readonly ConcurrentDictionary<int, CancellationTokenSource> _companyMonitors = new();
-
-    private const string ExchangeName = "company_monitoring_exchange";
-    private const string QueueName = "company_monitoring_worker";
-
     public ReducePriceWorker(IServiceProvider serviceProvider, IConfiguration config)
     {
         _serviceProvider = serviceProvider;
     }
+
     protected override async Task ExecuteAsync(CancellationToken token)
     {
         try
@@ -55,21 +41,23 @@ public class ReducePriceWorker : BackgroundService
             {
                 //using (MonitorDuration.WithLabels().NewTimer())
                 //{
+
                 using var scope = _serviceProvider.CreateScope();
                 var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
                 var publishEndpoint = scope.ServiceProvider.GetRequiredService<IPublishEndpoint>();
 
+                //todo: later think about Parallel.ForEachAsync or PLINQ
                 await foreach (var p in FindProductsToReduceAsync(context, token))
                 {
                     await publishEndpoint.Publish(new PriceReduceEvent(p.ProductId, p.CompanyId), token);    //todo: pass companyId or just productId
                 }
+
                 //}
 
                 //todo: remove?
                 await Task.Delay(TimeSpan.FromSeconds(1), token);
 
                 //todo: return back metrics
-
 
                 //_lastMonitorEnd[companyId] = DateTime.UtcNow;
 
@@ -93,6 +81,7 @@ public class ReducePriceWorker : BackgroundService
     CancellationToken token,
     int? productsCount = null)
     {
+        //todo: later think about configuration activeCompnay.LastMonitorTime - skip recently monitored companies if need it
         var activeCompaniesIds = await context.ActiveCompanies
             .Select(ac => ac.CompanyId)
             .ToListAsync(token);

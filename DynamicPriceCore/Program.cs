@@ -1,5 +1,6 @@
 ﻿using DynamicPrice.Core.Services;
 using DynamicPriceCore.Data;
+using DynamicPriceCore.Extensions;
 using DynamicPriceCore.Models;
 using DynamicPriceCore.Services;
 using DynamicPriceCore.ViewModels;
@@ -12,7 +13,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Prometheus;
-using Quartz;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -110,11 +110,6 @@ builder.Services.AddSingleton<IEventBus>(sp =>
 
 builder.Services.AddMassTransit(x =>
 {
-    // A Transport
-    //x.UsingRabbitMq((context, cfg) =>
-    //{
-    //});
-
 	x.AddConsumer<ActiveCompaniesService>();
 	x.AddConsumer<ChangePriceService>();
 
@@ -124,19 +119,12 @@ builder.Services.AddMassTransit(x =>
 	});
 });
 
-//builder.Services.AddSingleton<IActiveCompaniesService, ActiveCompaniesService>();
 builder.Services.AddSingleton<ActiveCompaniesService>();
-//builder.Services.AddHostedService<ActiveCompaniesService>();
 builder.Services.AddHostedService<ReducePriceWorker>();
-//builder.Services.AddHostedService<ChangePriceService>();
 builder.Services.AddTransient<IIncreasePriceService, IncreasePriceService>();   //todo: change
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserService, UserService>();
-
-//builder.Services.AddQuartz(q => q.AddJobAndTrigger<ReducePriceJob>(builder.Configuration));
-//builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
-
 
 var app = builder.Build();
 
@@ -147,20 +135,7 @@ if (app.Environment.IsDevelopment())
 	app.UseSwagger();
 	app.UseSwaggerUI();
 
-	//app.ApplyMigrations();
-	using (var scope = app.Services.CreateScope())
-	{
-		var services = scope.ServiceProvider;
-
-		var dynamicPriceDb = services.GetRequiredService<DynamicPriceCoreContext>();
-		dynamicPriceDb.Database.Migrate();
-
-		var identityDb = services.GetRequiredService<IdentityContext>();
-		identityDb.Database.Migrate();
-
-		await DbInitializer.SeedDataAsync(services);
-	}
-
+	app.ApplyMigrations();
 }
 
 app.UseHttpsRedirection();

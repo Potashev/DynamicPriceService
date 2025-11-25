@@ -12,7 +12,7 @@ using System.Text.Json;
 
 namespace DynamicPrice.Core.Services;
 
-public class ChangePriceService : IConsumer<PriceReduceEvent>
+public class ReducePriceService : IConsumer<PriceReduceEvent>
 {
 	private readonly IServiceProvider _serviceProvider;
 	private readonly IHubContext<PriceHub> _priceHubContext;
@@ -25,7 +25,7 @@ public class ChangePriceService : IConsumer<PriceReduceEvent>
 			LabelNames = new[] { "companyId" }
 		});
 
-	public ChangePriceService(IServiceProvider serviceProvider, IConfiguration config, IHubContext<PriceHub> priceHubContext)	//todo: remove PriceHub?
+	public ReducePriceService(IServiceProvider serviceProvider, IConfiguration config, IHubContext<PriceHub> priceHubContext)	//todo: remove PriceHub?
 	{
 		_serviceProvider = serviceProvider;
 		//_factory = new ConnectionFactory

@@ -5,7 +5,7 @@ using MassTransit;
 
 namespace DynamicPriceCore.Services;
 
-//todo: make as background service?
+//todo: later think about removing this service and handling active companies in ReducePriceWorker
 public class ActiveCompaniesService : IConsumer<CompanyMonitoringEvent>
 {
 	private readonly IServiceProvider _serviceProvider;

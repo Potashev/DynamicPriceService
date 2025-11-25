@@ -7,7 +7,6 @@ public static class MigrationExtensions
 {
 	public static async void ApplyMigrations(this IApplicationBuilder app)
 	{
-        //todo: check
         using var scope = app.ApplicationServices.CreateScope();
         var services = scope.ServiceProvider;
 

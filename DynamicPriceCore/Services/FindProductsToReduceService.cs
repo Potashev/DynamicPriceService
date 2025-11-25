@@ -7,7 +7,7 @@ using Prometheus;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
-public class ReducePriceWorker : BackgroundService
+public class FindProductsToReduceService : BackgroundService
 {
     private readonly IServiceProvider _serviceProvider;
 
@@ -27,7 +27,7 @@ public class ReducePriceWorker : BackgroundService
         });
     private readonly ConcurrentDictionary<int, DateTime> _lastMonitorEnd = new();
 
-    public ReducePriceWorker(IServiceProvider serviceProvider, IConfiguration config)
+    public FindProductsToReduceService(IServiceProvider serviceProvider, IConfiguration config)
     {
         _serviceProvider = serviceProvider;
     }

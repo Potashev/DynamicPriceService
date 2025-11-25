@@ -111,7 +111,7 @@ builder.Services.AddSingleton<IEventBus>(sp =>
 builder.Services.AddMassTransit(x =>
 {
 	x.AddConsumer<ActiveCompaniesService>();
-	x.AddConsumer<ChangePriceService>();
+	x.AddConsumer<ReducePriceService>();
 
 	x.UsingInMemory((context, cfg) =>
 	{
@@ -120,7 +120,7 @@ builder.Services.AddMassTransit(x =>
 });
 
 builder.Services.AddSingleton<ActiveCompaniesService>();
-builder.Services.AddHostedService<ReducePriceWorker>();
+builder.Services.AddHostedService<FindProductsToReduceService>();
 builder.Services.AddTransient<IIncreasePriceService, IncreasePriceService>();   //todo: change
 
 builder.Services.AddHttpContextAccessor();

@@ -100,13 +100,13 @@ builder.Services.AddAutoMapper(cfg =>
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
 
-builder.Services.AddSingleton<IEventBus>(sp =>
-{
-	var config = sp.GetRequiredService<IConfiguration>();
-	var connStr = config.GetConnectionString("RabbitMQ")
-				  ?? "amqp://guest:guest@localhost:5672/";
-	return new RabbitMqEventBus(connStr);
-});
+//builder.Services.AddSingleton<IEventBus>(sp =>
+//{
+//	var config = sp.GetRequiredService<IConfiguration>();
+//	var connStr = config.GetConnectionString("RabbitMQ")
+//				  ?? "amqp://guest:guest@localhost:5672/";
+//	return new RabbitMqEventBus(connStr);
+//});
 
 builder.Services.AddMassTransit(x =>
 {

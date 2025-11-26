@@ -1,5 +1,4 @@
-﻿using DynamicPrice.Core.Rabbit;
-using DynamicPriceCore.Data;
+﻿using DynamicPriceCore.Data;
 using DynamicPriceCore.Models;
 using MassTransit;
 using Microsoft.AspNetCore.SignalR;
@@ -28,11 +27,6 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 	public ReducePriceService(IServiceProvider serviceProvider, IConfiguration config, IHubContext<PriceHub> priceHubContext)	//todo: remove PriceHub?
 	{
 		_serviceProvider = serviceProvider;
-		//_factory = new ConnectionFactory
-		//{
-		//	Uri = new Uri(config.GetConnectionString("RabbitMQ") ?? "amqp://guest:guest@localhost:5672/")
-		//};
-
 		_priceHubContext = priceHubContext;
 	}
 
@@ -64,10 +58,9 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 		if (priceRule == null) return;
 
 		product.Price = Math.Max(
-			ReducePrice(product.Price, priceRule.Reduction, true),
+                        //todo: check increasePriceService.NoticeOfIncrease (testdrawing = false)
+                        ReducePrice(product.Price, priceRule.Reduction, true),
 			product.MinimumPrice);
-
-
 
 		await context.PriceDynamics.AddAsync(new PriceDynamic
 		{
@@ -96,8 +89,5 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 
 		return price;
 	}
-
-    //todo: think about remove companyId from message
-    //public record PriceReduceMessage(int ProductId, int CompanyId);
 }
 

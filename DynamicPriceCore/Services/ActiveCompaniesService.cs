@@ -1,4 +1,4 @@
-﻿using DynamicPrice.Core.Rabbit;
+﻿using DynamicPrice.Core.Services;
 using DynamicPriceCore.Data;
 using DynamicPriceCore.Models;
 using MassTransit;
@@ -10,7 +10,7 @@ public class ActiveCompaniesService : IConsumer<CompanyMonitoringEvent>
 {
 	private readonly IServiceProvider _serviceProvider;
 
-	public ActiveCompaniesService(IServiceProvider serviceProvider, IConfiguration config, IEventBus eventBus)
+	public ActiveCompaniesService(IServiceProvider serviceProvider, IConfiguration config)
 	{
 		_serviceProvider = serviceProvider;
 	}
@@ -23,7 +23,7 @@ public class ActiveCompaniesService : IConsumer<CompanyMonitoringEvent>
 		using var scope = _serviceProvider.CreateScope();
 		var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
 
-		if (monitoringEvent == "start")
+		if (monitoringEvent == MonitoringEvent.Start)
 		{
 			var entity = await context.ActiveCompanies.FindAsync(companyId);
 			if (entity == null)
@@ -32,7 +32,7 @@ public class ActiveCompaniesService : IConsumer<CompanyMonitoringEvent>
                 context.ActiveCompanies.Add(new ActiveCompany { CompanyId = companyId, StartedAt = DateTime.UtcNow });
 			}
 		}
-		else if (monitoringEvent == "stop")
+		else if (monitoringEvent == MonitoringEvent.Stop)
 		{
 			var entity = await context.ActiveCompanies.FindAsync(companyId);
 			if (entity != null)

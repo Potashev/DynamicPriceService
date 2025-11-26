@@ -1,4 +1,4 @@
-﻿using DynamicPrice.Core.Rabbit;
+﻿using DynamicPrice.Core.Services;
 using DynamicPriceCore.Data;
 using DynamicPriceCore.Models;
 using DynamicPriceCore.Services;
@@ -13,11 +13,10 @@ public class CompleteOrderCommandHandler
 {
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IUserService _userService;
-    //private readonly IIncreasePriceService _increasePriceService;
     private readonly IPublishEndpoint _publishEndpoint;
 
-    public CompleteOrderCommandHandler(DynamicPriceCoreContext context, IUserService userService, IPublishEndpoint publishEndpoint /*, IIncreasePriceService increasePriceService*/)
-		=> (_context, _userService, _publishEndpoint /*, _increasePriceService*/) = (context, userService, publishEndpoint /*, increasePriceService*/);
+    public CompleteOrderCommandHandler(DynamicPriceCoreContext context, IUserService userService, IPublishEndpoint publishEndpoint)
+		=> (_context, _userService, _publishEndpoint) = (context, userService, publishEndpoint);
 
 	public async Task<int> Handle(CompleteOrderCommand request, CancellationToken cancellationToken)
 	{
@@ -58,9 +57,6 @@ public class CompleteOrderCommandHandler
 		await _userService.UpdateUserAsync(customer);
 
         await _publishEndpoint.Publish(new PriceIncreaseEvent(order.OrderItems), cancellationToken);
-
-        //await _publishEndpoint.Publish(new PriceIncreaseEvent(order.OrderId), cancellationToken);
-        //await _increasePriceService.Increase(order.OrderItems);
 
         return order.OrderId;
 	}

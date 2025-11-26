@@ -1,4 +1,4 @@
-﻿using DynamicPrice.Core.Rabbit;
+﻿using DynamicPrice.Core.Services;
 using DynamicPriceCore.Data;
 using DynamicPriceCore.Models;
 using MassTransit;

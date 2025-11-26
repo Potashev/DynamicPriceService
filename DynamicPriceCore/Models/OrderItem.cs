@@ -4,7 +4,7 @@ namespace DynamicPriceCore.Models;
 
 public class OrderItem
 {
-	public int Id { get; set; }
+	public int Id { get; set; }		//todo: make guid
 	public int OrderId { get; set; }
 
 	[JsonIgnore]

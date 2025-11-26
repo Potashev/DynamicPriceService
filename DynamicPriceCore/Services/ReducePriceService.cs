@@ -1,23 +1,15 @@
-﻿using DynamicPrice.Core.Rabbit;
-using DynamicPriceCore.Data;
+﻿using DynamicPriceCore.Data;
 using DynamicPriceCore.Models;
+using MassTransit;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Prometheus;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
-using System.Text;
-using System.Text.Json;
 
 namespace DynamicPrice.Core.Services;
 
-public class ChangePriceService : BackgroundService
+public class ReducePriceService : IConsumer<PriceReduceEvent>
 {
 	private readonly IServiceProvider _serviceProvider;
-	private readonly ConnectionFactory _factory;
-	private IConnection? _connection;
-	private IChannel? _channel;
-
 	private readonly IHubContext<PriceHub> _priceHubContext;
 
 	private static readonly Histogram ChangePriceDuration = Metrics
@@ -28,51 +20,31 @@ public class ChangePriceService : BackgroundService
 			LabelNames = new[] { "companyId" }
 		});
 
-	public ChangePriceService(IServiceProvider serviceProvider, IConfiguration config, IHubContext<PriceHub> priceHubContext)	//todo: remove PriceHub?
+	public ReducePriceService(IServiceProvider serviceProvider, IConfiguration config, IHubContext<PriceHub> priceHubContext)	//todo: remove PriceHub?
 	{
 		_serviceProvider = serviceProvider;
-		_factory = new ConnectionFactory
-		{
-			Uri = new Uri(config.GetConnectionString("RabbitMQ") ?? "amqp://guest:guest@localhost:5672/")
-		};
-
 		_priceHubContext = priceHubContext;
 	}
 
-	protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-	{
-		_connection = await _factory.CreateConnectionAsync();
-		_channel = await _connection.CreateChannelAsync();
+    public async Task Consume(ConsumeContext<PriceReduceEvent> context)
+    {
+		var msg = context.Message;
+        if (msg != null)
+        {
+            //using (ChangePriceDuration.WithLabels(message.CompanyId.ToString()).NewTimer())
+            //{
+                await ReducePrice(msg.ProductId);
+            //}
+        }
+    }
 
-		await _channel.QueueDeclareAsync("price.reduce", durable: true, exclusive: false, autoDelete: false);
-
-		var consumer = new AsyncEventingBasicConsumer(_channel);
-		consumer.ReceivedAsync += async (_, ea) =>
-		{
-			var json = Encoding.UTF8.GetString(ea.Body.ToArray());
-			var msg = JsonSerializer.Deserialize<PriceReduceMessage>(json);
-
-			if (msg != null)
-			{
-				using (ChangePriceDuration.WithLabels(msg.CompanyId.ToString()).NewTimer())
-				{
-					await HandlePriceReduction(msg);
-				}
-			}
-
-			await _channel.BasicAckAsync(ea.DeliveryTag, false);
-		};
-
-		await _channel.BasicConsumeAsync("price.reduce", autoAck: false, consumer: consumer);
-	}
-
-	private async Task HandlePriceReduction(PriceReduceMessage msg)
+	private async Task ReducePrice(int productId)
 	{
 		using var scope = _serviceProvider.CreateScope();
 		var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
 
 		var product = await context.Products
-			.FirstOrDefaultAsync(p => p.ProductId == msg.ProductId);
+			.FirstOrDefaultAsync(p => p.ProductId == productId);
 
 		if (product == null) return;
 
@@ -82,10 +54,9 @@ public class ChangePriceService : BackgroundService
 		if (priceRule == null) return;
 
 		product.Price = Math.Max(
-			ReducePrice(product.Price, priceRule.Reduction, true),
+                        //todo: check increasePriceService.NoticeOfIncrease (testdrawing = false)
+                        ReducePrice(product.Price, priceRule.Reduction, true),
 			product.MinimumPrice);
-
-
 
 		await context.PriceDynamics.AddAsync(new PriceDynamic
 		{
@@ -114,8 +85,5 @@ public class ChangePriceService : BackgroundService
 
 		return price;
 	}
-
-	//todo: think about remove companyId from message
-	//public record PriceReduceMessage(int ProductId, int CompanyId);
 }
 

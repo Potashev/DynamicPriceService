@@ -4,7 +4,7 @@ namespace DynamicPriceCore.Models;
 
 public class CartItem
 {
-	public int Id { get; set; }
+	public int Id { get; set; }		//todo: make guid
 	public int CartId { get; set; }
 
 	[JsonIgnore]

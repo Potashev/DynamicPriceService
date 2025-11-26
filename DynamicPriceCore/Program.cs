@@ -1,8 +1,10 @@
 ﻿using DynamicPrice.Core.Services;
 using DynamicPriceCore.Data;
+using DynamicPriceCore.Extensions;
 using DynamicPriceCore.Models;
 using DynamicPriceCore.Services;
 using DynamicPriceCore.ViewModels;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Identity;
@@ -11,16 +13,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Prometheus;
-using Quartz;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddDbContext<DynamicPriceCoreContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("DynamicPriceDb") ?? throw new InvalidOperationException("Connection string 'DynamicPriceDb' not found.")));
-
 builder.Services.AddDbContext<IdentityContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityDb") ?? throw new InvalidOperationException("Connection string 'IdentityDb' not found.")));
-
 
 builder.Services.AddAuthentication(options =>
 {
@@ -33,12 +33,10 @@ builder.Services.AddAuthentication(options =>
 	{
 		ValidateIssuerSigningKey = true,
 		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
-
 		ValidateIssuer = true,
 		ValidateAudience = true,
 		ValidIssuer = "TestIssuer",
 		ValidAudience = "TestAudience",
-
 		ValidateLifetime = true,
 		ClockSkew = TimeSpan.Zero
 	};
@@ -102,25 +100,21 @@ builder.Services.AddAutoMapper(cfg =>
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
 
-builder.Services.AddSingleton<IEventBus>(sp =>
+builder.Services.AddMassTransit(x =>
 {
-	var config = sp.GetRequiredService<IConfiguration>();
-	var connStr = config.GetConnectionString("RabbitMQ")
-				  ?? "amqp://guest:guest@localhost:5672/";
-	return new RabbitMqEventBus(connStr);
+	x.AddConsumer<ReducePriceService>();
+    x.AddConsumer<IncreasePriceService>();
+
+    x.UsingInMemory((context, cfg) =>
+	{
+		cfg.ConfigureEndpoints(context);
+	});
 });
 
-builder.Services.AddSingleton<IActiveCompaniesService, ActiveCompaniesService>();
-builder.Services.AddHostedService<ReducePriceWorker>();
-builder.Services.AddHostedService<ChangePriceService>();
-builder.Services.AddTransient<IIncreasePriceService, IncreasePriceService>();   //todo: change
+builder.Services.AddHostedService<FindProductsToReduceService>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserService, UserService>();
-
-//builder.Services.AddQuartz(q => q.AddJobAndTrigger<ReducePriceJob>(builder.Configuration));
-//builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
-
 
 var app = builder.Build();
 
@@ -131,20 +125,7 @@ if (app.Environment.IsDevelopment())
 	app.UseSwagger();
 	app.UseSwaggerUI();
 
-	//app.ApplyMigrations();
-	using (var scope = app.Services.CreateScope())
-	{
-		var services = scope.ServiceProvider;
-
-		var dynamicPriceDb = services.GetRequiredService<DynamicPriceCoreContext>();
-		dynamicPriceDb.Database.Migrate();
-
-		var identityDb = services.GetRequiredService<IdentityContext>();
-		identityDb.Database.Migrate();
-
-		await DbInitializer.SeedDataAsync(services);
-	}
-
+	app.ApplyMigrations();
 }
 
 app.UseHttpsRedirection();

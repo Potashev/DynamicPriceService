@@ -6,7 +6,7 @@ namespace DynamicPriceCore.Models;
 [Index(nameof(Number), IsUnique = true)]
 public class Order
 {
-	public int OrderId { get; set; }
+	public int OrderId { get; set; }	//todo: make guid
 
 	[MaxLength(20)]
 	public string Number { get; set; }

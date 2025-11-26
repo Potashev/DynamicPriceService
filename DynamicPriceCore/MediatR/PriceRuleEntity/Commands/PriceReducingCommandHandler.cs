@@ -1,5 +1,8 @@
-﻿using DynamicPrice.Core.Rabbit;
+﻿using DynamicPrice.Core.Services;
+using DynamicPriceCore.Data;
+using DynamicPriceCore.Models;
 using DynamicPriceCore.Services;
+using MassTransit;
 using MediatR;
 
 namespace DynamicPriceCore.MediatR.PriceRuleEntity.Commands;
@@ -8,10 +11,10 @@ public class PriceReducingCommandHandler
 	: IRequestHandler<PriceReducingCommand>
 {
 	private readonly IUserService _userService;
-	private readonly IEventBus _eventBus;
+	private readonly DynamicPriceCoreContext _context;
 
-	public PriceReducingCommandHandler(IUserService userService, IEventBus eventBus)
-		=> (_userService, _eventBus) = (userService, eventBus);
+    public PriceReducingCommandHandler(IUserService userService, DynamicPriceCoreContext context)
+		=> (_userService, _context) = (userService, context);
 
 	public async Task Handle(PriceReducingCommand request, CancellationToken cancellationToken)
 	{
@@ -19,11 +22,16 @@ public class PriceReducingCommandHandler
 
 		var companyId = (int)manager.CompanyId;
 
-		if (request.IsRunCommand)
-			await _eventBus.PublishAsync(new CompanyMonitoringStarted(companyId), "company.start");
-		else
-			await _eventBus.PublishAsync(new CompanyMonitoringStopped(companyId), "company.stop");
+        var activeCompany = await _context.ActiveCompanies.FindAsync(companyId);
 
-		return;
+        if (request.IsRunCommand && activeCompany is null)
+            //todo: set lastmonitoring as default?
+            _context.ActiveCompanies.Add(new ActiveCompany { CompanyId = companyId, StartedAt = DateTime.UtcNow });
+        else if (!request.IsRunCommand && activeCompany is not null)
+            _context.ActiveCompanies.Remove(activeCompany);
+
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return;
 	}
 }

@@ -10,7 +10,8 @@ public class OrdersController : BaseController
 
 	public async Task<IActionResult> Index()
 	{
-		var ordersVm = await CoreApiClient.GetOrders();
+        //todo: handle 403
+        var ordersVm = await CoreApiClient.GetOrders();
 		return View(ordersVm);
 	}
 

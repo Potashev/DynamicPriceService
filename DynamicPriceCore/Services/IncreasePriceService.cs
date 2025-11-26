@@ -1,37 +1,50 @@
-﻿using DynamicPriceCore.Data;
+﻿using DynamicPrice.Core.Rabbit;
+using DynamicPriceCore.Data;
 using DynamicPriceCore.Models;
+using MassTransit;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPriceCore.Services;
 
-public class IncreasePriceService : IIncreasePriceService
+public class IncreasePriceService : IConsumer<PriceIncreaseEvent>
 {
-	private readonly DynamicPriceCoreContext _context;
-	private readonly IHubContext<PriceHub> _priceHubContext;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly IHubContext<PriceHub> _priceHubContext;
 
-	public IncreasePriceService(DynamicPriceCoreContext context, IHubContext<PriceHub> priceHubContext)
+	public IncreasePriceService(IServiceProvider serviceProvider, IHubContext<PriceHub> priceHubContext)
 	{
-		_context = context;
-		_priceHubContext = priceHubContext;
+        _serviceProvider = serviceProvider;
+        _priceHubContext = priceHubContext;
 	}
 
-	//todo: check replacing OrderProduct with OrderItem
-	public async Task Increase(IEnumerable<OrderItem> OrderItems)
+    public async Task Consume(ConsumeContext<PriceIncreaseEvent> context)
+    {
+        var msg = context.Message;
+
+        if (msg != null)
+        {
+            await IncreasePrices(msg.OrderItems);
+        }
+    }
+
+    private async Task IncreasePrices(IEnumerable<OrderItem> OrderItems)
 	{
-		var company = _context.Products
-			.Where(p => p.ProductId == OrderItems.FirstOrDefault().ProductId)
-			.Select(p => p.Company).FirstOrDefault();
+        using var scope = _serviceProvider.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
 
-		var priceRule = _context.PriceRules
-			.FirstOrDefault(p => p.Company.CompanyId == company.CompanyId);
+        var companyId = OrderItems.FirstOrDefault()?.Product.CompanyId;
 
-		IncreasePrice(OrderItems, priceRule);
+        var priceRule = await context.PriceRules
+			.FirstOrDefaultAsync(p => p.Company.CompanyId == companyId);
 
-		await NoticeOfIncrease(OrderItems);
+        IncreasePrice(OrderItems, priceRule);
 
-		_context.SaveChanges();
-	}
+        await NoticeOfIncrease(OrderItems);
+
+        context.SaveChanges();
+    }
 
 	private void IncreasePrice(IEnumerable<OrderItem> OrderItems, PriceRule priceRule)
 	{
@@ -50,9 +63,4 @@ public class IncreasePriceService : IIncreasePriceService
 			await _priceHubContext.Clients.All.SendAsync("ReceivePriceUpdate", product.ProductId, product.Price);
 		}
 	}
-}
-
-public interface IIncreasePriceService
-{
-	Task Increase(IEnumerable<OrderItem> OrderItems);
 }

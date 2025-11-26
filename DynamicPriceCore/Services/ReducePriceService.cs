@@ -38,24 +38,23 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 
     public async Task Consume(ConsumeContext<PriceReduceEvent> context)
     {
-		var message = context.Message;
-
-        if (message != null)
+		var msg = context.Message;
+        if (msg != null)
         {
-            using (ChangePriceDuration.WithLabels(message.CompanyId.ToString()).NewTimer())
-            {
-                await HandlePriceReduction(message);
-            }
+            //using (ChangePriceDuration.WithLabels(message.CompanyId.ToString()).NewTimer())
+            //{
+                await ReducePrice(msg.ProductId);
+            //}
         }
     }
 
-	private async Task HandlePriceReduction(PriceReduceEvent msg)
+	private async Task ReducePrice(int productId)
 	{
 		using var scope = _serviceProvider.CreateScope();
 		var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
 
 		var product = await context.Products
-			.FirstOrDefaultAsync(p => p.ProductId == msg.ProductId);
+			.FirstOrDefaultAsync(p => p.ProductId == productId);
 
 		if (product == null) return;
 

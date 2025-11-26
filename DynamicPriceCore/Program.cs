@@ -112,8 +112,9 @@ builder.Services.AddMassTransit(x =>
 {
 	x.AddConsumer<ActiveCompaniesService>();
 	x.AddConsumer<ReducePriceService>();
+    x.AddConsumer<IncreasePriceService>();
 
-	x.UsingInMemory((context, cfg) =>
+    x.UsingInMemory((context, cfg) =>
 	{
 		cfg.ConfigureEndpoints(context);
 	});
@@ -121,7 +122,8 @@ builder.Services.AddMassTransit(x =>
 
 builder.Services.AddSingleton<ActiveCompaniesService>();
 builder.Services.AddHostedService<FindProductsToReduceService>();
-builder.Services.AddTransient<IIncreasePriceService, IncreasePriceService>();   //todo: change
+builder.Services.AddTransient<IncreasePriceService>();
+//builder.Services.AddTransient<IIncreasePriceService, IncreasePriceService>();   //todo: change
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserService, UserService>();

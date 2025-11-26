@@ -1,6 +1,8 @@
-﻿using DynamicPriceCore.Data;
+﻿using DynamicPrice.Core.Rabbit;
+using DynamicPriceCore.Data;
 using DynamicPriceCore.Models;
 using DynamicPriceCore.Services;
+using MassTransit;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,10 +13,11 @@ public class CompleteOrderCommandHandler
 {
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IUserService _userService;
-	private readonly IIncreasePriceService _increasePriceService;
+    //private readonly IIncreasePriceService _increasePriceService;
+    private readonly IPublishEndpoint _publishEndpoint;
 
-	public CompleteOrderCommandHandler(DynamicPriceCoreContext context, IUserService userService, IIncreasePriceService increasePriceService)
-		=> (_context, _userService, _increasePriceService) = (context, userService, increasePriceService);
+    public CompleteOrderCommandHandler(DynamicPriceCoreContext context, IUserService userService, IPublishEndpoint publishEndpoint /*, IIncreasePriceService increasePriceService*/)
+		=> (_context, _userService, _publishEndpoint /*, _increasePriceService*/) = (context, userService, publishEndpoint /*, increasePriceService*/);
 
 	public async Task<int> Handle(CompleteOrderCommand request, CancellationToken cancellationToken)
 	{
@@ -53,8 +56,12 @@ public class CompleteOrderCommandHandler
 
 		await _context.SaveChangesAsync(cancellationToken);
 		await _userService.UpdateUserAsync(customer);
-		await _increasePriceService.Increase(order.OrderItems);
 
-		return order.OrderId;
+        await _publishEndpoint.Publish(new PriceIncreaseEvent(order.OrderItems), cancellationToken);
+
+        //await _publishEndpoint.Publish(new PriceIncreaseEvent(order.OrderId), cancellationToken);
+        //await _increasePriceService.Increase(order.OrderItems);
+
+        return order.OrderId;
 	}
 }

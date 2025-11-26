@@ -49,7 +49,7 @@ public class FindProductsToReduceService : BackgroundService
                 //todo: later think about Parallel.ForEachAsync or PLINQ
                 await foreach (var p in FindProductsToReduceAsync(context, token))
                 {
-                    await publishEndpoint.Publish(new PriceReduceEvent(p.ProductId, p.CompanyId), token);    //todo: pass companyId or just productId
+                    await publishEndpoint.Publish(new PriceReduceEvent(p.ProductId), token);
                 }
 
                 //}

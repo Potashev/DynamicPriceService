@@ -100,17 +100,8 @@ builder.Services.AddAutoMapper(cfg =>
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
 
-//builder.Services.AddSingleton<IEventBus>(sp =>
-//{
-//	var config = sp.GetRequiredService<IConfiguration>();
-//	var connStr = config.GetConnectionString("RabbitMQ")
-//				  ?? "amqp://guest:guest@localhost:5672/";
-//	return new RabbitMqEventBus(connStr);
-//});
-
 builder.Services.AddMassTransit(x =>
 {
-	x.AddConsumer<ActiveCompaniesService>();
 	x.AddConsumer<ReducePriceService>();
     x.AddConsumer<IncreasePriceService>();
 
@@ -120,10 +111,7 @@ builder.Services.AddMassTransit(x =>
 	});
 });
 
-builder.Services.AddSingleton<ActiveCompaniesService>();
 builder.Services.AddHostedService<FindProductsToReduceService>();
-builder.Services.AddTransient<IncreasePriceService>();
-//builder.Services.AddTransient<IIncreasePriceService, IncreasePriceService>();   //todo: change
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserService, UserService>();

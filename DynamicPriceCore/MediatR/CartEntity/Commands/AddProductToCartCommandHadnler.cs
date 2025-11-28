@@ -33,8 +33,7 @@ public class AddProductToCartCommandHadnler
 				&& c.Company == product.Company)
 			.FirstOrDefaultAsync(cancellationToken);
 
-		if (cart == null)
-			cart = await CreateNewCart(customer, product.Company);
+		cart ??= await CreateNewCart(customer, product.Company);
 
 		var cartItem = cart.CartItems
 			.Where(ci => ci.ProductId == product.ProductId)

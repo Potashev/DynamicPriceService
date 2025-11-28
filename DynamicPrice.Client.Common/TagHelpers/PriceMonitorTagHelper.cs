@@ -55,11 +55,11 @@ public class PriceMonitorTagHelper : TagHelper
 		var optionsJson = JsonSerializer.Serialize(options);
 
 		output.Content.SetHtmlContent($@"
-            <canvas id=""chart-{ProductId}""
-                    data-price-monitor=""true""
-                    data-product-id=""{ProductId}""
-                    data-initial-data='{dynamicsJson}'
-                    data-options='{optionsJson}'></canvas>
-        ");
+			<canvas id=""chart-{ProductId}""
+					data-price-monitor=""true""
+					data-product-id=""{ProductId}""
+					data-initial-data='{dynamicsJson}'
+					data-options='{optionsJson}'></canvas>
+		");
 	}
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace DynamicPrice.Customer.Controllers;
+
 public class BaseController : Controller
 {
 	protected ICoreApiClient CoreApiClient { get; }

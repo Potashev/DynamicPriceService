@@ -7,7 +7,7 @@ namespace DynamicPriceService.Controllers;
 
 public class ProductsController : BaseController
 {
-	public ProductsController(ICoreApiClient coreApiClient) 
+	public ProductsController(ICoreApiClient coreApiClient)
 		: base(coreApiClient) { }
 
 	public async Task<IActionResult> Index()
@@ -55,7 +55,7 @@ public class ProductsController : BaseController
 
 	[HttpPost]
 	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> Edit(int id, ProductViewModel productVm)	//todo: looks not good
+	public async Task<IActionResult> Edit(int id, ProductViewModel productVm)   //todo: looks not good
 	{
 		if (ModelState.IsValid)
 		{

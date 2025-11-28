@@ -3,6 +3,7 @@ using DynamicPriceClient.ApiClients;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPriceClient.Controllers;
+
 public class OrderController : BaseController
 {
 	public OrderController(ICoreApiClient coreApiClient)

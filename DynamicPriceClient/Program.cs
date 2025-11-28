@@ -13,7 +13,7 @@ builder.Services.AddSession(options =>
 	options.IdleTimeout = TimeSpan.FromMinutes(30);
 	options.Cookie.HttpOnly = true;
 	options.Cookie.IsEssential = true;
-	options.Cookie.Name = "Customer.Session";	//for using manager and customer in one browser
+	options.Cookie.Name = "Customer.Session";   //for using manager and customer in one browser
 });
 
 var baseUrl = builder.Configuration["ApiSettings:BaseUrl"];

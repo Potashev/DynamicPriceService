@@ -27,7 +27,7 @@ public class UserService : IUserService
 	public string? UserId
 		=> _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-	public string? Role 
+	public string? Role
 		=> _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role)?.Value;
 
 	public async Task<ApplicationUser?> GetCurrentUserAsync()

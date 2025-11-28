@@ -19,7 +19,7 @@ public class DeleteProductCommandHandler
 		var manager = await _userService.GetCurrentUserAsync();
 
 		var product = await _context.Products
-			.FirstOrDefaultAsync(p =>  p.ProductId == request.ProductId && p.CompanyId == manager.CompanyId, cancellationToken);
+			.FirstOrDefaultAsync(p => p.ProductId == request.ProductId && p.CompanyId == manager.CompanyId, cancellationToken);
 		if (product != null)
 		{
 			_context.Products.Remove(product);

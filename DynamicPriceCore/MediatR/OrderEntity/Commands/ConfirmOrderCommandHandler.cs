@@ -57,7 +57,7 @@ public class ConfirmOrderCommandHandler
 
 
 		_context.Orders.Add(order);
-		_context.Carts.Remove(cart);	//todo: cartitems removes too?
+		_context.Carts.Remove(cart);    //todo: cartitems removes too?
 
 		await _context.SaveChangesAsync(cancellationToken);
 

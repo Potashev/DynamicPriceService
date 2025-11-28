@@ -23,7 +23,7 @@ public class ReadyForReceiveOrderCommandHandler
 			.Where(o => o.OrderId.ToString() == request.OrderId && o.Company.CompanyId == manager.CompanyId)
 			.FirstOrDefaultAsync(cancellationToken);
 
-		if (order is null )
+		if (order is null)
 			throw new Exception("Order not found.");
 
 		if (order.Status is not OrderStatus.Confirmed)

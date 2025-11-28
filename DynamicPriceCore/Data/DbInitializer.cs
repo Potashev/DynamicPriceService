@@ -41,7 +41,7 @@ public static class DbInitializer
 				new Company { Title = "Копыта" },
 				new Company { Title = "Рога" }
 			);
-			
+
 			await db.SaveChangesAsync();
 		}
 

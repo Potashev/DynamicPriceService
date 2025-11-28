@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPriceCore.Data;
+
 public class DynamicPriceCoreContext : DbContext
 {
 	public DynamicPriceCoreContext(DbContextOptions<DynamicPriceCoreContext> options)

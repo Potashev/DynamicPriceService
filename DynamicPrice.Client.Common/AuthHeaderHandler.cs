@@ -32,9 +32,9 @@ public class AuthHeaderHandler : DelegatingHandler
 			var response = new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)
 			{
 				RequestMessage = request,
-				ReasonPhrase = "Network error"
+				ReasonPhrase = "Network error",
+				Content = new StringContent("Network error: " + ex.Message)
 			};
-			response.Content = new StringContent("Network error: " + ex.Message);
 			return response;
 		}
 		catch (Exception ex)
@@ -42,9 +42,9 @@ public class AuthHeaderHandler : DelegatingHandler
 			var response = new HttpResponseMessage(HttpStatusCode.BadGateway)
 			{
 				RequestMessage = request,
-				ReasonPhrase = "Unexpected error"
+				ReasonPhrase = "Unexpected error",
+				Content = new StringContent("Unexpected error: " + ex.Message)
 			};
-			response.Content = new StringContent("Unexpected error: " + ex.Message);
 			return response;
 		}
 	}

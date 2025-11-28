@@ -5,7 +5,6 @@ using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Prometheus;
 using System.Collections.Concurrent;
-using System.Threading.Tasks;
 
 public class FindProductsToReduceService : BackgroundService
 {

@@ -1,6 +1,4 @@
-﻿using Azure.Core;
-using DynamicPriceCore.Models;
-using MediatR;
+﻿using DynamicPriceCore.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

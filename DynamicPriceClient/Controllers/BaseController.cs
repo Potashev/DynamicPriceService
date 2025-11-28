@@ -22,7 +22,7 @@ public class BaseController : Controller
 			var customer = await CoreApiClient.GetCustomer();
 			customerName = customer.Name;
 		}
-		catch (Exception ex) { }
+		catch (Exception) { }
 
 		ViewData["CustomerName"] = customerName;
 		await next();

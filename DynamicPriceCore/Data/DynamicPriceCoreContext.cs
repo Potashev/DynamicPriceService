@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using DynamicPriceCore.Models;
+﻿using DynamicPriceCore.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPriceCore.Data;
 public class DynamicPriceCoreContext : DbContext

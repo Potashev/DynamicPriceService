@@ -1,8 +1,6 @@
-﻿using DynamicPrice.Core.Services;
-using DynamicPriceCore.Data;
+﻿using DynamicPriceCore.Data;
 using DynamicPriceCore.Models;
 using DynamicPriceCore.Services;
-using MassTransit;
 using MediatR;
 
 namespace DynamicPriceCore.MediatR.PriceRuleEntity.Commands;

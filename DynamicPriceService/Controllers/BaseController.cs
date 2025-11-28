@@ -1,5 +1,4 @@
 ﻿using DynamicPriceService.ApiClients;
-using DynamicPriceService.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -23,7 +22,7 @@ public class BaseController : Controller
 			var company = await CoreApiClient.GetCompanyInfo();
 			companyTitle = company.Title;
 		}
-		catch (Exception ex) { }
+		catch (Exception) { }
 
 		ViewData["CompanyTitle"] = companyTitle;
 		await next();

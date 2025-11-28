@@ -84,7 +84,7 @@ public class ProductsController : BaseController
 	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> DeleteConfirmed(int id)
 	{
-		await CoreApiClient.DeleteProduct((int)id);
+		await CoreApiClient.DeleteProduct(id);
 		return RedirectToAction(nameof(Index));
 	}
 }

@@ -1,4 +1,5 @@
 ﻿namespace DynamicPrice.Client.Common;
+
 public enum OrderStatus
 {
 	Confirmed,

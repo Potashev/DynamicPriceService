@@ -1,12 +1,11 @@
-﻿using DynamicPrice.Core.Services;
-using DynamicPriceCore.Data;
-using DynamicPriceCore.Models;
+﻿using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Models;
 using MassTransit;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 
-namespace DynamicPriceCore.Services;
+namespace DynamicPrice.Core.Services;
 
 public class IncreasePriceService : IConsumer<PriceIncreaseEvent>
 {

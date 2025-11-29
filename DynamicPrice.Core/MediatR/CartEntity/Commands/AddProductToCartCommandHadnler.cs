@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
-using DynamicPriceCore.Data;
-using DynamicPriceCore.Models;
-using DynamicPriceCore.Services;
-using DynamicPriceCore.ViewModels;
+using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Models;
+using DynamicPrice.Core.Services;
+using DynamicPrice.Core.ViewModels;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace DynamicPriceCore.MediatR.CartEntity.Commands;
+namespace DynamicPrice.Core.MediatR.CartEntity.Commands;
 
 public class AddProductToCartCommandHadnler
 	: IRequestHandler<AddProductToCartCommand, CartViewModel>

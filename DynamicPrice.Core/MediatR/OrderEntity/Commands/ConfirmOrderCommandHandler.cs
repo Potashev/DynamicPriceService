@@ -1,10 +1,10 @@
-﻿using DynamicPriceCore.Data;
-using DynamicPriceCore.Models;
-using DynamicPriceCore.Services;
+﻿using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Models;
+using DynamicPrice.Core.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace DynamicPriceCore.MediatR.OrderEntity.Commands;
+namespace DynamicPrice.Core.MediatR.OrderEntity.Commands;
 
 public class ConfirmOrderCommandHandler
 	: IRequestHandler<ConfirmOrderCommand, int>

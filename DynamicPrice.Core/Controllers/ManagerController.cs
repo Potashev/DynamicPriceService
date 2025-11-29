@@ -1,5 +1,5 @@
 ﻿using DynamicPrice.Core.MediatR.ManagerEntity.Queries;
-using DynamicPriceCore.ViewModels;
+using DynamicPrice.Core.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;

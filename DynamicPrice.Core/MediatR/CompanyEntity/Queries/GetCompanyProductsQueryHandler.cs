@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using DynamicPriceCore.Data;
-using DynamicPriceCore.ViewModels;
+using DynamicPrice.Core.Data;
+using DynamicPrice.Core.ViewModels;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace DynamicPriceCore.MediatR.CompanyEntity.Queries;
+namespace DynamicPrice.Core.MediatR.CompanyEntity.Queries;
 
 public class GetCompanyProductsQueryHandler
 	: IRequestHandler<GetCompanyProductsQuery, CompanyProductsInfo>

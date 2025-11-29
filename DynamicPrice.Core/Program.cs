@@ -1,9 +1,8 @@
-﻿using DynamicPrice.Core.Services;
-using DynamicPriceCore.Data;
-using DynamicPriceCore.Extensions;
-using DynamicPriceCore.Models;
-using DynamicPriceCore.Services;
-using DynamicPriceCore.ViewModels;
+﻿using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Extensions;
+using DynamicPrice.Core.Models;
+using DynamicPrice.Core.Services;
+using DynamicPrice.Core.ViewModels;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.CookiePolicy;

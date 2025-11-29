@@ -1,7 +1,7 @@
-﻿using DynamicPriceCore.Services;
+﻿using DynamicPrice.Core.Services;
 using MediatR;
 
-namespace DynamicPriceCore.MediatR.AuthEntity.Commands;
+namespace DynamicPrice.Core.MediatR.AuthEntity.Commands;
 
 public class RegisterCommandHandler
 	: IRequestHandler<RegisterCommand>

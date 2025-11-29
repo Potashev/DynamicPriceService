@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using DynamicPriceCore.Data;
-using DynamicPriceCore.Services;
-using DynamicPriceCore.ViewModels;
+using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Services;
+using DynamicPrice.Core.ViewModels;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace DynamicPriceCore.MediatR.CartEntity.Commands;
+namespace DynamicPrice.Core.MediatR.CartEntity.Commands;
 
 public class RemoveProductFromCartCommandHandler
 	: IRequestHandler<RemoveProductFromCartCommand, CartViewModel>

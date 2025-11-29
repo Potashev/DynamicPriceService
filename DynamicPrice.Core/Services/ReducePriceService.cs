@@ -1,5 +1,5 @@
-﻿using DynamicPriceCore.Data;
-using DynamicPriceCore.Models;
+﻿using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Models;
 using MassTransit;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;

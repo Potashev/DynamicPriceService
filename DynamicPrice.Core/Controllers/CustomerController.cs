@@ -1,12 +1,12 @@
-﻿using DynamicPriceCore.MediatR.CustomerEntity.Commands;
-using DynamicPriceCore.MediatR.CustomerEntity.Queries;
-using DynamicPriceCore.ViewModels;
+﻿using DynamicPrice.Core.MediatR.CustomerEntity.Commands;
+using DynamicPrice.Core.MediatR.CustomerEntity.Queries;
+using DynamicPrice.Core.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DynamicPriceCore.Controllers;
+namespace DynamicPrice.Core.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]

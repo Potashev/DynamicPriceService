@@ -1,8 +1,8 @@
-﻿using DynamicPriceCore.Models;
+﻿using DynamicPrice.Core.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace DynamicPriceCore.Data;
+namespace DynamicPrice.Core.Data;
 
 /// <summary>
 /// Provides methods for seeding test data into the stores.

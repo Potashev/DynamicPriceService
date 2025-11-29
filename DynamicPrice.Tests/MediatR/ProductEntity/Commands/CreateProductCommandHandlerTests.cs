@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using DynamicPriceCore.Data;
-using DynamicPriceCore.MediatR.ProductEntity.Commands;
-using DynamicPriceCore.Models;
-using DynamicPriceCore.Services;
-using DynamicPriceCore.ViewModels;
+using DynamicPrice.Core.Data;
+using DynamicPrice.Core.MediatR.ProductEntity.Commands;
+using DynamicPrice.Core.Models;
+using DynamicPrice.Core.Services;
+using DynamicPrice.Core.ViewModels;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Moq;

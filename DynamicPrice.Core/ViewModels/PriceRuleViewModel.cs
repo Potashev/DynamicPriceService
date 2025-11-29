@@ -1,4 +1,4 @@
-﻿namespace DynamicPriceCore.ViewModels;
+﻿namespace DynamicPrice.Core.ViewModels;
 
 public class PriceRuleViewModel
 {

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DynamicPriceClient.ViewModels;
+namespace DynamicPrice.Customer.ViewModels;
 
 public class PriceDynamicViewModel
 {

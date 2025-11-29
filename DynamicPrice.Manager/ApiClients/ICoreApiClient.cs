@@ -1,7 +1,7 @@
-﻿using DynamicPriceService.ViewModels;
+﻿using DynamicPrice.Manager.ViewModels;
 using Refit;
 
-namespace DynamicPriceService.ApiClients;
+namespace DynamicPrice.Manager.ApiClients;
 
 public interface ICoreApiClient
 {

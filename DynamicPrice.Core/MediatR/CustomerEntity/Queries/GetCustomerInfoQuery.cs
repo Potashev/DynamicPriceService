@@ -1,6 +1,6 @@
-﻿using DynamicPriceCore.ViewModels;
+﻿using DynamicPrice.Core.ViewModels;
 using MediatR;
 
-namespace DynamicPriceCore.MediatR.CustomerEntity.Queries;
+namespace DynamicPrice.Core.MediatR.CustomerEntity.Queries;
 
 public record GetCustomerInfoQuery : IRequest<CustomerInfoViewModel>;

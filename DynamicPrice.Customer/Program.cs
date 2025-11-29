@@ -1,5 +1,5 @@
 using DynamicPrice.Client.Common;
-using DynamicPriceClient.ApiClients;
+using DynamicPrice.Customer.ApiClients;
 using Refit;
 
 var builder = WebApplication.CreateBuilder(args);

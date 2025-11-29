@@ -1,6 +1,6 @@
-﻿using DynamicPriceCore.ViewModels;
+﻿using DynamicPrice.Core.ViewModels;
 using MediatR;
 
-namespace DynamicPriceCore.MediatR.ProductEntity.Commands;
+namespace DynamicPrice.Core.MediatR.ProductEntity.Commands;
 
 public record CreateProductCommand(ProductViewModel ProductVm) : IRequest<int>;

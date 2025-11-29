@@ -1,9 +1,9 @@
-﻿using DynamicPriceCore.MediatR.AuthEntity.Commands;
-using DynamicPriceCore.ViewModels;
+﻿using DynamicPrice.Core.MediatR.AuthEntity.Commands;
+using DynamicPrice.Core.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DynamicPriceCore.Controllers;
+namespace DynamicPrice.Core.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]

@@ -1,12 +1,12 @@
-﻿using DynamicPriceCore.MediatR.CartEntity.Commands;
-using DynamicPriceCore.MediatR.CartEntity.Queries;
-using DynamicPriceCore.ViewModels;
+﻿using DynamicPrice.Core.MediatR.CartEntity.Commands;
+using DynamicPrice.Core.MediatR.CartEntity.Queries;
+using DynamicPrice.Core.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DynamicPriceCore.Controllers;
+namespace DynamicPrice.Core.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]

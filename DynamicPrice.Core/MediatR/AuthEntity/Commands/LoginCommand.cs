@@ -1,6 +1,6 @@
-﻿using DynamicPriceCore.ViewModels;
+﻿using DynamicPrice.Core.ViewModels;
 using MediatR;
 
-namespace DynamicPriceCore.MediatR.AuthEntity.Commands;
+namespace DynamicPrice.Core.MediatR.AuthEntity.Commands;
 
 public record LoginCommand(LoginViewModel loginVm) : IRequest<string>;

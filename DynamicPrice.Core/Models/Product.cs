@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace DynamicPriceCore.Models;
+namespace DynamicPrice.Core.Models;
 
 /// <summary>
 /// Продукт компании.

@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace DynamicPriceCore.Migrations.Identity
+namespace DynamicPrice.Core.Migrations.Identity
 {
 	/// <inheritdoc />
 	public partial class InitialCreate : Migration

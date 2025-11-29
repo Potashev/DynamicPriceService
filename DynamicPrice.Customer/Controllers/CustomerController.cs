@@ -1,9 +1,8 @@
-﻿using DynamicPrice.Customer.Controllers;
-using DynamicPriceClient.ApiClients;
-using DynamicPriceClient.ViewModels;
+﻿using DynamicPrice.Customer.ApiClients;
+using DynamicPrice.Customer.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DynamicPriceClient.Controllers;
+namespace DynamicPrice.Customer.Controllers;
 
 public class CustomerController : BaseController
 {

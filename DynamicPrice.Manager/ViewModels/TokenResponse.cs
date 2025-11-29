@@ -1,4 +1,4 @@
-﻿namespace DynamicPriceService.ViewModels;
+﻿namespace DynamicPrice.Manager.ViewModels;
 
 public class TokenResponse
 {

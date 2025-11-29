@@ -1,6 +1,6 @@
-﻿using DynamicPrice.Core.Services;
-using DynamicPriceCore.Data;
-using DynamicPriceCore.Models;
+﻿using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Models;
+using DynamicPrice.Core.Services;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Prometheus;

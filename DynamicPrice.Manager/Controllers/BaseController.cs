@@ -1,4 +1,4 @@
-﻿using DynamicPriceService.ApiClients;
+﻿using DynamicPrice.Manager.ApiClients;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 

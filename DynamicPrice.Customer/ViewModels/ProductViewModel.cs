@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DynamicPriceClient.ViewModels;
+namespace DynamicPrice.Customer.ViewModels;
 
 public class ProductViewModel
 {

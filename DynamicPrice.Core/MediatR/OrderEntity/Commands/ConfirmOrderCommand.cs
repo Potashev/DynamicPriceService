@@ -1,5 +1,5 @@
 ﻿using MediatR;
 
-namespace DynamicPriceCore.MediatR.OrderEntity.Commands;
+namespace DynamicPrice.Core.MediatR.OrderEntity.Commands;
 
 public record ConfirmOrderCommand(int CartId) : IRequest<int>;

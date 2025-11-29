@@ -1,7 +1,7 @@
-﻿using DynamicPriceCore.ViewModels;
+﻿using DynamicPrice.Core.ViewModels;
 using MediatR;
 
-namespace DynamicPriceCore.MediatR.PriceRuleEntity.Queries;
+namespace DynamicPrice.Core.MediatR.PriceRuleEntity.Queries;
 
 public record GetPriceRuleWithStatusQuery() : IRequest<PriceRuleWithStatus>;
 

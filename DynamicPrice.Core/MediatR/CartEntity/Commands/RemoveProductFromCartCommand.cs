@@ -1,6 +1,6 @@
-﻿using DynamicPriceCore.ViewModels;
+﻿using DynamicPrice.Core.ViewModels;
 using MediatR;
 
-namespace DynamicPriceCore.MediatR.CartEntity.Commands;
+namespace DynamicPrice.Core.MediatR.CartEntity.Commands;
 
 public record RemoveProductFromCartCommand(string ProductId) : IRequest<CartViewModel>;

@@ -1,7 +1,8 @@
-namespace DynamicPrice.Manager.ViewModels;
+﻿namespace DynamicPrice.Client.Common.ViewModels;
 
 public class ErrorViewModel
 {
 	public string? RequestId { get; set; }
+
 	public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 }

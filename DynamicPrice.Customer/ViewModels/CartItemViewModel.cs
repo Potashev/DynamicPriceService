@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using DynamicPrice.Client.Common.ViewModels;
+using System.Text.Json.Serialization;
 
 namespace DynamicPrice.Customer.ViewModels;
 

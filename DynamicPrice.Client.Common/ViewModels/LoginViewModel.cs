@@ -1,4 +1,4 @@
-﻿namespace DynamicPrice.Manager.ViewModels;
+﻿namespace DynamicPrice.Client.Common.ViewModels;
 
 public class LoginViewModel
 {

@@ -42,7 +42,7 @@ public class IncreasePriceService : IConsumer<PriceIncreaseEvent>
 
 		await NoticeOfIncrease(OrderItems);
 
-		context.SaveChanges();
+		await context.SaveChangesAsync();
 	}
 
 	private void IncreasePrice(IEnumerable<OrderItem> OrderItems, PriceRule priceRule)

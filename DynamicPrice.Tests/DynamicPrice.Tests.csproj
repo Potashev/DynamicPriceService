@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DynamicPriceCore\DynamicPrice.Core.csproj" />
+    <ProjectReference Include="..\DynamicPrice.Core\DynamicPrice.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

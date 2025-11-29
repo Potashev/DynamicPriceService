@@ -1,12 +1,12 @@
-﻿using DynamicPriceCore.MediatR.ProductEntity.Commands;
-using DynamicPriceCore.MediatR.ProductEntity.Queries;
-using DynamicPriceCore.ViewModels;
+﻿using DynamicPrice.Core.MediatR.ProductEntity.Commands;
+using DynamicPrice.Core.MediatR.ProductEntity.Queries;
+using DynamicPrice.Core.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DynamicPriceCore.Controllers;
+namespace DynamicPrice.Core.Controllers;
 
 [Route("api/company/[controller]")]
 [ApiController]
@@ -31,9 +31,7 @@ public class ProductsController : ControllerBase
 	{
 		var productVm = await _mediator.Send(new GetProductDetailsQuery(id));
 
-		return productVm == null ?
-			NotFound() :
-			productVm;
+		return productVm ?? NotFound();
 	}
 
 	[HttpPut("{id}")]

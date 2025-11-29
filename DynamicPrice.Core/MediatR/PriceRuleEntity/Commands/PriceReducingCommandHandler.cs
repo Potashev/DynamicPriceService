@@ -1,9 +1,9 @@
-﻿using DynamicPriceCore.Data;
-using DynamicPriceCore.Models;
-using DynamicPriceCore.Services;
+﻿using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Models;
+using DynamicPrice.Core.Services;
 using MediatR;
 
-namespace DynamicPriceCore.MediatR.PriceRuleEntity.Commands;
+namespace DynamicPrice.Core.MediatR.PriceRuleEntity.Commands;
 
 public class PriceReducingCommandHandler
 	: IRequestHandler<PriceReducingCommand>

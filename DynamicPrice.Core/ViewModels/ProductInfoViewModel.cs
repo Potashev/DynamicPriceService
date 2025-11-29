@@ -1,6 +1,6 @@
-﻿using DynamicPriceCore.Models;
+﻿using DynamicPrice.Core.Models;
 
-namespace DynamicPriceCore.ViewModels;
+namespace DynamicPrice.Core.ViewModels;
 
 /// <summary>
 /// Dto продукта для покупателя.

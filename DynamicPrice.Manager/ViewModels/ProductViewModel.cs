@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DynamicPriceService.ViewModels;
+using System.ComponentModel.DataAnnotations;
 
-namespace DynamicPriceService.ViewModels;
+namespace DynamicPrice.Manager.ViewModels;
 
 public class ProductViewModel
 {

@@ -1,9 +1,9 @@
-﻿using DynamicPriceCore.Data;
-using DynamicPriceCore.Services;
+﻿using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace DynamicPriceCore.MediatR.ProductEntity.Commands;
+namespace DynamicPrice.Core.MediatR.ProductEntity.Commands;
 
 public class DeleteProductCommandHandler
 	: IRequestHandler<DeleteProductCommand>

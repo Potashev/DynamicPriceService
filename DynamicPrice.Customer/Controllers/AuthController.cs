@@ -1,10 +1,9 @@
 ﻿using DynamicPrice.Client.Common;
-using DynamicPrice.Customer.Controllers;
 using DynamicPriceClient.ApiClients;
 using DynamicPriceClient.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DynamicPriceClient.Controllers
+namespace DynamicPrice.Customer.Controllers
 {
 	public class AuthController : BaseController
 	{

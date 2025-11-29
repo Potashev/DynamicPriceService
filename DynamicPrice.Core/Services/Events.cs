@@ -1,4 +1,4 @@
-﻿using DynamicPriceCore.Models;
+﻿using DynamicPrice.Core.Models;
 
 namespace DynamicPrice.Core.Services;
 

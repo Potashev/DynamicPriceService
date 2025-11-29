@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using DynamicPriceCore.Data;
-using DynamicPriceCore.Models;
-using DynamicPriceCore.Services;
+using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Models;
+using DynamicPrice.Core.Services;
 using MediatR;
 
-namespace DynamicPriceCore.MediatR.ProductEntity.Commands;
+namespace DynamicPrice.Core.MediatR.ProductEntity.Commands;
 
 public class CreateProductCommandHandler
 	: IRequestHandler<CreateProductCommand, int>

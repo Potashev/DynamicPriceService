@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DynamicPriceCore.Models;
+namespace DynamicPrice.Core.Models;
 
 /// <summary>
 /// Правило изменения цены для компании.

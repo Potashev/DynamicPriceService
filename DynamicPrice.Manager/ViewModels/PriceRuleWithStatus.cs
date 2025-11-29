@@ -1,4 +1,6 @@
-﻿namespace DynamicPriceService.ViewModels;
+﻿using DynamicPriceService.ViewModels;
+
+namespace DynamicPrice.Manager.ViewModels;
 
 public class PriceRuleWithStatus
 {

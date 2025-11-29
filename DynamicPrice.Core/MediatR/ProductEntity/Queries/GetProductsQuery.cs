@@ -1,6 +1,6 @@
-﻿using DynamicPriceCore.ViewModels;
+﻿using DynamicPrice.Core.ViewModels;
 using MediatR;
 
-namespace DynamicPriceCore.MediatR.ProductEntity.Queries;
+namespace DynamicPrice.Core.MediatR.ProductEntity.Queries;
 
 public record GetProductsQuery() : IRequest<IEnumerable<ProductViewModel>>;

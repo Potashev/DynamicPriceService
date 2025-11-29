@@ -1,7 +1,7 @@
-﻿using DynamicPriceCore.Models;
+﻿using DynamicPrice.Core.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace DynamicPriceCore.Data;
+namespace DynamicPrice.Core.Data;
 
 public class DynamicPriceCoreContext : DbContext
 {

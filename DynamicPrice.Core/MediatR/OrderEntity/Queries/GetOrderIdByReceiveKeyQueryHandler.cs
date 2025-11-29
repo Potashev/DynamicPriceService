@@ -1,9 +1,9 @@
-﻿using DynamicPriceCore.Data;
-using DynamicPriceCore.Services;
+﻿using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace DynamicPriceCore.MediatR.OrderEntity.Queries;
+namespace DynamicPrice.Core.MediatR.OrderEntity.Queries;
 
 public class GetOrderIdByReceiveKeyQueryHandler
 	: IRequestHandler<GetOrderIdByReceiveKeyQuery, int>

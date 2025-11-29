@@ -1,8 +1,7 @@
-﻿using DynamicPrice.Manager.Controllers;
-using DynamicPriceService.ApiClients;
+﻿using DynamicPriceService.ApiClients;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DynamicPriceService.Controllers;
+namespace DynamicPrice.Manager.Controllers;
 
 public class OrdersController : BaseController
 {

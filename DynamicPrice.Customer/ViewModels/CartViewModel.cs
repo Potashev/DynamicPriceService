@@ -1,4 +1,6 @@
-﻿namespace DynamicPriceClient.ViewModels;
+﻿using DynamicPriceClient.ViewModels;
+
+namespace DynamicPrice.Customer.ViewModels;
 
 public class CartViewModel
 {

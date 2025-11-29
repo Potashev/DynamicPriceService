@@ -1,7 +1,8 @@
 ﻿using DynamicPrice.Client.Common;
+using DynamicPriceService.ViewModels;
 using System.ComponentModel.DataAnnotations;
 
-namespace DynamicPriceService.ViewModels;
+namespace DynamicPrice.Manager.ViewModels;
 
 public class OrderViewModel
 {

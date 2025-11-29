@@ -1,8 +1,8 @@
-﻿using DynamicPriceCore.Services;
+﻿using DynamicPrice.Core.Services;
 using MediatR;
 using System.Globalization;
 
-namespace DynamicPriceCore.MediatR.CustomerEntity.Commands;
+namespace DynamicPrice.Core.MediatR.CustomerEntity.Commands;
 
 public class TopUpBalanceCommandHandler
 	: IRequestHandler<TopUpBalanceCommand>

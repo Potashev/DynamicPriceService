@@ -1,13 +1,12 @@
 ﻿using DynamicPrice.Core.MediatR.OrderEntity.Commands;
-using DynamicPriceCore.MediatR.OrderEntity.Commands;
-using DynamicPriceCore.MediatR.OrderEntity.Queries;
-using DynamicPriceCore.ViewModels;
+using DynamicPrice.Core.MediatR.OrderEntity.Queries;
+using DynamicPrice.Core.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DynamicPriceCore.Controllers;
+namespace DynamicPrice.Core.Controllers;
 
 //todo: separate CompanyOrders and CustomerOrder controllers?
 [ApiController]

@@ -1,4 +1,4 @@
-﻿namespace DynamicPriceCore.Models;
+﻿namespace DynamicPrice.Core.Models;
 
 public class Cart
 {

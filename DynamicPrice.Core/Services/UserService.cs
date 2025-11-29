@@ -1,11 +1,11 @@
-﻿using DynamicPriceCore.Models;
+﻿using DynamicPrice.Core.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace DynamicPriceCore.Services;
+namespace DynamicPrice.Core.Services;
 
 public class UserService : IUserService
 {

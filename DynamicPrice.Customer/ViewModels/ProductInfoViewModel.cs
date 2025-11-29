@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DynamicPriceClient.ViewModels;
+using System.ComponentModel.DataAnnotations;
 
-namespace DynamicPriceClient.ViewModels;
+namespace DynamicPrice.Customer.ViewModels;
 
 /// <summary>
 /// Dto продукта для покупателя.

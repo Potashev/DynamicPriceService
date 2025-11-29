@@ -1,5 +1,5 @@
 ﻿using MediatR;
 
-namespace DynamicPriceCore.MediatR.PriceRuleEntity.Commands;
+namespace DynamicPrice.Core.MediatR.PriceRuleEntity.Commands;
 
 public record PriceReducingCommand(bool IsRunCommand) : IRequest;

@@ -1,6 +1,4 @@
-﻿using DynamicPriceCore.ViewModels;
-
-namespace DynamicPrice.Core.ViewModels;
+﻿namespace DynamicPrice.Core.ViewModels;
 
 public class ManagerInfoViewModel
 {

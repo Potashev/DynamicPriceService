@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
-namespace DynamicPriceCore.Models;
+namespace DynamicPrice.Core.Models;
 
 [Index(nameof(Number), IsUnique = true)]
 public class Order

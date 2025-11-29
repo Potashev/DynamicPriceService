@@ -1,12 +1,12 @@
-﻿using DynamicPriceCore.MediatR.PriceRuleEntity.Commands;
-using DynamicPriceCore.MediatR.PriceRuleEntity.Queries;
-using DynamicPriceCore.ViewModels;
+﻿using DynamicPrice.Core.MediatR.PriceRuleEntity.Commands;
+using DynamicPrice.Core.MediatR.PriceRuleEntity.Queries;
+using DynamicPrice.Core.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DynamicPriceCore.Controllers;
+namespace DynamicPrice.Core.Controllers;
 
 [Route("api/company/price-rule")]
 [ApiController]

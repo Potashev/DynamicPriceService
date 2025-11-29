@@ -1,7 +1,7 @@
-﻿using DynamicPriceCore.Data;
+﻿using DynamicPrice.Core.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace DynamicPriceCore.Extensions;
+namespace DynamicPrice.Core.Extensions;
 
 public static class MigrationExtensions
 {

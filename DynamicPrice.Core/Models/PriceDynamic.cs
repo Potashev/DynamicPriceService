@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DynamicPriceCore.Models;
+namespace DynamicPrice.Core.Models;
 
 public class PriceDynamic
 {

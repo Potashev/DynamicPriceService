@@ -1,6 +1,4 @@
-﻿using Azure.Core;
-using DynamicPriceCore.Models;
-using MediatR;
+﻿using DynamicPriceCore.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -29,7 +27,7 @@ public class UserService : IUserService
 	public string? UserId
 		=> _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-	public string? Role 
+	public string? Role
 		=> _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role)?.Value;
 
 	public async Task<ApplicationUser?> GetCurrentUserAsync()
@@ -55,7 +53,7 @@ public class UserService : IUserService
 	public async Task RegisterUserAsync(string username, string password, string email, string role)
 	{
 		//todo: make better
-		ApplicationUser user = new ApplicationUser
+		ApplicationUser user = new()
 		{
 			UserName = username,
 			Email = email
@@ -97,8 +95,8 @@ public class UserService : IUserService
 	{
 		var claims = new List<Claim>
 		{
-			new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-			new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName)
+			new(JwtRegisteredClaimNames.Sub, user.Id),
+			new(JwtRegisteredClaimNames.UniqueName, user.UserName)
 		};
 
 		claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));

@@ -28,7 +28,7 @@ public class GetCompanyOrdersQueryHandler
 
 		var companyOrdersVm = _mapper.Map<OrderViewModel[]>(companyOrders);
 
-		foreach (var orderVm in companyOrdersVm) 
+		foreach (var orderVm in companyOrdersVm)
 		{
 			orderVm.CustomerName = (await _userService.GetUserByIdAsync(orderVm.CustomerId)).UserName;
 		}

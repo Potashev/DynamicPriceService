@@ -10,41 +10,41 @@ namespace DynamicPriceCore.Services;
 
 public class IncreasePriceService : IConsumer<PriceIncreaseEvent>
 {
-    private readonly IServiceProvider _serviceProvider;
-    private readonly IHubContext<PriceHub> _priceHubContext;
+	private readonly IServiceProvider _serviceProvider;
+	private readonly IHubContext<PriceHub> _priceHubContext;
 
 	public IncreasePriceService(IServiceProvider serviceProvider, IHubContext<PriceHub> priceHubContext)
 	{
-        _serviceProvider = serviceProvider;
-        _priceHubContext = priceHubContext;
+		_serviceProvider = serviceProvider;
+		_priceHubContext = priceHubContext;
 	}
 
-    public async Task Consume(ConsumeContext<PriceIncreaseEvent> context)
-    {
-        var msg = context.Message;
-
-        if (msg != null)
-        {
-            await IncreasePrices(msg.OrderItems);
-        }
-    }
-
-    private async Task IncreasePrices(IEnumerable<OrderItem> OrderItems)
+	public async Task Consume(ConsumeContext<PriceIncreaseEvent> context)
 	{
-        using var scope = _serviceProvider.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
+		var msg = context.Message;
 
-        var companyId = OrderItems.FirstOrDefault()?.Product.CompanyId;
+		if (msg != null)
+		{
+			await IncreasePrices(msg.OrderItems);
+		}
+	}
 
-        var priceRule = await context.PriceRules
+	private async Task IncreasePrices(IEnumerable<OrderItem> OrderItems)
+	{
+		using var scope = _serviceProvider.CreateScope();
+		var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
+
+		var companyId = OrderItems.FirstOrDefault()?.Product.CompanyId;
+
+		var priceRule = await context.PriceRules
 			.FirstOrDefaultAsync(p => p.Company.CompanyId == companyId);
 
-        IncreasePrice(OrderItems, priceRule);
+		IncreasePrice(OrderItems, priceRule);
 
-        await NoticeOfIncrease(OrderItems);
+		await NoticeOfIncrease(OrderItems);
 
-        context.SaveChanges();
-    }
+		context.SaveChanges();
+	}
 
 	private void IncreasePrice(IEnumerable<OrderItem> OrderItems, PriceRule priceRule)
 	{

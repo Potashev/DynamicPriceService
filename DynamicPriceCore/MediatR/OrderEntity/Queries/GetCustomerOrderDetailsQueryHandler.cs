@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using DynamicPriceCore.Data;
-using DynamicPriceCore.MediatR.OrderEntity.Queries;
 using DynamicPriceCore.Services;
 using DynamicPriceCore.ViewModels;
 using MediatR;
@@ -21,7 +20,7 @@ public class GetCustomerOrderDetailsQueryHandler
 	public async Task<OrderInfoViewModel> Handle(GetCustomerOrderDetailsQuery request, CancellationToken cancellationToken)
 	{
 		var customer = await _userService.GetCurrentUserAsync();
-		
+
 		var customerOrder = await _context.Orders
 			.Where(o => o.OrderId.ToString() == request.OrderId && o.CustomerId == customer.Id)
 			.Include(o => o.OrderItems)

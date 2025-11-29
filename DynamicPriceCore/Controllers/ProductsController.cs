@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MediatR;
+﻿using DynamicPriceCore.MediatR.ProductEntity.Commands;
 using DynamicPriceCore.MediatR.ProductEntity.Queries;
-using DynamicPriceCore.MediatR.ProductEntity.Commands;
+using DynamicPriceCore.ViewModels;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using DynamicPriceCore.ViewModels;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPriceCore.Controllers;
 
@@ -29,7 +29,7 @@ public class ProductsController : ControllerBase
 	[HttpGet("{id}")]
 	public async Task<ActionResult<ProductViewModel>> GetProduct(int id)
 	{
-		var productVm = await _mediator.Send(new GetProductDetailsQuery((int)id));
+		var productVm = await _mediator.Send(new GetProductDetailsQuery(id));
 
 		return productVm == null ?
 			NotFound() :

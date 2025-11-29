@@ -1,13 +1,12 @@
-﻿using Xunit;
-using Moq;
-using FluentAssertions;
-using AutoMapper;
-using DynamicPriceCore.MediatR.ProductEntity.Commands;
+﻿using AutoMapper;
 using DynamicPriceCore.Data;
+using DynamicPriceCore.MediatR.ProductEntity.Commands;
 using DynamicPriceCore.Models;
 using DynamicPriceCore.Services;
 using DynamicPriceCore.ViewModels;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 
 namespace DynamicPrice.Tests.MediatR.ProductEntity.Commands;
 

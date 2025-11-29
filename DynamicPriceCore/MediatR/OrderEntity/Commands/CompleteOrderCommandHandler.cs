@@ -13,9 +13,9 @@ public class CompleteOrderCommandHandler
 {
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IUserService _userService;
-    private readonly IPublishEndpoint _publishEndpoint;
+	private readonly IPublishEndpoint _publishEndpoint;
 
-    public CompleteOrderCommandHandler(DynamicPriceCoreContext context, IUserService userService, IPublishEndpoint publishEndpoint)
+	public CompleteOrderCommandHandler(DynamicPriceCoreContext context, IUserService userService, IPublishEndpoint publishEndpoint)
 		=> (_context, _userService, _publishEndpoint) = (context, userService, publishEndpoint);
 
 	public async Task<int> Handle(CompleteOrderCommand request, CancellationToken cancellationToken)
@@ -51,13 +51,13 @@ public class CompleteOrderCommandHandler
 		}
 
 		order.Status = OrderStatus.Completed;
-		order.ReceiveKey = 0;	//todo: think about nullable?
+		order.ReceiveKey = 0;   //todo: think about nullable?
 
 		await _context.SaveChangesAsync(cancellationToken);
 		await _userService.UpdateUserAsync(customer);
 
-        await _publishEndpoint.Publish(new PriceIncreaseEvent(order.OrderItems), cancellationToken);
+		await _publishEndpoint.Publish(new PriceIncreaseEvent(order.OrderItems), cancellationToken);
 
-        return order.OrderId;
+		return order.OrderId;
 	}
 }

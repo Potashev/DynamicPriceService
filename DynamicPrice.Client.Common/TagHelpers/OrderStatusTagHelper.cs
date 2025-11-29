@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Razor.TagHelpers;
-using DynamicPrice.Client.Common;
+﻿using DynamicPrice.Client.Common;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace DynamicPrice.Client.TagHelpers
 {

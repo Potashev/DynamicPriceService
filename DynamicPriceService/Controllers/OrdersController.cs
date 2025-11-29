@@ -3,6 +3,7 @@ using DynamicPriceService.ApiClients;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPriceService.Controllers;
+
 public class OrdersController : BaseController
 {
 	public OrdersController(ICoreApiClient coreApiClient)
@@ -10,8 +11,8 @@ public class OrdersController : BaseController
 
 	public async Task<IActionResult> Index()
 	{
-        //todo: handle 403
-        var ordersVm = await CoreApiClient.GetOrders();
+		//todo: handle 403
+		var ordersVm = await CoreApiClient.GetOrders();
 		return View(ordersVm);
 	}
 
@@ -42,5 +43,5 @@ public class OrdersController : BaseController
 	public async Task<IActionResult> Statistics()
 	{
 		return View(await CoreApiClient.GetOrdersStatistics());
-	} 
+	}
 }

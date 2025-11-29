@@ -4,6 +4,7 @@ using DynamicPriceService.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPriceService.Controllers;
+
 public class PriceRuleController : BaseController
 {
 	public PriceRuleController(ICoreApiClient coreApiClient)

@@ -29,10 +29,12 @@ public class GetCompanyStatisticsQueryHandler
 			.ToArrayAsync(cancellationToken);
 
 
-		var orderStatistics = new OrdersStatistics();
-		orderStatistics.OrdersQuantity = companyOrdersWithAmount.Length;
-		orderStatistics.TotalAmount = companyOrdersWithAmount.Sum(o => o.OrderAmount);
-		orderStatistics.AverageOrderTotal = companyOrdersWithAmount.Average(o => o.OrderAmount);
+		var orderStatistics = new OrdersStatistics
+		{
+			OrdersQuantity = companyOrdersWithAmount.Length,
+			TotalAmount = companyOrdersWithAmount.Sum(o => o.OrderAmount),
+			AverageOrderTotal = companyOrdersWithAmount.Average(o => o.OrderAmount)
+		};
 
 		return orderStatistics;
 	}

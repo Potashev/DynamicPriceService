@@ -9,9 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
 using Prometheus;
 using System.Text;
 
@@ -95,7 +93,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddAutoMapper(cfg =>
 {
-    cfg.AddProfile<MappingProfile>();
+	cfg.AddProfile<MappingProfile>();
 });
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
@@ -103,9 +101,9 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Pr
 builder.Services.AddMassTransit(x =>
 {
 	x.AddConsumer<ReducePriceService>();
-    x.AddConsumer<IncreasePriceService>();
+	x.AddConsumer<IncreasePriceService>();
 
-    x.UsingInMemory((context, cfg) =>
+	x.UsingInMemory((context, cfg) =>
 	{
 		cfg.ConfigureEndpoints(context);
 	});

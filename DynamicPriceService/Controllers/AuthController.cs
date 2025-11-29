@@ -5,6 +5,7 @@ using DynamicPriceService.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPriceService.Controllers;
+
 public class AuthController : BaseController
 {
 	private readonly IAuthTokenStore _authTokenStore;

@@ -36,7 +36,7 @@ public class ConfirmOrderCommandHandler
 			Company = cart.Company,
 			Status = OrderStatus.Confirmed,
 			OrderDate = DateTime.UtcNow,
-			OrderItems = new List<OrderItem>()
+			OrderItems = [] //todo: check
 		};
 
 		foreach (var ci in cart.CartItems)
@@ -57,7 +57,7 @@ public class ConfirmOrderCommandHandler
 
 
 		_context.Orders.Add(order);
-		_context.Carts.Remove(cart);	//todo: cartitems removes too?
+		_context.Carts.Remove(cart);    //todo: cartitems removes too?
 
 		await _context.SaveChangesAsync(cancellationToken);
 

@@ -20,23 +20,23 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 			LabelNames = new[] { "companyId" }
 		});
 
-	public ReducePriceService(IServiceProvider serviceProvider, IConfiguration config, IHubContext<PriceHub> priceHubContext)	//todo: remove PriceHub?
+	public ReducePriceService(IServiceProvider serviceProvider, IConfiguration config, IHubContext<PriceHub> priceHubContext)   //todo: remove PriceHub?
 	{
 		_serviceProvider = serviceProvider;
 		_priceHubContext = priceHubContext;
 	}
 
-    public async Task Consume(ConsumeContext<PriceReduceEvent> context)
-    {
+	public async Task Consume(ConsumeContext<PriceReduceEvent> context)
+	{
 		var msg = context.Message;
-        if (msg != null)
-        {
-            //using (ChangePriceDuration.WithLabels(message.CompanyId.ToString()).NewTimer())
-            //{
-                await ReducePrice(msg.ProductId);
-            //}
-        }
-    }
+		if (msg != null)
+		{
+			//using (ChangePriceDuration.WithLabels(message.CompanyId.ToString()).NewTimer())
+			//{
+			await ReducePrice(msg.ProductId);
+			//}
+		}
+	}
 
 	private async Task ReducePrice(int productId)
 	{
@@ -54,8 +54,8 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 		if (priceRule == null) return;
 
 		product.Price = Math.Max(
-                        //todo: check increasePriceService.NoticeOfIncrease (testdrawing = false)
-                        ReducePrice(product.Price, priceRule.Reduction, true),
+						//todo: check increasePriceService.NoticeOfIncrease (testdrawing = false)
+						ReducePrice(product.Price, priceRule.Reduction, true),
 			product.MinimumPrice);
 
 		await context.PriceDynamics.AddAsync(new PriceDynamic

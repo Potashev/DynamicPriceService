@@ -10,8 +10,8 @@ namespace DynamicPriceCore.MediatR.PriceRuleEntity.Queries;
 public class GetPriceRuleWithStatusQueryHandler
 	: IRequestHandler<GetPriceRuleWithStatusQuery, PriceRuleWithStatus>
 {
-	private IMapper _mapper;
-	private DynamicPriceCoreContext _context;
+	private readonly IMapper _mapper;
+	private readonly DynamicPriceCoreContext _context;
 	//private IActiveCompaniesService _activeCompaniesService;
 	private readonly IUserService _userService;
 

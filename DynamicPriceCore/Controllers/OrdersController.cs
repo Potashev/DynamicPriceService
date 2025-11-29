@@ -21,7 +21,7 @@ public class OrdersController : ControllerBase
 
 	[HttpPost("api/customer/order/confirm")]
 	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "CustomerPolicy")]
-	public async Task<ActionResult<int>> ConfirmOrder([FromBody]int? cartId, CancellationToken cancellationToken)
+	public async Task<ActionResult<int>> ConfirmOrder([FromBody] int? cartId, CancellationToken cancellationToken)
 	{
 		var orderId = await _mediator.Send(new ConfirmOrderCommand((int)cartId), cancellationToken);
 		return Ok(orderId);
@@ -79,7 +79,7 @@ public class OrdersController : ControllerBase
 	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 	public async Task<ActionResult<int>> CompleteOrder(string orderId)
 	{
-		var id =  await _mediator.Send(new CompleteOrderCommand(orderId));
+		var id = await _mediator.Send(new CompleteOrderCommand(orderId));
 		return id;
 	}
 

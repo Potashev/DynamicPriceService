@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using DynamicPriceCore.Data;
+﻿using DynamicPriceCore.Data;
 using DynamicPriceCore.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

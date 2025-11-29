@@ -1,8 +1,6 @@
-﻿using DynamicPrice.Core.Data;
-using DynamicPriceCore.Models;
+﻿using DynamicPriceCore.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace DynamicPriceCore.Data;
 
@@ -43,7 +41,7 @@ public static class DbInitializer
 				new Company { Title = "Копыта" },
 				new Company { Title = "Рога" }
 			);
-			
+
 			await db.SaveChangesAsync();
 		}
 

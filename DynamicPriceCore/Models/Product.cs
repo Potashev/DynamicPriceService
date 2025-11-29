@@ -7,7 +7,7 @@ namespace DynamicPriceCore.Models;
 /// </summary>
 public class Product    //todo: rename to Item?
 {
-	public int ProductId { get; set; }	//todo: make Guid
+	public int ProductId { get; set; }  //todo: make Guid
 	public Company Company { get; set; }
 	public int? CompanyId { get; set; }
 	public string Title { get; set; }

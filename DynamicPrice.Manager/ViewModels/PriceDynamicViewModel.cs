@@ -1,5 +1,4 @@
-﻿using DynamicPriceService.ViewModels;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace DynamicPrice.Manager.ViewModels;
 

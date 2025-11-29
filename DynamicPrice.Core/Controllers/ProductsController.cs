@@ -30,8 +30,7 @@ public class ProductsController : ControllerBase
 	public async Task<ActionResult<ProductViewModel>> GetProduct(int id)
 	{
 		var productVm = await _mediator.Send(new GetProductDetailsQuery(id));
-
-		return productVm ?? NotFound();
+		return Ok(productVm);
 	}
 
 	[HttpPut("{id}")]

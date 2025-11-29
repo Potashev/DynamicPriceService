@@ -1,6 +1,4 @@
-﻿using DynamicPriceClient.ViewModels;
-
-namespace DynamicPrice.Customer.ViewModels;
+﻿namespace DynamicPrice.Customer.ViewModels;
 
 public class CompanyProductsInfo
 {

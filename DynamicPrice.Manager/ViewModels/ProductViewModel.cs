@@ -1,5 +1,4 @@
-﻿using DynamicPriceService.ViewModels;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace DynamicPrice.Manager.ViewModels;
 

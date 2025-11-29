@@ -1,4 +1,4 @@
-﻿using DynamicPriceClient.ApiClients;
+﻿using DynamicPrice.Customer.ApiClients;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Customer.Controllers;

@@ -1,4 +1,4 @@
-﻿using DynamicPriceClient.ViewModels;
+﻿using DynamicPrice.Customer.ViewModels;
 using Refit;
 
 namespace DynamicPrice.Customer.ApiClients;

@@ -1,6 +1,6 @@
 ﻿using DynamicPrice.Client.Common;
-using DynamicPrice.Client.Common.ViewModels;
 using DynamicPrice.Manager.ApiClients;
+using DynamicPrice.Shared.Contracts.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Manager.Controllers;

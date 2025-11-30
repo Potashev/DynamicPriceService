@@ -19,4 +19,8 @@
 	  <PackageReference Include="Microsoft.Build" Version="18.0.2" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\DynamicPrice.Shared.Contracts\DynamicPrice.Shared.Contracts.csproj" />
+	</ItemGroup>
+
 </Project>

@@ -1,4 +1,4 @@
-﻿using DynamicPrice.Client.Common;
+﻿using DynamicPrice.Shared.Contracts;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace DynamicPrice.Client.Common.TagHelpers
@@ -6,6 +6,7 @@ namespace DynamicPrice.Client.Common.TagHelpers
 	[HtmlTargetElement("order-status")]
 	public class OrderStatusTagHelper : TagHelper
 	{
+		//todo: need dependency from DynamicPrice.Shared.Contracts - is it right?
 		public OrderStatus Status { get; set; }
 
 		public override void Process(TagHelperContext context, TagHelperOutput output)

@@ -18,6 +18,7 @@ public class Order
 	public int ReceiveKey { get; set; }
 }
 
+//todo: moved to shared.contracts?
 public enum OrderStatus
 {
 	Confirmed,

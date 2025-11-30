@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DynamicPrice.Client.Common\DynamicPrice.Client.Common.csproj" />
+    <ProjectReference Include="..\DynamicPrice.Client.Infrastructure\DynamicPrice.Client.Infrastructure.csproj" />
     <ProjectReference Include="..\DynamicPrice.Shared.Contracts\DynamicPrice.Shared.Contracts.csproj" />
   </ItemGroup>
 

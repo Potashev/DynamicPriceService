@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.0.11205.157
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicPrice.Client.Common", "DynamicPrice.Client.Common\DynamicPrice.Client.Common.csproj", "{22D9A141-8EF9-4358-B7A2-E7736D687758}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicPrice.Tests", "DynamicPrice.Tests\DynamicPrice.Tests.csproj", "{6A318B1A-2416-476D-9748-9382D780E01D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicPrice.Manager", "DynamicPrice.Manager\DynamicPrice.Manager.csproj", "{8319CAD1-15CE-B38A-69B5-DE1816D5D5BB}"
@@ -15,16 +13,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicPrice.Core", "Dynami
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicPrice.Shared.Contracts", "DynamicPrice.Shared.Contracts\DynamicPrice.Shared.Contracts.csproj", "{FB1CDF2C-3A0B-47F8-92D9-2F3655BE9160}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicPrice.Client.Infrastructure", "DynamicPrice.Client.Infrastructure\DynamicPrice.Client.Infrastructure.csproj", "{6288C799-21CE-4105-A750-FCCA599EC467}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{22D9A141-8EF9-4358-B7A2-E7736D687758}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{22D9A141-8EF9-4358-B7A2-E7736D687758}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{22D9A141-8EF9-4358-B7A2-E7736D687758}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{22D9A141-8EF9-4358-B7A2-E7736D687758}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6A318B1A-2416-476D-9748-9382D780E01D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6A318B1A-2416-476D-9748-9382D780E01D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A318B1A-2416-476D-9748-9382D780E01D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,6 +41,10 @@ Global
 		{FB1CDF2C-3A0B-47F8-92D9-2F3655BE9160}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB1CDF2C-3A0B-47F8-92D9-2F3655BE9160}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB1CDF2C-3A0B-47F8-92D9-2F3655BE9160}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6288C799-21CE-4105-A750-FCCA599EC467}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6288C799-21CE-4105-A750-FCCA599EC467}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6288C799-21CE-4105-A750-FCCA599EC467}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6288C799-21CE-4105-A750-FCCA599EC467}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

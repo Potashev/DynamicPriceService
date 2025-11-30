@@ -1,4 +1,4 @@
-﻿namespace DynamicPrice.Manager.ViewModels;
+﻿namespace DynamicPrice.Shared.Contracts.ViewModels;
 
 public class PriceRuleWithStatus
 {

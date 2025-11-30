@@ -1,4 +1,4 @@
-﻿namespace DynamicPrice.Core.ViewModels;
+﻿namespace DynamicPrice.Shared.Contracts.ViewModels;
 
 public class ProductViewModel
 {

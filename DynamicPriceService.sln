@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicPrice.Customer", "Dy
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicPrice.Core", "DynamicPrice.Core\DynamicPrice.Core.csproj", "{0453128B-0E30-8D96-CD5F-5FCB33A836BA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicPrice.Shared.Contracts", "DynamicPrice.Shared.Contracts\DynamicPrice.Shared.Contracts.csproj", "{FB1CDF2C-3A0B-47F8-92D9-2F3655BE9160}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{0453128B-0E30-8D96-CD5F-5FCB33A836BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0453128B-0E30-8D96-CD5F-5FCB33A836BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0453128B-0E30-8D96-CD5F-5FCB33A836BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB1CDF2C-3A0B-47F8-92D9-2F3655BE9160}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB1CDF2C-3A0B-47F8-92D9-2F3655BE9160}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB1CDF2C-3A0B-47F8-92D9-2F3655BE9160}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB1CDF2C-3A0B-47F8-92D9-2F3655BE9160}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

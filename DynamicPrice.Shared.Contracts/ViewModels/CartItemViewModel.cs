@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DynamicPrice.Core.ViewModels;
+namespace DynamicPrice.Shared.Contracts.ViewModels;
 
 public class CartItemViewModel
 {

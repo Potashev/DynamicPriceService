@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DynamicPrice.Core\DynamicPrice.Core.csproj" />
+    <ProjectReference Include="..\DynamicPrice.Shared.Contracts\DynamicPrice.Shared.Contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>

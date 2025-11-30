@@ -1,5 +1,5 @@
 ﻿using DynamicPrice.Core.MediatR.AuthEntity.Commands;
-using DynamicPrice.Core.ViewModels;
+using DynamicPrice.Shared.Contracts.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

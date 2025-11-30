@@ -2,7 +2,7 @@
 using DynamicPrice.Core.Models;
 using DynamicPrice.Shared.Contracts.ViewModels;
 
-namespace DynamicPrice.Core.ViewModels;
+namespace DynamicPrice.Core.Mapping;
 
 public class MappingProfile : Profile
 {

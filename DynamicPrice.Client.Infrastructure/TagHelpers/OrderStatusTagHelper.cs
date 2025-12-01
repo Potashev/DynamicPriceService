@@ -1,7 +1,7 @@
 ﻿using DynamicPrice.Shared.Contracts;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace DynamicPrice.Client.Common.TagHelpers
+namespace DynamicPrice.Client.Infrastructure.TagHelpers
 {
 	[HtmlTargetElement("order-status")]
 	public class OrderStatusTagHelper : TagHelper

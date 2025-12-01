@@ -1,4 +1,4 @@
-using DynamicPrice.Client.Common;
+using DynamicPrice.Client.Infrastructure;
 using DynamicPrice.Customer.ApiClients;
 using Refit;
 

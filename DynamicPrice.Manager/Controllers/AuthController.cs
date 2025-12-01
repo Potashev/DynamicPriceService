@@ -1,4 +1,4 @@
-﻿using DynamicPrice.Client.Common;
+﻿using DynamicPrice.Client.Infrastructure;
 using DynamicPrice.Manager.ApiClients;
 using DynamicPrice.Shared.Contracts.ViewModels;
 using Microsoft.AspNetCore.Mvc;

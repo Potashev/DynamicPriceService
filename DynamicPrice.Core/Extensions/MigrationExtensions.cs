@@ -5,16 +5,16 @@ namespace DynamicPrice.Core.Extensions;
 
 public static class MigrationExtensions
 {
-	public static async void ApplyMigrations(this IApplicationBuilder app)
+	public static async Task ApplyMigrationsAsync(this IApplicationBuilder app)
 	{
 		using var scope = app.ApplicationServices.CreateScope();
 		var services = scope.ServiceProvider;
 
 		var dynamicPriceDb = services.GetRequiredService<DynamicPriceCoreContext>();
-		dynamicPriceDb.Database.Migrate();
+		await dynamicPriceDb.Database.MigrateAsync();
 
 		var identityDb = services.GetRequiredService<IdentityContext>();
-		identityDb.Database.Migrate();
+		await identityDb.Database.MigrateAsync();
 
 		await DbInitializer.SeedDataAsync(services);
 	}

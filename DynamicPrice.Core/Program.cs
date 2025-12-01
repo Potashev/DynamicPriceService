@@ -14,10 +14,12 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var configuration = builder.Configuration;
+
 builder.Services.AddDbContext<DynamicPriceCoreContext>(options =>
-	options.UseSqlServer(builder.Configuration.GetConnectionString("DynamicPriceDb") ?? throw new InvalidOperationException("Connection string 'DynamicPriceDb' not found.")));
+	options.UseSqlServer(configuration.GetConnectionString("DynamicPriceDb") ?? throw new InvalidOperationException("Connection string 'DynamicPriceDb' not found.")));
 builder.Services.AddDbContext<IdentityContext>(options =>
-	options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityDb") ?? throw new InvalidOperationException("Connection string 'IdentityDb' not found.")));
+	options.UseSqlServer(configuration.GetConnectionString("IdentityDb") ?? throw new InvalidOperationException("Connection string 'IdentityDb' not found.")));
 
 builder.Services.AddAuthentication(options =>
 {
@@ -29,11 +31,11 @@ builder.Services.AddAuthentication(options =>
 	options.TokenValidationParameters = new TokenValidationParameters
 	{
 		ValidateIssuerSigningKey = true,
-		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"])),
 		ValidateIssuer = true,
 		ValidateAudience = true,
-		ValidIssuer = "TestIssuer",
-		ValidAudience = "TestAudience",
+		ValidIssuer = configuration["Jwt:Issuer"] ?? "TestIssuer",
+		ValidAudience = configuration["Jwt:Audience"] ?? "TestAudience",
 		ValidateLifetime = true,
 		ClockSkew = TimeSpan.Zero
 	};
@@ -42,7 +44,7 @@ builder.Services.AddAuthentication(options =>
 	{
 		OnMessageReceived = context =>
 		{
-			var accessToken = context.Request.Cookies["tests"];
+			var accessToken = context.Request.Cookies["DpAuth"];
 			if (!string.IsNullOrEmpty(accessToken))
 			{
 				context.Token = accessToken;
@@ -70,17 +72,11 @@ builder.Services.AddCors(options =>
 	options.AddPolicy("AllowSpecificOrigins",
 		policy =>
 		{
-			// customer
-			policy.WithOrigins("https://localhost:7022")
-				  .AllowAnyHeader()
-				  .AllowAnyMethod()
-				  .AllowCredentials();
-
-			// manager
-			policy.WithOrigins("https://localhost:7183")
-				  .AllowAnyHeader()
-				  .AllowAnyMethod()
-				  .AllowCredentials();
+			policy.SetIsOriginAllowedToAllowWildcardSubdomains();
+			policy.WithOrigins("https://localhost:7022", "https://localhost:7183")
+				.AllowAnyHeader()
+				.AllowAnyMethod()
+				.AllowCredentials();
 		});
 });
 
@@ -102,10 +98,25 @@ builder.Services.AddMassTransit(x =>
 	x.AddConsumer<ReducePriceService>();
 	x.AddConsumer<IncreasePriceService>();
 
-	x.UsingInMemory((context, cfg) =>
+	x.UsingRabbitMq((context, cfg) =>
 	{
+		var host = configuration["RabbitMq:Host"] ?? "localhost";
+		var user = configuration["RabbitMq:Username"] ?? "guest";
+		var pass = configuration["RabbitMq:Password"] ?? "guest";
+
+		cfg.Host(host, h =>
+		{
+			h.Username(user);
+			h.Password(pass);
+		});
+
 		cfg.ConfigureEndpoints(context);
 	});
+
+	//x.UsingInMemory((context, cfg) =>
+	//{
+	//	cfg.ConfigureEndpoints(context);
+	//});
 });
 
 builder.Services.AddHostedService<FindProductsToReduceService>();
@@ -122,7 +133,7 @@ if (app.Environment.IsDevelopment())
 	app.UseSwagger();
 	app.UseSwaggerUI();
 
-	app.ApplyMigrations();
+	await app.ApplyMigrationsAsync();
 }
 
 app.UseHttpsRedirection();

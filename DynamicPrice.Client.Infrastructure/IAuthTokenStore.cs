@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Text;
 
-namespace DynamicPrice.Client.Common;
+namespace DynamicPrice.Client.Infrastructure;
 
 //todo: use cookies later
 public class SessionAuthTokenStore : IAuthTokenStore

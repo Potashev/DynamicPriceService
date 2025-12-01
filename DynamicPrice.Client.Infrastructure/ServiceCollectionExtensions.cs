@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace DynamicPrice.Client.Common;
+namespace DynamicPrice.Client.Infrastructure;
 
 public static class ServiceCollectionExtensions
 {

@@ -29,8 +29,10 @@ public class GetCompanyProductsQueryHandler
 			.Include(p => p.PriceDynamics)  //todo: set lenght?
 			.ToArrayAsync(cancellationToken);
 
-		var companyVm = _mapper.Map<CompanyViewModel>(company);
-		var productsInfoVm = _mapper.Map<ProductInfoViewModel[]>(products);
-		return new CompanyProductsInfo(companyVm, productsInfoVm);
+		return new CompanyProductsInfo
+		{
+			Company = _mapper.Map<CompanyViewModel>(company),
+			Products = _mapper.Map<ProductInfoViewModel[]>(products)
+		};
 	}
 }

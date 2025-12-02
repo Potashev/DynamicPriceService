@@ -3,4 +3,4 @@
 namespace DynamicPrice.Core.Services;
 
 public record PriceReduceEvent(int ProductId);
-public record PriceIncreaseEvent(ICollection<OrderItem> OrderItems);
+public record PriceIncreaseEvent(ICollection<OrderItem> OrderItems);    //todo: pass id + quantity only?

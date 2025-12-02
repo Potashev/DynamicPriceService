@@ -9,6 +9,7 @@ using System.Collections.Concurrent;
 public class FindProductsToReduceService : BackgroundService
 {
 	private readonly IServiceProvider _serviceProvider;
+	private readonly ILogger<FindProductsToReduceService> _logger;
 
 	private static readonly Histogram MonitorDuration = Metrics
 	.CreateHistogram("dp_company_monitor_duration_seconds",
@@ -26,16 +27,16 @@ public class FindProductsToReduceService : BackgroundService
 		});
 	private readonly ConcurrentDictionary<int, DateTime> _lastMonitorEnd = new();
 
-	public FindProductsToReduceService(IServiceProvider serviceProvider, IConfiguration config)
+	public FindProductsToReduceService(IServiceProvider serviceProvider, IConfiguration config, ILogger<FindProductsToReduceService> logger)
 	{
 		_serviceProvider = serviceProvider;
+		_logger = logger;
 	}
 
 	protected override async Task ExecuteAsync(CancellationToken token)
 	{
 		try
 		{
-			//todo: need while?
 			while (!token.IsCancellationRequested)
 			{
 				//using (MonitorDuration.WithLabels().NewTimer())
@@ -45,13 +46,31 @@ public class FindProductsToReduceService : BackgroundService
 				var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
 				var publishEndpoint = scope.ServiceProvider.GetRequiredService<IPublishEndpoint>();
 
-				//todo: later think about Parallel.ForEachAsync or PLINQ
-				await foreach (var p in FindProductsToReduceAsync(context, token))
-				{
-					await publishEndpoint.Publish(new PriceReduceEvent(p.ProductId), token);
-				}
+				var productStream = FindProductsToReduceAsync(context, token);
+				var options = new ParallelOptions { CancellationToken = token };
 
-				//}
+				try
+				{
+					await Parallel.ForEachAsync(productStream, options, async (product, token) =>
+					{
+						try
+						{
+							await publishEndpoint.Publish(new PriceReduceEvent(product.ProductId), token);
+						}
+						catch (Exception ex)
+						{
+							_logger.LogError(ex, "Failed to publish PriceReduceEvent for ProductId {ProductId}", product.ProductId);
+						}
+					});
+				}
+				catch (OperationCanceledException) when (token.IsCancellationRequested)
+				{
+					break;
+				}
+				catch (Exception ex)
+				{
+					_logger.LogError(ex, "Error during parallel processing of products");
+				}
 
 				//todo: remove?
 				await Task.Delay(TimeSpan.FromSeconds(1), token);
@@ -69,9 +88,9 @@ public class FindProductsToReduceService : BackgroundService
 				//}
 			}
 		}
-		catch (OperationCanceledException)
+		catch (Exception ex)
 		{
-
+			_logger.LogError(ex, "Unhandled exception in FindProductsToReduceService");
 		}
 	}
 

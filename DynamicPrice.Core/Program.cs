@@ -1,6 +1,7 @@
 ﻿using DynamicPrice.Core.Data;
 using DynamicPrice.Core.Extensions;
 using DynamicPrice.Core.Mapping;
+using DynamicPrice.Core.Middlewares;
 using DynamicPrice.Core.Models;
 using DynamicPrice.Core.Services;
 using MassTransit;
@@ -126,6 +127,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
+
 if (app.Environment.IsDevelopment())
 {
 	app.UseDeveloperExceptionPage();
@@ -136,6 +138,7 @@ if (app.Environment.IsDevelopment())
 	await app.ApplyMigrationsAsync();
 }
 
+app.UseMiddleware<ExceptionHandlingMiddleware>(); //todo: check
 app.UseHttpsRedirection();
 
 //todo: cookie - set expired

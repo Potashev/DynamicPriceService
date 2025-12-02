@@ -45,7 +45,7 @@ public class UserService : IUserService
 		var roles = await _userManager.GetRolesAsync(user);
 		var token = GenerateJwtToken(user, roles);
 
-		_httpContextAccessor.HttpContext.Response.Cookies.Append("tests", token);
+		_httpContextAccessor.HttpContext.Response.Cookies.Append("DpAuth", token);
 
 		return token;
 	}

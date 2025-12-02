@@ -11,11 +11,13 @@ public class IncreasePriceService : IConsumer<PriceIncreaseEvent>
 {
 	private readonly IServiceProvider _serviceProvider;
 	private readonly IHubContext<PriceHub> _priceHubContext;
+	private readonly ILogger<IncreasePriceService> _logger;
 
-	public IncreasePriceService(IServiceProvider serviceProvider, IHubContext<PriceHub> priceHubContext)
+	public IncreasePriceService(IServiceProvider serviceProvider, IHubContext<PriceHub> priceHubContext, ILogger<IncreasePriceService> logger)
 	{
 		_serviceProvider = serviceProvider;
 		_priceHubContext = priceHubContext;
+		_logger = logger;
 	}
 
 	public async Task Consume(ConsumeContext<PriceIncreaseEvent> context)
@@ -24,7 +26,15 @@ public class IncreasePriceService : IConsumer<PriceIncreaseEvent>
 
 		if (msg != null)
 		{
-			await IncreasePrices(msg.OrderItems);
+			try
+			{
+				await IncreasePrices(msg.OrderItems);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Error processing PriceIncreaseEvent");
+				throw;
+			}
 		}
 	}
 
@@ -34,15 +44,20 @@ public class IncreasePriceService : IConsumer<PriceIncreaseEvent>
 		var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
 
 		var companyId = OrderItems.FirstOrDefault()?.Product.CompanyId;
-
 		var priceRule = await context.PriceRules
 			.FirstOrDefaultAsync(p => p.Company.CompanyId == companyId);
 
+		if (priceRule == null)
+		{
+			_logger.LogWarning("PriceRule not found for company {CompanyId}", companyId);
+			return;
+		}
+
 		IncreasePrice(OrderItems, priceRule);
 
-		await NoticeOfIncrease(OrderItems);
-
 		await context.SaveChangesAsync();
+
+		await NoticeOfIncrease(OrderItems);
 	}
 
 	private void IncreasePrice(IEnumerable<OrderItem> OrderItems, PriceRule priceRule)
@@ -54,12 +69,22 @@ public class IncreasePriceService : IConsumer<PriceIncreaseEvent>
 			product.Price += increase;
 		}
 	}
+
 	private async Task NoticeOfIncrease(IEnumerable<OrderItem> OrderItems)
 	{
+		//todo: check
 		foreach (var orderProduct in OrderItems)
 		{
 			var product = orderProduct.Product;
-			await _priceHubContext.Clients.All.SendAsync("ReceivePriceUpdate", product.ProductId, product.Price);
+			//await _priceHubContext.Clients.All.SendAsync("ReceivePriceUpdate", product.ProductId, product.Price);
+			try
+			{
+				await _priceHubContext.Clients.All.SendAsync("ReceivePriceUpdate", product.ProductId, product.Price);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Failed to notify hub about product {ProductId}", product.ProductId);
+			}
 		}
 	}
 }

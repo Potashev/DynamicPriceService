@@ -1,5 +1,6 @@
 ﻿using DynamicPrice.Core.Data;
 using DynamicPrice.Core.Models;
+using DynamicPrice.Core.SignalR;
 using MassTransit;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.CodeAnalysis;
@@ -79,7 +80,10 @@ public class IncreasePriceService : IConsumer<PriceIncreaseEvent>
 			//await _priceHubContext.Clients.All.SendAsync("ReceivePriceUpdate", product.ProductId, product.Price);
 			try
 			{
-				await _priceHubContext.Clients.All.SendAsync("ReceivePriceUpdate", product.ProductId, product.Price);
+				//await _priceHubContext.Clients.All.SendAsync("ReceivePriceUpdate", product.ProductId, product.Price);
+				//await _priceHubContext.SendPriceUpdateToProductGroup(product.ProductId, product.Price);
+				await _priceHubContext.SendPriceUpdateToCompanyManagers(product.CompanyId.Value, product.ProductId, product.Price);
+				await _priceHubContext.SendPriceUpdateToCompanyViewers(product.CompanyId.Value, product.ProductId, product.Price);
 			}
 			catch (Exception ex)
 			{

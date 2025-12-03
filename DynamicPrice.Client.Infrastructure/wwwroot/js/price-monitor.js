@@ -26,6 +26,32 @@
 		console.log("PriceMonitor connected to SignalR");
 	}
 
+	// --- Subscription helpers для групп на hub ---
+	async subscribeToCompany(companyId) {
+		if (!this.connection) throw new Error("SignalR connection not initialized");
+		await this.connection.invoke("SubscribeToCompany", companyId);
+		console.log("Subscribed to company", companyId);
+	}
+
+	async unsubscribeFromCompany(companyId) {
+		if (!this.connection) throw new Error("SignalR connection not initialized");
+		await this.connection.invoke("UnsubscribeFromCompany", companyId);
+		console.log("Unsubscribed from company", companyId);
+	}
+
+	async subscribeToProduct(productId) {
+		if (!this.connection) throw new Error("SignalR connection not initialized");
+		await this.connection.invoke("SubscribeToProduct", productId);
+		console.log("Subscribed to product", productId);
+	}
+
+	async unsubscribeFromProduct(productId) {
+		if (!this.connection) throw new Error("SignalR connection not initialized");
+		await this.connection.invoke("UnsubscribeFromProduct", productId);
+		console.log("Unsubscribed from product", productId);
+	}
+	// --- /subscriptions ---
+
 	registerChart(productId, canvasId, initialData = [], options = {}) {
 		const maxPoints = options.maxPoints ?? this.config.maxPoints;
 

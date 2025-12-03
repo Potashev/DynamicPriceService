@@ -65,3 +65,23 @@
 		color: red;
 	}
 </style>
+@section Scripts {
+	<script>
+		(function() {
+			var productId = @Model.ProductId;
+			function subscribe() {
+				if (window.priceMonitorInstance && typeof window.priceMonitorInstance.subscribeToProduct === "function") {
+					window.priceMonitorInstance.subscribeToProduct(productId)
+						.catch(function (e) { console.error("subscribeToProduct failed", e); });
+				}
+			}
+			// если monitor уже готов
+			if (window.priceMonitorInstance) {
+				subscribe();
+			} else {
+				// ждём события и подписываемся
+				window.addEventListener('priceMonitorReady', subscribe, { once: true });
+			}
+		})();
+	</script>
+}

@@ -6,6 +6,11 @@
 	<a asp-controller="Cart" asp-action="Details" asp-route-companyId="@Model.Company.CompanyId">Cart Details</a>
 </p>
 
+<script>
+    // прокидываем companyId в global body dataset, price-monitor-init.js подхватит и подпишется
+    document.body.dataset.companyId = "@Model.Company.CompanyId";
+</script>
+
 <price-monitor-resources />
 
 <table class="table table-striped">

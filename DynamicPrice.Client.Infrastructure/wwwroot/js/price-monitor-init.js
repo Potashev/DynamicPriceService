@@ -1,19 +1,22 @@
 ﻿import { PriceMonitor } from './price-monitor.js';
-/*import { PriceMonitorConfig } from './price-monitor-config.js';*/
 
-const hubUrl = "/priceHub"; // можно вынести в конфиг / data-атрибут
+const defaultHubUrl = "https://localhost:7140/priceHub"; // замените на адрес вашего Core сервиса при необходимости
+
+// используем data-атрибут body.dataset.priceHubUrl, если он задан на странице
+const hubUrl = document.body?.dataset?.priceHubUrl || defaultHubUrl;
+
 const monitor = new PriceMonitor(hubUrl);
-
-// инициализируем и делаем глобально доступным экземпляр
-await monitor.init();
-window.priceMonitorInstance = monitor;
-// оповещаем внешние скрипты, что monitor готов
-window.dispatchEvent(new CustomEvent('priceMonitorReady'));
-
-console.log("PriceMonitor initialized and exported as window.priceMonitorInstance");
+try {
+	await monitor.init();
+	window.priceMonitorInstance = monitor;
+	window.dispatchEvent(new CustomEvent('priceMonitorReady'));
+	console.log("PriceMonitor initialized and exported as window.priceMonitorInstance, hubUrl:", hubUrl);
+} catch (err) {
+	console.error("PriceMonitor init failed", err, "hubUrl:", hubUrl);
+}
 
 // если на странице задан companyId в data атрибуте body, автоматически подпишемся
-const companyId = document.body.dataset.companyId;
+const companyId = document.body?.dataset?.companyId;
 if (companyId) {
 	try {
 		await monitor.subscribeToCompany(Number(companyId));
@@ -35,12 +38,11 @@ document.querySelectorAll("[data-price-monitor]").forEach(el => {
 		options
 	);
 
-	// опционально подпишемся на конкретный продукт (например для product.details это полезно)
+	// опционально подпишемся на конкретный продукт
 	(async () => {
 		try {
 			await monitor.subscribeToProduct(Number(productId));
 		} catch (e) {
-			// если нет прав или метод на hub недоступен — просто логируем
 			console.debug("subscribeToProduct failed for", productId, e);
 		}
 	})();

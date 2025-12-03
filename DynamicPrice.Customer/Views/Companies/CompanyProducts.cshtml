@@ -1,4 +1,5 @@
 ﻿@model DynamicPrice.Shared.Contracts.ViewModels.CompanyProductsInfo
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 
 <h1>@Model.Company.Title</h1>
 
@@ -7,8 +8,18 @@
 </p>
 
 <script>
-    // прокидываем companyId в global body dataset, price-monitor-init.js подхватит и подпишется
-    document.body.dataset.companyId = "@Model.Company.CompanyId";
+	(function(){
+		// прокидываем companyId в global body dataset, price-monitor-init.js подхватит и подпишется
+		document.body.dataset.companyId = "@Model.Company.CompanyId";
+
+		// прокидываем hub url (ApiSettings:BaseUrl) если есть
+		var apiBase = '@(Configuration["ApiSettings:BaseUrl"] ?? "")';
+		if (apiBase) {
+			// убираем завершающий слэш если есть (без серверного вычисления достаточно простого JS)
+			if (apiBase.endsWith('/')) apiBase = apiBase.slice(0, -1);
+			document.body.dataset.priceHubUrl = apiBase + '/priceHub';
+		}
+	})();
 </script>
 
 <price-monitor-resources />

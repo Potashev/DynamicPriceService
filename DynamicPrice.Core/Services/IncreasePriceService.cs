@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPrice.Core.Services;
 
+//todo: think about base ChangePriceService and move common for Increase and Reduce
 public class IncreasePriceService : IConsumer<PriceIncreaseEvent>
 {
 	private readonly IServiceProvider _serviceProvider;

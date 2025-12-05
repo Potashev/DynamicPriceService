@@ -1,5 +1,6 @@
 ﻿using DynamicPrice.Core.Data;
 using DynamicPrice.Core.Models;
+using DynamicPrice.Core.SignalR;
 using MassTransit;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 {
 	private readonly IServiceProvider _serviceProvider;
 	private readonly IHubContext<PriceHub> _priceHubContext;
+	private readonly ILogger<ReducePriceService> _logger;
 
 	private static readonly Histogram ChangePriceDuration = Metrics
 	.CreateHistogram("dp_changeprice_duration_seconds",
@@ -20,10 +22,11 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 			LabelNames = new[] { "companyId" }
 		});
 
-	public ReducePriceService(IServiceProvider serviceProvider, IConfiguration config, IHubContext<PriceHub> priceHubContext)   //todo: remove PriceHub?
+	public ReducePriceService(IServiceProvider serviceProvider, IConfiguration config, IHubContext<PriceHub> priceHubContext, ILogger<ReducePriceService> logger)
 	{
 		_serviceProvider = serviceProvider;
 		_priceHubContext = priceHubContext;
+		_logger = logger;
 	}
 
 	public async Task Consume(ConsumeContext<PriceReduceEvent> context)
@@ -40,6 +43,7 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 
 	private async Task ReducePrice(int productId)
 	{
+		//todo: use logger
 		using var scope = _serviceProvider.CreateScope();
 		var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
 
@@ -67,7 +71,8 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 
 		await context.SaveChangesAsync();
 
-		await _priceHubContext.Clients.All.SendAsync("ReceivePriceUpdate", product.ProductId, product.Price);
+		//await _priceHubContext.Clients.All.SendAsync("ReceivePriceUpdate", product.ProductId, product.Price);
+		await NoticeOfReduce(product);
 	}
 
 	private decimal ReducePrice(decimal price, double pricingRuleReduction, bool testDrawing = false)
@@ -84,6 +89,19 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 		}
 
 		return price;
+	}
+
+	private async Task NoticeOfReduce(Product product)
+	{
+		try
+		{
+			await _priceHubContext.SendPriceUpdateToCompanyManagers(product.CompanyId.Value, product.ProductId, product.Price);
+			await _priceHubContext.SendPriceUpdateToCompanyViewers(product.CompanyId.Value, product.ProductId, product.Price);
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Failed to notify hub about product {ProductId}", product.ProductId);
+		}
 	}
 }
 

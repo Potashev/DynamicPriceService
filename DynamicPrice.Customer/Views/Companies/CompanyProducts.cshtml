@@ -7,21 +7,6 @@
 	<a asp-controller="Cart" asp-action="Details" asp-route-companyId="@Model.Company.CompanyId">Cart Details</a>
 </p>
 
-<script>
-	(function(){
-		// прокидываем companyId в global body dataset, price-monitor-init.js подхватит и подпишется
-		document.body.dataset.companyId = "@Model.Company.CompanyId";
-
-		// прокидываем hub url (ApiSettings:BaseUrl) если есть
-		var apiBase = '@(Configuration["ApiSettings:BaseUrl"] ?? "")';
-		if (apiBase) {
-			// убираем завершающий слэш если есть (без серверного вычисления достаточно простого JS)
-			if (apiBase.endsWith('/')) apiBase = apiBase.slice(0, -1);
-			document.body.dataset.priceHubUrl = apiBase + '/priceHub';
-		}
-	})();
-</script>
-
 <price-monitor-resources />
 
 <table class="table table-striped">
@@ -42,7 +27,9 @@
 					<price-monitor product-id="@product.ProductId"
 								   price="@product.Price"
 								   dynamics="@product.PriceDynamics"
-								   max-points="20">
+								   max-points="20"
+                                   company-id="@Model.Company.CompanyId"
+                                   price-hub-url="@( (Configuration["ApiSettings:BaseUrl"] ?? "").TrimEnd('/') + "/priceHub" )">
 					</price-monitor>
 				</td>
 				<td>

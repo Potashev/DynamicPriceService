@@ -2,7 +2,12 @@
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 
 @{
-	ViewData["Title"] = "Details";
+    ViewData["Title"] = "Details";
+    // try to get companyId from ViewData (controller can set ViewData["CompanyId"]) or fallback to empty
+    var companyIdObj = ViewData["CompanyId"];
+    int? viewCompanyId = companyIdObj is int i ? i : (int?)null;
+    // hub url
+    var hubUrl = (Configuration["ApiSettings:BaseUrl"] ?? "").TrimEnd('/') + "/priceHub";
 }
 
 <h1>Details</h1>
@@ -10,63 +15,78 @@
 <price-monitor-resources />
 
 <div>
-	<h4>Product</h4>
-	<hr />
-	<dl class="row">
-		<dt class="col-sm-2">@Html.DisplayNameFor(model => model.Title)</dt>
-		<dd class="col-sm-10">@Html.DisplayFor(model => model.Title)</dd>
+    <h4>Product</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Title)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Title)</dd>
 
-		<dt class="col-sm-2">@Html.DisplayNameFor(model => model.Price)</dt>
-		<dd class="col-sm-10">
-			<span id="price-@Model.ProductId">@Html.DisplayFor(model => model.Price)</span>
-			<span id="price-change-@Model.ProductId" class="price-change"></span>
-		</dd>
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Price)</dt>
+        <dd class="col-sm-10">
+            <span id="price-@Model.ProductId">@Html.DisplayFor(model => model.Price)</span>
+            <span id="price-change-@Model.ProductId" class="price-change"></span>
+        </dd>
 
-		<dt class="col-sm-2">@Html.DisplayNameFor(model => model.MinimumPrice)</dt>
-		<dd class="col-sm-10">@Html.DisplayFor(model => model.MinimumPrice)</dd>
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.MinimumPrice)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.MinimumPrice)</dd>
 
-		<dt class="col-sm-2">@Html.DisplayNameFor(model => model.Quantity)</dt>
-		<dd class="col-sm-10">@Html.DisplayFor(model => model.Quantity)</dd>
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Quantity)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Quantity)</dd>
 
-		<dt class="col-sm-2">@Html.DisplayNameFor(model => model.Description)</dt>
-		<dd class="col-sm-10">@Html.DisplayFor(model => model.Description)</dd>
-	</dl>
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Description)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Description)</dd>
+    </dl>
 </div>
 
-<price-monitor product-id="@Model.ProductId"
-			   price="@Model.Price"
-			   dynamics="@Model.PriceDynamics"
-			   max-points="300"
-			   show-axes="true"
-			   show-grid="true">
-</price-monitor>
+@if (viewCompanyId.HasValue)
+{
+    <price-monitor product-id="@Model.ProductId"
+                   price="@Model.Price"
+                   dynamics="@Model.PriceDynamics"
+                   max-points="300"
+                   show-axes="true"
+                   show-grid="true"
+                   company-id="@viewCompanyId.Value"
+                   price-hub-url="@hubUrl">
+    </price-monitor>
+}
+else
+{
+    <price-monitor product-id="@Model.ProductId"
+                   price="@Model.Price"
+                   dynamics="@Model.PriceDynamics"
+                   max-points="300"
+                   show-axes="true"
+                   show-grid="true">
+    </price-monitor>
+}
 
 <div>
-	<a asp-action="Edit" asp-route-id="@Model?.ProductId">Edit</a> |
-	<a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.ProductId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
 </div>
 
 <style>
-	.chart-container {
-		width: 600px;
-		height: 300px;
-		margin: 20px 0;
-	}
+    .chart-container {
+        width: 600px;
+        height: 300px;
+        margin: 20px 0;
+    }
 
-	.price-change {
-		margin-left: 8px;
-		font-weight: bold;
-	}
+    .price-change {
+        margin-left: 8px;
+        font-weight: bold;
+    }
 
-	.price-up {
-		color: green;
-	}
+    .price-up {
+        color: green;
+    }
 
-	.price-down {
-		color: red;
-	}
+    .price-down {
+        color: red;
+    }
 </style>
-@section Scripts {
+@* @section Scripts {
     <script>
         (function() {
             // устанавливаем hub url для клиента
@@ -90,4 +110,4 @@
             }
         })();
     </script>
-}
+} *@

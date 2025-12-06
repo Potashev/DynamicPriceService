@@ -10,7 +10,7 @@ public class PriceMonitorTagHelper : TagHelper
 	[HtmlAttributeName("price")]
 	public decimal Price { get; set; }
 
-	[HtmlAttributeName("dynamics")]
+	[HtmlAttributeName("dynamics")] //todo: rename to PriceDynamics
 	public IEnumerable<dynamic>? Dynamics { get; set; }
 
 	[HtmlAttributeName("max-points")]
@@ -25,8 +25,13 @@ public class PriceMonitorTagHelper : TagHelper
 	[HtmlAttributeName("company-id")]
 	public int? CompanyId { get; set; }
 
-	[HtmlAttributeName("price-hub-url")]
-	public string? PriceHubUrl { get; set; }
+	//todo: think about adding ProductId 
+
+	//[HtmlAttributeName("product-id")]
+	//public int? ProductId { get; set; }
+
+	//[HtmlAttributeName("price-hub-url")]
+	//public string? PriceHubUrl { get; set; }
 
 	public override void Process(TagHelperContext context, TagHelperOutput output)
 	{
@@ -61,14 +66,14 @@ public class PriceMonitorTagHelper : TagHelper
 		var optionsJson = JsonSerializer.Serialize(options);
 
 		var companyAttr = CompanyId.HasValue ? $" data-company-id=\"{CompanyId.Value}\"" : "";
-		var hubAttr = !string.IsNullOrWhiteSpace(PriceHubUrl) ? $" data-price-hub-url=\"{System.Net.WebUtility.HtmlEncode(PriceHubUrl)}\"" : "";
+		//var hubAttr = !string.IsNullOrWhiteSpace(PriceHubUrl) ? $" data-price-hub-url=\"{System.Net.WebUtility.HtmlEncode(PriceHubUrl)}\"" : "";
 
 		output.Content.SetHtmlContent($@"
 			<canvas id=""chart-{ProductId}"",
 					data-price-monitor=""true"",
 					data-product-id=""{ProductId}"",
 					data-initial-data='{dynamicsJson}'
-					data-options='{optionsJson}'{companyAttr}{hubAttr}></canvas>
+					//data-options='{optionsJson}'{companyAttr}></canvas>
 		");
 	}
 }

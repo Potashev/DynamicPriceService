@@ -95,8 +95,9 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 	{
 		try
 		{
-			await _priceHubContext.SendPriceUpdateToCompanyManagers(product.CompanyId.Value, product.ProductId, product.Price);
-			await _priceHubContext.SendPriceUpdateToCompanyViewers(product.CompanyId.Value, product.ProductId, product.Price);
+			//await _priceHubContext.SendPriceUpdateToCompanyManagers(product.CompanyId.Value, product.ProductId, product.Price);
+			//await _priceHubContext.SendPriceUpdateToCompanyViewers(product.CompanyId.Value, product.ProductId, product.Price);
+			await _priceHubContext.SendPriceUpdateToProductGroup(product.ProductId, product.Price);
 		}
 		catch (Exception ex)
 		{

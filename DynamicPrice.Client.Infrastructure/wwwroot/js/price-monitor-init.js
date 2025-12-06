@@ -13,17 +13,6 @@ function resolveHubUrlFromDom() {
 	return defaultHubUrl;
 }
 
-function resolveCompanyIdFromDom() {
-	// priority: body.dataset.companyId -> first canvas[data-company-id] -> null
-	const bodyCompany = document.body?.dataset?.companyId;
-	if (bodyCompany) return Number(bodyCompany);
-
-	const el = document.querySelector("canvas[data-company-id]");
-	if (el) return Number(el.dataset.companyId);
-
-	return null;
-}
-
 const hubUrl = resolveHubUrlFromDom();
 const monitor = new PriceMonitor(hubUrl);
 
@@ -34,16 +23,6 @@ try {
 	console.log("PriceMonitor initialized, hubUrl:", hubUrl);
 } catch (err) {
 	console.error("PriceMonitor init failed", err, "hubUrl:", hubUrl);
-}
-
-// Subscribe to company once (if available)
-const companyId = resolveCompanyIdFromDom();
-if (companyId) {
-	try {
-		await monitor.subscribeToCompany(companyId);
-	} catch (e) {
-		console.error("subscribeToCompany failed", companyId, e);
-	}
 }
 
 // register charts and subscribe to product groups
@@ -59,7 +38,7 @@ document.querySelectorAll("[data-price-monitor]").forEach(el => {
 		options
 	);
 
-	// subscribe to product-level group for more targeted updates
+	// subscribe to product group for targeted updates
 	(async () => {
 		try {
 			await monitor.subscribeToProduct(Number(productId));
@@ -67,4 +46,12 @@ document.querySelectorAll("[data-price-monitor]").forEach(el => {
 			console.debug("subscribeToProduct failed for", productId, e);
 		}
 	})();
+});
+
+// try to unsubscribe on unload (best-effort)
+window.addEventListener('beforeunload', () => {
+	if (window.priceMonitorInstance && typeof window.priceMonitorInstance.unsubscribeAll === 'function') {
+		// best-effort synchronous attempt: fire-and-forget
+		window.priceMonitorInstance.unsubscribeAll();
+	}
 });

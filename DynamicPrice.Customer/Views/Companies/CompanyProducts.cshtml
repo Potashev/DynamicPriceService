@@ -27,9 +27,9 @@
 					<price-monitor product-id="@product.ProductId"
 								   price="@product.Price"
 								   dynamics="@product.PriceDynamics"
-								   max-points="20"
-                                   company-id="@Model.Company.CompanyId"
-                                   price-hub-url="@( (Configuration["ApiSettings:BaseUrl"] ?? "").TrimEnd('/') + "/priceHub" )">
+								   max-points="20" >
+                                   @* company-id="@Model.Company.CompanyId" > *@
+                                   @* price-hub-url="@( (Configuration["ApiSettings:BaseUrl"] ?? "").TrimEnd('/') + "/priceHub" )"> *@
 					</price-monitor>
 				</td>
 				<td>

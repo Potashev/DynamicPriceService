@@ -9,7 +9,7 @@
 		this.connection = null;
 		this.charts = {};
 		this.lastPrices = {};
-		this.chartMaxPoints = {}; // локальный maxPoints для каждого графика
+		this.chartMaxPoints = {};
 
 		// set of productIds we subscribed to on the hub
 		this.subscribedProducts = new Set();
@@ -38,16 +38,13 @@
 	}
 
 	_bindUnloadHandlers() {
-		// best-effort: try to unsubscribe on pagehide / beforeunload / visibilitychange
+		// best-effort: try to unsubscribe on pagehide / beforeunload
 		const tryUnsubscribe = () => {
 			// fire-and-forget
 			this.unsubscribeAll().catch(err => console.debug("unsubscribeAll failed", err));
 		};
 		window.addEventListener('pagehide', tryUnsubscribe);
 		window.addEventListener('beforeunload', tryUnsubscribe);
-		document.addEventListener('visibilitychange', () => {
-			if (document.visibilityState === 'hidden') tryUnsubscribe();
-		});
 	}
 
 	// --- Subscription helpers ---

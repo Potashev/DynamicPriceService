@@ -3,10 +3,6 @@
 
 @{
     ViewData["Title"] = "Details";
-    // try to get companyId from ViewData (controller sets it in BaseController)
-    var companyIdObj = ViewData["CompanyId"];
-    int? viewCompanyId = companyIdObj is int i ? i : (int?)null;
-    var hubUrl = (Configuration["ApiSettings:BaseUrl"] ?? "").TrimEnd('/') + "/priceHub";
 }
 
 <h1>Details</h1>
@@ -39,12 +35,10 @@
 
     <price-monitor product-id="@Model.ProductId"
                    price="@Model.Price"
-                   dynamics="@Model.PriceDynamics"
+                   price-dynamics="@Model.PriceDynamics"
                    max-points="300"
                    show-axes="true"
                    show-grid="true" >
-                   @* company-id="@viewCompanyId.Value" > *@
-@*                    price-hub-url="@hubUrl"> *@
     </price-monitor>
 
 <div>
@@ -72,28 +66,3 @@
         color: red;
     }
 </style>
-@* @section Scripts {
-    <script>
-        (function() {
-            // устанавливаем hub url для клиента
-            var apiBase = '@(Configuration["ApiSettings:BaseUrl"] ?? "")';
-            if (apiBase) {
-                if (apiBase.endsWith('/')) apiBase = apiBase.slice(0, -1);
-                document.body.dataset.priceHubUrl = apiBase + '/priceHub';
-            }
-
-            var productId = @Model.ProductId;
-            function subscribe() {
-                if (window.priceMonitorInstance && typeof window.priceMonitorInstance.subscribeToProduct === "function") {
-                    window.priceMonitorInstance.subscribeToProduct(productId)
-                        .catch(function (e) { console.error("subscribeToProduct failed", e); });
-                }
-            }
-            if (window.priceMonitorInstance) {
-                subscribe();
-            } else {
-                window.addEventListener('priceMonitorReady', subscribe, { once: true });
-            }
-        })();
-    </script>
-} *@

@@ -71,7 +71,6 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 
 		await context.SaveChangesAsync();
 
-		//await _priceHubContext.Clients.All.SendAsync("ReceivePriceUpdate", product.ProductId, product.Price);
 		await NoticeOfReduce(product);
 	}
 
@@ -95,8 +94,6 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 	{
 		try
 		{
-			//await _priceHubContext.SendPriceUpdateToCompanyManagers(product.CompanyId.Value, product.ProductId, product.Price);
-			//await _priceHubContext.SendPriceUpdateToCompanyViewers(product.CompanyId.Value, product.ProductId, product.Price);
 			await _priceHubContext.SendPriceUpdateToProductGroup(product.ProductId, product.Price);
 		}
 		catch (Exception ex)

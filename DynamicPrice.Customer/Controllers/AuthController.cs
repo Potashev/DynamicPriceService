@@ -45,7 +45,7 @@ namespace DynamicPrice.Customer.Controllers
 				// ModelState.AddModelError(string.Empty, "Invalid login attempt.");
 				// return View(loginVm);
 
-				var tokenResponse = await CoreApiClient.LoginCustomer(loginVm);
+				var tokenResponse = await CoreApiClient.LoginCustomer(loginVm);  //todo: runtime error on debug - investigate
 				_authTokenStore.SetToken(tokenResponse.Token);
 				return RedirectToAction(nameof(Index), "Companies");
 			}

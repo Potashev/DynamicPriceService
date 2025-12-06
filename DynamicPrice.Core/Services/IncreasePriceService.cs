@@ -78,13 +78,8 @@ public class IncreasePriceService : IConsumer<PriceIncreaseEvent>
 		foreach (var orderProduct in OrderItems)
 		{
 			var product = orderProduct.Product;
-			//await _priceHubContext.Clients.All.SendAsync("ReceivePriceUpdate", product.ProductId, product.Price);
 			try
 			{
-				//await _priceHubContext.Clients.All.SendAsync("ReceivePriceUpdate", product.ProductId, product.Price);
-				//await _priceHubContext.SendPriceUpdateToProductGroup(product.ProductId, product.Price);
-				//await _priceHubContext.SendPriceUpdateToCompanyManagers(product.CompanyId.Value, product.ProductId, product.Price);
-				//await _priceHubContext.SendPriceUpdateToCompanyViewers(product.CompanyId.Value, product.ProductId, product.Price);
 				await _priceHubContext.SendPriceUpdateToProductGroup(product.ProductId, product.Price);
 			}
 			catch (Exception ex)

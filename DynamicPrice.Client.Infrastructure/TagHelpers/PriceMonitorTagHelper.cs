@@ -22,17 +22,6 @@ public class PriceMonitorTagHelper : TagHelper
 	[HtmlAttributeName("show-grid")]
 	public bool? ShowGrid { get; set; }
 
-	[HtmlAttributeName("company-id")]
-	public int? CompanyId { get; set; }
-
-	//todo: think about adding ProductId 
-
-	//[HtmlAttributeName("product-id")]
-	//public int? ProductId { get; set; }
-
-	//[HtmlAttributeName("price-hub-url")]
-	//public string? PriceHubUrl { get; set; }
-
 	public override void Process(TagHelperContext context, TagHelperOutput output)
 	{
 		output.TagName = "div";
@@ -65,15 +54,12 @@ public class PriceMonitorTagHelper : TagHelper
 
 		var optionsJson = JsonSerializer.Serialize(options);
 
-		var companyAttr = CompanyId.HasValue ? $" data-company-id=\"{CompanyId.Value}\"" : "";
-		//var hubAttr = !string.IsNullOrWhiteSpace(PriceHubUrl) ? $" data-price-hub-url=\"{System.Net.WebUtility.HtmlEncode(PriceHubUrl)}\"" : "";
-
 		output.Content.SetHtmlContent($@"
 			<canvas id=""chart-{ProductId}"",
 					data-price-monitor=""true"",
 					data-product-id=""{ProductId}"",
 					data-initial-data='{dynamicsJson}'
-					//data-options='{optionsJson}'{companyAttr}></canvas>
+					//data-options='{optionsJson}'></canvas>
 		");
 	}
 }

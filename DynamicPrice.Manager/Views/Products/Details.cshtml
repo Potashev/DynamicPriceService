@@ -3,10 +3,9 @@
 
 @{
     ViewData["Title"] = "Details";
-    // try to get companyId from ViewData (controller can set ViewData["CompanyId"]) or fallback to empty
+    // try to get companyId from ViewData (controller sets it in BaseController)
     var companyIdObj = ViewData["CompanyId"];
     int? viewCompanyId = companyIdObj is int i ? i : (int?)null;
-    // hub url
     var hubUrl = (Configuration["ApiSettings:BaseUrl"] ?? "").TrimEnd('/') + "/priceHub";
 }
 
@@ -38,8 +37,6 @@
     </dl>
 </div>
 
-@if (viewCompanyId.HasValue)
-{
     <price-monitor product-id="@Model.ProductId"
                    price="@Model.Price"
                    dynamics="@Model.PriceDynamics"
@@ -49,17 +46,6 @@
                    company-id="@viewCompanyId.Value"
                    price-hub-url="@hubUrl">
     </price-monitor>
-}
-else
-{
-    <price-monitor product-id="@Model.ProductId"
-                   price="@Model.Price"
-                   dynamics="@Model.PriceDynamics"
-                   max-points="300"
-                   show-axes="true"
-                   show-grid="true">
-    </price-monitor>
-}
 
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.ProductId">Edit</a> |

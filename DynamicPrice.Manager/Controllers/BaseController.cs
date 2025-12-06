@@ -22,6 +22,9 @@ public class BaseController : Controller
 		{
 			var company = await CoreApiClient.GetCompanyInfo();
 			companyTitle = company.Title;
+
+			// expose company id to views so taghelper can set data-company-id automatically
+			ViewData["CompanyId"] = company.CompanyId;
 		}
 		catch (Exception) { }
 

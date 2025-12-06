@@ -64,7 +64,7 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 
 		await context.PriceDynamics.AddAsync(new PriceDynamic
 		{
-			Product = product,
+			ProductId = product.ProductId,
 			Price = product.Price,
 			Date = DateTime.UtcNow
 		});

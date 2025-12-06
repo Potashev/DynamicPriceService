@@ -59,7 +59,7 @@ public class PriceMonitorTagHelper : TagHelper
 					data-price-monitor=""true"",
 					data-product-id=""{ProductId}"",
 					data-initial-data='{dynamicsJson}'
-					//data-options='{optionsJson}'></canvas>
+					data-options='{optionsJson}'></canvas>
 		");
 	}
 }

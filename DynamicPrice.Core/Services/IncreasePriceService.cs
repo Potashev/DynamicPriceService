@@ -1,5 +1,6 @@
 ﻿using DynamicPrice.Core.Data;
 using DynamicPrice.Core.Models;
+using DynamicPrice.Core.SignalR;
 using MassTransit;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.CodeAnalysis;
@@ -7,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPrice.Core.Services;
 
+//todo: think about base ChangePriceService and move common for Increase and Reduce
 public class IncreasePriceService : IConsumer<PriceIncreaseEvent>
 {
 	private readonly IServiceProvider _serviceProvider;
@@ -76,10 +78,9 @@ public class IncreasePriceService : IConsumer<PriceIncreaseEvent>
 		foreach (var orderProduct in OrderItems)
 		{
 			var product = orderProduct.Product;
-			//await _priceHubContext.Clients.All.SendAsync("ReceivePriceUpdate", product.ProductId, product.Price);
 			try
 			{
-				await _priceHubContext.Clients.All.SendAsync("ReceivePriceUpdate", product.ProductId, product.Price);
+				await _priceHubContext.SendPriceUpdateToProductGroup(product.ProductId, product.Price);
 			}
 			catch (Exception ex)
 			{

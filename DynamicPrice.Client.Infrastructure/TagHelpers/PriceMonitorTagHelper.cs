@@ -10,8 +10,8 @@ public class PriceMonitorTagHelper : TagHelper
 	[HtmlAttributeName("price")]
 	public decimal Price { get; set; }
 
-	[HtmlAttributeName("dynamics")]
-	public IEnumerable<dynamic>? Dynamics { get; set; }
+	[HtmlAttributeName("price-dynamics")]
+	public IEnumerable<dynamic>? PriceDynamics { get; set; }
 
 	[HtmlAttributeName("max-points")]
 	public int? MaxPoints { get; set; }
@@ -28,7 +28,7 @@ public class PriceMonitorTagHelper : TagHelper
 		output.Attributes.SetAttribute("class", "chart-container");
 
 		var dynamicsJson = JsonSerializer.Serialize(
-			Dynamics?.Select(d => new { date = d.Date, price = d.Price }) ?? Enumerable.Empty<object>()
+			PriceDynamics?.Select(d => new { date = d.Date, price = d.Price }) ?? Enumerable.Empty<object>()
 		);
 
 		var options = new
@@ -55,9 +55,9 @@ public class PriceMonitorTagHelper : TagHelper
 		var optionsJson = JsonSerializer.Serialize(options);
 
 		output.Content.SetHtmlContent($@"
-			<canvas id=""chart-{ProductId}""
-					data-price-monitor=""true""
-					data-product-id=""{ProductId}""
+			<canvas id=""chart-{ProductId}"",
+					data-price-monitor=""true"",
+					data-product-id=""{ProductId}"",
 					data-initial-data='{dynamicsJson}'
 					data-options='{optionsJson}'></canvas>
 		");

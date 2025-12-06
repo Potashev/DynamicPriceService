@@ -2,8 +2,11 @@
 
 public class PriceHub : Hub
 {
-	public async Task SendPriceUpdate(int productId, decimal newPrice)
-	{
-		await Clients.All.SendAsync("ReceivePriceUpdate", productId, newPrice);
-	}
+	public static string GetProductGroup(int productId) => $"product:{productId}";
+
+	public Task SubscribeToProduct(int productId)
+		=> Groups.AddToGroupAsync(Context.ConnectionId, GetProductGroup(productId));
+
+	public Task UnsubscribeFromProduct(int productId)
+		=> Groups.RemoveFromGroupAsync(Context.ConnectionId, GetProductGroup(productId));
 }

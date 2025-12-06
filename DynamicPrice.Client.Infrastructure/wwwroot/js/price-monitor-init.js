@@ -1,17 +1,31 @@
 ﻿import { PriceMonitor } from './price-monitor.js';
-/*import { PriceMonitorConfig } from './price-monitor-config.js';*/
 
-//const config = new PriceMonitorConfig({
-//	maxPoints: 50,
-//	chartOptions: {
-//		scales: { x: { display: false }, y: { display: false } }
-//	}
-//});
+const defaultHubUrl = "https://localhost:7140/priceHub"; // fallback
 
-const monitor = new PriceMonitor("https://localhost:7140/priceHub");	//todo: get url from config
-await monitor.init();
+function resolveHubUrlFromDom() {
+	// priority: body.dataset.priceHubUrl -> first canvas[data-price-hub-url] -> default
+	const bodyUrl = document.body?.dataset?.priceHubUrl;
+	if (bodyUrl) return bodyUrl;
 
-// ищем все элементы с data-price-monitor
+	const el = document.querySelector("canvas[data-price-hub-url]");
+	if (el) return el.dataset.priceHubUrl;
+
+	return defaultHubUrl;
+}
+
+const hubUrl = resolveHubUrlFromDom();
+const monitor = new PriceMonitor(hubUrl);
+
+try {
+	await monitor.init();
+	window.priceMonitorInstance = monitor;
+	window.dispatchEvent(new CustomEvent('priceMonitorReady'));
+	console.log("PriceMonitor initialized, hubUrl:", hubUrl);
+} catch (err) {
+	console.error("PriceMonitor init failed", err, "hubUrl:", hubUrl);
+}
+
+// register charts and subscribe to product groups
 document.querySelectorAll("[data-price-monitor]").forEach(el => {
 	const productId = el.dataset.productId;
 	const data = JSON.parse(el.dataset.initialData || "[]");
@@ -23,4 +37,21 @@ document.querySelectorAll("[data-price-monitor]").forEach(el => {
 		data,
 		options
 	);
+
+	// subscribe to product group for targeted updates
+	(async () => {
+		try {
+			await monitor.subscribeToProduct(Number(productId));
+		} catch (e) {
+			console.debug("subscribeToProduct failed for", productId, e);
+		}
+	})();
+});
+
+// try to unsubscribe on unload (best-effort)
+window.addEventListener('beforeunload', () => {
+	if (window.priceMonitorInstance && typeof window.priceMonitorInstance.unsubscribeAll === 'function') {
+		// best-effort synchronous attempt: fire-and-forget
+		window.priceMonitorInstance.unsubscribeAll();
+	}
 });

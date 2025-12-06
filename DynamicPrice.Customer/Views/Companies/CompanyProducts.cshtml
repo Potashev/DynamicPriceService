@@ -1,4 +1,5 @@
 ﻿@model DynamicPrice.Shared.Contracts.ViewModels.CompanyProductsInfo
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 
 <h1>@Model.Company.Title</h1>
 
@@ -25,7 +26,7 @@
 				<td>
 					<price-monitor product-id="@product.ProductId"
 								   price="@product.Price"
-								   dynamics="@product.PriceDynamics"
+								   price-dynamics="@product.PriceDynamics"
 								   max-points="20">
 					</price-monitor>
 				</td>

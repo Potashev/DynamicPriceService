@@ -9,7 +9,12 @@
 		this.connection = null;
 		this.charts = {};
 		this.lastPrices = {};
-		this.chartMaxPoints = {}; // локальный maxPoints для каждого графика
+		this.chartMaxPoints = {};
+
+		// set of productIds we subscribed to on the hub
+		this.subscribedProducts = new Set();
+
+		this._unloadHandlerBound = false;
 	}
 
 	async init() {
@@ -24,7 +29,62 @@
 
 		await this.connection.start();
 		console.log("PriceMonitor connected to SignalR");
+
+		// register best-effort unload handlers once
+		if (!this._unloadHandlerBound) {
+			this._bindUnloadHandlers();
+			this._unloadHandlerBound = true;
+		}
 	}
+
+	_bindUnloadHandlers() {
+		// best-effort: try to unsubscribe on pagehide / beforeunload
+		const tryUnsubscribe = () => {
+			// fire-and-forget
+			this.unsubscribeAll().catch(err => console.debug("unsubscribeAll failed", err));
+		};
+		window.addEventListener('pagehide', tryUnsubscribe);
+		window.addEventListener('beforeunload', tryUnsubscribe);
+	}
+
+	// --- Subscription helpers ---
+	async subscribeToProduct(productId) {
+		if (!this.connection) throw new Error("SignalR connection not initialized");
+		if (this.subscribedProducts.has(Number(productId))) {
+			return;
+		}
+		try {
+			await this.connection.invoke("SubscribeToProduct", Number(productId));
+			this.subscribedProducts.add(Number(productId));
+			console.log("Subscribed to product", productId);
+		} catch (e) {
+			console.error("Failed to subscribe to product", productId, e);
+			throw e;
+		}
+	}
+
+	async unsubscribeFromProduct(productId) {
+		if (!this.connection) return;
+		if (!this.subscribedProducts.has(Number(productId))) return;
+		try {
+			await this.connection.invoke("UnsubscribeFromProduct", Number(productId));
+			this.subscribedProducts.delete(Number(productId));
+			console.log("Unsubscribed from product", productId);
+		} catch (e) {
+			console.debug("Failed to unsubscribe from product", productId, e);
+		}
+	}
+
+	async unsubscribeAll() {
+		if (!this.connection) return;
+		const ids = Array.from(this.subscribedProducts);
+		if (ids.length === 0) return;
+		// Try to unsubscribe in parallel but don't throw on failures
+		await Promise.allSettled(ids.map(id => this.connection.invoke("UnsubscribeFromProduct", id)));
+		this.subscribedProducts.clear();
+		console.log("Unsubscribed from all products");
+	}
+	// --- /subscriptions ---
 
 	registerChart(productId, canvasId, initialData = [], options = {}) {
 		const maxPoints = options.maxPoints ?? this.config.maxPoints;

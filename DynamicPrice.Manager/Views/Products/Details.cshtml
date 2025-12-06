@@ -1,4 +1,5 @@
 ﻿@model DynamicPrice.Shared.Contracts.ViewModels.ProductViewModel
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 
 @{
 	ViewData["Title"] = "Details";
@@ -34,7 +35,7 @@
 
 <price-monitor product-id="@Model.ProductId"
 			   price="@Model.Price"
-			   dynamics="@Model.PriceDynamics"
+			   price-dynamics="@Model.PriceDynamics"
 			   max-points="300"
 			   show-axes="true"
 			   show-grid="true">

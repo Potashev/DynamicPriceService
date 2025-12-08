@@ -16,11 +16,15 @@ public class CreateProductCommandHandlerTests
 
 	public CreateProductCommandHandlerTests()
 	{
-		//var config = new MapperConfiguration(cfg =>
-		//{
-		//	cfg.CreateMap<ProductViewModel, Product>();
-		//});
-		//_mapper = config.CreateMapper();
+		var mapperMock = new Mock<IMapper>();
+		mapperMock.Setup(m => m.Map<Product>(It.IsAny<ProductViewModel>()))
+			.Returns((ProductViewModel vm) => new Product
+			{
+				Title = vm.Title,
+				Price = vm.Price,
+			});
+
+		_mapper = mapperMock.Object;
 	}
 
 	[Fact]

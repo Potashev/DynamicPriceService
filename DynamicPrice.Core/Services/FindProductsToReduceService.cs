@@ -73,8 +73,8 @@ public class FindProductsToReduceService : BackgroundService
 				}
 
 				//todo: remove?
-				//await Task.Delay(TimeSpan.FromSeconds(1), token);
-				await Task.Delay(TimeSpan.FromMilliseconds(30), token);
+				await Task.Delay(TimeSpan.FromSeconds(1), token);
+				//await Task.Delay(TimeSpan.FromMilliseconds(30), token);
 
 				//todo: return back metrics
 

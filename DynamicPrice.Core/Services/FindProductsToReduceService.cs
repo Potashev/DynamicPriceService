@@ -39,9 +39,6 @@ public class FindProductsToReduceService : BackgroundService
 		{
 			while (!token.IsCancellationRequested)
 			{
-				//using (MonitorDuration.WithLabels().NewTimer())
-				//{
-
 				using var scope = _serviceProvider.CreateScope();
 				var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
 				var publishEndpoint = scope.ServiceProvider.GetRequiredService<IPublishEndpoint>();
@@ -72,21 +69,7 @@ public class FindProductsToReduceService : BackgroundService
 					_logger.LogError(ex, "Error during parallel processing of products");
 				}
 
-				//todo: remove?
 				await Task.Delay(TimeSpan.FromSeconds(1), token);
-				//await Task.Delay(TimeSpan.FromMilliseconds(30), token);
-
-				//todo: return back metrics
-
-				//_lastMonitorEnd[companyId] = DateTime.UtcNow;
-
-				//await Task.Delay(TimeSpan.FromSeconds(1), token);
-
-				//if (_lastMonitorEnd.TryGetValue(companyId, out var lastEnd))
-				//{
-				//    var waitSeconds = (DateTime.UtcNow - lastEnd).TotalSeconds;
-				//    MonitorWaitDuration.WithLabels(companyId.ToString()).Observe(waitSeconds);
-				//}
 			}
 		}
 		catch (Exception ex)
@@ -100,7 +83,6 @@ public class FindProductsToReduceService : BackgroundService
 	CancellationToken token,
 	int? productsCount = null)
 	{
-		//todo: later think about configuration activeCompnay.LastMonitorTime - skip recently monitored companies if need it
 		var activeCompaniesIds = await context.ActiveCompanies
 			.Select(ac => ac.CompanyId)
 			.ToListAsync(token);
@@ -119,14 +101,23 @@ public class FindProductsToReduceService : BackgroundService
 		if (productsCount.HasValue)
 			productsActiveCompaniesQuery = productsActiveCompaniesQuery.Take(productsCount.Value);
 
-		var query =
-			from p in productsActiveCompaniesQuery
-			join pr in priceRulesActiveCompaniesQuery
-				on p.CompanyId equals pr.CompanyId
-			where EF.Functions.DateDiffSecond(p.LastSellTime.Value, DateTime.UtcNow) > pr.NoSellSeconds
-			select p;
+		// materialize join results and filter in memory to avoid provider-specific SQL functions
+		var joinList = await (from p in productsActiveCompaniesQuery
+			join pr in priceRulesActiveCompaniesQuery on p.CompanyId equals pr.CompanyId
+			select new { Product = p, PriceRule = pr })
+			.ToListAsync(token);
 
-		await foreach (var product in query.AsAsyncEnumerable().WithCancellation(token))
-			yield return product;
+		foreach (var item in joinList)
+		{
+			var p = item.Product;
+			var pr = item.PriceRule;
+
+			if (!p.LastSellTime.HasValue)
+				continue;
+
+			var secondsSinceLastSell = (DateTime.UtcNow - p.LastSellTime.Value).TotalSeconds;
+			if (secondsSinceLastSell > pr.NoSellSeconds)
+				yield return p;
+		}
 	}
 }

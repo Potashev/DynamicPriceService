@@ -12,23 +12,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xunit;
 using System.Linq;
+using DynamicPrice.Tests.Fixtures;
 
 namespace DynamicPrice.Tests.MediatR.CartEntity;
 
 public class AddRemoveCartHandlersTests
 {
-	private static ServiceProvider BuildServices(string dbName)
-	{
-		var services = new ServiceCollection();
-		services.AddDbContext<DynamicPriceCoreContext>(opts => opts.UseInMemoryDatabase(dbName));
-		return services.BuildServiceProvider();
-	}
-
 	[Fact]
 	public async Task AddProductToCart_ShouldCreateCartAndAddItem_OrIncreaseQuantity()
 	{
-		var dbName = "AddRemoveCartTestDb" + System.Guid.NewGuid();
-		var sp = BuildServices(dbName);
+		var dbName = TestDbHelper.NewDbName("AddRemoveCartTestDb");
+		var sp = TestDbHelper.CreateServiceProvider(dbName);
 
 		using (var scope = sp.CreateScope())
 		{
@@ -92,8 +86,8 @@ public class AddRemoveCartHandlersTests
 	[Fact]
 	public async Task RemoveProductFromCart_ShouldDecreaseOrRemoveItem()
 	{
-		var dbName = "AddRemoveCartTestDb" + System.Guid.NewGuid();
-		var sp = BuildServices(dbName);
+		var dbName = TestDbHelper.NewDbName("AddRemoveCartTestDb");
+		var sp = TestDbHelper.CreateServiceProvider(dbName);
 
 		using (var scope = sp.CreateScope())
 		{

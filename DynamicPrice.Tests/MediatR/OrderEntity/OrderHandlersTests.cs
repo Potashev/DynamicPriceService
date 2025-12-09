@@ -12,23 +12,17 @@ using Moq;
 using Xunit;
 using MassTransit;
 using DynamicPrice.Core.Services;
+using DynamicPrice.Tests.Fixtures;
 
 namespace DynamicPrice.Tests.MediatR.OrderEntity;
 
 public class OrderHandlersTests
 {
-    private static ServiceProvider BuildServices(string dbName)
-    {
-        var services = new ServiceCollection();
-        services.AddDbContext<DynamicPriceCoreContext>(opts => opts.UseInMemoryDatabase(dbName));
-        return services.BuildServiceProvider();
-    }
-
     [Fact]
     public async Task ConfirmOrder_ShouldCreateOrder_RemoveCart_AndDecreaseProductQuantity()
     {
-        var dbName = "ConfirmOrderTestDb" + Guid.NewGuid();
-        var sp = BuildServices(dbName);
+        var dbName = TestDbHelper.NewDbName("ConfirmOrderTestDb");
+        var sp = TestDbHelper.CreateServiceProvider(dbName);
 
         int cartId;
         // seed
@@ -75,8 +69,8 @@ public class OrderHandlersTests
     [Fact]
     public async Task CompleteOrder_ShouldChargeCustomer_UpdateLastSellTime_SetStatus_AndPublishEvent()
     {
-        var dbName = "CompleteOrderTestDb" + Guid.NewGuid();
-        var sp = BuildServices(dbName);
+        var dbName = TestDbHelper.NewDbName("CompleteOrderTestDb");
+        var sp = TestDbHelper.CreateServiceProvider(dbName);
 
         int orderId;
 
@@ -139,8 +133,8 @@ public class OrderHandlersTests
     [Fact]
     public async Task CompleteOrder_ShouldThrow_WhenCustomerHasInsufficientBalance()
     {
-        var dbName = "CompleteOrderFailTestDb" + Guid.NewGuid();
-        var sp = BuildServices(dbName);
+        var dbName = TestDbHelper.NewDbName("CompleteOrderFailTestDb");
+        var sp = TestDbHelper.CreateServiceProvider(dbName);
 
         int orderId;
 
@@ -186,8 +180,8 @@ public class OrderHandlersTests
     [Fact]
     public async Task CancelOrder_ShouldIncreaseProductQuantity_AndSetCanceledStatus()
     {
-        var dbName = "CancelOrderTestDb" + Guid.NewGuid();
-        var sp = BuildServices(dbName);
+        var dbName = TestDbHelper.NewDbName("CancelOrderTestDb");
+        var sp = TestDbHelper.CreateServiceProvider(dbName);
 
         int orderId;
 
@@ -237,8 +231,8 @@ public class OrderHandlersTests
     [Fact]
     public async Task CancelOrder_ShouldThrow_WhenOrderInInvalidStatus()
     {
-        var dbName = "CancelOrderFailTestDb" + Guid.NewGuid();
-        var sp = BuildServices(dbName);
+        var dbName = TestDbHelper.NewDbName("CancelOrderFailTestDb");
+        var sp = TestDbHelper.CreateServiceProvider(dbName);
 
         int orderId;
 

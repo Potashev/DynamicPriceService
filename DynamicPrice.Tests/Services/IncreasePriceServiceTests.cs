@@ -1,11 +1,9 @@
-using System.Reflection;
 using DynamicPrice.Core.Models;
 using DynamicPrice.Core.Services;
-using DynamicPrice.Core.SignalR;
 using FluentAssertions;
 using Microsoft.AspNetCore.SignalR;
 using Moq;
-using Xunit;
+using System.Reflection;
 
 namespace DynamicPrice.Tests.Services;
 

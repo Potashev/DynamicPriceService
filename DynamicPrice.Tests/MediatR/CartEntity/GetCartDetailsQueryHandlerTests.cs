@@ -1,82 +1,77 @@
-using System.Threading.Tasks;
 using AutoMapper;
 using DynamicPrice.Core.Data;
 using DynamicPrice.Core.MediatR.CartEntity.Queries;
 using DynamicPrice.Core.Models;
 using DynamicPrice.Shared.Contracts.ViewModels;
+using DynamicPrice.Tests.Fixtures;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using Xunit;
-using System.Linq;
-using DynamicPrice.Tests.Fixtures;
 
 namespace DynamicPrice.Tests.MediatR.CartEntity;
 
 public class GetCartDetailsQueryHandlerTests
 {
-    [Fact]
-    public async Task Handle_ShouldReturnMappedCart_ForCurrentUserAndCompany()
-    {
-        var dbName = TestDbHelper.NewDbName("GetCartDetailsTestDb");
-        var sp = TestDbHelper.CreateServiceProvider(dbName);
+	[Fact]
+	public async Task Handle_ShouldReturnMappedCart_ForCurrentUserAndCompany()
+	{
+		var dbName = TestDbHelper.NewDbName("GetCartDetailsTestDb");
+		var sp = TestDbHelper.CreateServiceProvider(dbName);
 
-        using (var scope = sp.CreateScope())
-        {
-            var ctx = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
-            var company = new Company { CompanyId = 5, Title = "Co" };
-            await ctx.Companies.AddAsync(company);
-            var product = new Product { ProductId = 50, Company = company, CompanyId = company.CompanyId, Title = "Prod", Price = 9m };
-            await ctx.Products.AddAsync(product);
+		using (var scope = sp.CreateScope())
+		{
+			var ctx = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
+			var company = new Company { CompanyId = 5, Title = "Co" };
+			await ctx.Companies.AddAsync(company);
+			var product = new Product { ProductId = 50, Company = company, CompanyId = company.CompanyId, Title = "Prod", Price = 9m };
+			await ctx.Products.AddAsync(product);
 
-            var cart = new Cart { CustomerId = "u-get", Company = company, CartItems = new System.Collections.Generic.List<CartItem>() };
-            cart.CartItems.Add(new CartItem { Product = product, ProductId = product.ProductId, Quantity = 1, Cart = cart });
-            await ctx.Carts.AddAsync(cart);
-            await ctx.SaveChangesAsync();
-        }
+			var cart = new Cart { CustomerId = "u-get", Company = company, CartItems = [] };
+			cart.CartItems.Add(new CartItem { Product = product, ProductId = product.ProductId, Quantity = 1, Cart = cart });
+			await ctx.Carts.AddAsync(cart);
+			await ctx.SaveChangesAsync();
+		}
 
-        var mapperMock = new Mock<IMapper>();
-        mapperMock.Setup(m => m.Map<CartViewModel>(It.IsAny<Cart>()))
-            .Returns((Cart c) => new CartViewModel
-            {
-                CartId = c.CartId,
-                Company = new CompanyViewModel { CompanyId = c.Company.CompanyId, Title = c.Company.Title },
-                CartItems = c.CartItems?.Select(ci => new CartItemViewModel { Id = ci.Id, CartId = ci.CartId, ProductId = ci.ProductId, Quantity = ci.Quantity, Product = new ProductViewModel { ProductId = ci.Product.ProductId, Title = ci.Product.Title, Price = ci.Product.Price } }).ToList()
-            });
+		var mapperMock = new Mock<IMapper>();
+		mapperMock.Setup(m => m.Map<CartViewModel>(It.IsAny<Cart>()))
+			.Returns((Cart c) => new CartViewModel
+			{
+				CartId = c.CartId,
+				Company = new CompanyViewModel { CompanyId = c.Company.CompanyId, Title = c.Company.Title },
+				CartItems = c.CartItems?.Select(ci => new CartItemViewModel { Id = ci.Id, CartId = ci.CartId, ProductId = ci.ProductId, Quantity = ci.Quantity, Product = new ProductViewModel { ProductId = ci.Product.ProductId, Title = ci.Product.Title, Price = ci.Product.Price } }).ToList()
+			});
 
-        var userServiceMock = new Mock<DynamicPrice.Core.Services.IUserService>();
-        userServiceMock.Setup(u => u.GetCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = "u-get" });
+		var userServiceMock = new Mock<DynamicPrice.Core.Services.IUserService>();
+		userServiceMock.Setup(u => u.GetCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = "u-get" });
 
-        using (var scope = sp.CreateScope())
-        {
-            var ctx = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
-            var handler = new GetCartDetailsQueryHandler(ctx, mapperMock.Object, userServiceMock.Object);
-            var result = await handler.Handle(new GetCartDetailsQuery(5), default);
-            result.Should().NotBeNull();
-            result.Company.CompanyId.Should().Be(5);
-            result.CartItems.Should().HaveCount(1);
-        }
-    }
+		using (var scope = sp.CreateScope())
+		{
+			var ctx = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
+			var handler = new GetCartDetailsQueryHandler(ctx, mapperMock.Object, userServiceMock.Object);
+			var result = await handler.Handle(new GetCartDetailsQuery(5), default);
+			result.Should().NotBeNull();
+			result.Company.CompanyId.Should().Be(5);
+			result.CartItems.Should().HaveCount(1);
+		}
+	}
 
-    [Fact]
-    public async Task Handle_ShouldReturnNull_WhenCartNotFound()
-    {
-        var dbName = TestDbHelper.NewDbName("GetCartDetailsEmptyTestDb");
-        var sp = TestDbHelper.CreateServiceProvider(dbName);
+	[Fact]
+	public async Task Handle_ShouldReturnNull_WhenCartNotFound()
+	{
+		var dbName = TestDbHelper.NewDbName("GetCartDetailsEmptyTestDb");
+		var sp = TestDbHelper.CreateServiceProvider(dbName);
 
-        var mapperMock = new Mock<IMapper>();
-        mapperMock.Setup(m => m.Map<CartViewModel>(It.IsAny<Cart>())).Returns((CartViewModel)null);
+		var mapperMock = new Mock<IMapper>();
+		mapperMock.Setup(m => m.Map<CartViewModel>(It.IsAny<Cart>())).Returns((CartViewModel)null);
 
-        var userServiceMock = new Mock<DynamicPrice.Core.Services.IUserService>();
-        userServiceMock.Setup(u => u.GetCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = "no-cart" });
+		var userServiceMock = new Mock<DynamicPrice.Core.Services.IUserService>();
+		userServiceMock.Setup(u => u.GetCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = "no-cart" });
 
-        using (var scope = sp.CreateScope())
-        {
-            var ctx = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
-            var handler = new GetCartDetailsQueryHandler(ctx, mapperMock.Object, userServiceMock.Object);
-            var result = await handler.Handle(new GetCartDetailsQuery(999), default);
-            result.Should().BeNull();
-        }
-    }
+		using var scope = sp.CreateScope();
+		var ctx = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
+		var handler = new GetCartDetailsQueryHandler(ctx, mapperMock.Object, userServiceMock.Object);
+		var result = await handler.Handle(new GetCartDetailsQuery(999), default);
+		result.Should().BeNull();
+	}
 }

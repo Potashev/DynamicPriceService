@@ -20,6 +20,8 @@ public class GetCartDetailsQueryHandlerTests
 		var dbName = TestDbHelper.NewDbName("GetCartDetailsTestDb");
 		var sp = TestDbHelper.CreateServiceProvider(dbName);
 
+		var customerId = Guid.NewGuid().ToString();
+
 		using (var scope = sp.CreateScope())
 		{
 			var ctx = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
@@ -28,7 +30,7 @@ public class GetCartDetailsQueryHandlerTests
 			var product = new Product { ProductId = 50, Company = company, CompanyId = company.CompanyId, Title = "Prod", Price = 9m };
 			await ctx.Products.AddAsync(product);
 
-			var cart = new Cart { CustomerId = "u-get", Company = company, CartItems = [] };
+			var cart = new Cart { CustomerId = customerId, Company = company, CartItems = [] };
 			cart.CartItems.Add(new CartItem { Product = product, ProductId = product.ProductId, Quantity = 1, Cart = cart });
 			await ctx.Carts.AddAsync(cart);
 			await ctx.SaveChangesAsync();
@@ -44,7 +46,7 @@ public class GetCartDetailsQueryHandlerTests
 			});
 
 		var userServiceMock = new Mock<IUserService>();
-		userServiceMock.Setup(u => u.GetCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = "u-get" });
+		userServiceMock.Setup(u => u.GetCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = customerId });
 
 		using (var scope = sp.CreateScope())
 		{
@@ -66,8 +68,10 @@ public class GetCartDetailsQueryHandlerTests
 		var mapperMock = new Mock<IMapper>();
 		mapperMock.Setup(m => m.Map<CartViewModel>(It.IsAny<Cart>())).Returns((CartViewModel)null);
 
+		var customerId = Guid.NewGuid().ToString();
+
 		var userServiceMock = new Mock<IUserService>();
-		userServiceMock.Setup(u => u.GetCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = "no-cart" });
+		userServiceMock.Setup(u => u.GetCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = customerId });
 
 		using var scope = sp.CreateScope();
 		var ctx = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();

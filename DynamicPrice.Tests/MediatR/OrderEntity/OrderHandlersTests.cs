@@ -36,13 +36,13 @@ public class OrderHandlersTests
 			cartId = cart.CartId;
 		}
 
-		var userServiceMock = new Mock<DynamicPrice.Core.Services.IUserService>();
+		var userServiceMock = new Mock<IUserService>();
 		userServiceMock.Setup(u => u.GetCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = "cust1" });
 
 		using (var scope = sp.CreateScope())
 		{
 			var ctx = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
-			var handler = new DynamicPrice.Core.MediatR.OrderEntity.Commands.ConfirmOrderCommandHandler(ctx, userServiceMock.Object);
+			var handler = new ConfirmOrderCommandHandler(ctx, userServiceMock.Object);
 
 			var result = await handler.Handle(new ConfirmOrderCommand(cartId), default);
 
@@ -96,7 +96,7 @@ public class OrderHandlersTests
 		var publishMock = new Mock<IPublishEndpoint>();
 		publishMock.Setup(p => p.Publish(It.IsAny<object>(), default)).Returns(Task.CompletedTask);
 
-		var userServiceMock = new Mock<DynamicPrice.Core.Services.IUserService>();
+		var userServiceMock = new Mock<IUserService>();
 		// manager performing completion
 		userServiceMock.Setup(u => u.GetCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = "man1", CompanyId = 20 });
 		// customer that will be charged
@@ -106,7 +106,7 @@ public class OrderHandlersTests
 		using (var scope = sp.CreateScope())
 		{
 			var ctx = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
-			var handler = new DynamicPrice.Core.MediatR.OrderEntity.Commands.CompleteOrderCommandHandler(ctx, userServiceMock.Object, publishMock.Object);
+			var handler = new CompleteOrderCommandHandler(ctx, userServiceMock.Object, publishMock.Object);
 
 			var result = await handler.Handle(new CompleteOrderCommand(orderId.ToString()), default);
 
@@ -158,14 +158,14 @@ public class OrderHandlersTests
 		}
 
 		var publishMock = new Mock<IPublishEndpoint>();
-		var userServiceMock = new Mock<DynamicPrice.Core.Services.IUserService>();
+		var userServiceMock = new Mock<IUserService>();
 		userServiceMock.Setup(u => u.GetCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = "man2", CompanyId = 21 });
 		userServiceMock.Setup(u => u.GetUserByIdAsync("cust3")).ReturnsAsync(new ApplicationUser { Id = "cust3", Balance = 10m }); // not enough
 
 		using (var scope = sp.CreateScope())
 		{
 			var ctx = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
-			var handler = new DynamicPrice.Core.MediatR.OrderEntity.Commands.CompleteOrderCommandHandler(ctx, userServiceMock.Object, publishMock.Object);
+			var handler = new CompleteOrderCommandHandler(ctx, userServiceMock.Object, publishMock.Object);
 
 			var ex = await Assert.ThrowsAsync<Exception>(() => handler.Handle(new CompleteOrderCommand(orderId.ToString()), default));
 			ex.Message.Should().Be("Top up the balance.");
@@ -204,13 +204,13 @@ public class OrderHandlersTests
 			orderId = order.OrderId;
 		}
 
-		var userServiceMock = new Mock<DynamicPrice.Core.Services.IUserService>();
+		var userServiceMock = new Mock<IUserService>();
 		userServiceMock.Setup(u => u.GetCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = "cust4" });
 
 		using (var scope = sp.CreateScope())
 		{
 			var ctx = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
-			var handler = new DynamicPrice.Core.MediatR.OrderEntity.Commands.CancelOrderCommandHandler(ctx, userServiceMock.Object);
+			var handler = new CancelOrderCommandHandler(ctx, userServiceMock.Object);
 
 			await handler.Handle(new CancelOrderCommand(orderId), default);
 
@@ -255,13 +255,13 @@ public class OrderHandlersTests
 			orderId = order.OrderId;
 		}
 
-		var userServiceMock = new Mock<DynamicPrice.Core.Services.IUserService>();
+		var userServiceMock = new Mock<IUserService>();
 		userServiceMock.Setup(u => u.GetCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = "cust5" });
 
 		using (var scope = sp.CreateScope())
 		{
 			var ctx = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
-			var handler = new DynamicPrice.Core.MediatR.OrderEntity.Commands.CancelOrderCommandHandler(ctx, userServiceMock.Object);
+			var handler = new CancelOrderCommandHandler(ctx, userServiceMock.Object);
 
 			var ex = await Assert.ThrowsAsync<Exception>(() => handler.Handle(new CancelOrderCommand(orderId), default));
 			ex.Message.Should().Be("Only confirmed or ready orders can be canceled.");

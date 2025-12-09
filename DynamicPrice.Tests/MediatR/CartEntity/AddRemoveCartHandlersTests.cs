@@ -1,18 +1,14 @@
-using System.Threading.Tasks;
 using AutoMapper;
 using DynamicPrice.Core.Data;
 using DynamicPrice.Core.MediatR.CartEntity.Commands;
-using DynamicPrice.Core.MediatR.CartEntity.Queries;
 using DynamicPrice.Core.Models;
-using DynamicPrice.Core.MediatR.CartEntity.Commands;
+using DynamicPrice.Core.Services;
 using DynamicPrice.Shared.Contracts.ViewModels;
+using DynamicPrice.Tests.Fixtures;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using Xunit;
-using System.Linq;
-using DynamicPrice.Tests.Fixtures;
 
 namespace DynamicPrice.Tests.MediatR.CartEntity;
 
@@ -59,13 +55,13 @@ public class AddRemoveCartHandlersTests
 			});
 
 		// first call - new cart
-		var userServiceMock = new Mock<DynamicPrice.Core.Services.IUserService>();
+		var userServiceMock = new Mock<IUserService>();
 		userServiceMock.Setup(u => u.GetCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = "u1" });
 
 		using (var scope = sp.CreateScope())
 		{
 			var ctx = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
-			var handler = new DynamicPrice.Core.MediatR.CartEntity.Commands.AddProductToCartCommandHadnler(ctx, mapperMock.Object, userServiceMock.Object);
+			var handler = new AddProductToCartCommandHadnler(ctx, mapperMock.Object, userServiceMock.Object);
 			var result = await handler.Handle(new AddProductToCartCommand("10"), default);
 			result.Should().NotBeNull();
 			result.CartItems.Should().HaveCount(1);
@@ -76,7 +72,7 @@ public class AddRemoveCartHandlersTests
 		using (var scope = sp.CreateScope())
 		{
 			var ctx = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
-			var handler = new DynamicPrice.Core.MediatR.CartEntity.Commands.AddProductToCartCommandHadnler(ctx, mapperMock.Object, userServiceMock.Object);
+			var handler = new AddProductToCartCommandHadnler(ctx, mapperMock.Object, userServiceMock.Object);
 			var result = await handler.Handle(new AddProductToCartCommand("10"), default);
 			result.CartItems.Should().HaveCount(1);
 			result.CartItems.First().Quantity.Should().Be(2);
@@ -96,7 +92,7 @@ public class AddRemoveCartHandlersTests
 			await ctx.Companies.AddAsync(company);
 			var product = new Product { ProductId = 20, Company = company, CompanyId = company.CompanyId, Title = "P2", Price = 7m };
 			await ctx.Products.AddAsync(product);
-			var cart = new Cart { CustomerId = "u2", Company = company, CartItems = new List<CartItem>() };
+			var cart = new Cart { CustomerId = "u2", Company = company, CartItems = [] };
 			cart.CartItems.Add(new CartItem { Product = product, ProductId = product.ProductId, Quantity = 2, Cart = cart });
 			await ctx.Carts.AddAsync(cart);
 			await ctx.SaveChangesAsync();
@@ -125,14 +121,14 @@ public class AddRemoveCartHandlersTests
 				}).ToList()
 			});
 
-		var userServiceMock = new Mock<DynamicPrice.Core.Services.IUserService>();
+		var userServiceMock = new Mock<IUserService>();
 		userServiceMock.Setup(u => u.GetCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = "u2" });
 
 		using (var scope = sp.CreateScope())
 		{
 			var ctx = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
-			var handler = new DynamicPrice.Core.MediatR.CartEntity.Commands.RemoveProductFromCartCommandHandler(ctx, mapperMock.Object, userServiceMock.Object);
-			var result = await handler.Handle(new DynamicPrice.Core.MediatR.CartEntity.Commands.RemoveProductFromCartCommand("20"), default);
+			var handler = new RemoveProductFromCartCommandHandler(ctx, mapperMock.Object, userServiceMock.Object);
+			var result = await handler.Handle(new RemoveProductFromCartCommand("20"), default);
 			result.CartItems.First().Quantity.Should().Be(1);
 		}
 
@@ -140,8 +136,8 @@ public class AddRemoveCartHandlersTests
 		using (var scope = sp.CreateScope())
 		{
 			var ctx = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
-			var handler = new DynamicPrice.Core.MediatR.CartEntity.Commands.RemoveProductFromCartCommandHandler(ctx, mapperMock.Object, userServiceMock.Object);
-			var result = await handler.Handle(new DynamicPrice.Core.MediatR.CartEntity.Commands.RemoveProductFromCartCommand("20"), default);
+			var handler = new RemoveProductFromCartCommandHandler(ctx, mapperMock.Object, userServiceMock.Object);
+			var result = await handler.Handle(new RemoveProductFromCartCommand("20"), default);
 			result.CartItems.Should().BeEmpty();
 		}
 	}

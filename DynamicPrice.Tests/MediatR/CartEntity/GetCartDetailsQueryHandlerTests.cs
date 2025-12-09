@@ -2,6 +2,7 @@ using AutoMapper;
 using DynamicPrice.Core.Data;
 using DynamicPrice.Core.MediatR.CartEntity.Queries;
 using DynamicPrice.Core.Models;
+using DynamicPrice.Core.Services;
 using DynamicPrice.Shared.Contracts.ViewModels;
 using DynamicPrice.Tests.Fixtures;
 using FluentAssertions;
@@ -42,7 +43,7 @@ public class GetCartDetailsQueryHandlerTests
 				CartItems = c.CartItems?.Select(ci => new CartItemViewModel { Id = ci.Id, CartId = ci.CartId, ProductId = ci.ProductId, Quantity = ci.Quantity, Product = new ProductViewModel { ProductId = ci.Product.ProductId, Title = ci.Product.Title, Price = ci.Product.Price } }).ToList()
 			});
 
-		var userServiceMock = new Mock<DynamicPrice.Core.Services.IUserService>();
+		var userServiceMock = new Mock<IUserService>();
 		userServiceMock.Setup(u => u.GetCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = "u-get" });
 
 		using (var scope = sp.CreateScope())
@@ -65,7 +66,7 @@ public class GetCartDetailsQueryHandlerTests
 		var mapperMock = new Mock<IMapper>();
 		mapperMock.Setup(m => m.Map<CartViewModel>(It.IsAny<Cart>())).Returns((CartViewModel)null);
 
-		var userServiceMock = new Mock<DynamicPrice.Core.Services.IUserService>();
+		var userServiceMock = new Mock<IUserService>();
 		userServiceMock.Setup(u => u.GetCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = "no-cart" });
 
 		using var scope = sp.CreateScope();

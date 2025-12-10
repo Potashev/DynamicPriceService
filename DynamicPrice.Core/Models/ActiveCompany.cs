@@ -1,7 +1,8 @@
 namespace DynamicPrice.Core.Models;
 
 /// <summary>
-/// Сущность, используемая для мониторинга активности компании (временные метки последней проверки и момента старта наблюдения).
+/// Сущность, используемая для проверки активности компании - для активных компаний происходит мониториг продуктов с простоем.
+/// См. также <see cref="DynamicPrice.Core.Models.Product"/>.
 /// </summary>
 public class ActiveCompany
 {
@@ -11,7 +12,7 @@ public class ActiveCompany
 	public int CompanyId { get; set; }
 
 	/// <summary>
-	/// Временная метка начала наблюдения (UTC).
+	/// Временная метка начала мониторинга.
 	/// </summary>
 	public DateTime StartedAt { get; set; } = DateTime.UtcNow;
 

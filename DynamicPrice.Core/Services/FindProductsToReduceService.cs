@@ -1,10 +1,11 @@
 ﻿using DynamicPrice.Core.Data;
 using DynamicPrice.Core.Models;
-using DynamicPrice.Core.Services;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Prometheus;
 using System.Collections.Concurrent;
+
+namespace DynamicPrice.Core.Services;
 
 /// <summary>
 /// Фоновая служба мониторинга активных компаний и поиска товаров, подлежащих снижению цены.

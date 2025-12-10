@@ -3,38 +3,38 @@
 namespace DynamicPrice.Core.Models;
 
 /// <summary>
-/// Продукт (товар) компании — сущность предметной области, используемая в каталоге и заказах.
+/// Продукт компании.
 /// </summary>
 public class Product    //todo: rename to Item?
 {
 	/// <summary>
-	/// Идентификатор товара.
+	/// Идентификатор продукта.
 	/// </summary>
 	public int ProductId { get; set; }  //todo: make Guid
 
 	/// <summary>
-	/// Компания-продавец, которой принадлежит товар.
+	/// Навигационнное свойство компании, к которой принадлежит продукт.
 	/// </summary>
 	public Company Company { get; set; }
 
 	/// <summary>
-	/// Внешний ключ на компанию (nullable для возможности загрузки/миграций).
+	/// Идентификатор компании.
 	/// </summary>
 	public int? CompanyId { get; set; }
 
 	/// <summary>
-	/// Название товара.
+	/// Название продукта.
 	/// </summary>
 	public string Title { get; set; }
 
 	/// <summary>
-	/// Текущая цена товара. Тип и precision заданы атрибутом <see cref="PrecisionAttribute"/>.
+	/// Текущая цена продукта.
 	/// </summary>
 	[Precision(18, 2)]
 	public decimal Price { get; set; }
 
 	/// <summary>
-	/// Минимальная допустимая цена для товара. Во избежание снижения ниже этого значения.
+	/// Минимальная допустимая цена для продукта.
 	/// </summary>
 	public decimal MinimumPrice { get; set; }
 
@@ -49,7 +49,7 @@ public class Product    //todo: rename to Item?
 	public string? Description { get; set; }
 
 	/// <summary>
-	/// Время последней продажи товара (UTC). Используется для принятия решений о динамике цены.
+	/// Время последней продажи товара. Используется для определения "простоя" продукта.
 	/// </summary>
 	public DateTime? LastSellTime { get; set; }
 

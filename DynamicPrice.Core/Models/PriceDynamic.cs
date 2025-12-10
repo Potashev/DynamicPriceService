@@ -2,26 +2,29 @@
 
 /// <summary>
 /// История изменения цены товара (снимок цены в определённый момент времени).
+/// Динамика изменения цены продукта, в зависимости от спроса: совершили заказа с продуктом - цена повышается, продукт с простоем - цена снижается.
+/// См. также <see cref="DynamicPrice.Core.Services.PriceIncreaseEvent"/>.
+/// См. также <see cref="DynamicPrice.Core.Services.PriceReduceEvent"/>.
 /// </summary>
 public class PriceDynamic
 {
 	/// <summary>
-	/// Идентификатор записи истории цены.
+	/// Идентификатор.
 	/// </summary>
 	public int Id { get; set; }     //todo: make guid
 
 	/// <summary>
-	/// Идентификатор товара, к которому относится запись.
+	/// Идентификатор продукта.
 	/// </summary>
 	public int ProductId { get; set; }
 
 	/// <summary>
-	/// Цена товара в момент записи.
+	/// Цена продукта на момент записи.
 	/// </summary>
 	public decimal Price { get; set; }
 
 	/// <summary>
-	/// Время записи цены (UTC).
+	/// Время записи цены.
 	/// </summary>
 	public DateTime? Date { get; set; }
 }

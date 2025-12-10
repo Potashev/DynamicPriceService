@@ -4,7 +4,7 @@ namespace DynamicPrice.Core.Models;
 
 /// <summary>
 /// Правило изменения цены для компании.
-/// Содержит параметры для повышения и снижения цен и время простоя для снижения.
+/// Содержит параметры для повышения и снижения цен и время простоя продукта для снижения цены.
 /// </summary>
 public class PriceRule
 {
@@ -14,24 +14,27 @@ public class PriceRule
 	public int PriceRuleId { get; set; }
 
 	/// <summary>
-	/// Компания, к которой применяется правило.
+	/// Навигационное свойство компании, к которой относится правило.
 	/// </summary>
 	public Company Company { get; set; }
 
 	/// <summary>
-	/// Внешний ключ на компанию.
+	/// Идентификатор компании.
 	/// </summary>
 	public int? CompanyId { get; set; }     //todo: make required
 
 	/// <summary>
 	/// Повышение цены продукта (в процентах).
 	/// Значение 10 означает повышение на 10%.
+	/// Повышение цены продукта происходит после оформления заказа.
 	/// </summary>
 	public double Increase { get; set; }
 
 	/// <summary>
 	/// Снижение цены продукта (в процентах).
 	/// Значение 10 означает снижение на 10%.
+	/// Снижение цены продукта происходит при обнаружении "простоя" продукта.
+	/// См. также <see cref="DynamicPrice.Core.Services.FindProductsToReduceService"/>.
 	/// </summary>
 	public double Reduction { get; set; }
 

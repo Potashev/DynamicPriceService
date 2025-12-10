@@ -3,7 +3,7 @@
 namespace DynamicPrice.Core.Models;
 
 /// <summary>
-/// Элемент корзины — запись о конкретном товаре в корзине пользователя.
+/// Элемент корзины — запись о конкретном продукте в корзине кастомера.
 /// </summary>
 public class CartItem
 {
@@ -18,23 +18,23 @@ public class CartItem
 	public int CartId { get; set; }
 
 	/// <summary>
-	/// Навигационное свойство на родительскую корзину. Игнорируется при сериализации в JSON.
+	/// Навигационное свойство корзины.
 	/// </summary>
 	[JsonIgnore]
 	public Cart Cart { get; set; }
 
 	/// <summary>
-	/// Идентификатор товара.
+	/// Идентификатор продукта.
 	/// </summary>
 	public int ProductId { get; set; }
 
 	/// <summary>
-	/// Навигационное свойство на сущность товара.
+	/// Навигационное свойство продукта.
 	/// </summary>
 	public Product Product { get; set; }
 
 	/// <summary>
-	/// Количество единиц товара в корзине.
+	/// Количество единиц продукта в корзине.
 	/// </summary>
 	public int Quantity { get; set; }
 }

@@ -8,12 +8,13 @@ namespace DynamicPrice.Core.Models;
 public class ApplicationUser : IdentityUser
 {
 	/// <summary>
-	/// Баланс пользователя в денежной единице, используемой в системе.
+	/// Баланс пользователя в денежной единице, используемой в системе (кастомер).
 	/// </summary>
 	public decimal Balance { get; set; }
 
 	/// <summary>
-	/// Идентификатор компании, с которой связан пользователь (например, для менеджеров/сотрудников).
+	/// Идентификатор компании, с которой связан пользователь (менеджер).
+	/// См. также <see cref="DynamicPrice.Core.Models.Company"/>.
 	/// </summary>
 	public int? CompanyId { get; set; }
 }

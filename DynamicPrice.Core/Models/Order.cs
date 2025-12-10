@@ -4,7 +4,8 @@ using System.ComponentModel.DataAnnotations;
 namespace DynamicPrice.Core.Models;
 
 /// <summary>
-/// Заказ клиента, содержащий набор товаров и статус обработки.
+/// Заказ кастомера, содержащий набор продуктов с фиксированной ценой и статус обработки.
+/// См. также <see cref="DynamicPrice.Core.Models.OrderItem"/>.
 /// </summary>
 [Index(nameof(Number), IsUnique = true)]
 public class Order
@@ -15,24 +16,23 @@ public class Order
 	public int OrderId { get; set; }    //todo: make guid
 
 	/// <summary>
-	/// Читабельный номер заказа (уникален).
-	/// Максимальная длина — 20 символов.
+	/// Номер заказа.
 	/// </summary>
 	[MaxLength(20)]
 	public string Number { get; set; }
 
 	/// <summary>
-	/// Идентификатор клиента, оформившего заказ.
+	/// Идентификатор кастомера, оформившего заказ.
 	/// </summary>
 	public string CustomerId { get; set; }
 
 	/// <summary>
-	/// Компания, из которой сделан заказ.
+	/// Навигационное свойство компании.
 	/// </summary>
 	public Company Company { get; set; }
 
 	/// <summary>
-	/// Элементы заказа (копии товаров с ценами на момент заказа).
+	/// Элементы заказа - продукты с фиксированной ценой.
 	/// </summary>
 	public ICollection<OrderItem> OrderItems { get; set; }
 
@@ -42,18 +42,19 @@ public class Order
 	public OrderStatus Status { get; set; }
 
 	/// <summary>
-	/// Дата и время создания заказа (UTC).
+	/// Дата и время создания заказа.
 	/// </summary>
 	public DateTime? OrderDate { get; set; }
 
 	/// <summary>
 	/// Ключ получения заказа — числовой код, который может использоваться при выдаче.
+	/// Доступен кастомеру и необходим для получения заказа.
 	/// </summary>
 	public int ReceiveKey { get; set; }
 }
 
 /// <summary>
-/// Возможные статусы заказа в системе.
+/// Возможные статусы заказа.
 /// </summary>
 public enum OrderStatus
 {

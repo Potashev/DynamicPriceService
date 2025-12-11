@@ -1,5 +1,6 @@
 using DynamicPrice.Core.Data;
 using DynamicPrice.Core.Models;
+using DynamicPrice.Core.Services;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

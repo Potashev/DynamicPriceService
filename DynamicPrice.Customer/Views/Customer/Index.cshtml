@@ -95,7 +95,7 @@
 				<td>@Html.DisplayFor(modelItem => item.Number)</td>
 				<td>@Html.DisplayFor(modelItem => item.Company.Title)</td>
 				<td>@Html.DisplayFor(modelItem => item.OrderDate)</td>
-				<td><order-status status="@item.Status"></order-status></td>
+				<td><order-status status="@(DynamicPrice.Client.Infrastructure.TagHelpers.OrderStatus)item.Status"></order-status></td>
 				<td><a asp-controller="Order" asp-action="Details" asp-route-id="@item.OrderId">Details</a></td>
 			</tr>
 		}

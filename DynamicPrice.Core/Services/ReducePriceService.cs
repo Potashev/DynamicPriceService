@@ -8,6 +8,12 @@ using Prometheus;
 
 namespace DynamicPrice.Core.Services;
 
+/// <summary>
+/// Сервис, обрабатывающий события снижения цены продуктов.
+/// Получает событие <see cref="PriceReduceEvent"/> и увеличивает цену соответствующего продукта
+/// согласно правилу снижения цены компании <see cref="PriceRule.Reduction"/>.
+/// После изменения цены уведомляет всех подписавшихся клиентов через SignalR-хаб <see cref="PriceHub"/>.
+/// </summary>
 public class ReducePriceService : IConsumer<PriceReduceEvent>
 {
 	private readonly IServiceProvider _serviceProvider;
@@ -58,8 +64,8 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 		if (priceRule == null) return;
 
 		product.Price = Math.Max(
-						//todo: check increasePriceService.NoticeOfIncrease (testdrawing = false)
-						ReducePrice(product.Price, priceRule.Reduction, true),
+					//todo: check increasePriceService.NoticeOfIncrease (testdrawing = false)
+					ReducePrice(product.Price, priceRule.Reduction, true),
 			product.MinimumPrice);
 
 		await context.PriceDynamics.AddAsync(new PriceDynamic

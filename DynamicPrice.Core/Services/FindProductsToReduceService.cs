@@ -1,11 +1,17 @@
 ﻿using DynamicPrice.Core.Data;
 using DynamicPrice.Core.Models;
-using DynamicPrice.Core.Services;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Prometheus;
 using System.Collections.Concurrent;
 
+namespace DynamicPrice.Core.Services;
+
+/// <summary>
+/// Фоновая служба мониторинга активных компаний и поиска продуктов, которые находятся в "простое".
+/// Сканирует продукты активных компаний и публикует события <see cref="PriceReduceEvent"/>
+/// для продуктов, которые не продавались дольше, чем разрешено правилом <see cref="PriceRule"/>.
+/// </summary>
 public class FindProductsToReduceService : BackgroundService
 {
 	private readonly IServiceProvider _serviceProvider;
@@ -39,9 +45,6 @@ public class FindProductsToReduceService : BackgroundService
 		{
 			while (!token.IsCancellationRequested)
 			{
-				//using (MonitorDuration.WithLabels().NewTimer())
-				//{
-
 				using var scope = _serviceProvider.CreateScope();
 				var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
 				var publishEndpoint = scope.ServiceProvider.GetRequiredService<IPublishEndpoint>();
@@ -72,21 +75,7 @@ public class FindProductsToReduceService : BackgroundService
 					_logger.LogError(ex, "Error during parallel processing of products");
 				}
 
-				//todo: remove?
-				//await Task.Delay(TimeSpan.FromSeconds(1), token);
 				await Task.Delay(TimeSpan.FromMilliseconds(30), token);
-
-				//todo: return back metrics
-
-				//_lastMonitorEnd[companyId] = DateTime.UtcNow;
-
-				//await Task.Delay(TimeSpan.FromSeconds(1), token);
-
-				//if (_lastMonitorEnd.TryGetValue(companyId, out var lastEnd))
-				//{
-				//    var waitSeconds = (DateTime.UtcNow - lastEnd).TotalSeconds;
-				//    MonitorWaitDuration.WithLabels(companyId.ToString()).Observe(waitSeconds);
-				//}
 			}
 		}
 		catch (Exception ex)
@@ -100,7 +89,6 @@ public class FindProductsToReduceService : BackgroundService
 	CancellationToken token,
 	int? productsCount = null)
 	{
-		//todo: later think about configuration activeCompnay.LastMonitorTime - skip recently monitored companies if need it
 		var activeCompaniesIds = await context.ActiveCompanies
 			.Select(ac => ac.CompanyId)
 			.ToListAsync(token);

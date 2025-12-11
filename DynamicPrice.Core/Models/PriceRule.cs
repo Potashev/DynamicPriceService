@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using DynamicPrice.Core.Services;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DynamicPrice.Core.Models;
 
@@ -34,7 +35,7 @@ public class PriceRule
 	/// Снижение цены продукта (в процентах).
 	/// Значение 10 означает снижение на 10%.
 	/// Снижение цены продукта происходит при обнаружении "простоя" продукта.
-	/// См. также <see cref="DynamicPrice.Core.Services.FindProductsToReduceService"/>.
+	/// См. также <see cref="FindProductsToReduceService"/>.
 	/// </summary>
 	public double Reduction { get; set; }
 
@@ -49,7 +50,7 @@ public class PriceRule
 	}
 
 	/// <summary>
-	/// Время простоя в секундах (сериализуемое/сохраняемое поле).
+	/// Время "простоя" в секундах.
 	/// </summary>
 	public int NoSellSeconds { get; set; }
 

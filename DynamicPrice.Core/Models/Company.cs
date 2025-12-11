@@ -2,8 +2,8 @@
 
 /// <summary>
 /// Компания-продавец. У каждой компании свой каталог продуктов и правило изменения цен на них.
-/// См. также <see cref="DynamicPrice.Core.Models.Product"/>.
-/// См. также <see cref="DynamicPrice.Core.Models.PriceRule"/>.
+/// См. также <see cref="Product"/>.
+/// См. также <see cref="PriceRule"/>.
 /// </summary>
 public class Company
 {

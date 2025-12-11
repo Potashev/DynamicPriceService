@@ -1,10 +1,11 @@
-﻿namespace DynamicPrice.Core.Models;
+﻿using DynamicPrice.Core.Services;
+
+namespace DynamicPrice.Core.Models;
 
 /// <summary>
 /// История изменения цены товара (снимок цены в определённый момент времени).
 /// Динамика изменения цены продукта, в зависимости от спроса: совершили заказа с продуктом - цена повышается, продукт с простоем - цена снижается.
-/// См. также <see cref="DynamicPrice.Core.Services.PriceIncreaseEvent"/>.
-/// См. также <see cref="DynamicPrice.Core.Services.PriceReduceEvent"/>.
+/// См. также <see cref="PriceIncreaseEvent"/> и <see cref="PriceReduceEvent"/>.
 /// </summary>
 public class PriceDynamic
 {

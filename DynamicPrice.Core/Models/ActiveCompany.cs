@@ -2,7 +2,7 @@ namespace DynamicPrice.Core.Models;
 
 /// <summary>
 /// Сущность, используемая для проверки активности компании - для активных компаний происходит мониториг продуктов с простоем.
-/// См. также <see cref="DynamicPrice.Core.Models.Product"/>.
+/// См. также <see cref="Product"/>.
 /// </summary>
 public class ActiveCompany
 {

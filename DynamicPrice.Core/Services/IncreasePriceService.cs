@@ -10,9 +10,10 @@ namespace DynamicPrice.Core.Services;
 
 //todo: think about base ChangePriceService and move common for Increase and Reduce
 /// <summary>
-/// Сервис, обрабатывающий события повышения цены товаров (консьюмер для MassTransit).
-/// Получает событие с позициями заказа и увеличивает цену соответствующих товаров
-/// согласно правилу повышения цены компании, сохраняет историю и уведомляет клиентов через SignalR.
+/// Сервис, обрабатывающий события повышения цены продуктов.
+/// Получает событие <see cref="PriceIncreaseEvent"/> с позициями заказа и увеличивает цену соответствующих продуктов
+/// согласно правилу повышения цены компании <see cref="PriceRule.Increase"/>.
+/// После изменения цены уведомляет всех подписавшихся клиентов через SignalR-хаб <see cref="PriceHub"/>.
 /// </summary>
 public class IncreasePriceService : IConsumer<PriceIncreaseEvent>
 {
@@ -20,9 +21,6 @@ public class IncreasePriceService : IConsumer<PriceIncreaseEvent>
 	private readonly IHubContext<PriceHub> _priceHubContext;
 	private readonly ILogger<IncreasePriceService> _logger;
 
-	/// <summary>
-	/// Создаёт экземпляр сервиса изменения цен.
-	/// </summary>
 	public IncreasePriceService(IServiceProvider serviceProvider, IHubContext<PriceHub> priceHubContext, ILogger<IncreasePriceService> logger)
 	{
 		_serviceProvider = serviceProvider;
@@ -30,11 +28,6 @@ public class IncreasePriceService : IConsumer<PriceIncreaseEvent>
 		_logger = logger;
 	}
 
-	/// <summary>
-	/// Обработчик входящего сообщения <see cref="PriceIncreaseEvent"/> от шины сообщений.
-	/// Гарантирует логирование ошибок и делегирует обработку в <see cref="IncreasePrices"/>.
-	/// </summary>
-	/// <param name="context">Контекст сообщения MassTransit с данными о позициях заказа.</param>
 	public async Task Consume(ConsumeContext<PriceIncreaseEvent> context)
 	{
 		var msg = context.Message;
@@ -53,11 +46,6 @@ public class IncreasePriceService : IConsumer<PriceIncreaseEvent>
 		}
 	}
 
-	/// <summary>
-	/// Основная логика повышения цен для переданных позиций заказа.
-	/// Выполняется в скоупе DI, сохраняет изменения в БД и отправляет уведомления.
-	/// </summary>
-	/// <param name="OrderItems">Коллекция позиций заказа с продуктами и количеством.</param>
 	private async Task IncreasePrices(IEnumerable<OrderItem> OrderItems)
 	{
 		using var scope = _serviceProvider.CreateScope();
@@ -80,12 +68,6 @@ public class IncreasePriceService : IConsumer<PriceIncreaseEvent>
 		await NoticeOfIncrease(OrderItems);
 	}
 
-	/// <summary>
-	/// Изменяет текущую цену продуктов в коллекции на основании правила повышения.
-	/// Влияет только на поле <see cref="Product.Price"/> каждого продукта.
-	/// </summary>
-	/// <param name="OrderItems">Позиции заказа.</param>
-	/// <param name="priceRule">Правило ценообразования компании.</param>
 	private void IncreasePrice(IEnumerable<OrderItem> OrderItems, PriceRule priceRule)
 	{
 		foreach (var orderProduct in OrderItems)
@@ -96,11 +78,6 @@ public class IncreasePriceService : IConsumer<PriceIncreaseEvent>
 		}
 	}
 
-	/// <summary>
-	/// Отправляет уведомления в SignalR-группы для обновлённых продуктов.
-	/// Любые ошибки логируются, но не прерывают основной поток выполнения.
-	/// </summary>
-	/// <param name="OrderItems">Позиции заказа для уведомления.</param>
 	private async Task NoticeOfIncrease(IEnumerable<OrderItem> OrderItems)
 	{
 		//todo: check

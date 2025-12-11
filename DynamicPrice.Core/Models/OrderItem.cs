@@ -3,12 +3,12 @@
 namespace DynamicPrice.Core.Models;
 
 /// <summary>
-/// Элемент заказа — продукт с фиксированной ценой после оформления заказа.
+/// Позиция заказа — продукт с фиксированной ценой после оформления заказа.
 /// </summary>
 public class OrderItem
 {
 	/// <summary>
-	/// Идентификатор элемента заказа.
+	/// Идентификатор позиции заказа.
 	/// </summary>
 	public int Id { get; set; }     //todo: make guid
 

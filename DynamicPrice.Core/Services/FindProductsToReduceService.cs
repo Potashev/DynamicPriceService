@@ -8,8 +8,8 @@ using System.Collections.Concurrent;
 namespace DynamicPrice.Core.Services;
 
 /// <summary>
-/// Фоновая служба мониторинга активных компаний и поиска товаров, подлежащих снижению цены.
-/// Периодически сканирует товары активных компаний и публикует события <see cref="PriceReduceEvent"/>
+/// Фоновая служба мониторинга активных компаний и поиска продуктов, которые находятся в "простое".
+/// Сканирует продукты активных компаний и публикует события <see cref="PriceReduceEvent"/>
 /// для продуктов, которые не продавались дольше, чем разрешено правилом <see cref="PriceRule"/>.
 /// </summary>
 public class FindProductsToReduceService : BackgroundService
@@ -33,19 +33,12 @@ public class FindProductsToReduceService : BackgroundService
 		});
 	private readonly ConcurrentDictionary<int, DateTime> _lastMonitorEnd = new();
 
-	/// <summary>
-	/// Создаёт экземпляр сервиса мониторинга.
-	/// </summary>
 	public FindProductsToReduceService(IServiceProvider serviceProvider, IConfiguration config, ILogger<FindProductsToReduceService> logger)
 	{
 		_serviceProvider = serviceProvider;
 		_logger = logger;
 	}
 
-	/// <summary>
-	/// Основной цикл фоновой службы. Запускает поиск и публикацию событий до отмены токена.
-	/// </summary>
-	/// <param name="token">Токен отмены из хост-окружения.</param>
 	protected override async Task ExecuteAsync(CancellationToken token)
 	{
 		try
@@ -91,10 +84,6 @@ public class FindProductsToReduceService : BackgroundService
 		}
 	}
 
-	/// <summary>
-	/// Асинхронный генератор товаров, которые нужно снизить в цене.
-	/// Возвращает последовательность продуктов, для которых время последней продажи превысило порог правила ценообразования.
-	/// </summary>
 	private async IAsyncEnumerable<Product> FindProductsToReduceAsync(
 	DynamicPriceCoreContext context,
 	CancellationToken token,

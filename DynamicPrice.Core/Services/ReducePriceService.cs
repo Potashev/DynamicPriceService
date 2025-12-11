@@ -9,9 +9,10 @@ using Prometheus;
 namespace DynamicPrice.Core.Services;
 
 /// <summary>
-/// Сервис, обрабатывающий события снижения цены (консьюмер для MassTransit).
-/// Вычисляет новую цену для конкретного товара в соответствии с правилом компании,
-/// сохраняет запись в истории цен и уведомляет клиентов через SignalR.
+/// Сервис, обрабатывающий события снижения цены продуктов.
+/// Получает событие <see cref="PriceReduceEvent"/> и увеличивает цену соответствующего продукта
+/// согласно правилу снижения цены компании <see cref="PriceRule.Reduction"/>.
+/// После изменения цены уведомляет всех подписавшихся клиентов через SignalR-хаб <see cref="PriceHub"/>.
 /// </summary>
 public class ReducePriceService : IConsumer<PriceReduceEvent>
 {
@@ -27,9 +28,6 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 			LabelNames = new[] { "companyId" }
 		});
 
-	/// <summary>
-	/// Создаёт экземпляр сервиса снижения цены.
-	/// </summary>
 	public ReducePriceService(IServiceProvider serviceProvider, IConfiguration config, IHubContext<PriceHub> priceHubContext, ILogger<ReducePriceService> logger)
 	{
 		_serviceProvider = serviceProvider;
@@ -37,10 +35,6 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 		_logger = logger;
 	}
 
-	/// <summary>
-	/// Обработчик сообщения <see cref="PriceReduceEvent"/>. Делегирует основную работу в <see cref="ReducePrice"/>
-	/// </summary>
-	/// <param name="context">Контекст сообщения MassTransit.</param>
 	public async Task Consume(ConsumeContext<PriceReduceEvent> context)
 	{
 		var msg = context.Message;
@@ -53,10 +47,6 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 		}
 	}
 
-	/// <summary>
-	/// Вычисляет и применяет уменьшенную цену для товара, записывает историю и уведомляет клиентов.
-	/// </summary>
-	/// <param name="productId">Идентификатор товара для обработки.</param>
 	private async Task ReducePrice(int productId)
 	{
 		//todo: use logger
@@ -90,14 +80,6 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 		await NoticeOfReduce(product);
 	}
 
-	/// <summary>
-	/// Вычисление новой уменьшенной цены по правилу в процентах.
-	/// При тестировании может добавляться случайная дельта (testDrawing) — пометка разработчика.
-	/// </summary>
-	/// <param name="price">Текущая цена.</param>
-	/// <param name="pricingRuleReduction">Процент снижения (например, 10 — означает 10%).</param>
-	/// <param name="testDrawing">Флаг тестового добавления случайной дельты.</param>
-	/// <returns>Новая цена после уменьшения.</returns>
 	private decimal ReducePrice(decimal price, double pricingRuleReduction, bool testDrawing = false)
 	{
 		var reduction = (decimal)pricingRuleReduction * 0.01m * price; //todo: think about rounding
@@ -114,10 +96,6 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 		return price;
 	}
 
-	/// <summary>
-	/// Отправляет уведомление об изменении цены через SignalR. Ошибки логируются.
-	/// </summary>
-	/// <param name="product">Сущность товара с обновлённой ценой.</param>
 	private async Task NoticeOfReduce(Product product)
 	{
 		try

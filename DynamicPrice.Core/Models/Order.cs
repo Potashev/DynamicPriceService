@@ -5,7 +5,7 @@ namespace DynamicPrice.Core.Models;
 
 /// <summary>
 /// Заказ кастомера, содержащий набор продуктов с фиксированной ценой и статус обработки.
-/// См. также <see cref="DynamicPrice.Core.Models.OrderItem"/>.
+/// См. также <see cref="OrderItem"/>.
 /// </summary>
 [Index(nameof(Number), IsUnique = true)]
 public class Order
@@ -32,7 +32,7 @@ public class Order
 	public Company Company { get; set; }
 
 	/// <summary>
-	/// Элементы заказа - продукты с фиксированной ценой.
+	/// Позиции заказа - продукты с фиксированной ценой.
 	/// </summary>
 	public ICollection<OrderItem> OrderItems { get; set; }
 

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Core.Controllers;
 
+//todo: separate CompanyOrders and CustomerOrder controllers?
 [ApiController]
 public class OrdersController : ControllerBase
 {

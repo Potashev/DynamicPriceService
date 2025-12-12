@@ -28,6 +28,15 @@ public class GetCartDetailsQueryHandler
 			.FirstOrDefaultAsync(c => c.CustomerId == customer.Id
 				&& c.Company.CompanyId == request.CompanyId, cancellationToken);
 
-		return _mapper.Map<CartViewModel>(cart);
+		var cartVm = cart is not null
+			? _mapper.Map<CartViewModel>(cart)
+			: new CartViewModel
+			{
+				Company = _mapper.Map<CompanyViewModel>(await _context.Companies
+					.FirstOrDefaultAsync(c => c.CompanyId == request.CompanyId, cancellationToken)),
+				CartItems = Array.Empty<CartItemViewModel>()
+			};
+
+		return cartVm;
 	}
 }

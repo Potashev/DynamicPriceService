@@ -23,10 +23,7 @@ public class CartController : ControllerBase
 	public async Task<ActionResult<CartViewModel>> GetCartDetails([FromQuery(Name = "company-id")] string companyId, CancellationToken cancellationToken)
 	{
 		var cart = await _mediator.Send(new GetCartDetailsQuery(Convert.ToInt32(companyId)), cancellationToken);
-
-		return cart == null
-			? NotFound(new { message = "Cart is empty." })
-			: Ok(cart);
+		return Ok(cart);
 	}
 
 	[HttpPost("items")]

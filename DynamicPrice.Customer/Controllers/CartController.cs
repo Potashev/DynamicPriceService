@@ -10,7 +10,6 @@ public class CartController : BaseController
 
 	public async Task<IActionResult> Details(string companyId)
 	{
-		//todo: handle empty cart
 		var cart = await CoreApiClient.GetCartDetails(companyId);
 		return View(cart);
 	}

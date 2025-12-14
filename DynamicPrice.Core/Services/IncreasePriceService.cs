@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPrice.Core.Services;
 
-//todo: think about base ChangePriceService and move common for Increase and Reduce
 /// <summary>
 /// Сервис, обрабатывающий события повышения цены продуктов.
 /// Получает событие <see cref="PriceIncreaseEvent"/> с позициями заказа и увеличивает цену соответствующих продуктов

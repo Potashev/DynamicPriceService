@@ -76,7 +76,7 @@ public class FindProductsToReduceService : BackgroundService
 				}
 
 				//await Task.Delay(TimeSpan.FromMilliseconds(30), token);
-				await Task.Delay(TimeSpan.FromSeconds(1), token);
+				await Task.Delay(TimeSpan.FromSeconds(5), token);
 			}
 		}
 		catch (Exception ex)

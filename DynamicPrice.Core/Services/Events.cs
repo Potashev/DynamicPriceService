@@ -12,4 +12,4 @@ public record PriceReduceEvent(int ProductId);
 /// Событие о необходимости повысить цену на продукты, входящих в коллекцию позиций заказа.
 /// См. также <see cref="OrderItem"/>.
 /// </summary>
-public record PriceIncreaseEvent(ICollection<OrderItem> OrderItems);    //todo: pass id + quantity only?
+public record PriceIncreaseEvent(ICollection<OrderItem> OrderItems);    //TODO: pass id + quantity only?

@@ -83,7 +83,7 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 
 	private decimal ReducePrice(decimal price, double pricingRuleReduction, bool testDrawing = false)
 	{
-		var reduction = (decimal)pricingRuleReduction * 0.01m * price; //todo: think about rounding
+		var reduction = (decimal)pricingRuleReduction * 0.01m * price;
 		price -= reduction;
 
 		//todo: temp field for checking drawing - remove after test

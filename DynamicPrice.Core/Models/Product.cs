@@ -5,12 +5,12 @@ namespace DynamicPrice.Core.Models;
 /// <summary>
 /// Продукт компании.
 /// </summary>
-public class Product    //todo: rename to Item?
+public class Product
 {
 	/// <summary>
 	/// Идентификатор продукта.
 	/// </summary>
-	public int ProductId { get; set; }  //todo: make Guid
+	public int ProductId { get; set; }  //TODO: make Guid
 
 	/// <summary>
 	/// Навигационнное свойство компании, к которой принадлежит продукт.

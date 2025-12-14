@@ -37,6 +37,6 @@ public class ReadyForReceiveOrderCommandHandler
 		return;
 	}
 
-	private int GenerateReceiveKey() => new Random().Next(100000, 1000000); //todo: make unique
+	private int GenerateReceiveKey() => new Random().Next(100000, 1000000); //TODO: make unique
 }
 

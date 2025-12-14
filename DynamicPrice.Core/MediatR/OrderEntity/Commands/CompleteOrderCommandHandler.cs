@@ -46,11 +46,11 @@ public class CompleteOrderCommandHandler
 
 		foreach (var oi in order.OrderItems)
 		{
-			oi.Product.LastSellTime = order.OrderDate; // todo: make now?
+			oi.Product.LastSellTime = order.OrderDate;
 		}
 
 		order.Status = OrderStatus.Completed;
-		order.ReceiveKey = 0;   //todo: think about nullable?
+		order.ReceiveKey = 0;
 
 		await _context.SaveChangesAsync(cancellationToken);
 		await _userService.UpdateUserAsync(customer);

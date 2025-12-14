@@ -79,7 +79,6 @@ public class IncreasePriceService : IConsumer<PriceIncreaseEvent>
 
 	private async Task NoticeOfIncrease(IEnumerable<OrderItem> OrderItems)
 	{
-		//todo: check
 		foreach (var orderProduct in OrderItems)
 		{
 			var product = orderProduct.Product;

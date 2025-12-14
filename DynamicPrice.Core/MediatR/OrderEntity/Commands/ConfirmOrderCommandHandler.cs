@@ -36,7 +36,7 @@ public class ConfirmOrderCommandHandler
 			Company = cart.Company,
 			Status = OrderStatus.Confirmed,
 			OrderDate = DateTime.UtcNow,
-			OrderItems = [] //todo: check
+			OrderItems = []
 		};
 
 		foreach (var ci in cart.CartItems)
@@ -57,14 +57,13 @@ public class ConfirmOrderCommandHandler
 
 
 		_context.Orders.Add(order);
-		_context.Carts.Remove(cart);    //todo: cartitems removes too?
+		_context.Carts.Remove(cart);
 
 		await _context.SaveChangesAsync(cancellationToken);
 
 		return order.OrderId;
 	}
 
-	// todo: add test for uniqueness
 	// Example: "3C-48291"
 	private static string GenerateOrderNumber()
 	{

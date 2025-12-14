@@ -64,7 +64,6 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 		if (priceRule == null) return;
 
 		product.Price = Math.Max(
-					//todo: check increasePriceService.NoticeOfIncrease (testdrawing = false)
 					//ReducePrice(product.Price, priceRule.Reduction, true),
 					ReducePrice(product.Price, priceRule.Reduction),
 			product.MinimumPrice);

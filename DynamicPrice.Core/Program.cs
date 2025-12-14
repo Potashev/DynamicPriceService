@@ -138,7 +138,7 @@ if (app.Environment.IsDevelopment())
 	await app.ApplyMigrationsAsync();
 }
 
-app.UseMiddleware<ExceptionHandlingMiddleware>(); //todo: check
+app.UseMiddleware<ExceptionHandlingMiddleware>(); //TODO: check
 app.UseHttpsRedirection();
 
 //todo: cookie - set expired

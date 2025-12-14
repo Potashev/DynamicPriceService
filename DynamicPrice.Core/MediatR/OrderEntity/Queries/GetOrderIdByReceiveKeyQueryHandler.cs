@@ -19,7 +19,6 @@ public class GetOrderIdByReceiveKeyQueryHandler
 		var manager = await _userService.GetCurrentUserAsync();
 
 		var orderId = await _context.Orders
-			//todo: check and add additional filter or make uniq key
 			.Where(o => o.ReceiveKey.ToString() == request.ReceiveKey && o.Company.CompanyId == manager.CompanyId)
 			.Select(o => o.OrderId)
 			.FirstOrDefaultAsync(cancellationToken);

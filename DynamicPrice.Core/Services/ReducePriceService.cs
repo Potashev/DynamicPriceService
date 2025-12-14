@@ -86,7 +86,7 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 		var reduction = (decimal)pricingRuleReduction * 0.01m * price;
 		price -= reduction;
 
-		//todo: temp field for checking drawing - remove after test
+		// Test seed data for checking drawing
 		if (testDrawing)
 		{
 			var maxrand = (int)Math.Round(reduction * 2);

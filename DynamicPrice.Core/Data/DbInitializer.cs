@@ -74,7 +74,8 @@ public static class DbInitializer
 			await db.SaveChangesAsync();
 		}
 
-		//todo: remove later;
+		//DataGenerator - need for testing metrics on big data
+
 		//var products2 = DataGenerator.GenerateProducts(companyId: 2, count: 100);
 		//db.Products.AddRange(products2);
 		//var products3 = DataGenerator.GenerateProducts(companyId: 3, count: 1000);

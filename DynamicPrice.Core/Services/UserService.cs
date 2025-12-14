@@ -23,7 +23,7 @@ public class UserService : IUserService
 		_config = config;
 	}
 
-	//todo: use _userManager instead HttpContext?
+	//TODO: use _userManager instead HttpContext?
 	public string? UserId
 		=> _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 

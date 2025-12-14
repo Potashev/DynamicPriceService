@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Customer.Controllers;
 
-public class OrderController : BaseController
+public class CustomerOrderController : BaseController
 {
-	public OrderController(ICoreApiClient coreApiClient)
+	public CustomerOrderController(ICoreApiClient coreApiClient)
 		: base(coreApiClient) { }
 
 	public async Task<IActionResult> Confirm(int cartId)

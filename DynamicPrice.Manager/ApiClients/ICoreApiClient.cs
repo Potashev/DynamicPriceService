@@ -50,9 +50,9 @@ public interface ICoreApiClient
 	[Patch("/api/company/orders/{orderId}/complete")]
 	Task CompleteOrder(string orderId);
 
-	[Get("/api/company/info")]  //todo: rename?
+	[Get("/api/company/info")]
 	Task<CompanyViewModel> GetCompanyInfo();
 
-	[Get("/api/company/orders/statistics")] //todo: rename to /api/company/statistics?
+	[Get("/api/company/orders/statistics")]
 	Task<OrdersStatistics> GetOrdersStatistics();
 }

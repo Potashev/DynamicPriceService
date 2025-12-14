@@ -3,14 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Manager.Controllers;
 
-public class OrdersController : BaseController
+public class CompanyOrdersController : BaseController
 {
-	public OrdersController(ICoreApiClient coreApiClient)
+	public CompanyOrdersController(ICoreApiClient coreApiClient)
 		: base(coreApiClient) { }
 
 	public async Task<IActionResult> Index()
 	{
-		//todo: handle 403
 		var ordersVm = await CoreApiClient.GetOrders();
 		return View(ordersVm);
 	}

@@ -63,7 +63,7 @@ public class AddProductToCartCommandHadnler
 		{
 			CustomerId = customer.Id,
 			Company = company,
-			CartItems = []    //todo: check
+			CartItems = []
 		};
 
 		await _context.Carts.AddAsync(cart);

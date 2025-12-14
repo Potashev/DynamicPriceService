@@ -39,5 +39,5 @@ public interface ICoreApiClient
 	Task CancelOrder([Body] int orderId);
 
 	[Get("/api/customer/order/{orderId}")]
-	Task<OrderInfoViewModel> OrderDetails(int orderId);
+	Task<OrderViewModel> OrderDetails(int orderId);
 }

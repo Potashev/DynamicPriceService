@@ -34,7 +34,7 @@ namespace DynamicPrice.Core.Controllers
 		}
 
 		[HttpGet("{orderId}")] //todo: use query param? (check cart)
-		public async Task<ActionResult<OrderInfoViewModel>> GetCustomerOrder(string orderId)
+		public async Task<ActionResult<OrderViewModel>> GetCustomerOrder(string orderId)
 		{
 			var orderVm = await _mediator.Send(new GetCustomerOrderDetailsQuery(orderId));
 			return Ok(orderVm);

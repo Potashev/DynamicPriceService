@@ -45,12 +45,14 @@ public class UserService : IUserService
 		var roles = await _userManager.GetRolesAsync(user);
 		var token = GenerateJwtToken(user, roles);
 
+		var expiresHours = int.TryParse(_config["Jwt:ExpireHours"], out var eh) ? eh : 1;
+
 		var cookieOptions = new CookieOptions
 		{
 			HttpOnly = true,
 			Secure = true,
 			SameSite = SameSiteMode.Strict,
-			Expires = DateTimeOffset.UtcNow.AddHours(1)
+			Expires = DateTimeOffset.UtcNow.AddHours(expiresHours)
 		};
 
 		_httpContextAccessor.HttpContext.Response.Cookies.Append("DpAuth", token, cookieOptions);
@@ -60,7 +62,7 @@ public class UserService : IUserService
 
 	public async Task RegisterUserAsync(string username, string password, string email, string role)
 	{
-		//todo: make better
+		//TODO: make better
 		ApplicationUser user = new()
 		{
 			UserName = username,
@@ -68,9 +70,6 @@ public class UserService : IUserService
 			Balance = role switch
 			{
 				"Customer" => 0,
-				//case "Manager":
-				//	user.CompanyId = 1;
-				//	break;
 				_ => throw new ArgumentException("Invalid user role"),
 			}
 		};
@@ -105,7 +104,7 @@ public class UserService : IUserService
 		var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
 		var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-		var expiresHours = int.TryParse(_config["Jwt:ExpireHours"], out var eh) ? eh : 8;
+		var expiresHours = int.TryParse(_config["Jwt:ExpireHours"], out var eh) ? eh : 1;
 
 		var token = new JwtSecurityToken(
 			issuer: _config["Jwt:Issuer"],

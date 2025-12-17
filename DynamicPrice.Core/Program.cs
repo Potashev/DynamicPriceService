@@ -141,7 +141,6 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseHttpsRedirection();
 
-//todo: cookie - set expired
 app.UseCookiePolicy(new CookiePolicyOptions
 {
 	MinimumSameSitePolicy = SameSiteMode.Strict,

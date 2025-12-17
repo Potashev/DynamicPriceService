@@ -38,6 +38,6 @@ public class ReadyForReceiveOrderCommandHandler
 		return;
 	}
 
-	private int GenerateReceiveKey() => RandomNumberGenerator.GetInt32(100_000, 1_000_000); //TODO: make unique
+	private int GenerateReceiveKey() => RandomNumberGenerator.GetInt32(100_000, 1_000_000);
 }
 

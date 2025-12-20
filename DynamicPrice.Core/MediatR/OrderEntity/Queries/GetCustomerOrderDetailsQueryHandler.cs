@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace DynamicPrice.Core.MediatR.OrderEntity.Queries;
 
 public class GetCustomerOrderDetailsQueryHandler
-	: IRequestHandler<GetCustomerOrderDetailsQuery, OrderInfoViewModel>
+	: IRequestHandler<GetCustomerOrderDetailsQuery, OrderViewModel>
 {
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IMapper _mapper;
@@ -17,7 +17,7 @@ public class GetCustomerOrderDetailsQueryHandler
 	public GetCustomerOrderDetailsQueryHandler(DynamicPriceCoreContext context, IMapper mapper, IUserService userService)
 		=> (_context, _mapper, _userService) = (context, mapper, userService);
 
-	public async Task<OrderInfoViewModel> Handle(GetCustomerOrderDetailsQuery request, CancellationToken cancellationToken)
+	public async Task<OrderViewModel> Handle(GetCustomerOrderDetailsQuery request, CancellationToken cancellationToken)
 	{
 		var customer = await _userService.GetCurrentUserAsync();
 
@@ -28,20 +28,8 @@ public class GetCustomerOrderDetailsQueryHandler
 			.Include(o => o.Company)
 			.FirstOrDefaultAsync(cancellationToken);
 
-		var customerOrderVm = _mapper.Map<OrderInfoViewModel>(customerOrder);
-
-		customerOrderVm.OrderTotal = GetOrderPrice(customerOrderVm); //todo: add extension for ordervm or linq?
+		var customerOrderVm = _mapper.Map<OrderViewModel>(customerOrder);
 
 		return customerOrderVm;
-	}
-
-	private decimal GetOrderPrice(OrderInfoViewModel orderVm)
-	{
-		decimal sum = 0;
-		foreach (var orderItem in orderVm.OrderItems)
-		{
-			sum += (decimal)(orderItem.ProductPrice * orderItem.Quantity);
-		}
-		return sum;
 	}
 }

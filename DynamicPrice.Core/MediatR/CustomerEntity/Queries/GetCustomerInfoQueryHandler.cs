@@ -29,7 +29,7 @@ public class GetCustomerInfoQueryHandler
 			.OrderByDescending(o => o.OrderDate)
 			.ToArrayAsync(cancellationToken);
 
-		var ordersVm = _mapper.Map<OrderInfoViewModel[]>(customerOrders);
+		var ordersVm = _mapper.Map<OrderViewModel[]>(customerOrders);
 
 		var customerInfo = new CustomerInfoViewModel
 		{

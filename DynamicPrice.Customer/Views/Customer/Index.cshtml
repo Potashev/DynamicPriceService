@@ -62,14 +62,14 @@
 					<td>@Html.DisplayFor(modelItem => item.Company.Title)</td>
 					<td>@Html.DisplayFor(modelItem => item.OrderDate)</td>
 					<td>
-						<form asp-controller="Order" asp-action="GetReceiveKey" method="get" style="display:inline;">
+						<form asp-controller="CustomerOrder" asp-action="GetReceiveKey" method="get" style="display:inline;">
 							<input type="hidden" name="receiveKey" value="@item.ReceiveKey" />
 							<input type="hidden" name="orderId" value="@item.OrderId" />
 							<button type="submit" class="btn btn-primary btn-sm">Receive Key</button>
 						</form>
 					</td>
 					<td>
-						<a asp-controller="Order" asp-action="Details" asp-route-id="@item.OrderId">Details</a>
+						<a asp-controller="CustomerOrder" asp-action="Details" asp-route-id="@item.OrderId">Details</a>
 					</td>
 				</tr>
 			}
@@ -95,8 +95,8 @@
 				<td>@Html.DisplayFor(modelItem => item.Number)</td>
 				<td>@Html.DisplayFor(modelItem => item.Company.Title)</td>
 				<td>@Html.DisplayFor(modelItem => item.OrderDate)</td>
-				<td><order-status status="@item.Status"></order-status></td>
-				<td><a asp-controller="Order" asp-action="Details" asp-route-id="@item.OrderId">Details</a></td>
+				<td><order-status status="@(DynamicPrice.Client.Infrastructure.TagHelpers.OrderStatus)item.Status"></order-status></td>
+				<td><a asp-controller="CustomerOrder" asp-action="Details" asp-route-id="@item.OrderId">Details</a></td>
 			</tr>
 		}
 	</tbody>

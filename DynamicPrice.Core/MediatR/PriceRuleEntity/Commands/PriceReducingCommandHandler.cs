@@ -23,7 +23,6 @@ public class PriceReducingCommandHandler
 		var activeCompany = await _context.ActiveCompanies.FindAsync(companyId);
 
 		if (request.IsRunCommand && activeCompany is null)
-			//todo: set lastmonitoring as default?
 			_context.ActiveCompanies.Add(new ActiveCompany { CompanyId = companyId, StartedAt = DateTime.UtcNow });
 		else if (!request.IsRunCommand && activeCompany is not null)
 			_context.ActiveCompanies.Remove(activeCompany);

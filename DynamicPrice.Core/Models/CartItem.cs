@@ -10,7 +10,7 @@ public class CartItem
 	/// <summary>
 	/// Идентификатор элемента корзины.
 	/// </summary>
-	public int Id { get; set; }     //todo: make guid
+	public int Id { get; set; }     //TODO: make guid
 
 	/// <summary>
 	/// Внешний ключ на корзину, к которой принадлежит элемент.

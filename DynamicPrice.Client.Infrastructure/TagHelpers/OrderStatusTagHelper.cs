@@ -1,31 +1,36 @@
-﻿using DynamicPrice.Shared.Contracts;
-using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace DynamicPrice.Client.Infrastructure.TagHelpers
+namespace DynamicPrice.Client.Infrastructure.TagHelpers;
+
+[HtmlTargetElement("order-status")]
+public class OrderStatusTagHelper : TagHelper
 {
-	[HtmlTargetElement("order-status")]
-	public class OrderStatusTagHelper : TagHelper
+	public OrderStatus Status { get; set; }
+
+	public override void Process(TagHelperContext context, TagHelperOutput output)
 	{
-		//todo: need dependency from DynamicPrice.Shared.Contracts - is it right?
-		public OrderStatus Status { get; set; }
+		output.TagName = "span";
 
-		public override void Process(TagHelperContext context, TagHelperOutput output)
+		string cssClass = Status switch
 		{
-			output.TagName = "span";
+			OrderStatus.Completed => "text-success",
+			OrderStatus.Canceled => "text-danger",
+			_ => ""
+		};
 
-			string cssClass = Status switch
-			{
-				OrderStatus.Completed => "text-success",
-				OrderStatus.Canceled => "text-danger",
-				_ => ""
-			};
-
-			if (!string.IsNullOrEmpty(cssClass))
-			{
-				output.Attributes.SetAttribute("class", cssClass);
-			}
-
-			output.Content.SetContent(Status.ToString());
+		if (!string.IsNullOrEmpty(cssClass))
+		{
+			output.Attributes.SetAttribute("class", cssClass);
 		}
+
+		output.Content.SetContent(Status.ToString());
 	}
+}
+
+public enum OrderStatus
+{
+	Confirmed,
+	Ready,
+	Completed,
+	Canceled
 }

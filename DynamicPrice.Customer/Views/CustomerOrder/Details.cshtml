@@ -1,14 +1,13 @@
-﻿@using DynamicPrice.Client.Infrastructure
-@using DynamicPrice.Shared.Contracts
+﻿@using DynamicPrice.Shared.Contracts
 @model DynamicPrice.Shared.Contracts.ViewModels.OrderViewModel
 
 @{
 	ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
-<h2>Order products</h2>
-<table class="table">
+<h1>Order @Model.Number</h1>
+<h2>Products</h2>
+<table class="table table-striped">
 	<thead>
 		<tr>
 			<th>
@@ -36,16 +35,13 @@
 				<td>
 					@Html.DisplayFor(modelItem => item.Quantity)
 				</td>
-				<td>
-					<a asp-controller="Products" asp-action="Details" asp-route-id="@item.Product.ProductId">Details</a>
-				</td>
 			</tr>
 		}
 	</tbody>
 </table>
 
 <div>
-	<h2>Order details</h2>
+	<h2>Details</h2>
 	<hr />
 	<dl class="row">
 		<dt class="col-sm-2">
@@ -61,10 +57,10 @@
 			@Html.DisplayFor(model => model.OrderDate)
 		</dd>
 		<dt class="col-sm-2">
-			@Html.DisplayNameFor(model => model.CustomerName)
+			@Html.DisplayNameFor(model => model.Company.Title)
 		</dt>
 		<dd class="col-sm-10">
-			@Html.DisplayFor(model => model.CustomerName)
+			@Html.DisplayFor(model => model.Company.Title)
 		</dd>
 		<dt class="col-sm-2">
 			@Html.DisplayNameFor(model => model.OrderTotal)
@@ -76,28 +72,26 @@
 			@Html.DisplayNameFor(model => model.Status)
 		</dt>
 		<dd class="col-sm-10">
-			<order-status status="@Model.Status"></order-status>
+			<order-status status="@(DynamicPrice.Client.Infrastructure.TagHelpers.OrderStatus)Model.Status"></order-status>
 		</dd>
 	</dl>
 
 	@if (Model.Status is OrderStatus.Confirmed or OrderStatus.Ready)
 	{
-		<form asp-action="ReadyForReceive" method="post" style="display:inline;">
-			<input type="hidden" name="orderId" value="@Model.OrderId" />
-			<button type="submit" class="btn btn-primary"
-					@(Model.Status is OrderStatus.Ready ? "disabled" : null)>
-				Ready for receive
-			</button>
-		</form>
-		<span> | </span>
-		<form asp-action="Complete" method="post" style="display:inline;">
+		<form asp-action="GetReceiveKey" method="get" style="display:inline;">
+			<input type="hidden" name="receiveKey" value="@Model.ReceiveKey" />
 			<input type="hidden" name="orderId" value="@Model.OrderId" />
 			<button type="submit" class="btn btn-primary"
 					@(Model.Status is OrderStatus.Confirmed ? "disabled" : null)>
-				Complete
+				Receive Key
 			</button>
 		</form>
 		<span> | </span>
+		<form asp-action="Cancel" method="post" style="display:inline;">
+			<input type="hidden" name="orderId" value="@Model.OrderId" />
+			<button type="submit" class="btn btn-danger">Cancel Order</button>
+		</form>
+		<span> | </span>
 	}
-	<a asp-action="Index">Back to List</a>
+	<a asp-controller="Customer" asp-action="Index">Back to List</a>
 </div>

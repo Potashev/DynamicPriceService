@@ -22,7 +22,7 @@ public class PriceRule
 	/// <summary>
 	/// Идентификатор компании.
 	/// </summary>
-	public int? CompanyId { get; set; }     //todo: make required
+	public int? CompanyId { get; set; }     //TODO: make required
 
 	/// <summary>
 	/// Повышение цены продукта (в процентах).
@@ -53,6 +53,4 @@ public class PriceRule
 	/// Время "простоя" в секундах.
 	/// </summary>
 	public int NoSellSeconds { get; set; }
-
-	//todo: think about about monitor waiting config - time before next monitoring as active company
 }

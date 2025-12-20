@@ -3,4 +3,4 @@ using MediatR;
 
 namespace DynamicPrice.Core.MediatR.OrderEntity.Queries;
 
-public record GetCustomerOrderDetailsQuery(string OrderId) : IRequest<OrderInfoViewModel>;
+public record GetCustomerOrderDetailsQuery(string OrderId) : IRequest<OrderViewModel>;

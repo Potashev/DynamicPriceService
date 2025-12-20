@@ -3,7 +3,6 @@ using System.Text;
 
 namespace DynamicPrice.Client.Infrastructure;
 
-//todo: use cookies later
 public class SessionAuthTokenStore : IAuthTokenStore
 {
 	private readonly IHttpContextAccessor _contextAccessor;

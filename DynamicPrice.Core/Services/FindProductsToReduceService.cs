@@ -10,7 +10,7 @@ namespace DynamicPrice.Core.Services;
 /// <summary>
 /// Фоновая служба мониторинга активных компаний и поиска продуктов, которые находятся в "простое".
 /// Сканирует продукты активных компаний и публикует события <see cref="PriceReduceEvent"/>
-/// для продуктов, которые не продавались дольше, чем разрешено правилом <see cref="PriceRule"/>.
+/// для продуктов, которые не продавались дольше, чем разрешено правилом компании <see cref="PriceRule"/>.
 /// </summary>
 public class FindProductsToReduceService : BackgroundService
 {
@@ -75,7 +75,8 @@ public class FindProductsToReduceService : BackgroundService
 					_logger.LogError(ex, "Error during parallel processing of products");
 				}
 
-				await Task.Delay(TimeSpan.FromMilliseconds(30), token);
+				//await Task.Delay(TimeSpan.FromMilliseconds(30), token);
+				await Task.Delay(TimeSpan.FromSeconds(5), token);
 			}
 		}
 		catch (Exception ex)

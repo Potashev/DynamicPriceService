@@ -3,6 +3,7 @@ using DynamicPrice.Core.Models;
 using DynamicPrice.Core.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
 
 namespace DynamicPrice.Core.MediatR.OrderEntity.Commands;
 
@@ -37,6 +38,6 @@ public class ReadyForReceiveOrderCommandHandler
 		return;
 	}
 
-	private int GenerateReceiveKey() => new Random().Next(100000, 1000000); //todo: make unique
+	private int GenerateReceiveKey() => RandomNumberGenerator.GetInt32(100_000, 1_000_000);
 }
 

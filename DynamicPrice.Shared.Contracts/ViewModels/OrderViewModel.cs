@@ -6,8 +6,11 @@ public class OrderViewModel
 	public string Number { get; set; }
 	public string CustomerId { get; set; }
 	public string CustomerName { get; set; }
+	public CompanyViewModel Company { get; set; }
 	public ICollection<OrderItemViewModel> OrderItems { get; set; }
 	public OrderStatus Status { get; set; }
 	public DateTime? OrderDate { get; set; }
-	public decimal? OrderTotal { get; set; }
+	public int? ReceiveKey { get; set; }
+	public decimal? OrderTotal =>
+		OrderItems?.Sum(i => i.ProductPrice * i.Quantity) ?? 0m;
 }

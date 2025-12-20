@@ -138,15 +138,14 @@ if (app.Environment.IsDevelopment())
 	await app.ApplyMigrationsAsync();
 }
 
-app.UseMiddleware<ExceptionHandlingMiddleware>(); //todo: check
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseHttpsRedirection();
 
-//todo: cookie - set expired
 app.UseCookiePolicy(new CookiePolicyOptions
 {
 	MinimumSameSitePolicy = SameSiteMode.Strict,
 	HttpOnly = HttpOnlyPolicy.Always,
-	Secure = CookieSecurePolicy.Always
+	Secure = CookieSecurePolicy.Always,
 });
 
 app.UseAuthentication();

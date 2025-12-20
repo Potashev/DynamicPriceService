@@ -39,16 +39,14 @@ public class AddProductToCartCommandHadnler
 			.Where(ci => ci.ProductId == product.ProductId)
 			.FirstOrDefault();
 
-		if (cartItem == null)
+		if (cartItem is null)
 		{
-			//todo: make better
-			cartItem = new CartItem
+			cart.CartItems.Add(new CartItem
 			{
 				Cart = cart,
 				Product = product,
 				Quantity = 1
-			};
-			cart.CartItems.Add(cartItem);
+			});
 		}
 		else
 		{
@@ -65,7 +63,7 @@ public class AddProductToCartCommandHadnler
 		{
 			CustomerId = customer.Id,
 			Company = company,
-			CartItems = []    //todo: check
+			CartItems = []
 		};
 
 		await _context.Carts.AddAsync(cart);

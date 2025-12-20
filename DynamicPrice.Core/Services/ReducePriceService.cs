@@ -64,8 +64,8 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 		if (priceRule == null) return;
 
 		product.Price = Math.Max(
-					//todo: check increasePriceService.NoticeOfIncrease (testdrawing = false)
-					ReducePrice(product.Price, priceRule.Reduction, true),
+					//ReducePrice(product.Price, priceRule.Reduction, true),
+					ReducePrice(product.Price, priceRule.Reduction),
 			product.MinimumPrice);
 
 		await context.PriceDynamics.AddAsync(new PriceDynamic
@@ -82,10 +82,10 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 
 	private decimal ReducePrice(decimal price, double pricingRuleReduction, bool testDrawing = false)
 	{
-		var reduction = (decimal)pricingRuleReduction * 0.01m * price; //todo: think about rounding
+		var reduction = (decimal)pricingRuleReduction * 0.01m * price;
 		price -= reduction;
 
-		//todo: temp field for checking drawing - remove after test
+		// Test seed data for checking drawing
 		if (testDrawing)
 		{
 			var maxrand = (int)Math.Round(reduction * 2);

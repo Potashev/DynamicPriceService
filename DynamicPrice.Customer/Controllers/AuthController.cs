@@ -41,7 +41,7 @@ namespace DynamicPrice.Customer.Controllers
 
 			if (ModelState.IsValid)
 			{
-				//todo: handle invalid login attempt
+				// todo: handle invalid login attempt
 				// ModelState.AddModelError(string.Empty, "Invalid login attempt.");
 				// return View(loginVm);
 

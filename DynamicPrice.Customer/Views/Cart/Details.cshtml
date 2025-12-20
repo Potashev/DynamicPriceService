@@ -4,51 +4,55 @@
 	ViewData["Title"] = "Cart";
 }
 
-<h1>@Model.Company.Title. Cart details</h1>
+<h1>@(Model?.Company?.Title ?? "Company") — Cart details</h1>
 
-<table class="table table-striped">
-	<thead>
-		<tr>
-			<th>
-				@Html.DisplayNameFor(model => model.CartItems.FirstOrDefault().Product.Title)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.CartItems.FirstOrDefault().Product.Description)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.CartItems.FirstOrDefault().Quantity)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.CartItems.FirstOrDefault().Product.Price)
-			</th>
-			<th></th>
-		</tr>
-	</thead>
-	<tbody>
-		@foreach (var item in Model.CartItems)
-		{
+@if (Model?.CartItems != null && Model.CartItems.Any())
+{
+	<table class="table table-striped">
+		<thead>
 			<tr>
-				<td>
-					@Html.DisplayFor(modelItem => item.Product.Title)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.Product.Description)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.Quantity)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.Product.Price)
-				</td>
-				<td>
-					<a asp-action="AddProduct" asp-route-productId="@item.Product?.ProductId">Add</a> |
-					<a asp-action="RemoveProduct" asp-route-productId="@item.Product?.ProductId">Remove</a> |
-				</td>
+				<th>Product</th>
+				<th>Description</th>
+				<th>Quantity</th>
+				<th>Price</th>
+				<th></th>
 			</tr>
-		}
-	</tbody>
-</table>
+		</thead>
+		<tbody>
+			@foreach (var item in Model.CartItems)
+			{
+				<tr>
+					<td>
+						@Html.DisplayFor(modelItem => item.Product.Title)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Product.Description)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Quantity)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Product.Price)
+					</td>
+					<td>
+						<a asp-action="AddProduct" asp-route-productId="@item.Product?.ProductId">Add</a> |
+						<a asp-action="RemoveProduct" asp-route-productId="@item.Product?.ProductId">Remove</a>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+else
+{
+	<div class="alert alert-info">Cart is empty.</div>
+}
+
 <div>
-	<a asp-controller="Order" asp-action="Confirm" asp-route-cartId="@Model?.CartId" class="btn btn-primary">Confirm order</a> |
-	<a asp-controller="Companies" asp-action="CompanyProducts" asp-route-id="@Model.Company.CompanyId">Back to List</a>
+	@if (Model?.CartItems != null && Model.CartItems.Any())
+	{
+		<a asp-controller="CustomerOrder" asp-action="Confirm" asp-route-cartId="@Model?.CartId" class="btn btn-primary">Confirm order</a>
+		@: |
+	}
+	<a asp-controller="Companies" asp-action="CompanyProducts" asp-route-id="@Model?.Company?.CompanyId">Back to List</a>
 </div>

@@ -22,7 +22,7 @@ public class GetCompanyOrderDetailsQueryHandler
 		var manager = await _userService.GetCurrentUserAsync();
 
 		var companyOrder = await _context.Orders
-			.Where(o => o.OrderId.ToString() == request.OrderId && o.Company.CompanyId == manager.CompanyId) //todo: check and perfomance - convert request to int?
+			.Where(o => o.OrderId.ToString() == request.OrderId && o.Company.CompanyId == manager.CompanyId)
 			.Include(o => o.OrderItems)
 				.ThenInclude(op => op.Product)
 			.FirstOrDefaultAsync(cancellationToken);
@@ -30,18 +30,7 @@ public class GetCompanyOrderDetailsQueryHandler
 		var companyOrderVm = _mapper.Map<OrderViewModel>(companyOrder);
 
 		companyOrderVm.CustomerName = (await _userService.GetUserByIdAsync(companyOrderVm.CustomerId)).UserName;
-		companyOrderVm.OrderTotal = GetOrderPrice(companyOrderVm);  //todo: add extension for ordervm or linq?
 
 		return companyOrderVm;
-	}
-
-	private decimal GetOrderPrice(OrderViewModel orderVm)
-	{
-		decimal sum = 0;
-		foreach (var orderItem in orderVm.OrderItems)
-		{
-			sum += (decimal)(orderItem.ProductPrice * orderItem.Quantity);
-		}
-		return sum;
 	}
 }

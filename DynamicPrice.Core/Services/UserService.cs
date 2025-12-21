@@ -45,17 +45,17 @@ public class UserService : IUserService
 		var roles = await _userManager.GetRolesAsync(user);
 		var token = GenerateJwtToken(user, roles);
 
-		var expiresHours = int.TryParse(_config["Jwt:ExpireHours"], out var eh) ? eh : 1;
+		//var expiresHours = int.TryParse(_config["Jwt:ExpireHours"], out var eh) ? eh : 1;
 
-		var cookieOptions = new CookieOptions
-		{
-			HttpOnly = true,
-			Secure = true,
-			SameSite = SameSiteMode.Strict,
-			Expires = DateTimeOffset.UtcNow.AddHours(expiresHours)
-		};
+		//var cookieOptions = new CookieOptions
+		//{
+		//	HttpOnly = true,
+		//	Secure = true,
+		//	SameSite = SameSiteMode.Strict,
+		//	Expires = DateTimeOffset.UtcNow.AddHours(expiresHours)
+		//};
 
-		_httpContextAccessor.HttpContext.Response.Cookies.Append("DpAuth", token, cookieOptions);
+		//_httpContextAccessor.HttpContext.Response.Cookies.Append("DpAuth", token, cookieOptions);
 
 		return token;
 	}
@@ -95,8 +95,11 @@ public class UserService : IUserService
 	{
 		var claims = new List<Claim>
 		{
-			new(JwtRegisteredClaimNames.Sub, user.Id),
-			new(JwtRegisteredClaimNames.UniqueName, user.UserName)
+			//new(JwtRegisteredClaimNames.Sub, user.Id),
+			//new(JwtRegisteredClaimNames.UniqueName, user.UserName)
+
+			new(ClaimTypes.NameIdentifier, user.Id),
+			new(ClaimTypes.Name, user.UserName)
 		};
 
 		claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));

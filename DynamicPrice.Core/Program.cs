@@ -77,11 +77,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 		{
 			OnMessageReceived = context =>
 			{
-				var token = context.Request.Cookies["DpAuth"];
-				if (!string.IsNullOrEmpty(token))
-				{
-					context.Token = token;
-				}
+				//var token = context.Request.Cookies["DpAuth"];
+				//if (!string.IsNullOrEmpty(token))
+				//{
+				//	context.Token = token;
+				//}
 				return Task.CompletedTask;
 			}
 		};

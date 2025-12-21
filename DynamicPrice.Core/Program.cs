@@ -22,45 +22,93 @@ builder.Services.AddDbContext<DynamicPriceCoreContext>(options =>
 builder.Services.AddDbContext<IdentityContext>(options =>
 	options.UseSqlServer(configuration.GetConnectionString("IdentityDb") ?? throw new InvalidOperationException("Connection string 'IdentityDb' not found.")));
 
-builder.Services.AddAuthentication(options =>
-{
-	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-	options.TokenValidationParameters = new TokenValidationParameters
-	{
-		ValidateIssuerSigningKey = true,
-		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"])),
-		ValidateIssuer = true,
-		ValidateAudience = true,
-		ValidIssuer = configuration["Jwt:Issuer"] ?? "TestIssuer",
-		ValidAudience = configuration["Jwt:Audience"] ?? "TestAudience",
-		ValidateLifetime = true,
-		ClockSkew = TimeSpan.Zero
-	};
+//builder.Services.AddAuthentication(options =>
+//{
+//	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//	options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+//})
+//.AddJwtBearer(options =>
+//{
+//	options.TokenValidationParameters = new TokenValidationParameters
+//	{
+//		ValidateIssuerSigningKey = true,
+//		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"])),
+//		ValidateIssuer = true,
+//		ValidateAudience = true,
+//		ValidIssuer = configuration["Jwt:Issuer"] ?? "TestIssuer",
+//		ValidAudience = configuration["Jwt:Audience"] ?? "TestAudience",
+//		ValidateLifetime = true,
+//		ClockSkew = TimeSpan.Zero
+//	};
 
-	options.Events = new JwtBearerEvents
+//	options.Events = new JwtBearerEvents
+//	{
+//		OnMessageReceived = context =>
+//		{
+//			var accessToken = context.Request.Cookies["DpAuth"];
+//			if (!string.IsNullOrEmpty(accessToken))
+//			{
+//				context.Token = accessToken;
+//			}
+//			return Task.CompletedTask;
+//		}
+//	};
+//});
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+	.AddJwtBearer(options =>
 	{
-		OnMessageReceived = context =>
+		options.TokenValidationParameters = new TokenValidationParameters
 		{
-			var accessToken = context.Request.Cookies["DpAuth"];
-			if (!string.IsNullOrEmpty(accessToken))
+			ValidateIssuerSigningKey = true,
+			IssuerSigningKey = new SymmetricSecurityKey(
+				Encoding.UTF8.GetBytes(configuration["Jwt:Key"])
+			),
+			ValidateIssuer = true,
+			ValidateAudience = true,
+			ValidIssuer = configuration["Jwt:Issuer"],
+			ValidAudience = configuration["Jwt:Audience"],
+			ValidateLifetime = true,
+			ClockSkew = TimeSpan.Zero
+		};
+
+		options.Events = new JwtBearerEvents
+		{
+			OnMessageReceived = context =>
 			{
-				context.Token = accessToken;
+				var token = context.Request.Cookies["DpAuth"];
+				if (!string.IsNullOrEmpty(token))
+				{
+					context.Token = token;
+				}
+				return Task.CompletedTask;
 			}
-			return Task.CompletedTask;
-		}
-	};
-});
+		};
+	});
+
 
 
 builder.Services.AddAuthorization(options =>
 {
-	options.AddPolicy("ManagerPolicy", policy => policy.RequireRole("Manager"));
-	options.AddPolicy("CustomerPolicy", policy => policy.RequireRole("Customer"));
+	options.AddPolicy("ManagerPolicy", policy => policy
+		.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+		.RequireRole("Manager"));
+
+	options.AddPolicy("CustomerPolicy", policy => policy
+		.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+		.RequireRole("Customer"));
 });
+
+//builder.Services.AddAuthorization(options =>
+//{
+//	options.AddPolicy("ManagerPolicy", policy =>
+//		policy.RequireRole("Manager"));
+
+//	options.AddPolicy("CustomerPolicy", policy =>
+//		policy.RequireRole("Customer"));
+//});
+
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 	.AddEntityFrameworkStores<IdentityContext>()

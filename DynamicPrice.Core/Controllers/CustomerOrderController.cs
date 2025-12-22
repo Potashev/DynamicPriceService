@@ -2,7 +2,6 @@
 using DynamicPrice.Core.MediatR.OrderEntity.Queries;
 using DynamicPrice.Shared.Contracts.ViewModels;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,7 +9,8 @@ namespace DynamicPrice.Core.Controllers
 {
 	[Route("api/customer/order")]
 	[ApiController]
-	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "CustomerPolicy")]
+	//[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "CustomerPolicy")]
+	[Authorize("CustomerPolicy")]
 	public class CustomerOrderController : ControllerBase
 	{
 		private readonly IMediator _mediator;

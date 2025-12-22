@@ -9,7 +9,6 @@ namespace DynamicPrice.Core.Controllers;
 
 [Route("api/company/[controller]")]
 [ApiController]
-//[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 [Authorize("ManagerPolicy")]
 public class ProductsController : ControllerBase
 {

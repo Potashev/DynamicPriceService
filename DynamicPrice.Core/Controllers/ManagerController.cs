@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace DynamicPrice.Core.Controllers;
 
 [ApiController]
-//[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
 [Authorize("ManagerPolicy")]
 public class ManagerController : ControllerBase
 {

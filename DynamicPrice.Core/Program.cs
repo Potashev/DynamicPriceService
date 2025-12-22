@@ -73,6 +73,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 			ClockSkew = TimeSpan.Zero
 		};
 
+		//todo: for testing - removed
 		options.Events = new JwtBearerEvents
 		{
 			OnMessageReceived = context =>

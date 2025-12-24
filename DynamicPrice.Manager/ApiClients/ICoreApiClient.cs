@@ -11,6 +11,9 @@ public interface ICoreApiClient
 	[Get("/api/company/products")]
 	Task<IEnumerable<ProductViewModel>> GetProducts();
 
+	[Get("/api/me")]
+	Task GetMe();
+
 	[Get("/api/company/products/{id}")]
 	Task<ProductViewModel> GetProduct(int id);
 

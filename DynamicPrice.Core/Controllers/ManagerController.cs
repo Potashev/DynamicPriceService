@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Core.Controllers;
 
+//todo: we try to use it befor login - check
+
 [ApiController]
-[Authorize("ManagerPolicy")]
+//[Authorize("ManagerPolicy")]
+[Authorize(Roles = "Manager")]
 public class ManagerController : ControllerBase
 {
 	private readonly IMediator _mediator;

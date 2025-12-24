@@ -2,25 +2,30 @@
 using DynamicPrice.Core.MediatR.ProductEntity.Queries;
 using DynamicPrice.Shared.Contracts.ViewModels;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Core.Controllers;
 
-[Route("api/company/[controller]")]
+
+//[Authorize(Roles = "Manager")]
+//[Authorize]
 [ApiController]
-[Authorize("ManagerPolicy")]
+[Route("api/company/[controller]")]
 public class ProductsController : ControllerBase
 {
 	private readonly IMediator _mediator;
-	public ProductsController(IMediator mediator)
+
+	private readonly IHttpContextAccessor _httpContextAccessor;
+	public ProductsController(IMediator mediator, IHttpContextAccessor httpContextAccessor)
 	{
 		_mediator = mediator;
+		_httpContextAccessor = httpContextAccessor;
 	}
 
 	[HttpGet]
 	public async Task<ActionResult<IEnumerable<ProductViewModel>>> GetProducts(CancellationToken cancellationToken)
 	{
+		var context = _httpContextAccessor.HttpContext;
 		var productsVm = await _mediator.Send(new GetProductsQuery(), cancellationToken);
 		return Ok(productsVm);
 	}

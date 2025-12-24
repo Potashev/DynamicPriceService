@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Prometheus;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -56,21 +57,34 @@ builder.Services.AddDbContext<IdentityContext>(options =>
 //	};
 //});
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+builder.Services
+	.AddAuthentication(options =>
+	{
+		options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+		options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+		//options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+	})
 	.AddJwtBearer(options =>
 	{
+		//todo: compare with other
+		//options.TokenValidationParameters = new TokenValidationParameters
+		//{
+		//	ValidateIssuerSigningKey = true,
+		//	IssuerSigningKey = new SymmetricSecurityKey(
+		//		Encoding.UTF8.GetBytes(configuration["Jwt:Key"])
+		//	),
+		//	ValidateIssuer = true,
+		//	ValidateAudience = true,
+		//	ValidIssuer = configuration["Jwt:Issuer"],
+		//	ValidAudience = configuration["Jwt:Audience"],
+		//	ValidateLifetime = true,
+		//	ClockSkew = TimeSpan.Zero
+
 		options.TokenValidationParameters = new TokenValidationParameters
 		{
-			ValidateIssuerSigningKey = true,
-			IssuerSigningKey = new SymmetricSecurityKey(
-				Encoding.UTF8.GetBytes(configuration["Jwt:Key"])
-			),
-			ValidateIssuer = true,
-			ValidateAudience = true,
 			ValidIssuer = configuration["Jwt:Issuer"],
 			ValidAudience = configuration["Jwt:Audience"],
-			ValidateLifetime = true,
-			ClockSkew = TimeSpan.Zero
+			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!)),
 		};
 
 		//todo: for testing - removed
@@ -88,18 +102,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 		};
 	});
 
+builder.Services.AddAuthorization();
 
+//builder.Services.AddAuthorization(options =>
+//{
+//	options.AddPolicy("ManagerPolicy", policy => policy
+//		.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+//		.RequireRole("Manager"));
 
-builder.Services.AddAuthorization(options =>
-{
-	options.AddPolicy("ManagerPolicy", policy => policy
-		.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-		.RequireRole("Manager"));
-
-	options.AddPolicy("CustomerPolicy", policy => policy
-		.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-		.RequireRole("Customer"));
-});
+//	options.AddPolicy("CustomerPolicy", policy => policy
+//		.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+//		.RequireRole("Customer"));
+//});
 
 //builder.Services.AddAuthorization(options =>
 //{
@@ -112,8 +126,8 @@ builder.Services.AddAuthorization(options =>
 
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-	.AddEntityFrameworkStores<IdentityContext>()
-	.AddDefaultTokenProviders();
+	.AddEntityFrameworkStores<IdentityContext>();
+//.AddDefaultTokenProviders();    // can it be a reason conflict with JwtBearer?
 
 builder.Services.AddControllers();
 
@@ -187,9 +201,18 @@ if (app.Environment.IsDevelopment())
 	await app.ApplyMigrationsAsync();
 }
 
+app.MapGet("me", (ClaimsPrincipal claimsPrincipal) =>
+{
+	return Results.Ok(claimsPrincipal.Claims.ToDictionary(c => c.Type, c => c.Value));
+});
+//.RequireAuthorization(policy => policy.RequireRole("Manager"));
+
+
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 app.UseHttpsRedirection();
 
+//todo: check need it?
 app.UseCookiePolicy(new CookiePolicyOptions
 {
 	MinimumSameSitePolicy = SameSiteMode.Strict,
@@ -197,9 +220,12 @@ app.UseCookiePolicy(new CookiePolicyOptions
 	Secure = CookieSecurePolicy.Always,
 });
 
+
+app.UseCors("AllowSpecificOrigins");
+
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors("AllowSpecificOrigins");
+//app.UseCors("AllowSpecificOrigins");
 
 app.MapMetrics();
 app.UseHttpMetrics();

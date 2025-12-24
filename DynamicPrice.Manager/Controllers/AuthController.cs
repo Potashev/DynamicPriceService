@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Manager.Controllers;
 
+//todo: try to remove from basecontroller - customer too
 public class AuthController : BaseController
 {
 	private readonly IAuthTokenStore _authTokenStore;

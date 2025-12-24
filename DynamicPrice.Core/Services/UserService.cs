@@ -1,7 +1,8 @@
 ﻿using DynamicPrice.Core.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
+//using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
@@ -93,30 +94,55 @@ public class UserService : IUserService
 
 	private string GenerateJwtToken(ApplicationUser user, IList<string> roles)
 	{
+		//var claims = new List<Claim>
+		//{
+		//	//new(JwtRegisteredClaimNames.Sub, user.Id),
+		//	//new(JwtRegisteredClaimNames.UniqueName, user.UserName)
+
+		//	new(ClaimTypes.NameIdentifier, user.Id),
+		//	new(ClaimTypes.Name, user.UserName)
+		//};
+		//claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+
 		var claims = new List<Claim>
 		{
-			//new(JwtRegisteredClaimNames.Sub, user.Id),
-			//new(JwtRegisteredClaimNames.UniqueName, user.UserName)
+			new(JwtRegisteredClaimNames.Sub, user.Id),
+			new(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
+			//new(JwtRegisteredClaimNames.UniqueName, user.UserName),	// add email?
 
-			new(ClaimTypes.NameIdentifier, user.Id),
-			new(ClaimTypes.Name, user.UserName)
+			//..roles.Select(r => new Claim(ClaimTypes.Role, r))
 		};
-
 		claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
 		var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
 		var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-		var expiresHours = int.TryParse(_config["Jwt:ExpireHours"], out var eh) ? eh : 1;
+		var tokenDescriptor = new SecurityTokenDescriptor
+		{
+			Subject = new ClaimsIdentity(claims),
+			Expires = DateTime.UtcNow.AddMinutes(60),
+			SigningCredentials = creds,
+			Issuer = _config["Jwt:Issuer"],
+			Audience = _config["Jwt:Audience"]
+		};
 
-		var token = new JwtSecurityToken(
-			issuer: _config["Jwt:Issuer"],
-			audience: _config["Jwt:Audience"],
-			claims: claims,
-			expires: DateTime.UtcNow.AddHours(expiresHours),
-			signingCredentials: creds);
+		var tokenHandler = new JsonWebTokenHandler();
+		string accessToken = tokenHandler.CreateToken(tokenDescriptor);
+		return accessToken;
 
-		return new JwtSecurityTokenHandler().WriteToken(token);
+		//var expiresHours = int.TryParse(_config["Jwt:ExpireHours"], out var eh) ? eh : 1;
+
+		//// use SecurityTokenDescriptor?
+		//var token = new JwtSecurityToken(
+		//	issuer: _config["Jwt:Issuer"],
+		//	audience: _config["Jwt:Audience"],
+		//	claims: claims,
+		//	expires: DateTime.UtcNow.AddHours(expiresHours),
+		//	signingCredentials: creds);
+
+		////todo: check that token is valid
+
+		//return new JwtSecurityTokenHandler().WriteToken(token);
 	}
 }
 

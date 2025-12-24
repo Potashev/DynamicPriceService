@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Core.Controllers;
 
-[Route("api/[controller]")]
 [ApiController]
-[Authorize("CustomerPolicy")]
+[Route("api/[controller]")]
+[Authorize(Roles = "Customer")]
 public class CompaniesController : ControllerBase
 {
 	private readonly IMediator _mediator;

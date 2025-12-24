@@ -11,7 +11,7 @@ public class ProductsController : BaseController
 
 	public async Task<IActionResult> Index()
 	{
-		await CoreApiClient.GetMe();
+		//await CoreApiClient.GetMe();
 
 		var productsVm = await CoreApiClient.GetProducts();
 		return View(productsVm);

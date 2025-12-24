@@ -9,7 +9,6 @@ namespace DynamicPrice.Core.Controllers;
 //todo: we try to use it befor login - check
 
 [ApiController]
-//[Authorize("ManagerPolicy")]
 [Authorize(Roles = "Manager")]
 public class ManagerController : ControllerBase
 {

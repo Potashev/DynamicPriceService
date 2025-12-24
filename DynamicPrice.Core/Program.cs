@@ -16,6 +16,8 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
+
 var configuration = builder.Configuration;
 
 builder.Services.AddDbContext<DynamicPriceCoreContext>(options =>
@@ -57,12 +59,16 @@ builder.Services.AddDbContext<IdentityContext>(options =>
 //	};
 //});
 
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+	.AddEntityFrameworkStores<IdentityContext>();
+//.AddDefaultTokenProviders();    // can it be a reason conflict with JwtBearer?
+
 builder.Services
 	.AddAuthentication(options =>
 	{
 		options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
 		options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-		//options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+		options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;     //doesn't help - need write full scheme in [Authorize] as before
 	})
 	.AddJwtBearer(options =>
 	{
@@ -124,10 +130,6 @@ builder.Services.AddAuthorization();
 //		policy.RequireRole("Customer"));
 //});
 
-
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-	.AddEntityFrameworkStores<IdentityContext>();
-//.AddDefaultTokenProviders();    // can it be a reason conflict with JwtBearer?
 
 builder.Services.AddControllers();
 

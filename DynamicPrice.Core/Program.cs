@@ -11,12 +11,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Prometheus;
-using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-
-//JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
 
 var configuration = builder.Configuration;
 
@@ -24,6 +21,10 @@ builder.Services.AddDbContext<DynamicPriceCoreContext>(options =>
 	options.UseSqlServer(configuration.GetConnectionString("DynamicPriceDb") ?? throw new InvalidOperationException("Connection string 'DynamicPriceDb' not found.")));
 builder.Services.AddDbContext<IdentityContext>(options =>
 	options.UseSqlServer(configuration.GetConnectionString("IdentityDb") ?? throw new InvalidOperationException("Connection string 'IdentityDb' not found.")));
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+	.AddEntityFrameworkStores<IdentityContext>();
+
 
 //builder.Services.AddAuthentication(options =>
 //{
@@ -59,16 +60,12 @@ builder.Services.AddDbContext<IdentityContext>(options =>
 //	};
 //});
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-	.AddEntityFrameworkStores<IdentityContext>();
-//.AddDefaultTokenProviders();    // can it be a reason conflict with JwtBearer?
 
 builder.Services
 	.AddAuthentication(options =>
 	{
 		options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
 		options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-		options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;     //doesn't help - need write full scheme in [Authorize] as before
 	})
 	.AddJwtBearer(options =>
 	{
@@ -86,50 +83,28 @@ builder.Services
 		//	ValidateLifetime = true,
 		//	ClockSkew = TimeSpan.Zero
 
+		//		ValidateIssuerSigningKey = true,
+		//		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"])),
+		//		ValidateIssuer = true,
+		//		ValidateAudience = true,
+		//		ValidIssuer = configuration["Jwt:Issuer"] ?? "TestIssuer",
+		//		ValidAudience = configuration["Jwt:Audience"] ?? "TestAudience",
+		//		ValidateLifetime = true,
+		//		ClockSkew = TimeSpan.Zero
+
 		options.TokenValidationParameters = new TokenValidationParameters
 		{
+			ValidateIssuer = true,
+			ValidateAudience = true,
+			ValidateLifetime = true,
+			ValidateIssuerSigningKey = true,
 			ValidIssuer = configuration["Jwt:Issuer"],
 			ValidAudience = configuration["Jwt:Audience"],
 			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!)),
 		};
-
-		//todo: for testing - removed
-		options.Events = new JwtBearerEvents
-		{
-			OnMessageReceived = context =>
-			{
-				//var token = context.Request.Cookies["DpAuth"];
-				//if (!string.IsNullOrEmpty(token))
-				//{
-				//	context.Token = token;
-				//}
-				return Task.CompletedTask;
-			}
-		};
 	});
 
 builder.Services.AddAuthorization();
-
-//builder.Services.AddAuthorization(options =>
-//{
-//	options.AddPolicy("ManagerPolicy", policy => policy
-//		.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-//		.RequireRole("Manager"));
-
-//	options.AddPolicy("CustomerPolicy", policy => policy
-//		.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-//		.RequireRole("Customer"));
-//});
-
-//builder.Services.AddAuthorization(options =>
-//{
-//	options.AddPolicy("ManagerPolicy", policy =>
-//		policy.RequireRole("Manager"));
-
-//	options.AddPolicy("CustomerPolicy", policy =>
-//		policy.RequireRole("Customer"));
-//});
-
 
 builder.Services.AddControllers();
 
@@ -202,13 +177,6 @@ if (app.Environment.IsDevelopment())
 
 	await app.ApplyMigrationsAsync();
 }
-
-app.MapGet("me", (ClaimsPrincipal claimsPrincipal) =>
-{
-	return Results.Ok(claimsPrincipal.Claims.ToDictionary(c => c.Type, c => c.Value));
-});
-//.RequireAuthorization(policy => policy.RequireRole("Manager"));
-
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 

@@ -94,34 +94,24 @@ public class UserService : IUserService
 
 	private string GenerateJwtToken(ApplicationUser user, IList<string> roles)
 	{
-		//var claims = new List<Claim>
-		//{
-		//	//new(JwtRegisteredClaimNames.Sub, user.Id),
-		//	//new(JwtRegisteredClaimNames.UniqueName, user.UserName)
-
-		//	new(ClaimTypes.NameIdentifier, user.Id),
-		//	new(ClaimTypes.Name, user.UserName)
-		//};
-		//claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
-
-		var claims = new List<Claim>
-		{
+		List<Claim> claims =
+		[
 			new(JwtRegisteredClaimNames.Sub, user.Id),
 			new(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
-			//new(JwtRegisteredClaimNames.UniqueName, user.UserName),	// add email?
 
-			//..roles.Select(r => new Claim(ClaimTypes.Role, r))
-		};
-		claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+			..roles.Select(r => new Claim(ClaimTypes.Role, r))
+		];
 
-		var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-		var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+		var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
+		var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+		var expireMinutes = _config.GetValue<int>("Jwt:ExpireMinutes");
 
 		var tokenDescriptor = new SecurityTokenDescriptor
 		{
 			Subject = new ClaimsIdentity(claims),
-			Expires = DateTime.UtcNow.AddMinutes(60),
-			SigningCredentials = creds,
+			Expires = DateTime.UtcNow.AddMinutes(expireMinutes),
+			SigningCredentials = credentials,
 			Issuer = _config["Jwt:Issuer"],
 			Audience = _config["Jwt:Audience"]
 		};

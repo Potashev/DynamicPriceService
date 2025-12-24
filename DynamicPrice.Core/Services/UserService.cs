@@ -1,7 +1,8 @@
 ﻿using DynamicPrice.Core.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
+//using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
@@ -45,18 +46,6 @@ public class UserService : IUserService
 		var roles = await _userManager.GetRolesAsync(user);
 		var token = GenerateJwtToken(user, roles);
 
-		var expiresHours = int.TryParse(_config["Jwt:ExpireHours"], out var eh) ? eh : 1;
-
-		var cookieOptions = new CookieOptions
-		{
-			HttpOnly = true,
-			Secure = true,
-			SameSite = SameSiteMode.Strict,
-			Expires = DateTimeOffset.UtcNow.AddHours(expiresHours)
-		};
-
-		_httpContextAccessor.HttpContext.Response.Cookies.Append("DpAuth", token, cookieOptions);
-
 		return token;
 	}
 
@@ -93,27 +82,31 @@ public class UserService : IUserService
 
 	private string GenerateJwtToken(ApplicationUser user, IList<string> roles)
 	{
-		var claims = new List<Claim>
-		{
+		List<Claim> claims =
+		[
 			new(JwtRegisteredClaimNames.Sub, user.Id),
-			new(JwtRegisteredClaimNames.UniqueName, user.UserName)
+			new(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
+
+			..roles.Select(r => new Claim(ClaimTypes.Role, r))
+		];
+
+		var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
+		var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+		var expireMinutes = _config.GetValue<int>("Jwt:ExpireMinutes");
+
+		var tokenDescriptor = new SecurityTokenDescriptor
+		{
+			Subject = new ClaimsIdentity(claims),
+			Expires = DateTime.UtcNow.AddMinutes(expireMinutes),
+			SigningCredentials = credentials,
+			Issuer = _config["Jwt:Issuer"],
+			Audience = _config["Jwt:Audience"]
 		};
 
-		claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
-
-		var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-		var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-		var expiresHours = int.TryParse(_config["Jwt:ExpireHours"], out var eh) ? eh : 1;
-
-		var token = new JwtSecurityToken(
-			issuer: _config["Jwt:Issuer"],
-			audience: _config["Jwt:Audience"],
-			claims: claims,
-			expires: DateTime.UtcNow.AddHours(expiresHours),
-			signingCredentials: creds);
-
-		return new JwtSecurityTokenHandler().WriteToken(token);
+		var tokenHandler = new JsonWebTokenHandler();
+		string accessToken = tokenHandler.CreateToken(tokenDescriptor);
+		return accessToken;
 	}
 }
 

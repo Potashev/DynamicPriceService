@@ -1,14 +1,15 @@
 ﻿using DynamicPrice.Core.MediatR.ManagerEntity.Queries;
 using DynamicPrice.Shared.Contracts.ViewModels;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Core.Controllers;
 
+//todo: we try to use it befor login - check
+
 [ApiController]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
+[Authorize(Roles = "Manager")]
 public class ManagerController : ControllerBase
 {
 	private readonly IMediator _mediator;

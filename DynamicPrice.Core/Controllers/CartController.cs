@@ -2,15 +2,14 @@
 using DynamicPrice.Core.MediatR.CartEntity.Queries;
 using DynamicPrice.Shared.Contracts.ViewModels;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Core.Controllers;
 
-[Route("api/[controller]")]
 [ApiController]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "CustomerPolicy")]
+[Route("api/[controller]")]
+[Authorize(Roles = "Customer")]
 public class CartController : ControllerBase
 {
 	private readonly IMediator _mediator;

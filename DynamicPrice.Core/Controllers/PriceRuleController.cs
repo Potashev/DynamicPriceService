@@ -2,15 +2,14 @@
 using DynamicPrice.Core.MediatR.PriceRuleEntity.Queries;
 using DynamicPrice.Shared.Contracts.ViewModels;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Core.Controllers;
 
-[Route("api/company/price-rule")]
 [ApiController]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerPolicy")]
+[Route("api/company/price-rule")]
+[Authorize(Roles = "Manager")]
 public class PriceRuleController : ControllerBase
 {
 	private readonly IMediator _mediator;

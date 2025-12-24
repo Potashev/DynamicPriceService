@@ -22,49 +22,30 @@ builder.Services.AddDbContext<DynamicPriceCoreContext>(options =>
 builder.Services.AddDbContext<IdentityContext>(options =>
 	options.UseSqlServer(configuration.GetConnectionString("IdentityDb") ?? throw new InvalidOperationException("Connection string 'IdentityDb' not found.")));
 
-builder.Services.AddAuthentication(options =>
-{
-	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-	options.TokenValidationParameters = new TokenValidationParameters
-	{
-		ValidateIssuerSigningKey = true,
-		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"])),
-		ValidateIssuer = true,
-		ValidateAudience = true,
-		ValidIssuer = configuration["Jwt:Issuer"] ?? "TestIssuer",
-		ValidAudience = configuration["Jwt:Audience"] ?? "TestAudience",
-		ValidateLifetime = true,
-		ClockSkew = TimeSpan.Zero
-	};
-
-	options.Events = new JwtBearerEvents
-	{
-		OnMessageReceived = context =>
-		{
-			var accessToken = context.Request.Cookies["DpAuth"];
-			if (!string.IsNullOrEmpty(accessToken))
-			{
-				context.Token = accessToken;
-			}
-			return Task.CompletedTask;
-		}
-	};
-});
-
-
-builder.Services.AddAuthorization(options =>
-{
-	options.AddPolicy("ManagerPolicy", policy => policy.RequireRole("Manager"));
-	options.AddPolicy("CustomerPolicy", policy => policy.RequireRole("Customer"));
-});
-
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-	.AddEntityFrameworkStores<IdentityContext>()
-	.AddDefaultTokenProviders();
+	.AddEntityFrameworkStores<IdentityContext>();
+
+builder.Services
+	.AddAuthentication(options =>
+	{
+		options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+		options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+	})
+	.AddJwtBearer(options =>
+	{
+		options.TokenValidationParameters = new TokenValidationParameters
+		{
+			ValidateIssuer = true,
+			ValidateAudience = true,
+			ValidateLifetime = true,
+			ValidateIssuerSigningKey = true,
+			ValidIssuer = configuration["Jwt:Issuer"],
+			ValidAudience = configuration["Jwt:Audience"],
+			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!)),
+		};
+	});
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
 
@@ -139,8 +120,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 app.UseHttpsRedirection();
 
+//todo: check need it?
 app.UseCookiePolicy(new CookiePolicyOptions
 {
 	MinimumSameSitePolicy = SameSiteMode.Strict,
@@ -148,9 +131,12 @@ app.UseCookiePolicy(new CookiePolicyOptions
 	Secure = CookieSecurePolicy.Always,
 });
 
+
+app.UseCors("AllowSpecificOrigins");
+
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors("AllowSpecificOrigins");
+//app.UseCors("AllowSpecificOrigins");
 
 app.MapMetrics();
 app.UseHttpMetrics();

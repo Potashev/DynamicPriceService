@@ -25,42 +25,6 @@ builder.Services.AddDbContext<IdentityContext>(options =>
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 	.AddEntityFrameworkStores<IdentityContext>();
 
-
-//builder.Services.AddAuthentication(options =>
-//{
-//	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-//	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-//	options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-//})
-//.AddJwtBearer(options =>
-//{
-//	options.TokenValidationParameters = new TokenValidationParameters
-//	{
-//		ValidateIssuerSigningKey = true,
-//		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"])),
-//		ValidateIssuer = true,
-//		ValidateAudience = true,
-//		ValidIssuer = configuration["Jwt:Issuer"] ?? "TestIssuer",
-//		ValidAudience = configuration["Jwt:Audience"] ?? "TestAudience",
-//		ValidateLifetime = true,
-//		ClockSkew = TimeSpan.Zero
-//	};
-
-//	options.Events = new JwtBearerEvents
-//	{
-//		OnMessageReceived = context =>
-//		{
-//			var accessToken = context.Request.Cookies["DpAuth"];
-//			if (!string.IsNullOrEmpty(accessToken))
-//			{
-//				context.Token = accessToken;
-//			}
-//			return Task.CompletedTask;
-//		}
-//	};
-//});
-
-
 builder.Services
 	.AddAuthentication(options =>
 	{
@@ -69,29 +33,6 @@ builder.Services
 	})
 	.AddJwtBearer(options =>
 	{
-		//todo: compare with other
-		//options.TokenValidationParameters = new TokenValidationParameters
-		//{
-		//	ValidateIssuerSigningKey = true,
-		//	IssuerSigningKey = new SymmetricSecurityKey(
-		//		Encoding.UTF8.GetBytes(configuration["Jwt:Key"])
-		//	),
-		//	ValidateIssuer = true,
-		//	ValidateAudience = true,
-		//	ValidIssuer = configuration["Jwt:Issuer"],
-		//	ValidAudience = configuration["Jwt:Audience"],
-		//	ValidateLifetime = true,
-		//	ClockSkew = TimeSpan.Zero
-
-		//		ValidateIssuerSigningKey = true,
-		//		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"])),
-		//		ValidateIssuer = true,
-		//		ValidateAudience = true,
-		//		ValidIssuer = configuration["Jwt:Issuer"] ?? "TestIssuer",
-		//		ValidAudience = configuration["Jwt:Audience"] ?? "TestAudience",
-		//		ValidateLifetime = true,
-		//		ClockSkew = TimeSpan.Zero
-
 		options.TokenValidationParameters = new TokenValidationParameters
 		{
 			ValidateIssuer = true,

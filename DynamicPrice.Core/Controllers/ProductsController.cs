@@ -13,18 +13,14 @@ namespace DynamicPrice.Core.Controllers;
 public class ProductsController : ControllerBase
 {
 	private readonly IMediator _mediator;
-
-	private readonly IHttpContextAccessor _httpContextAccessor;
-	public ProductsController(IMediator mediator, IHttpContextAccessor httpContextAccessor)
+	public ProductsController(IMediator mediator)
 	{
 		_mediator = mediator;
-		_httpContextAccessor = httpContextAccessor;
 	}
 
 	[HttpGet]
 	public async Task<ActionResult<IEnumerable<ProductViewModel>>> GetProducts(CancellationToken cancellationToken)
 	{
-		var context = _httpContextAccessor.HttpContext;
 		var productsVm = await _mediator.Send(new GetProductsQuery(), cancellationToken);
 		return Ok(productsVm);
 	}

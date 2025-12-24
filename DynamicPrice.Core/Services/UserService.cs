@@ -46,18 +46,6 @@ public class UserService : IUserService
 		var roles = await _userManager.GetRolesAsync(user);
 		var token = GenerateJwtToken(user, roles);
 
-		//var expiresHours = int.TryParse(_config["Jwt:ExpireHours"], out var eh) ? eh : 1;
-
-		//var cookieOptions = new CookieOptions
-		//{
-		//	HttpOnly = true,
-		//	Secure = true,
-		//	SameSite = SameSiteMode.Strict,
-		//	Expires = DateTimeOffset.UtcNow.AddHours(expiresHours)
-		//};
-
-		//_httpContextAccessor.HttpContext.Response.Cookies.Append("DpAuth", token, cookieOptions);
-
 		return token;
 	}
 
@@ -119,20 +107,6 @@ public class UserService : IUserService
 		var tokenHandler = new JsonWebTokenHandler();
 		string accessToken = tokenHandler.CreateToken(tokenDescriptor);
 		return accessToken;
-
-		//var expiresHours = int.TryParse(_config["Jwt:ExpireHours"], out var eh) ? eh : 1;
-
-		//// use SecurityTokenDescriptor?
-		//var token = new JwtSecurityToken(
-		//	issuer: _config["Jwt:Issuer"],
-		//	audience: _config["Jwt:Audience"],
-		//	claims: claims,
-		//	expires: DateTime.UtcNow.AddHours(expiresHours),
-		//	signingCredentials: creds);
-
-		////todo: check that token is valid
-
-		//return new JwtSecurityTokenHandler().WriteToken(token);
 	}
 }
 

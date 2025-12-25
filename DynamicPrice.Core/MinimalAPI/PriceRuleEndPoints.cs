@@ -7,7 +7,6 @@ namespace DynamicPrice.Core.MinimalAPI;
 
 public static class PriceRuleEndPoints
 {
-
 	public static void MapPriceRuleEndPoints(this IEndpointRouteBuilder app)
 	{
 		var priceRule = app.MapGroup("/api/company/price-rule")

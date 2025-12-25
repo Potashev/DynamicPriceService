@@ -148,10 +148,12 @@ app.UseAuthorization();
 
 app.MapMetrics();
 app.UseHttpMetrics();
-app.MapControllers();
+app.MapControllers();   //todo: remove after adding minimal api endpoints
 
-app.MapProductEndPoints();
-app.MapPriceRuleEndPoints();
+//app.MapProductEndPoints();
+//app.MapPriceRuleEndPoints();
+
+app.MapEndPoints();
 
 app.MapHub<PriceHub>("/priceHub");
 

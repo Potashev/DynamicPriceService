@@ -5,9 +5,9 @@ using MediatR;
 
 namespace DynamicPrice.Core.MinimalAPI;
 
-public static class ProductEndPoints
+public static class ProductsEndPoints
 {
-	public static void MapProductEndPoints(this IEndpointRouteBuilder app)
+	public static void MapProductsEndPoints(this IEndpointRouteBuilder app)
 	{
 		var products = app.MapGroup("/api/company/products")
 			.RequireAuthorization("ManagerPolicy");

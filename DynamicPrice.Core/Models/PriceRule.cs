@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DynamicPrice.Core.Models;
 
 /// <summary>
-/// Правило изменения цены для компании.
+/// Правило ценообразования для продуктов компании.
 /// Содержит параметры для повышения и снижения цен и время простоя продукта для снижения цены.
 /// </summary>
 public class PriceRule

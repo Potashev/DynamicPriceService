@@ -14,9 +14,9 @@ public static class CustomerEndPoints
 			.RequireAuthorization("CustomerPolicy");
 
 		customer.MapGet("/me", GetCustomerInfo)
-			.WithSummary("Get all products");
+			.WithSummary("Получить информацию о текущем клиенте");
 		customer.MapPut("/me/balance", TopUp)
-			.WithSummary("Edits a product");
+			.WithSummary("Пополнить баланс клиента");
 	}
 
 	private static async Task<IResult> GetCustomerInfo(IMediator mediator, CancellationToken cancellationToken)

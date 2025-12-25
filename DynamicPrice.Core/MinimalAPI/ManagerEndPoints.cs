@@ -9,7 +9,8 @@ public static class ManagerEndPoints
 	public static void MapManagerEndPoints(this IEndpointRouteBuilder app)
 	{
 		app.MapGet("/api/company/info", GetCompanyInfo)
-			.RequireAuthorization("ManagerPolicy");
+			.RequireAuthorization("ManagerPolicy")
+			.WithSummary("Получить информацию о компании менеджера");
 	}
 
 	private static async Task<IResult> GetCompanyInfo(IMediator mediator, CancellationToken cancellationToken)

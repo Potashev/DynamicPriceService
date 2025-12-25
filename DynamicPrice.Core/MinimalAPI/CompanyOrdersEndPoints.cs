@@ -12,17 +12,17 @@ public static class CompanyOrdersEndPoints
 			.RequireAuthorization("ManagerPolicy");
 
 		companyOrders.MapGet("/", GetCompanyOrders)
-			.WithSummary("Get all products");
+			.WithSummary("Получить заказы компании");
 		companyOrders.MapGet("/{orderId}", GetCompanyOrder)
-			.WithSummary("Get all products");
+			.WithSummary("Получить детали заказа компании");
 		companyOrders.MapGet("/by-receive-key/{key}", GetOrderByReceiveKey)
-			.WithSummary("Get all products");
+			.WithSummary("Получить заказ по ключу получения");
 		companyOrders.MapPatch("/{orderId}/ready", ReadyForReceive)
-			.WithSummary("Edits a product");
+			.WithSummary("Отметить заказ как готовый к выдаче");
 		companyOrders.MapPatch("/{orderId}/complete", CompleteOrder)
-			.WithSummary("Edits a product");
+			.WithSummary("Отметить заказ как завершённый");
 		companyOrders.MapGet("/statistics", GetCompanyStatistics)
-			.WithSummary("Get all products");
+			.WithSummary("Получить статистику по заказам компании");
 	}
 
 	private static async Task<IResult> GetCompanyOrders(IMediator mediator, CancellationToken cancellationToken)

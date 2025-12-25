@@ -13,15 +13,15 @@ public static class ProductsEndPoints
 			.RequireAuthorization("ManagerPolicy");
 
 		products.MapGet("/", GetProducts)
-			.WithSummary("Get all products");
+			.WithSummary("Получить все продукт");
 		products.MapGet("/{id}", GetProduct)
-			.WithSummary("Get a product by id");
+			.WithSummary("Получить продукт по идентификатору");
 		products.MapPut("/{id}", Edit)
-			.WithSummary("Edits a product");
+			.WithSummary("Редактировать продукт");
 		products.MapPost("/", Create)
-			.WithSummary("Creates a product");
+			.WithSummary("Создать продукт");
 		products.MapDelete("/{id}", Delete)
-			.WithSummary("Deletes a product");
+			.WithSummary("Удалить продукт");
 	}
 
 	//todo: used TypedResults

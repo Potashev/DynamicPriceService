@@ -13,13 +13,13 @@ public static class PriceRuleEndPoints
 			.RequireAuthorization("ManagerPolicy");
 
 		priceRule.MapGet("/", Get)
-			.WithSummary("Get all products");
+			.WithSummary("Получить правило ценообразования и его статус");
 		priceRule.MapPut("/", Edit)
-			.WithSummary("Edits a product");
+			.WithSummary("Изменить правило ценообразования");
 		priceRule.MapPost("/run", RunPriceReducing)
-			.WithSummary("Creates a product");
+			.WithSummary("Запустить снижение цены на продукты компании");
 		priceRule.MapPost("/stop", StopPriceReducing)
-			.WithSummary("Creates a product");
+			.WithSummary("Остановить снижение цены на продукты компании");
 	}
 
 	//todo: pass cancellation

@@ -12,9 +12,9 @@ public static class CompaniesEndPoints
 			.RequireAuthorization("CustomerPolicy");
 
 		companies.MapGet("/", GetCompanies)
-			.WithSummary("Get all products");
+			.WithSummary("Получить список активных компаний");
 		companies.MapGet("/{companyId}/products", GetCompanyProducts)
-			.WithSummary("Get a product by id");
+			.WithSummary("Получить продукты активной компании");
 	}
 
 	private static async Task<IResult> GetCompanies([FromQuery] string? status, IMediator mediator, CancellationToken cancellationToken)

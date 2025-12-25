@@ -12,19 +12,17 @@ public static class AuthEndPoints
 		var priceRule = app.MapGroup("/api/auth");
 
 		priceRule.MapPost("/register", Register)
-			.WithSummary("Creates a product");
+			.WithSummary("Регистрация пользователя");
 		priceRule.MapPost("/login", Login)
-			.WithSummary("Creates a product");
+			.WithSummary("Аутентификация пользователя");
 	}
 
-	//[HttpPost("register")]
 	private static async Task<IResult> Register([FromBody] RegisterViewModel registerVm, IMediator mediator)
 	{
 		await mediator.Send(new RegisterCommand(registerVm));
 		return Results.Ok("User registered successfully");
 	}
 
-	//[HttpPost("login")]
 	private static async Task<IResult> Login([FromBody] LoginViewModel loginVm, IMediator mediator)
 	{
 		var token = await mediator.Send(new LoginCommand(loginVm));

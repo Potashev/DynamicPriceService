@@ -13,11 +13,11 @@ public static class CustomerOrderEndPoints
 			.RequireAuthorization("CustomerPolicy");
 
 		customerOrder.MapGet("/", GetCustomerOrder)
-			.WithSummary("Get all products");
+			.WithSummary("Получить детали заказа клиента");
 		customerOrder.MapPost("/confirm", ConfirmOrder)
-			.WithSummary("Creates a product");
+			.WithSummary("Подтвердить заказ");
 		customerOrder.MapPatch("/cancel", CancelOrder)
-			.WithSummary("Creates a product");
+			.WithSummary("Отменить заказ");
 	}
 
 	private static async Task<IResult> GetCustomerOrder([FromQuery(Name = "id")] string orderId, IMediator mediator)

@@ -11,7 +11,7 @@ public static class EndPoints
 		app.MapCompaniesEndPoints();
 		app.MapCartEndPoints();
 		app.MapCustomerEndPoints();
-
+		app.MapCustomerOrderEndPoints();
 		app.MapAuthEndPoints();
 	}
 }

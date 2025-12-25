@@ -24,6 +24,8 @@ public static class ProductEndPoints
 			.WithSummary("Deletes a product");
 	}
 
+	//todo: used TypedResults
+
 	private static async Task<IResult> GetProducts(IMediator mediator, CancellationToken cancellationToken)
 	{
 		var productsVm = await mediator.Send(new GetProductsQuery(), cancellationToken);

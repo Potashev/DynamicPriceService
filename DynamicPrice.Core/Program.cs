@@ -151,6 +151,7 @@ app.UseHttpMetrics();
 app.MapControllers();
 
 app.MapProductEndPoints();
+app.MapPriceRuleEndPoints();
 
 app.MapHub<PriceHub>("/priceHub");
 

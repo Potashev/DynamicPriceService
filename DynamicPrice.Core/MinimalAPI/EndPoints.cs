@@ -8,5 +8,7 @@ public static class EndPoints
 		app.MapPriceRuleEndPoints();
 		app.MapManagerEndPoints();
 		app.MapCompanyOrdersEndPoints();
+
+		app.MapAuthEndPoints();
 	}
 }

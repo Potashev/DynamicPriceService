@@ -19,13 +19,17 @@ public static class CustomerEndPoints
 			.WithSummary("Пополнить баланс клиента");
 	}
 
-	private static async Task<IResult> GetCustomerInfo(IMediator mediator, CancellationToken cancellationToken)
+	private static async Task<IResult> GetCustomerInfo(
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
 		var customerInfo = await mediator.Send(new GetCustomerInfoQuery(), cancellationToken);
 		return Results.Ok(customerInfo);
 	}
 
-	private static async Task<IResult> TopUp([FromBody] BalanceViewModel balanceVm, IMediator mediator)
+	private static async Task<IResult> TopUp(
+		[FromBody] BalanceViewModel balanceVm,
+		IMediator mediator)
 	{
 		await mediator.Send(new TopUpBalanceCommand(balanceVm));
 		return Results.Ok();

@@ -20,19 +20,29 @@ public static class CustomerOrderEndPoints
 			.WithSummary("Отменить заказ");
 	}
 
-	private static async Task<IResult> GetCustomerOrder([FromQuery(Name = "id")] string orderId, IMediator mediator)
+	private static async Task<IResult> GetCustomerOrder(
+		[FromQuery(Name = "id")] string orderId,
+		IMediator mediator)
 	{
 		var orderVm = await mediator.Send(new GetCustomerOrderDetailsQuery(orderId));
 		return Results.Ok(orderVm);
 	}
 
-	private static async Task<IResult> ConfirmOrder([FromBody] int? cartId, IMediator mediator, CancellationToken cancellationToken)
+	private static async Task<IResult> ConfirmOrder(
+		[FromBody] int? cartId,
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
-		var orderId = await mediator.Send(new ConfirmOrderCommand((int)cartId), cancellationToken);
+		var orderId = await mediator.Send(new ConfirmOrderCommand(
+			(int)cartId),
+			cancellationToken);
 		return Results.Ok(orderId);
 	}
 
-	private static async Task<IResult> CancelOrder([FromBody] int? orderId, IMediator mediator, CancellationToken cancellationToken)
+	private static async Task<IResult> CancelOrder(
+		[FromBody] int? orderId,
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
 		await mediator.Send(new CancelOrderCommand((int)orderId), cancellationToken);
 		return Results.Ok(orderId);

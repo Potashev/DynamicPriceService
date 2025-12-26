@@ -13,7 +13,9 @@ public static class ManagerEndPoints
 			.WithSummary("Получить информацию о компании менеджера");
 	}
 
-	private static async Task<IResult> GetCompanyInfo(IMediator mediator, CancellationToken cancellationToken)
+	private static async Task<IResult> GetCompanyInfo(
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
 		var managerInfo = await mediator.Send(new GetManagerInfoQuery(), cancellationToken);
 		return Results.Ok(managerInfo.Company);

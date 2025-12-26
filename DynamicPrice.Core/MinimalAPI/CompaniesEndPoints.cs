@@ -17,7 +17,10 @@ public static class CompaniesEndPoints
 			.WithSummary("Получить продукты активной компании");
 	}
 
-	private static async Task<IResult> GetCompanies([FromQuery] string? status, IMediator mediator, CancellationToken cancellationToken)
+	private static async Task<IResult> GetCompanies(
+		[FromQuery] string? status,
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
 		if (status == "active")
 		{
@@ -28,7 +31,10 @@ public static class CompaniesEndPoints
 		return Results.StatusCode(StatusCodes.Status501NotImplemented); //todo: handle
 	}
 
-	private static async Task<IResult> GetCompanyProducts(string companyId, IMediator mediator, CancellationToken cancellationToken)
+	private static async Task<IResult> GetCompanyProducts(
+		string companyId,
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
 		var companyProducts = await mediator.Send(new GetCompanyProductsQuery(companyId), cancellationToken);
 		return Results.Ok(companyProducts);

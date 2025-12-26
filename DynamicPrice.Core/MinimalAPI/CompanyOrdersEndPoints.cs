@@ -25,37 +25,49 @@ public static class CompanyOrdersEndPoints
 			.WithSummary("Получить статистику по заказам компании");
 	}
 
-	private static async Task<IResult> GetCompanyOrders(IMediator mediator, CancellationToken cancellationToken)
+	private static async Task<IResult> GetCompanyOrders(
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
 		var ordersVm = await mediator.Send(new GetCompanyOrdersQuery(), cancellationToken);
 		return Results.Ok(ordersVm);
 	}
 
-	private static async Task<IResult> GetCompanyOrder(string orderId, IMediator mediator)
+	private static async Task<IResult> GetCompanyOrder(
+		string orderId,
+		IMediator mediator)
 	{
 		var orderVm = await mediator.Send(new GetCompanyOrderDetailsQuery(orderId));
 		return Results.Ok(orderVm);
 	}
 
-	private static async Task<IResult> GetOrderByReceiveKey(string key, IMediator mediator)
+	private static async Task<IResult> GetOrderByReceiveKey(
+		string key,
+		IMediator mediator)
 	{
 		var orderId = await mediator.Send(new GetOrderIdByReceiveKeyQuery(key));
 		return Results.Ok(orderId);
 	}
 
-	private static async Task<IResult> ReadyForReceive(string orderId, IMediator mediator)
+	private static async Task<IResult> ReadyForReceive(
+		string orderId,
+		IMediator mediator)
 	{
 		await mediator.Send(new ReadyForReceiveOrderCommand(orderId));
 		return Results.Ok();
 	}
 
-	private static async Task<IResult> CompleteOrder(string orderId, IMediator mediator)
+	private static async Task<IResult> CompleteOrder(
+		string orderId,
+		IMediator mediator)
 	{
 		var id = await mediator.Send(new CompleteOrderCommand(orderId));
 		return Results.Ok(id);
 	}
 
-	private static async Task<IResult> GetCompanyStatistics(IMediator mediator, CancellationToken cancellationToken)
+	private static async Task<IResult> GetCompanyStatistics(
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
 		var orderStatistics = await mediator.Send(new GetCompanyStatisticsQuery(), cancellationToken);
 		return Results.Ok(orderStatistics);

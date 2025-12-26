@@ -144,17 +144,12 @@ app.UseCors("AllowSpecificOrigins");
 
 app.UseAuthentication();
 app.UseAuthorization();
-//app.UseCors("AllowSpecificOrigins");
 
-app.MapMetrics();
 app.UseHttpMetrics();
-app.MapControllers();   //todo: remove after adding minimal api endpoints
-
-//app.MapProductEndPoints();
-//app.MapPriceRuleEndPoints();
 
 app.MapEndPoints();
 
+app.MapMetrics();
 app.MapHub<PriceHub>("/priceHub");
 
 app.Run();

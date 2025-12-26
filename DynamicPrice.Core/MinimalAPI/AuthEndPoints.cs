@@ -17,13 +17,17 @@ public static class AuthEndPoints
 			.WithSummary("Аутентификация пользователя");
 	}
 
-	private static async Task<IResult> Register([FromBody] RegisterViewModel registerVm, IMediator mediator)
+	private static async Task<IResult> Register(
+		[FromBody] RegisterViewModel registerVm,
+		IMediator mediator)
 	{
 		await mediator.Send(new RegisterCommand(registerVm));
 		return Results.Ok("User registered successfully");
 	}
 
-	private static async Task<IResult> Login([FromBody] LoginViewModel loginVm, IMediator mediator)
+	private static async Task<IResult> Login(
+		[FromBody] LoginViewModel loginVm,
+		IMediator mediator)
 	{
 		var token = await mediator.Send(new LoginCommand(loginVm));
 		return Results.Ok(new { token });

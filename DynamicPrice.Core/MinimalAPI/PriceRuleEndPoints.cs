@@ -30,7 +30,9 @@ public static class PriceRuleEndPoints
 		return Results.Ok(result);
 	}
 
-	private static async Task<IResult> Edit(PriceRuleViewModel priceRuleVm, IMediator mediator)
+	private static async Task<IResult> Edit(
+		PriceRuleViewModel priceRuleVm,
+		IMediator mediator)
 	{
 		var result = await mediator.Send(new EditPriceRuleCommand(priceRuleVm));
 		return Results.Ok(result);

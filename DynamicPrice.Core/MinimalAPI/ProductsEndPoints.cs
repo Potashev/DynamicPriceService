@@ -26,19 +26,26 @@ public static class ProductsEndPoints
 
 	//todo: used TypedResults
 
-	private static async Task<IResult> GetProducts(IMediator mediator, CancellationToken cancellationToken)
+	private static async Task<IResult> GetProducts(
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
 		var productsVm = await mediator.Send(new GetProductsQuery(), cancellationToken);
 		return Results.Ok(productsVm);
 	}
 
-	private static async Task<IResult> GetProduct(int id, IMediator mediator)
+	private static async Task<IResult> GetProduct(
+		int id,
+		IMediator mediator)
 	{
 		var productVm = await mediator.Send(new GetProductDetailsQuery(id));
 		return Results.Ok(productVm);
 	}
 
-	private static async Task<IResult> Edit(int id, ProductViewModel productVm, IMediator mediator)
+	private static async Task<IResult> Edit(
+		int id,
+		ProductViewModel productVm,
+		IMediator mediator)
 	{
 		if (id != productVm.ProductId)
 		{
@@ -48,13 +55,17 @@ public static class ProductsEndPoints
 		return Results.Ok(productId);
 	}
 
-	private static async Task<IResult> Create(ProductViewModel productVm, IMediator mediator)
+	private static async Task<IResult> Create(
+		ProductViewModel productVm,
+		IMediator mediator)
 	{
 		var productId = await mediator.Send(new CreateProductCommand(productVm));
 		return Results.Ok(productId);
 	}
 
-	private static async Task<IResult> Delete(int id, IMediator mediator)
+	private static async Task<IResult> Delete(
+		int id,
+		IMediator mediator)
 	{
 		await mediator.Send(new DeleteProductCommand(id));
 		return Results.Ok();

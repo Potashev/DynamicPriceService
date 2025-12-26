@@ -1,8 +1,8 @@
 ﻿using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Core.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using DynamicPrice.Core.Exceptions;
 
 namespace DynamicPrice.Core.MediatR.OrderEntity.Queries;
 
@@ -24,9 +24,8 @@ public class GetOrderIdByReceiveKeyQueryHandler
 			.Select(o => o.OrderId)
 			.FirstOrDefaultAsync(cancellationToken);
 
-		if (orderId == 0)
-			throw new NotFoundException($"Order with receive key '{request.ReceiveKey}' not found.");
-
-		return orderId;
+		return orderId == 0
+			? throw new NotFoundException($"Order with receive key '{request.ReceiveKey}' not found.")
+			: orderId;
 	}
 }

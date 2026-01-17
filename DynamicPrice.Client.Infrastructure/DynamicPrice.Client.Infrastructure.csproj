@@ -1,15 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
-
-  <ItemGroup>
-    <SupportedPlatform Include="browser" />
-  </ItemGroup>
-
+	<ItemGroup>
+		<SupportedPlatform Include="browser" />
+	</ItemGroup>
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
-
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.Build" />
+		<PackageReference Include="Microsoft.Build" />
 	</ItemGroup>
-
 </Project>

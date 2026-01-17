@@ -12,14 +12,18 @@ public static class ProductsEndPoints
 		var products = app.MapGroup("/api/company/products")
 			.RequireAuthorization("ManagerPolicy");
 
-		products.MapGet("/", GetProducts)
+		products.MapGet("", GetProducts)
 			.WithSummary("Получить все продукт");
+
 		products.MapGet("/{id}", GetProduct)
 			.WithSummary("Получить продукт по идентификатору");
+
 		products.MapPut("/{id}", Edit)
 			.WithSummary("Редактировать продукт");
-		products.MapPost("/", Create)
+
+		products.MapPost("", Create)
 			.WithSummary("Создать продукт");
+
 		products.MapDelete("/{id}", Delete)
 			.WithSummary("Удалить продукт");
 	}

@@ -11,8 +11,9 @@ public static class CompaniesEndPoints
 		var companies = app.MapGroup("/api/companies")
 			.RequireAuthorization("CustomerPolicy");
 
-		companies.MapGet("/", GetCompanies)
+		companies.MapGet("", GetCompanies)
 			.WithSummary("Получить список активных компаний");
+
 		companies.MapGet("/{companyId}/products", GetCompanyProducts)
 			.WithSummary("Получить продукты активной компании");
 	}

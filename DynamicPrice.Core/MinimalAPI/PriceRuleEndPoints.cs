@@ -12,12 +12,15 @@ public static class PriceRuleEndPoints
 		var priceRule = app.MapGroup("/api/company/price-rule")
 			.RequireAuthorization("ManagerPolicy");
 
-		priceRule.MapGet("/", Get)
+		priceRule.MapGet("", Get)
 			.WithSummary("Получить правило ценообразования и его статус");
-		priceRule.MapPut("/", Edit)
+
+		priceRule.MapPut("", Edit)
 			.WithSummary("Изменить правило ценообразования");
+
 		priceRule.MapPost("/run", RunPriceReducing)
 			.WithSummary("Запустить снижение цены на продукты компании");
+
 		priceRule.MapPost("/stop", StopPriceReducing)
 			.WithSummary("Остановить снижение цены на продукты компании");
 	}

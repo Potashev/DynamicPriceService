@@ -12,10 +12,12 @@ public static class CartEndPoints
 		var cart = app.MapGroup("/api/cart")
 			.RequireAuthorization("CustomerPolicy");
 
-		cart.MapGet("/", GetCartDetails)
+		cart.MapGet("", GetCartDetails)
 			.WithSummary("Получить детали корзины клиента");
+
 		cart.MapPost("/items", AddProduct)
 			.WithSummary("Добавить товар в корзину");
+
 		cart.MapDelete("/items/{productId}", RemoveProduct)
 			.WithSummary("Удалить товар из корзины");
 	}

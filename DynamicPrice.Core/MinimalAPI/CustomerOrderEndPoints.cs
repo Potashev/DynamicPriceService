@@ -12,10 +12,12 @@ public static class CustomerOrderEndPoints
 		var customerOrder = app.MapGroup("/api/customer/order")
 			.RequireAuthorization("CustomerPolicy");
 
-		customerOrder.MapGet("/", GetCustomerOrder)
+		customerOrder.MapGet("", GetCustomerOrder)
 			.WithSummary("Получить детали заказа клиента");
+
 		customerOrder.MapPost("/confirm", ConfirmOrder)
 			.WithSummary("Подтвердить заказ");
+
 		customerOrder.MapPatch("/cancel", CancelOrder)
 			.WithSummary("Отменить заказ");
 	}

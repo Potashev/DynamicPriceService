@@ -15,6 +15,7 @@ public static class CustomerEndPoints
 
 		customer.MapGet("/me", GetCustomerInfo)
 			.WithSummary("Получить информацию о текущем клиенте");
+
 		customer.MapPut("/me/balance", TopUp)
 			.WithSummary("Пополнить баланс клиента");
 	}

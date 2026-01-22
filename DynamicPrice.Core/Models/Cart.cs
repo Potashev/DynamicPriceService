@@ -1,8 +1,8 @@
 ﻿namespace DynamicPrice.Core.Models;
 
 /// <summary>
-/// Корзина кастомера для конкретной компании.
-/// У одного кастомера может быть много корзин в разных компаниях.
+/// Корзина клиента для конкретной компании.
+/// У одного клиента может быть много корзин в разных компаниях.
 /// </summary>
 public class Cart
 {
@@ -12,7 +12,7 @@ public class Cart
 	public int CartId { get; set; } //TODO: make guid?
 
 	/// <summary>
-	/// Идентификатор покупателя (кастомера).
+	/// Идентификатор клиента.
 	/// </summary>
 	public string CustomerId { get; set; }
 

@@ -2,6 +2,7 @@
 using DynamicPrice.Core.Extensions;
 using DynamicPrice.Core.Mapping;
 using DynamicPrice.Core.Middlewares;
+using DynamicPrice.Core.MinimalAPI;
 using DynamicPrice.Core.Models;
 using DynamicPrice.Core.Services;
 using MassTransit;
@@ -45,9 +46,14 @@ builder.Services
 		};
 	});
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+	options.AddPolicy("ManagerPolicy", policy =>
+		policy.RequireRole("Manager"));
 
-builder.Services.AddControllers();
+	options.AddPolicy("CustomerPolicy", policy =>
+		policy.RequireRole("Customer"));
+});
 
 builder.Services.AddCors(options =>
 {
@@ -136,11 +142,12 @@ app.UseCors("AllowSpecificOrigins");
 
 app.UseAuthentication();
 app.UseAuthorization();
-//app.UseCors("AllowSpecificOrigins");
+
+app.UseHttpMetrics();
+
+app.MapEndPoints();
 
 app.MapMetrics();
-app.UseHttpMetrics();
-app.MapControllers();
 app.MapHub<PriceHub>("/priceHub");
 
 app.Run();

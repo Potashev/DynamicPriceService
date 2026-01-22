@@ -8,7 +8,7 @@ namespace DynamicPrice.Core.Models;
 public class ApplicationUser : IdentityUser
 {
 	/// <summary>
-	/// Баланс пользователя в денежной единице, используемой в системе (кастомер).
+	/// Баланс пользователя в денежной единице, используемой в системе (клиент).
 	/// </summary>
 	public decimal Balance { get; set; }
 

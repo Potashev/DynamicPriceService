@@ -1,7 +1,10 @@
-﻿namespace DynamicPrice.Shared.Contracts.ViewModels;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DynamicPrice.Shared.Contracts.ViewModels;
 
 public class ProductViewModel
 {
+	[Required]   // todo: check
 	public int ProductId { get; set; }
 	public string Title { get; set; }
 	public decimal Price { get; set; }

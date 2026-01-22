@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using Prometheus;
 using System.Text;
 
@@ -44,7 +45,6 @@ builder.Services
 			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!)),
 		};
 	});
-
 builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
@@ -66,7 +66,21 @@ builder.Services.AddSignalR();
 
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddSwaggerGen();
+builder.Services.AddOpenApi();  //todo: check
+
+builder.Services.AddSwaggerGen(options =>
+{
+	options.SwaggerDoc("v1", new OpenApiInfo
+	{
+		Title = "DynamicPrice Core API",
+		Version = "v1",
+		Contact = new OpenApiContact
+		{
+			Name = "Potashev",
+			Email = "potashev.nik@gmail.com"
+		}
+	});
+});
 
 builder.Services.AddAutoMapper(cfg =>
 {

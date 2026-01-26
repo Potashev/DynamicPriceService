@@ -24,7 +24,7 @@ public class GetCustomerInfoQueryHandler
 		GetCustomerInfoQuery request,
 		CancellationToken cancellationToken)
 	{
-		var customer = await _userService.GetCurrentUserAsync();
+		var customer = await _userService.GetRequiredCurrentUserAsync();
 
 		var customerOrders = await _context.Orders
 			.Include(o => o.Company)

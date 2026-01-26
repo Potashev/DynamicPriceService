@@ -46,7 +46,7 @@ public class GetCartDetailsQueryHandlerTests
 			});
 
 		var userServiceMock = new Mock<IUserService>();
-		userServiceMock.Setup(u => u.GetCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = customerId });
+		userServiceMock.Setup(u => u.GetRequiredCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = customerId });
 
 		using (var scope = sp.CreateScope())
 		{
@@ -71,7 +71,7 @@ public class GetCartDetailsQueryHandlerTests
 		var customerId = Guid.NewGuid().ToString();
 
 		var userServiceMock = new Mock<IUserService>();
-		userServiceMock.Setup(u => u.GetCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = customerId });
+		userServiceMock.Setup(u => u.GetRequiredCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = customerId });
 
 		using var scope = sp.CreateScope();
 		var ctx = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();

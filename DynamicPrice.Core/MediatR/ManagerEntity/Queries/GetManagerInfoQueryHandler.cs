@@ -24,7 +24,7 @@ public class GetManagerInfoQueryHandler
 		GetManagerInfoQuery request,
 		CancellationToken cancellationToken)
 	{
-		var manager = await _userService.GetCurrentUserAsync();
+		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var company = await _context.Companies
 			.FirstOrDefaultAsync(c => c.CompanyId == manager.CompanyId, cancellationToken);

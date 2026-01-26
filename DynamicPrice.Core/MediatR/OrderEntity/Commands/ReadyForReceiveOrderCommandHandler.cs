@@ -22,7 +22,7 @@ public class ReadyForReceiveOrderCommandHandler
 		ReadyForReceiveOrderCommand request,
 		CancellationToken cancellationToken)
 	{
-		var manager = await _userService.GetCurrentUserAsync();
+		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var order = await _context.Orders
 			.Where(o => o.OrderId.ToString() == request.OrderId && o.Company.CompanyId == manager.CompanyId)

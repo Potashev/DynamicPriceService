@@ -20,7 +20,7 @@ public class PriceReducingCommandHandler
 		PriceReducingCommand request,
 		CancellationToken cancellationToken)
 	{
-		var manager = await _userService.GetCurrentUserAsync();
+		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var companyId = (int)manager.CompanyId;
 

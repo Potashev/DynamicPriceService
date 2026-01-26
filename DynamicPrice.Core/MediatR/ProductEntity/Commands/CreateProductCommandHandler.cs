@@ -23,7 +23,7 @@ public class CreateProductCommandHandler
 		CreateProductCommand request,
 		CancellationToken cancellationToken)
 	{
-		var manager = await _userService.GetCurrentUserAsync();
+		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var product = _mapper.Map<Product>(request.ProductVm);
 

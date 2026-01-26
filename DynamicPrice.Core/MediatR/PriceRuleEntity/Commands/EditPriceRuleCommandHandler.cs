@@ -23,7 +23,7 @@ public class EditPriceRuleCommandHandler
 		EditPriceRuleCommand request,
 		CancellationToken cancellationToken)
 	{
-		var manager = await _userService.GetCurrentUserAsync();
+		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var updatedPriceRuleVm = request.PriceRuleVm;
 		var priceRule = await _context.PriceRules

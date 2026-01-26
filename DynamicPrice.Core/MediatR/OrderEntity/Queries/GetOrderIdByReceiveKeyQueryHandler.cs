@@ -21,7 +21,7 @@ public class GetOrderIdByReceiveKeyQueryHandler
 		GetOrderIdByReceiveKeyQuery request,
 		CancellationToken cancellationToken)
 	{
-		var manager = await _userService.GetCurrentUserAsync();
+		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var orderId = await _context.Orders
 			.Where(o => o.ReceiveKey.ToString() == request.ReceiveKey && o.Company.CompanyId == manager.CompanyId)

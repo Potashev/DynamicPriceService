@@ -24,7 +24,7 @@ public class GetCartDetailsQueryHandler
 		GetCartDetailsQuery request,
 		CancellationToken cancellationToken)
 	{
-		var customer = await _userService.GetCurrentUserAsync();
+		var customer = await _userService.GetRequiredCurrentUserAsync();
 
 		var cart = await _context.Carts
 			.Include(c => c.Company)

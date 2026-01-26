@@ -23,7 +23,7 @@ public class EditProductCommandHandler
 		EditProductCommand request,
 		CancellationToken cancellationToken)
 	{
-		var manager = await _userService.GetCurrentUserAsync();
+		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var updatedProductVm = request.ProductVm;
 

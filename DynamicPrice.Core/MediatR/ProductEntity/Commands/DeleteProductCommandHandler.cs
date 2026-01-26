@@ -20,7 +20,7 @@ public class DeleteProductCommandHandler
 		DeleteProductCommand request,
 		CancellationToken cancellationToken)
 	{
-		var manager = await _userService.GetCurrentUserAsync();
+		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var product = await _context.Products
 			.FirstOrDefaultAsync(p => p.ProductId == request.ProductId && p.CompanyId == manager.CompanyId, cancellationToken);

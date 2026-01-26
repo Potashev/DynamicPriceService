@@ -23,7 +23,7 @@ public class GetPriceRuleWithStatusQueryHandler
 		GetPriceRuleWithStatusQuery request,
 		CancellationToken cancellationToken)
 	{
-		var manager = await _userService.GetCurrentUserAsync();
+		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var priceRule = await _context.PriceRules
 			.Where(pr => pr.Company.CompanyId == manager.CompanyId)

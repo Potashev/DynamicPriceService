@@ -24,7 +24,7 @@ public class GetProductDetailsQueryHandler
 		GetProductDetailsQuery request,
 		CancellationToken cancellationToken)
 	{
-		var manager = await _userService.GetCurrentUserAsync();
+		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var product = await _context.Products
 			.Include(p => p.PriceDynamics)

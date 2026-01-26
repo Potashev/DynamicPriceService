@@ -25,12 +25,15 @@ public class AddProductToCartCommandHadnler
 		AddProductToCartCommand request,
 		CancellationToken cancellationToken)
 	{
-		var customer = await _userService.GetCurrentUserAsync();
+		var customer = await _userService.GetRequiredCurrentUserAsync();
 
 		var product = await _context.Products
 			.Include(p => p.Company)
 			.Where(p => p.ProductId.ToString() == request.ProductId)
 			.FirstOrDefaultAsync(cancellationToken);
+
+		if (product == null)
+			throw new InvalidOperationException("Product not found.");
 
 		var cart = await _context.Carts
 			.Include(c => c.CartItems)

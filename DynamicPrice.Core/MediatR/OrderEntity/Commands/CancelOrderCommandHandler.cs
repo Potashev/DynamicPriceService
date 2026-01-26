@@ -21,7 +21,7 @@ public class CancelOrderCommandHandler
 		CancelOrderCommand request,
 		CancellationToken cancellationToken)
 	{
-		var customer = await _userService.GetCurrentUserAsync();
+		var customer = await _userService.GetRequiredCurrentUserAsync();
 
 		var order = await _context.Orders
 			.Where(o => o.OrderId == request.OrderId && o.CustomerId == customer.Id)

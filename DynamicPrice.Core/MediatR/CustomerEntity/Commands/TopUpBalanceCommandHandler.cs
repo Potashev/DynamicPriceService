@@ -16,9 +16,7 @@ public class TopUpBalanceCommandHandler
 		TopUpBalanceCommand request,
 		CancellationToken cancellationToken)
 	{
-		var customer = await _userService.GetCurrentUserAsync();
-
-		if (customer == null) { }
+		var customer = await _userService.GetRequiredCurrentUserAsync();
 
 		var replenishmentAmount = decimal.Parse(request.balanceVm.ReplenishmentAmount, CultureInfo.InvariantCulture);
 

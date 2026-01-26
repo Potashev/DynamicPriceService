@@ -24,7 +24,7 @@ public class GetCompanyOrdersQueryHandler
 		GetCompanyOrdersQuery request,
 		CancellationToken cancellationToken)
 	{
-		var manager = await _userService.GetCurrentUserAsync();
+		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var companyOrders = await _context.Orders
 			.Where(o => o.Company.CompanyId == manager.CompanyId)

@@ -1,4 +1,5 @@
-﻿using DynamicPrice.Core.Models;
+﻿using DynamicPrice.Core.Exceptions;
+using DynamicPrice.Core.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
@@ -31,8 +32,9 @@ public class UserService : IUserService
 	public string? Role
 		=> _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role)?.Value;
 
-	public async Task<ApplicationUser?> GetCurrentUserAsync()
-		=> await _userManager.FindByIdAsync(UserId ?? string.Empty);
+	public async Task<ApplicationUser> GetRequiredCurrentUserAsync()
+		=> await GetUserByIdAsync(UserId ?? string.Empty)
+			?? throw new UnauthorizedException("User is not authenticated.");
 
 	public async Task<ApplicationUser> GetUserByIdAsync(string userId)
 	=> await _userManager.FindByIdAsync(userId);
@@ -79,7 +81,7 @@ public class UserService : IUserService
 
 	public async Task UpdateCurrentUserAsync()
 	{
-		var user = await GetCurrentUserAsync();
+		var user = await GetRequiredCurrentUserAsync();
 		await _userManager.UpdateAsync(user);
 	}
 
@@ -122,7 +124,7 @@ public interface IUserService
 {
 	string? UserId { get; }
 	string? Role { get; }
-	Task<ApplicationUser?> GetCurrentUserAsync();
+	Task<ApplicationUser> GetRequiredCurrentUserAsync();
 	Task UpdateCurrentUserAsync();
 	Task UpdateUserAsync(ApplicationUser user);
 	Task<ApplicationUser> GetUserByIdAsync(string userId);

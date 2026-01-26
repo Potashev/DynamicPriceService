@@ -24,7 +24,7 @@ public class GetCustomerOrderDetailsQueryHandler
 		GetCustomerOrderDetailsQuery request,
 		CancellationToken cancellationToken)
 	{
-		var customer = await _userService.GetCurrentUserAsync();
+		var customer = await _userService.GetRequiredCurrentUserAsync();
 
 		var customerOrder = await _context.Orders
 			.Where(o => o.OrderId.ToString() == request.OrderId && o.CustomerId == customer.Id)

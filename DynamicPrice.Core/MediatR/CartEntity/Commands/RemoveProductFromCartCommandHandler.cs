@@ -24,7 +24,7 @@ public class RemoveProductFromCartCommandHandler
 		RemoveProductFromCartCommand request,
 		CancellationToken cancellationToken)
 	{
-		var customer = await _userService.GetCurrentUserAsync();
+		var customer = await _userService.GetRequiredCurrentUserAsync();
 
 		var cartItem = await _context.CartItems
 			.Where(ci => ci.ProductId.ToString() == request.ProductId

@@ -21,7 +21,7 @@ public class ConfirmOrderCommandHandler
 		ConfirmOrderCommand request,
 		CancellationToken cancellationToken)
 	{
-		var customer = await _userService.GetCurrentUserAsync();
+		var customer = await _userService.GetRequiredCurrentUserAsync();
 
 		var cart = await _context.Carts
 			.Where(c => c.CartId == request.CartId && c.CustomerId == customer.Id)

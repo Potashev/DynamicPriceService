@@ -24,7 +24,7 @@ public class GetProductsQueryHandler
 		GetProductsQuery request,
 		CancellationToken cancellationToken)
 	{
-		var manager = await _userService.GetCurrentUserAsync();
+		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var products = await _context.Products
 			.Where(p => p.Company.CompanyId == manager.CompanyId)

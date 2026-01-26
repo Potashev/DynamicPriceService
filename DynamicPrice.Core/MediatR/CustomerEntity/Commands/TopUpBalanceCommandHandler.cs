@@ -12,7 +12,9 @@ public class TopUpBalanceCommandHandler
 	public TopUpBalanceCommandHandler(IUserService userService)
 		=> _userService = userService;
 
-	public async Task Handle(TopUpBalanceCommand request, CancellationToken cancellationToken)
+	public async Task Handle(
+		TopUpBalanceCommand request,
+		CancellationToken cancellationToken)
 	{
 		var customer = await _userService.GetCurrentUserAsync();
 

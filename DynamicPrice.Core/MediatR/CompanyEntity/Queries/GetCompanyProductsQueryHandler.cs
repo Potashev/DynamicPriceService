@@ -12,10 +12,14 @@ public class GetCompanyProductsQueryHandler
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IMapper _mapper;
 
-	public GetCompanyProductsQueryHandler(DynamicPriceCoreContext context, IMapper mapper)
+	public GetCompanyProductsQueryHandler(
+		DynamicPriceCoreContext context,
+		IMapper mapper)
 		=> (_context, _mapper) = (context, mapper);
 
-	public async Task<CompanyProductsInfo> Handle(GetCompanyProductsQuery request, CancellationToken cancellationToken)
+	public async Task<CompanyProductsInfo> Handle(
+		GetCompanyProductsQuery request,
+		CancellationToken cancellationToken)
 	{
 
 		var company = await _context.Companies

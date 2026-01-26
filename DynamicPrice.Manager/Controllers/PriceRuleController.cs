@@ -34,7 +34,9 @@ public class PriceRuleController : BaseController
 
 	[HttpPost]
 	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> Edit(int id, PriceRuleViewModel priceRuleVm)
+	public async Task<IActionResult> Edit(
+		int id,
+		PriceRuleViewModel priceRuleVm)
 	{
 		if (ModelState.IsValid)
 		{

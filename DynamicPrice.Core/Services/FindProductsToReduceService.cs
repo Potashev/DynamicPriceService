@@ -33,7 +33,10 @@ public class FindProductsToReduceService : BackgroundService
 		});
 	private readonly ConcurrentDictionary<int, DateTime> _lastMonitorEnd = new();
 
-	public FindProductsToReduceService(IServiceProvider serviceProvider, IConfiguration config, ILogger<FindProductsToReduceService> logger)
+	public FindProductsToReduceService(
+		IServiceProvider serviceProvider,
+		IConfiguration config,
+		ILogger<FindProductsToReduceService> logger)
 	{
 		_serviceProvider = serviceProvider;
 		_logger = logger;

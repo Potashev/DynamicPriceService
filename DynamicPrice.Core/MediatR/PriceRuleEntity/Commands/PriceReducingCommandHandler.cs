@@ -11,10 +11,14 @@ public class PriceReducingCommandHandler
 	private readonly IUserService _userService;
 	private readonly DynamicPriceCoreContext _context;
 
-	public PriceReducingCommandHandler(IUserService userService, DynamicPriceCoreContext context)
+	public PriceReducingCommandHandler(
+		IUserService userService,
+		DynamicPriceCoreContext context)
 		=> (_userService, _context) = (userService, context);
 
-	public async Task Handle(PriceReducingCommand request, CancellationToken cancellationToken)
+	public async Task Handle(
+		PriceReducingCommand request,
+		CancellationToken cancellationToken)
 	{
 		var manager = await _userService.GetCurrentUserAsync();
 

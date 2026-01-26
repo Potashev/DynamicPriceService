@@ -13,10 +13,14 @@ public class ReadyForReceiveOrderCommandHandler
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IUserService _userService;
 
-	public ReadyForReceiveOrderCommandHandler(DynamicPriceCoreContext context, IUserService userService)
+	public ReadyForReceiveOrderCommandHandler(
+		DynamicPriceCoreContext context,
+		IUserService userService)
 		=> (_context, _userService) = (context, userService);
 
-	public async Task Handle(ReadyForReceiveOrderCommand request, CancellationToken cancellationToken)
+	public async Task Handle(
+		ReadyForReceiveOrderCommand request,
+		CancellationToken cancellationToken)
 	{
 		var manager = await _userService.GetCurrentUserAsync();
 

@@ -14,15 +14,10 @@ public class CompleteOrderCommandHandler
 	private readonly IUserService _userService;
 	private readonly IPublishEndpoint _publishEndpoint;
 
-	public CompleteOrderCommandHandler(
-		DynamicPriceCoreContext context,
-		IUserService userService,
-		IPublishEndpoint publishEndpoint)
+	public CompleteOrderCommandHandler(DynamicPriceCoreContext context, IUserService userService, IPublishEndpoint publishEndpoint)
 		=> (_context, _userService, _publishEndpoint) = (context, userService, publishEndpoint);
 
-	public async Task<int> Handle(
-		CompleteOrderCommand request,
-		CancellationToken cancellationToken)
+	public async Task<int> Handle(CompleteOrderCommand request, CancellationToken cancellationToken)
 	{
 		var manager = await _userService.GetCurrentUserAsync();
 

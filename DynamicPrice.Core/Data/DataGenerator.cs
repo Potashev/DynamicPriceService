@@ -5,9 +5,7 @@ namespace DynamicPrice.Core.Data;
 
 public static class DataGenerator
 {
-	public static List<Product> GenerateProducts(
-		int companyId,
-		int count)
+	public static List<Product> GenerateProducts(int companyId, int count)
 	{
 		var faker = new Faker<Product>("ru")
 			.RuleFor(p => p.CompanyId, companyId)

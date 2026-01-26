@@ -118,11 +118,7 @@ public static class DbInitializer
 			companyId: 2);
 	}
 
-	private static async Task EnsureManagerAsync(
-		UserManager<ApplicationUser> userManager,
-		string email,
-		string userName,
-		int companyId)
+	private static async Task EnsureManagerAsync(UserManager<ApplicationUser> userManager, string email, string userName, int companyId)
 	{
 		var user = await userManager.FindByEmailAsync(email);
 		if (user is null)

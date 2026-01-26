@@ -11,6 +11,7 @@ public static class ServiceCollectionExtensions
 		services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 		services.TryAddScoped<IAuthTokenStore, CookiesAuthTokenStore>();
 		services.AddTransient<AuthHeaderHandler>();
+
 		return services;
 	}
 }

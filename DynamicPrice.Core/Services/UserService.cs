@@ -37,9 +37,7 @@ public class UserService : IUserService
 	public async Task<ApplicationUser> GetUserByIdAsync(string userId)
 	=> await _userManager.FindByIdAsync(userId);
 
-	public async Task<string> LoginUserAsync(
-		string username,
-		string password)
+	public async Task<string> LoginUserAsync(string username, string password)
 	{
 		var user = await _userManager.FindByNameAsync(username);
 		if (user == null || !await _userManager.CheckPasswordAsync(user, password))
@@ -51,11 +49,7 @@ public class UserService : IUserService
 		return token;
 	}
 
-	public async Task RegisterUserAsync(
-		string username,
-		string password,
-		string email,
-		string role)
+	public async Task RegisterUserAsync(string username, string password, string email, string role)
 	{
 		//TODO: make better
 		ApplicationUser user = new()
@@ -86,9 +80,7 @@ public class UserService : IUserService
 	public async Task UpdateUserAsync(ApplicationUser user)
 		=> await _userManager.UpdateAsync(user);
 
-	private string GenerateJwtToken(
-		ApplicationUser user,
-		IList<string> roles)
+	private string GenerateJwtToken(ApplicationUser user, IList<string> roles)
 	{
 		List<Claim> claims =
 		[

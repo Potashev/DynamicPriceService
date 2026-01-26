@@ -12,14 +12,10 @@ public class GetCompanyStatisticsQueryHandler
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IUserService _userService;
 
-	public GetCompanyStatisticsQueryHandler(
-		DynamicPriceCoreContext context,
-		IUserService userService)
+	public GetCompanyStatisticsQueryHandler(DynamicPriceCoreContext context, IUserService userService)
 		=> (_context, _userService) = (context, userService);
 
-	public async Task<OrdersStatistics> Handle(
-		GetCompanyStatisticsQuery request,
-		CancellationToken cancellationToken)
+	public async Task<OrdersStatistics> Handle(GetCompanyStatisticsQuery request, CancellationToken cancellationToken)
 	{
 		var manager = await _userService.GetCurrentUserAsync();
 

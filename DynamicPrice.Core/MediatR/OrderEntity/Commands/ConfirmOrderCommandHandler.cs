@@ -12,14 +12,10 @@ public class ConfirmOrderCommandHandler
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IUserService _userService;
 
-	public ConfirmOrderCommandHandler(
-		DynamicPriceCoreContext context,
-		IUserService userService)
+	public ConfirmOrderCommandHandler(DynamicPriceCoreContext context, IUserService userService)
 		=> (_context, _userService) = (context, userService);
 
-	public async Task<int> Handle(
-		ConfirmOrderCommand request,
-		CancellationToken cancellationToken)
+	public async Task<int> Handle(ConfirmOrderCommand request, CancellationToken cancellationToken)
 	{
 		var customer = await _userService.GetCurrentUserAsync();
 

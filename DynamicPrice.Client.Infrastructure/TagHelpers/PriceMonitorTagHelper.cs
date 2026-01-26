@@ -22,9 +22,7 @@ public class PriceMonitorTagHelper : TagHelper
 	[HtmlAttributeName("show-grid")]
 	public bool? ShowGrid { get; set; }
 
-	public override void Process(
-		TagHelperContext context,
-		TagHelperOutput output)
+	public override void Process(TagHelperContext context, TagHelperOutput output)
 	{
 		output.TagName = "div";
 		output.Attributes.SetAttribute("class", "chart-container");

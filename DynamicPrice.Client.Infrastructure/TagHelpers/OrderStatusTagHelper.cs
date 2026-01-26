@@ -7,9 +7,7 @@ public class OrderStatusTagHelper : TagHelper
 {
 	public OrderStatus Status { get; set; }
 
-	public override void Process(
-		TagHelperContext context,
-		TagHelperOutput output)
+	public override void Process(TagHelperContext context, TagHelperOutput output)
 	{
 		output.TagName = "span";
 

@@ -15,10 +15,15 @@ public class AddProductToCartCommandHadnler
 	private readonly IMapper _mapper;
 	private readonly IUserService _userService;
 
-	public AddProductToCartCommandHadnler(DynamicPriceCoreContext context, IMapper mapper, IUserService userService)
+	public AddProductToCartCommandHadnler(
+		DynamicPriceCoreContext context,
+		IMapper mapper,
+		IUserService userService)
 		=> (_context, _mapper, _userService) = (context, mapper, userService);
 
-	public async Task<CartViewModel> Handle(AddProductToCartCommand request, CancellationToken cancellationToken)
+	public async Task<CartViewModel> Handle(
+		AddProductToCartCommand request,
+		CancellationToken cancellationToken)
 	{
 		var customer = await _userService.GetCurrentUserAsync();
 
@@ -57,7 +62,9 @@ public class AddProductToCartCommandHadnler
 		return _mapper.Map<CartViewModel>(cart);
 	}
 
-	private async Task<Cart> CreateNewCart(ApplicationUser customer, Company company)
+	private async Task<Cart> CreateNewCart(
+		ApplicationUser customer,
+		Company company)
 	{
 		var cart = new Cart
 		{

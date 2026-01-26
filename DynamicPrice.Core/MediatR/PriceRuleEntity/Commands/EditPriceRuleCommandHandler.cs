@@ -13,10 +13,15 @@ public class EditPriceRuleCommandHandler
 	private readonly IMapper _mapper;
 	private readonly IUserService _userService;
 
-	public EditPriceRuleCommandHandler(DynamicPriceCoreContext context, IMapper mapper, IUserService userService)
+	public EditPriceRuleCommandHandler(
+		DynamicPriceCoreContext context,
+		IMapper mapper,
+		IUserService userService)
 		=> (_context, _mapper, _userService) = (context, mapper, userService);
 
-	public async Task<int> Handle(EditPriceRuleCommand request, CancellationToken cancellationToken)
+	public async Task<int> Handle(
+		EditPriceRuleCommand request,
+		CancellationToken cancellationToken)
 	{
 		var manager = await _userService.GetCurrentUserAsync();
 

@@ -26,7 +26,9 @@ public class CustomerOrderController : BaseController
 		return RedirectToAction(nameof(Details), new { id = orderId });
 	}
 
-	public async Task<IActionResult> GetReceiveKey(int orderId, int receiveKey)
+	public async Task<IActionResult> GetReceiveKey(
+		int orderId,
+		int receiveKey)
 	{
 		ViewBag.OrderId = orderId;
 		ViewBag.ReceiveKey = receiveKey;

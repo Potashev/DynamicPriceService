@@ -20,7 +20,10 @@ public class IncreasePriceService : IConsumer<PriceIncreaseEvent>
 	private readonly IHubContext<PriceHub> _priceHubContext;
 	private readonly ILogger<IncreasePriceService> _logger;
 
-	public IncreasePriceService(IServiceProvider serviceProvider, IHubContext<PriceHub> priceHubContext, ILogger<IncreasePriceService> logger)
+	public IncreasePriceService(
+		IServiceProvider serviceProvider,
+		IHubContext<PriceHub> priceHubContext,
+		ILogger<IncreasePriceService> logger)
 	{
 		_serviceProvider = serviceProvider;
 		_priceHubContext = priceHubContext;
@@ -67,7 +70,9 @@ public class IncreasePriceService : IConsumer<PriceIncreaseEvent>
 		await NoticeOfIncrease(OrderItems);
 	}
 
-	private void IncreasePrice(IEnumerable<OrderItem> OrderItems, PriceRule priceRule)
+	private void IncreasePrice(
+		IEnumerable<OrderItem> OrderItems,
+		PriceRule priceRule)
 	{
 		foreach (var orderProduct in OrderItems)
 		{

@@ -11,10 +11,14 @@ public class DeleteProductCommandHandler
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IUserService _userService;
 
-	public DeleteProductCommandHandler(DynamicPriceCoreContext context, IUserService userService)
+	public DeleteProductCommandHandler(
+		DynamicPriceCoreContext context,
+		IUserService userService)
 		=> (_context, _userService) = (context, userService);
 
-	public async Task Handle(DeleteProductCommand request, CancellationToken cancellationToken)
+	public async Task Handle(
+		DeleteProductCommand request,
+		CancellationToken cancellationToken)
 	{
 		var manager = await _userService.GetCurrentUserAsync();
 

@@ -12,10 +12,14 @@ public class GetOrderIdByReceiveKeyQueryHandler
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IUserService _userService;
 
-	public GetOrderIdByReceiveKeyQueryHandler(DynamicPriceCoreContext context, IUserService userService)
+	public GetOrderIdByReceiveKeyQueryHandler(
+		DynamicPriceCoreContext context,
+		IUserService userService)
 		=> (_context, _userService) = (context, userService);
 
-	public async Task<int> Handle(GetOrderIdByReceiveKeyQuery request, CancellationToken cancellationToken)
+	public async Task<int> Handle(
+		GetOrderIdByReceiveKeyQuery request,
+		CancellationToken cancellationToken)
 	{
 		var manager = await _userService.GetCurrentUserAsync();
 

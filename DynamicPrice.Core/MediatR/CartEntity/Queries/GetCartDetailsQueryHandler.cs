@@ -14,10 +14,15 @@ public class GetCartDetailsQueryHandler
 	private readonly IMapper _mapper;
 	private readonly IUserService _userService;
 
-	public GetCartDetailsQueryHandler(DynamicPriceCoreContext context, IMapper mapper, IUserService userService)
+	public GetCartDetailsQueryHandler(
+		DynamicPriceCoreContext context,
+		IMapper mapper,
+		IUserService userService)
 		=> (_context, _mapper, _userService) = (context, mapper, userService);
 
-	public async Task<CartViewModel> Handle(GetCartDetailsQuery request, CancellationToken cancellationToken)
+	public async Task<CartViewModel> Handle(
+		GetCartDetailsQuery request,
+		CancellationToken cancellationToken)
 	{
 		var customer = await _userService.GetCurrentUserAsync();
 

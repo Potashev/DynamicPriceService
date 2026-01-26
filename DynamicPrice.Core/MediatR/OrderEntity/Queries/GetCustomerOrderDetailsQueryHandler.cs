@@ -14,10 +14,15 @@ public class GetCustomerOrderDetailsQueryHandler
 	private readonly IMapper _mapper;
 	private readonly IUserService _userService;
 
-	public GetCustomerOrderDetailsQueryHandler(DynamicPriceCoreContext context, IMapper mapper, IUserService userService)
+	public GetCustomerOrderDetailsQueryHandler(
+		DynamicPriceCoreContext context,
+		IMapper mapper,
+		IUserService userService)
 		=> (_context, _mapper, _userService) = (context, mapper, userService);
 
-	public async Task<OrderViewModel> Handle(GetCustomerOrderDetailsQuery request, CancellationToken cancellationToken)
+	public async Task<OrderViewModel> Handle(
+		GetCustomerOrderDetailsQuery request,
+		CancellationToken cancellationToken)
 	{
 		var customer = await _userService.GetCurrentUserAsync();
 

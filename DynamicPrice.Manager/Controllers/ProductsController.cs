@@ -54,7 +54,9 @@ public class ProductsController : BaseController
 
 	[HttpPost]
 	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> Edit(int id, ProductViewModel productVm)   //todo: looks not good
+	public async Task<IActionResult> Edit(
+		int id,
+		ProductViewModel productVm)   //todo: looks not good
 	{
 		if (ModelState.IsValid)
 		{

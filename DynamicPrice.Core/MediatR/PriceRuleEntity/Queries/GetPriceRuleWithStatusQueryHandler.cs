@@ -12,12 +12,16 @@ public class GetPriceRuleWithStatusQueryHandler
 {
 	private readonly IMapper _mapper;
 	private readonly DynamicPriceCoreContext _context;
-	//private IActiveCompaniesService _activeCompaniesService;
 	private readonly IUserService _userService;
 
-	public GetPriceRuleWithStatusQueryHandler(IMapper mapper, DynamicPriceCoreContext context, IUserService userService)
+	public GetPriceRuleWithStatusQueryHandler(
+		DynamicPriceCoreContext context,
+		IMapper mapper,
+		IUserService userService)
 		=> (_mapper, _context, _userService) = (mapper, context, userService);
-	public async Task<PriceRuleWithStatus> Handle(GetPriceRuleWithStatusQuery request, CancellationToken cancellationToken)
+	public async Task<PriceRuleWithStatus> Handle(
+		GetPriceRuleWithStatusQuery request,
+		CancellationToken cancellationToken)
 	{
 		var manager = await _userService.GetCurrentUserAsync();
 

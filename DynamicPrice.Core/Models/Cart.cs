@@ -17,9 +17,14 @@ public class Cart
 	public required string CustomerId { get; set; }
 
 	/// <summary>
+	/// Компания, к которой относится корзина.	//todo: fixed
+	/// </summary>
+	public int CompanyId { get; set; }
+
+	/// <summary>
 	/// Компания, к которой относится корзина.
 	/// </summary>
-	public required Company Company { get; set; }
+	public Company? Company { get; set; }   //todo: check where used and replace with CompanyId
 
 	/// <summary>
 	/// Коллекция элементов в корзине.

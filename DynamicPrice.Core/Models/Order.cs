@@ -27,9 +27,14 @@ public class Order
 	public required string CustomerId { get; set; }
 
 	/// <summary>
+	/// Компания, к которой относится корзина.	//todo: fixed
+	/// </summary>
+	public int CompanyId { get; set; }
+
+	/// <summary>
 	/// Навигационное свойство компании.
 	/// </summary>
-	public required Company Company { get; set; }
+	public Company? Company { get; set; }   //todo: used companyId instead
 
 	/// <summary>
 	/// Позиции заказа - продукты с фиксированной ценой.

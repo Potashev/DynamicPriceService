@@ -15,7 +15,7 @@ public class Product
 	/// <summary>
 	/// Идентификатор компании.
 	/// </summary>
-	public int? CompanyId { get; set; } //TODO: make required
+	public int CompanyId { get; set; }
 
 	/// <summary>
 	/// Навигационнное свойство компании, к которой принадлежит продукт.

@@ -104,9 +104,10 @@ public class FindProductsToReduceService : BackgroundService
 			.AsNoTracking()
 			.Where(pr => activeCompaniesIds.Contains((int)pr.CompanyId));
 
+
 		var productsActiveCompaniesQuery = context.Products
 			.AsNoTracking()
-			.Where(p => p.CompanyId.HasValue && activeCompaniesIds.Contains(p.CompanyId.Value));
+			.Where(p => activeCompaniesIds.Contains(p.CompanyId)); //todo: check
 
 		if (productsCount.HasValue)
 			productsActiveCompaniesQuery = productsActiveCompaniesQuery.Take(productsCount.Value);

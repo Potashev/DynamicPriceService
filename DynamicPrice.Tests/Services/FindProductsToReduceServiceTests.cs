@@ -49,7 +49,7 @@ public class FindProductsToReduceServiceTests
 		using (var scope = sp.CreateScope())
 		{
 			var ctx = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
-			var enumerable = (IAsyncEnumerable<Product>)method!.Invoke(service, new object[] { ctx, CancellationToken.None, null })!;
+			var enumerable = (IAsyncEnumerable<Product>)method!.Invoke(service, new object[] { ctx, CancellationToken.None, null! })!;
 			await foreach (var p in enumerable.WithCancellation(CancellationToken.None))
 				results.Add(p);
 		}

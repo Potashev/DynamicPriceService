@@ -66,7 +66,7 @@ public class GetCartDetailsQueryHandlerTests
 		var sp = TestDbHelper.CreateServiceProvider(dbName);
 
 		var mapperMock = new Mock<IMapper>();
-		mapperMock.Setup(m => m.Map<CartViewModel>(It.IsAny<Cart>())).Returns((CartViewModel)null);
+		mapperMock.Setup(m => m.Map<CartViewModel>(It.IsAny<Cart>())).Returns((CartViewModel)null!);
 
 		var customerId = Guid.NewGuid().ToString();
 

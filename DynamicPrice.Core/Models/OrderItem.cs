@@ -21,7 +21,7 @@ public class OrderItem
 	/// Навигационное свойство заказа.
 	/// </summary>
 	[JsonIgnore]
-	public Order Order { get; set; }
+	public Order? Order { get; set; }
 
 	/// <summary>
 	/// Идентификатор продукта.
@@ -31,7 +31,7 @@ public class OrderItem
 	/// <summary>
 	/// Навигационное свойство продукта.
 	/// </summary>
-	public Product Product { get; set; }
+	public Product? Product { get; set; }
 
 	/// <summary>
 	/// Фиксированная цена продукта после оформления заказа.

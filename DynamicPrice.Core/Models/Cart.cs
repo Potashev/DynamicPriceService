@@ -14,15 +14,15 @@ public class Cart
 	/// <summary>
 	/// Идентификатор клиента.
 	/// </summary>
-	public string CustomerId { get; set; }
+	public required string CustomerId { get; set; }
 
 	/// <summary>
 	/// Компания, к которой относится корзина.
 	/// </summary>
-	public Company Company { get; set; }
+	public required Company Company { get; set; }
 
 	/// <summary>
 	/// Коллекция элементов в корзине.
 	/// </summary>
-	public ICollection<CartItem> CartItems { get; set; }
+	public ICollection<CartItem>? CartItems { get; set; }
 }

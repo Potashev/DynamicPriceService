@@ -19,22 +19,22 @@ public class Order
 	/// Номер заказа.
 	/// </summary>
 	[MaxLength(20)]
-	public string Number { get; set; }
+	public required string Number { get; set; }
 
 	/// <summary>
 	/// Идентификатор кастомера, оформившего заказ.
 	/// </summary>
-	public string CustomerId { get; set; }
+	public required string CustomerId { get; set; }
 
 	/// <summary>
 	/// Навигационное свойство компании.
 	/// </summary>
-	public Company Company { get; set; }
+	public required Company Company { get; set; }
 
 	/// <summary>
 	/// Позиции заказа - продукты с фиксированной ценой.
 	/// </summary>
-	public ICollection<OrderItem> OrderItems { get; set; }
+	public required ICollection<OrderItem> OrderItems { get; set; }
 
 	/// <summary>
 	/// Текущий статус заказа.

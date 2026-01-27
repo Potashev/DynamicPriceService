@@ -57,8 +57,8 @@ public class DynamicPriceCoreContext : DbContext
 	public DbSet<Product> Products { get; set; } = default!;
 	public DbSet<PriceRule> PriceRules { get; set; } = default!;
 	public DbSet<PriceDynamic> PriceDynamics { get; set; } = default!;
-	public DbSet<Cart> Carts { get; set; } = default;
-	public DbSet<CartItem> CartItems { get; set; } = default;
-	public DbSet<Order> Orders { get; set; } = default;
-	public DbSet<OrderItem> OrderItems { get; set; } = default;
+	public DbSet<Cart> Carts { get; set; } = default!;
+	public DbSet<CartItem> CartItems { get; set; } = default!;
+	public DbSet<Order> Orders { get; set; } = default!;
+	public DbSet<OrderItem> OrderItems { get; set; } = default!;
 }

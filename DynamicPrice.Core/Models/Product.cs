@@ -13,19 +13,19 @@ public class Product
 	public int ProductId { get; set; }  //TODO: make Guid
 
 	/// <summary>
-	/// Навигационнное свойство компании, к которой принадлежит продукт.
-	/// </summary>
-	public Company Company { get; set; }
-
-	/// <summary>
 	/// Идентификатор компании.
 	/// </summary>
-	public int? CompanyId { get; set; }
+	public int? CompanyId { get; set; } //TODO: make required
+
+	/// <summary>
+	/// Навигационнное свойство компании, к которой принадлежит продукт.
+	/// </summary>
+	public Company? Company { get; set; }
 
 	/// <summary>
 	/// Название продукта.
 	/// </summary>
-	public string Title { get; set; }
+	public required string Title { get; set; }
 
 	/// <summary>
 	/// Текущая цена продукта.
@@ -56,5 +56,5 @@ public class Product
 	/// <summary>
 	/// История изменений цены для данного товара.
 	/// </summary>
-	public ICollection<PriceDynamic> PriceDynamics { get; set; }
+	public ICollection<PriceDynamic>? PriceDynamics { get; set; }
 }

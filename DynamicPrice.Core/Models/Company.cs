@@ -14,5 +14,5 @@ public class Company
 	/// <summary>
 	/// Название компании.
 	/// </summary>
-	public string Title { get; set; }
+	public string? Title { get; set; }
 }

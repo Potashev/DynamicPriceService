@@ -14,7 +14,7 @@ public class IncreasePriceServiceTests
 	{
 		// Arrange
 		var priceRule = new PriceRule { Increase = 10.0 }; // 10%
-		var product = new Product { ProductId = 1, Price = 100m };
+		var product = new Product { ProductId = 1, Title = "Продукт", Price = 100m };
 		var orderItem = new OrderItem { Product = product, Quantity = 2 };
 		var service = CreateServiceForTests();
 
@@ -32,7 +32,7 @@ public class IncreasePriceServiceTests
 	public async Task NoticeOfIncrease_PrivateMethod_ShouldCallHubSendAsyncForEachProduct()
 	{
 		// Arrange
-		var product = new Product { ProductId = 5, Price = 50m };
+		var product = new Product { ProductId = 5, Title = "Продукт", Price = 50m };
 		var orderItem = new OrderItem { Product = product, Quantity = 1 };
 
 		var hubContextMock = new Mock<IHubContext<PriceHub>>();

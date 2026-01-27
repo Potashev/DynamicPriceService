@@ -24,10 +24,10 @@ public class Cart
 	/// <summary>
 	/// Компания, к которой относится корзина.
 	/// </summary>
-	public Company? Company { get; set; }   //todo: check where used and replace with CompanyId
+	public Company Company { get; set; } = null!;   //todo: check where used and replace with CompanyId
 
 	/// <summary>
 	/// Коллекция элементов в корзине.
 	/// </summary>
-	public ICollection<CartItem>? CartItems { get; set; }
+	public ICollection<CartItem> CartItems { get; set; } = [];
 }

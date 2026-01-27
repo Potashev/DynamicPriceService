@@ -34,12 +34,12 @@ public class Order
 	/// <summary>
 	/// Навигационное свойство компании.
 	/// </summary>
-	public Company? Company { get; set; }   //todo: used companyId instead
+	public Company Company { get; set; } = null!;   //todo: used companyId instead
 
 	/// <summary>
 	/// Позиции заказа - продукты с фиксированной ценой.
 	/// </summary>
-	public required ICollection<OrderItem> OrderItems { get; set; }
+	public ICollection<OrderItem> OrderItems { get; set; } = [];
 
 	/// <summary>
 	/// Текущий статус заказа.
@@ -49,7 +49,7 @@ public class Order
 	/// <summary>
 	/// Дата и время создания заказа.
 	/// </summary>
-	public DateTime? OrderDate { get; set; }
+	public DateTime OrderDate { get; set; } = DateTime.UtcNow;
 
 	/// <summary>
 	/// Ключ получения заказа — числовой код, который может использоваться при выдаче.

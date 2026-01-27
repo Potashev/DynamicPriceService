@@ -20,7 +20,7 @@ public class Product
 	/// <summary>
 	/// Навигационнное свойство компании, к которой принадлежит продукт.
 	/// </summary>
-	public Company? Company { get; set; }
+	public Company Company { get; set; } = null!;
 
 	/// <summary>
 	/// Название продукта.
@@ -56,5 +56,5 @@ public class Product
 	/// <summary>
 	/// История изменений цены для данного товара.
 	/// </summary>
-	public ICollection<PriceDynamic>? PriceDynamics { get; set; }
+	public ICollection<PriceDynamic> PriceDynamics { get; set; } = [];
 }

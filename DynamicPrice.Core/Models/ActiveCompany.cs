@@ -12,9 +12,9 @@ public class ActiveCompany
 	public int CompanyId { get; set; }
 
 	/// <summary>
-	/// Навигационное свойство на сущность компании (опционально).
+	/// Навигационное свойство на сущность компании.
 	/// </summary>
-	public Company? Company { get; set; }
+	public Company Company { get; set; } = null!;
 
 	/// <summary>
 	/// Временная метка начала мониторинга.

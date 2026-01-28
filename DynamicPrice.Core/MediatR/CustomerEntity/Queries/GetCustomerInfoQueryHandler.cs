@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using DynamicPrice.Core.Data;
 using DynamicPrice.Core.Services;
-using DynamicPrice.Shared.Contracts.ViewModels;
+using DynamicPrice.Shared.Contracts.ViewModels.Entities;
+using DynamicPrice.Shared.Contracts.ViewModels.Responses;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

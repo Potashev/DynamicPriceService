@@ -1,4 +1,4 @@
-﻿using DynamicPrice.Shared.Contracts.ViewModels;
+﻿using DynamicPrice.Shared.Contracts.ViewModels.Requests;
 using MediatR;
 
 namespace DynamicPrice.Core.MediatR.CustomerEntity.Commands;

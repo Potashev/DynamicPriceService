@@ -1,6 +1,6 @@
 ﻿using DynamicPrice.Core.MediatR.ProductEntity.Commands;
 using DynamicPrice.Core.MediatR.ProductEntity.Queries;
-using DynamicPrice.Shared.Contracts.ViewModels;
+using DynamicPrice.Shared.Contracts.ViewModels.Entities;
 using MediatR;
 
 namespace DynamicPrice.Core.MinimalAPI;

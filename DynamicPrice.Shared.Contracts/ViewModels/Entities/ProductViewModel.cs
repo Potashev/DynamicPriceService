@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DynamicPrice.Shared.Contracts.ViewModels;
+namespace DynamicPrice.Shared.Contracts.ViewModels.Entities;
 
 public class ProductViewModel
 {

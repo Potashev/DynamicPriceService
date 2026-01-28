@@ -1,4 +1,4 @@
-﻿namespace DynamicPrice.Shared.Contracts.ViewModels;
+﻿namespace DynamicPrice.Shared.Contracts.ViewModels.Requests;
 
 public class BalanceViewModel
 {

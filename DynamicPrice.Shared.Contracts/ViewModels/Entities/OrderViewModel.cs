@@ -1,4 +1,4 @@
-﻿namespace DynamicPrice.Shared.Contracts.ViewModels;
+﻿namespace DynamicPrice.Shared.Contracts.ViewModels.Entities;
 
 public class OrderViewModel
 {
@@ -11,6 +11,8 @@ public class OrderViewModel
 	public OrderStatus Status { get; set; }
 	public DateTime? OrderDate { get; set; }
 	public int? ReceiveKey { get; set; }
+
+	//todo: calculate on server side
 	public decimal? OrderTotal =>
 		OrderItems?.Sum(i => i.ProductPrice * i.Quantity) ?? 0m;
 }

@@ -1,4 +1,4 @@
-﻿using DynamicPrice.Shared.Contracts.ViewModels;
+﻿using DynamicPrice.Shared.Contracts.ViewModels.Responses;
 using MediatR;
 
 namespace DynamicPrice.Core.MediatR.ManagerEntity.Queries;

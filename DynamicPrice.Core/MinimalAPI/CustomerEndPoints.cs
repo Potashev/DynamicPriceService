@@ -1,6 +1,6 @@
 ﻿using DynamicPrice.Core.MediatR.CustomerEntity.Commands;
 using DynamicPrice.Core.MediatR.CustomerEntity.Queries;
-using DynamicPrice.Shared.Contracts.ViewModels;
+using DynamicPrice.Shared.Contracts.ViewModels.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

@@ -17,7 +17,7 @@ public class PriceRuleController : BaseController
 			"Running" :
 			"Not running";
 
-		return View(priceRuleWithStatus.PriceRuleVm);
+		return View(priceRuleWithStatus.PriceRule);
 	}
 
 	public async Task<IActionResult> Edit(int? id)
@@ -29,7 +29,7 @@ public class PriceRuleController : BaseController
 
 		var priceRuleWithStatus = await CoreApiClient.GetPriceRule();
 
-		return View(priceRuleWithStatus.PriceRuleVm);
+		return View(priceRuleWithStatus.PriceRule);
 	}
 
 	[HttpPost]

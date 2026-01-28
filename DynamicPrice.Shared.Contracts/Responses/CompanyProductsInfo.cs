@@ -2,6 +2,6 @@
 
 public class CompanyProductsInfo
 {
-	public CompanyViewModel Company { get; set; }
-	public ProductInfoViewModel[] Products { get; set; }
+	public required CompanyViewModel Company { get; init; }
+	public ICollection<ProductInfoViewModel> Products { get; init; } = [];
 }

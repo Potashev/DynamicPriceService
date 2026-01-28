@@ -5,10 +5,10 @@
 /// </summary>
 public class ProductInfoViewModel
 {
-	public int ProductId { get; set; }
-	public string Title { get; set; }
-	public decimal Price { get; set; }
-	public int? Quantity { get; set; }
-	public string? Description { get; set; }
-	public PriceDynamicViewModel[] PriceDynamics { get; set; }
+	public int ProductId { get; init; }
+	public required string Title { get; init; }
+	public decimal Price { get; init; }
+	public int? Quantity { get; init; }
+	public string? Description { get; init; }
+	public ICollection<PriceDynamicViewModel> PriceDynamics { get; init; } = [];
 }

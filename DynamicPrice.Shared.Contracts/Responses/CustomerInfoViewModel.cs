@@ -2,8 +2,8 @@
 
 public class CustomerInfoViewModel
 {
-	public string Name { get; set; }
-	public string Email { get; set; }
-	public decimal? Balance { get; set; }
-	public OrderViewModel[] Orders { get; set; }
+	public required string Name { get; init; }
+	public required string Email { get; init; }
+	public decimal Balance { get; init; }
+	public ICollection<OrderViewModel> Orders { get; init; } = [];
 }

@@ -37,6 +37,10 @@ public class GetPriceRuleWithStatusQueryHandler
 				.AsNoTracking()
 				.AnyAsync(ac => ac.CompanyId == cid, cancellationToken);
 
-		return new PriceRuleWithStatus(priceRuleVm, status);
+		return new PriceRuleWithStatus
+		{
+			PriceRule = priceRuleVm,
+			IsActive = status
+		};
 	}
 }

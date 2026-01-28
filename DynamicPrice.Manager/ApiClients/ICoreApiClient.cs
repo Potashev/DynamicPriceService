@@ -1,6 +1,6 @@
 ﻿using DynamicPrice.Shared.Contracts;
-using DynamicPrice.Shared.Contracts.ViewModels.Entities;
-using DynamicPrice.Shared.Contracts.ViewModels.Requests;
+using DynamicPrice.Shared.Contracts.Requests;
+using DynamicPrice.Shared.Contracts.ViewModels;
 using DynamicPrice.Shared.Contracts.ViewModels.Responses;
 using Refit;
 

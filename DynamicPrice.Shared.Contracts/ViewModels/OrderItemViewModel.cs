@@ -1,4 +1,4 @@
-﻿namespace DynamicPrice.Shared.Contracts.ViewModels.Entities;
+﻿namespace DynamicPrice.Shared.Contracts.ViewModels;
 
 public class OrderItemViewModel
 {

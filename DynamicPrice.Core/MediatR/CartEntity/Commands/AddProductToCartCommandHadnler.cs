@@ -2,7 +2,7 @@
 using DynamicPrice.Core.Data;
 using DynamicPrice.Core.Models;
 using DynamicPrice.Core.Services;
-using DynamicPrice.Shared.Contracts.ViewModels.Entities;
+using DynamicPrice.Shared.Contracts.ViewModels;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

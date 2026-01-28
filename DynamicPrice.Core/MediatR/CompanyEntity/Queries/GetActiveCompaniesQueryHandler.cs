@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using DynamicPrice.Core.Data;
-using DynamicPrice.Shared.Contracts.ViewModels.Entities;
+using DynamicPrice.Shared.Contracts.ViewModels;
 using MediatR;
 
 namespace DynamicPrice.Core.MediatR.CompanyEntity.Queries;

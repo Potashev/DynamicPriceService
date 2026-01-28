@@ -1,6 +1,4 @@
-﻿using DynamicPrice.Shared.Contracts.ViewModels.Entities;
-
-namespace DynamicPrice.Shared.Contracts.ViewModels.Responses;
+﻿namespace DynamicPrice.Shared.Contracts.ViewModels.Responses;
 
 public class CompanyProductsInfo
 {

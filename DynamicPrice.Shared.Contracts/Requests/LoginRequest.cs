@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DynamicPrice.Shared.Contracts.ViewModels.Requests;
+namespace DynamicPrice.Shared.Contracts.Requests;
 
 public class LoginRequest
 {

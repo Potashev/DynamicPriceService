@@ -4,7 +4,6 @@ using DynamicPrice.Core.MediatR.CartEntity.Commands;
 using DynamicPrice.Core.Models;
 using DynamicPrice.Core.Services;
 using DynamicPrice.Shared.Contracts.ViewModels;
-using DynamicPrice.Shared.Contracts.ViewModels.Entities;
 using DynamicPrice.Tests.Fixtures;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;

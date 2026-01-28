@@ -1,4 +1,4 @@
-﻿using DynamicPrice.Shared.Contracts.ViewModels.Requests;
+﻿using DynamicPrice.Shared.Contracts.Requests;
 using MediatR;
 
 namespace DynamicPrice.Core.MediatR.AuthEntity.Commands;

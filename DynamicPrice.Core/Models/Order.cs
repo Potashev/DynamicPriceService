@@ -55,7 +55,7 @@ public class Order
 	/// Ключ получения заказа — числовой код, который может использоваться при выдаче.
 	/// Доступен кастомеру и необходим для получения заказа.
 	/// </summary>
-	public int ReceiveKey { get; set; }
+	public int? ReceiveKey { get; set; }
 }
 
 /// <summary>

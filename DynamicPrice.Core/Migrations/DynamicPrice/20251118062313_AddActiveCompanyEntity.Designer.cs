@@ -11,373 +11,373 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DynamicPrice.Core.Migrations.DynamicPrice
 {
-    [DbContext(typeof(DynamicPriceCoreContext))]
-    [Migration("20251118062313_AddActiveCompanyEntity")]
-    partial class AddActiveCompanyEntity
-    {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
-        {
+	[DbContext(typeof(DynamicPriceCoreContext))]
+	[Migration("20251118062313_AddActiveCompanyEntity")]
+	partial class AddActiveCompanyEntity
+	{
+		/// <inheritdoc />
+		protected override void BuildTargetModel(ModelBuilder modelBuilder)
+		{
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.0")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+			modelBuilder
+				.HasAnnotation("ProductVersion", "10.0.0")
+				.HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+			SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("DynamicPriceCore.Models.ActiveCompany", b =>
-                {
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("int");
+			modelBuilder.Entity("DynamicPriceCore.Models.ActiveCompany", b =>
+				{
+					b.Property<int>("CompanyId")
+						.HasColumnType("int");
 
-                    b.Property<DateTime?>("LastMonitoring")
-                        .HasColumnType("datetime2");
+					b.Property<DateTime?>("LastMonitoring")
+						.HasColumnType("datetime2");
 
-                    b.Property<DateTime>("StartedAt")
-                        .HasColumnType("datetime2");
+					b.Property<DateTime>("StartedAt")
+						.HasColumnType("datetime2");
 
-                    b.HasKey("CompanyId");
+					b.HasKey("CompanyId");
 
-                    b.ToTable("ActiveCompanies");
-                });
+					b.ToTable("ActiveCompanies");
+				});
 
-            modelBuilder.Entity("DynamicPriceCore.Models.Cart", b =>
-                {
-                    b.Property<int>("CartId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+			modelBuilder.Entity("DynamicPriceCore.Models.Cart", b =>
+				{
+					b.Property<int>("CartId")
+						.ValueGeneratedOnAdd()
+						.HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CartId"));
+					SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CartId"));
 
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("int");
+					b.Property<int>("CompanyId")
+						.HasColumnType("int");
 
-                    b.Property<string>("CustomerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+					b.Property<string>("CustomerId")
+						.IsRequired()
+						.HasColumnType("nvarchar(max)");
 
-                    b.HasKey("CartId");
+					b.HasKey("CartId");
 
-                    b.HasIndex("CompanyId");
+					b.HasIndex("CompanyId");
 
-                    b.ToTable("Carts");
-                });
+					b.ToTable("Carts");
+				});
 
-            modelBuilder.Entity("DynamicPriceCore.Models.CartItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+			modelBuilder.Entity("DynamicPriceCore.Models.CartItem", b =>
+				{
+					b.Property<int>("Id")
+						.ValueGeneratedOnAdd()
+						.HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+					SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CartId")
-                        .HasColumnType("int");
+					b.Property<int>("CartId")
+						.HasColumnType("int");
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
+					b.Property<int>("ProductId")
+						.HasColumnType("int");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
+					b.Property<int>("Quantity")
+						.HasColumnType("int");
 
-                    b.HasKey("Id");
+					b.HasKey("Id");
 
-                    b.HasIndex("CartId");
+					b.HasIndex("CartId");
 
-                    b.HasIndex("ProductId");
+					b.HasIndex("ProductId");
 
-                    b.ToTable("CartItems");
-                });
+					b.ToTable("CartItems");
+				});
 
-            modelBuilder.Entity("DynamicPriceCore.Models.Company", b =>
-                {
-                    b.Property<int>("CompanyId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+			modelBuilder.Entity("DynamicPriceCore.Models.Company", b =>
+				{
+					b.Property<int>("CompanyId")
+						.ValueGeneratedOnAdd()
+						.HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CompanyId"));
+					SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CompanyId"));
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+					b.Property<string>("Title")
+						.IsRequired()
+						.HasColumnType("nvarchar(max)");
 
-                    b.HasKey("CompanyId");
+					b.HasKey("CompanyId");
 
-                    b.ToTable("Companies");
-                });
+					b.ToTable("Companies");
+				});
 
-            modelBuilder.Entity("DynamicPriceCore.Models.Order", b =>
-                {
-                    b.Property<int>("OrderId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+			modelBuilder.Entity("DynamicPriceCore.Models.Order", b =>
+				{
+					b.Property<int>("OrderId")
+						.ValueGeneratedOnAdd()
+						.HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
+					SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
 
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("int");
+					b.Property<int>("CompanyId")
+						.HasColumnType("int");
 
-                    b.Property<string>("CustomerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+					b.Property<string>("CustomerId")
+						.IsRequired()
+						.HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Number")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+					b.Property<string>("Number")
+						.IsRequired()
+						.HasMaxLength(20)
+						.HasColumnType("nvarchar(20)");
 
-                    b.Property<DateTime?>("OrderDate")
-                        .HasColumnType("datetime2");
+					b.Property<DateTime?>("OrderDate")
+						.HasColumnType("datetime2");
 
-                    b.Property<int>("ReceiveKey")
-                        .HasColumnType("int");
+					b.Property<int>("ReceiveKey")
+						.HasColumnType("int");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+					b.Property<int>("Status")
+						.HasColumnType("int");
 
-                    b.HasKey("OrderId");
+					b.HasKey("OrderId");
 
-                    b.HasIndex("CompanyId");
+					b.HasIndex("CompanyId");
 
-                    b.HasIndex("Number")
-                        .IsUnique();
+					b.HasIndex("Number")
+						.IsUnique();
 
-                    b.ToTable("Orders");
-                });
+					b.ToTable("Orders");
+				});
 
-            modelBuilder.Entity("DynamicPriceCore.Models.OrderItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+			modelBuilder.Entity("DynamicPriceCore.Models.OrderItem", b =>
+				{
+					b.Property<int>("Id")
+						.ValueGeneratedOnAdd()
+						.HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+					SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
+					b.Property<int>("OrderId")
+						.HasColumnType("int");
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
+					b.Property<int>("ProductId")
+						.HasColumnType("int");
 
-                    b.Property<decimal>("ProductPrice")
-                        .HasColumnType("decimal(18,2)");
+					b.Property<decimal>("ProductPrice")
+						.HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
+					b.Property<int>("Quantity")
+						.HasColumnType("int");
 
-                    b.HasKey("Id");
+					b.HasKey("Id");
 
-                    b.HasIndex("OrderId");
+					b.HasIndex("OrderId");
 
-                    b.HasIndex("ProductId");
+					b.HasIndex("ProductId");
 
-                    b.ToTable("OrderItems");
-                });
+					b.ToTable("OrderItems");
+				});
 
-            modelBuilder.Entity("DynamicPriceCore.Models.PriceDynamic", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+			modelBuilder.Entity("DynamicPriceCore.Models.PriceDynamic", b =>
+				{
+					b.Property<int>("Id")
+						.ValueGeneratedOnAdd()
+						.HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+					SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime?>("Date")
-                        .HasColumnType("datetime2");
+					b.Property<DateTime?>("Date")
+						.HasColumnType("datetime2");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
+					b.Property<decimal>("Price")
+						.HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
+					b.Property<int>("ProductId")
+						.HasColumnType("int");
 
-                    b.HasKey("Id");
+					b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+					b.HasIndex("ProductId");
 
-                    b.ToTable("PriceDynamics");
-                });
+					b.ToTable("PriceDynamics");
+				});
 
-            modelBuilder.Entity("DynamicPriceCore.Models.PriceRule", b =>
-                {
-                    b.Property<int>("PriceRuleId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+			modelBuilder.Entity("DynamicPriceCore.Models.PriceRule", b =>
+				{
+					b.Property<int>("PriceRuleId")
+						.ValueGeneratedOnAdd()
+						.HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PriceRuleId"));
+					SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PriceRuleId"));
 
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
+					b.Property<int?>("CompanyId")
+						.HasColumnType("int");
 
-                    b.Property<double>("Increase")
-                        .HasColumnType("float");
+					b.Property<double>("Increase")
+						.HasColumnType("float");
 
-                    b.Property<TimeSpan?>("NoSellTime")
-                        .HasColumnType("time");
+					b.Property<TimeSpan?>("NoSellTime")
+						.HasColumnType("time");
 
-                    b.Property<double>("Reduction")
-                        .HasColumnType("float");
+					b.Property<double>("Reduction")
+						.HasColumnType("float");
 
-                    b.HasKey("PriceRuleId");
+					b.HasKey("PriceRuleId");
 
-                    b.HasIndex("CompanyId");
+					b.HasIndex("CompanyId");
 
-                    b.ToTable("PriceRules");
-                });
+					b.ToTable("PriceRules");
+				});
 
-            modelBuilder.Entity("DynamicPriceCore.Models.Product", b =>
-                {
-                    b.Property<int>("ProductId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+			modelBuilder.Entity("DynamicPriceCore.Models.Product", b =>
+				{
+					b.Property<int>("ProductId")
+						.ValueGeneratedOnAdd()
+						.HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
+					SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
 
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
+					b.Property<int?>("CompanyId")
+						.HasColumnType("int");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+					b.Property<string>("Description")
+						.HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("LastSellTime")
-                        .HasColumnType("datetime2");
+					b.Property<DateTime?>("LastSellTime")
+						.HasColumnType("datetime2");
 
-                    b.Property<decimal>("MinimumPrice")
-                        .HasColumnType("decimal(18,2)");
+					b.Property<decimal>("MinimumPrice")
+						.HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("Price")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+					b.Property<decimal>("Price")
+						.HasPrecision(18, 2)
+						.HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("Quantity")
-                        .HasColumnType("int");
+					b.Property<int?>("Quantity")
+						.HasColumnType("int");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+					b.Property<string>("Title")
+						.IsRequired()
+						.HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ProductId");
+					b.HasKey("ProductId");
 
-                    b.HasIndex("CompanyId");
+					b.HasIndex("CompanyId");
 
-                    b.ToTable("Products");
-                });
+					b.ToTable("Products");
+				});
 
-            modelBuilder.Entity("DynamicPriceCore.Models.ActiveCompany", b =>
-                {
-                    b.HasOne("DynamicPriceCore.Models.Company", "Company")
-                        .WithOne()
-                        .HasForeignKey("DynamicPriceCore.Models.ActiveCompany", "CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+			modelBuilder.Entity("DynamicPriceCore.Models.ActiveCompany", b =>
+				{
+					b.HasOne("DynamicPriceCore.Models.Company", "Company")
+						.WithOne()
+						.HasForeignKey("DynamicPriceCore.Models.ActiveCompany", "CompanyId")
+						.OnDelete(DeleteBehavior.Cascade)
+						.IsRequired();
 
-                    b.Navigation("Company");
-                });
+					b.Navigation("Company");
+				});
 
-            modelBuilder.Entity("DynamicPriceCore.Models.Cart", b =>
-                {
-                    b.HasOne("DynamicPriceCore.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+			modelBuilder.Entity("DynamicPriceCore.Models.Cart", b =>
+				{
+					b.HasOne("DynamicPriceCore.Models.Company", "Company")
+						.WithMany()
+						.HasForeignKey("CompanyId")
+						.OnDelete(DeleteBehavior.Cascade)
+						.IsRequired();
 
-                    b.Navigation("Company");
-                });
+					b.Navigation("Company");
+				});
 
-            modelBuilder.Entity("DynamicPriceCore.Models.CartItem", b =>
-                {
-                    b.HasOne("DynamicPriceCore.Models.Cart", "Cart")
-                        .WithMany("CartItems")
-                        .HasForeignKey("CartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+			modelBuilder.Entity("DynamicPriceCore.Models.CartItem", b =>
+				{
+					b.HasOne("DynamicPriceCore.Models.Cart", "Cart")
+						.WithMany("CartItems")
+						.HasForeignKey("CartId")
+						.OnDelete(DeleteBehavior.Cascade)
+						.IsRequired();
 
-                    b.HasOne("DynamicPriceCore.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+					b.HasOne("DynamicPriceCore.Models.Product", "Product")
+						.WithMany()
+						.HasForeignKey("ProductId")
+						.OnDelete(DeleteBehavior.NoAction)
+						.IsRequired();
 
-                    b.Navigation("Cart");
+					b.Navigation("Cart");
 
-                    b.Navigation("Product");
-                });
+					b.Navigation("Product");
+				});
 
-            modelBuilder.Entity("DynamicPriceCore.Models.Order", b =>
-                {
-                    b.HasOne("DynamicPriceCore.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+			modelBuilder.Entity("DynamicPriceCore.Models.Order", b =>
+				{
+					b.HasOne("DynamicPriceCore.Models.Company", "Company")
+						.WithMany()
+						.HasForeignKey("CompanyId")
+						.OnDelete(DeleteBehavior.Cascade)
+						.IsRequired();
 
-                    b.Navigation("Company");
-                });
+					b.Navigation("Company");
+				});
 
-            modelBuilder.Entity("DynamicPriceCore.Models.OrderItem", b =>
-                {
-                    b.HasOne("DynamicPriceCore.Models.Order", "Order")
-                        .WithMany("OrderItems")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+			modelBuilder.Entity("DynamicPriceCore.Models.OrderItem", b =>
+				{
+					b.HasOne("DynamicPriceCore.Models.Order", "Order")
+						.WithMany("OrderItems")
+						.HasForeignKey("OrderId")
+						.OnDelete(DeleteBehavior.Cascade)
+						.IsRequired();
 
-                    b.HasOne("DynamicPriceCore.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+					b.HasOne("DynamicPriceCore.Models.Product", "Product")
+						.WithMany()
+						.HasForeignKey("ProductId")
+						.OnDelete(DeleteBehavior.Restrict)
+						.IsRequired();
 
-                    b.Navigation("Order");
+					b.Navigation("Order");
 
-                    b.Navigation("Product");
-                });
+					b.Navigation("Product");
+				});
 
-            modelBuilder.Entity("DynamicPriceCore.Models.PriceDynamic", b =>
-                {
-                    b.HasOne("DynamicPriceCore.Models.Product", "Product")
-                        .WithMany("PriceDynamics")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+			modelBuilder.Entity("DynamicPriceCore.Models.PriceDynamic", b =>
+				{
+					b.HasOne("DynamicPriceCore.Models.Product", "Product")
+						.WithMany("PriceDynamics")
+						.HasForeignKey("ProductId")
+						.OnDelete(DeleteBehavior.Cascade)
+						.IsRequired();
 
-                    b.Navigation("Product");
-                });
+					b.Navigation("Product");
+				});
 
-            modelBuilder.Entity("DynamicPriceCore.Models.PriceRule", b =>
-                {
-                    b.HasOne("DynamicPriceCore.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId");
+			modelBuilder.Entity("DynamicPriceCore.Models.PriceRule", b =>
+				{
+					b.HasOne("DynamicPriceCore.Models.Company", "Company")
+						.WithMany()
+						.HasForeignKey("CompanyId");
 
-                    b.Navigation("Company");
-                });
+					b.Navigation("Company");
+				});
 
-            modelBuilder.Entity("DynamicPriceCore.Models.Product", b =>
-                {
-                    b.HasOne("DynamicPriceCore.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId");
+			modelBuilder.Entity("DynamicPriceCore.Models.Product", b =>
+				{
+					b.HasOne("DynamicPriceCore.Models.Company", "Company")
+						.WithMany()
+						.HasForeignKey("CompanyId");
 
-                    b.Navigation("Company");
-                });
+					b.Navigation("Company");
+				});
 
-            modelBuilder.Entity("DynamicPriceCore.Models.Cart", b =>
-                {
-                    b.Navigation("CartItems");
-                });
+			modelBuilder.Entity("DynamicPriceCore.Models.Cart", b =>
+				{
+					b.Navigation("CartItems");
+				});
 
-            modelBuilder.Entity("DynamicPriceCore.Models.Order", b =>
-                {
-                    b.Navigation("OrderItems");
-                });
+			modelBuilder.Entity("DynamicPriceCore.Models.Order", b =>
+				{
+					b.Navigation("OrderItems");
+				});
 
-            modelBuilder.Entity("DynamicPriceCore.Models.Product", b =>
-                {
-                    b.Navigation("PriceDynamics");
-                });
+			modelBuilder.Entity("DynamicPriceCore.Models.Product", b =>
+				{
+					b.Navigation("PriceDynamics");
+				});
 #pragma warning restore 612, 618
-        }
-    }
+		}
+	}
 }

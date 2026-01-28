@@ -12,20 +12,36 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DynamicPrice.Core.Migrations.DynamicPrice
 {
 	[DbContext(typeof(DynamicPriceCoreContext))]
-	[Migration("20250814104837_InitialCreate")]
-	partial class InitialCreate
+	[Migration("20260128043719_UpdateDomainNullability")]
+	partial class UpdateDomainNullability
 	{
 		/// <inheritdoc />
 		protected override void BuildTargetModel(ModelBuilder modelBuilder)
 		{
 #pragma warning disable 612, 618
 			modelBuilder
-				.HasAnnotation("ProductVersion", "8.0.14")
+				.HasAnnotation("ProductVersion", "10.0.0")
 				.HasAnnotation("Relational:MaxIdentifierLength", 128);
 
 			SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-			modelBuilder.Entity("DynamicPriceCore.Models.Cart", b =>
+			modelBuilder.Entity("DynamicPrice.Core.Models.ActiveCompany", b =>
+				{
+					b.Property<int>("CompanyId")
+						.HasColumnType("int");
+
+					b.Property<DateTime?>("LastMonitoring")
+						.HasColumnType("datetime2");
+
+					b.Property<DateTime>("StartedAt")
+						.HasColumnType("datetime2");
+
+					b.HasKey("CompanyId");
+
+					b.ToTable("ActiveCompanies");
+				});
+
+			modelBuilder.Entity("DynamicPrice.Core.Models.Cart", b =>
 				{
 					b.Property<int>("CartId")
 						.ValueGeneratedOnAdd()
@@ -47,7 +63,7 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
 					b.ToTable("Carts");
 				});
 
-			modelBuilder.Entity("DynamicPriceCore.Models.CartItem", b =>
+			modelBuilder.Entity("DynamicPrice.Core.Models.CartItem", b =>
 				{
 					b.Property<int>("Id")
 						.ValueGeneratedOnAdd()
@@ -73,7 +89,7 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
 					b.ToTable("CartItems");
 				});
 
-			modelBuilder.Entity("DynamicPriceCore.Models.Company", b =>
+			modelBuilder.Entity("DynamicPrice.Core.Models.Company", b =>
 				{
 					b.Property<int>("CompanyId")
 						.ValueGeneratedOnAdd()
@@ -90,7 +106,7 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
 					b.ToTable("Companies");
 				});
 
-			modelBuilder.Entity("DynamicPriceCore.Models.Order", b =>
+			modelBuilder.Entity("DynamicPrice.Core.Models.Order", b =>
 				{
 					b.Property<int>("OrderId")
 						.ValueGeneratedOnAdd()
@@ -105,10 +121,15 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
 						.IsRequired()
 						.HasColumnType("nvarchar(max)");
 
-					b.Property<DateTime?>("OrderDate")
+					b.Property<string>("Number")
+						.IsRequired()
+						.HasMaxLength(20)
+						.HasColumnType("nvarchar(20)");
+
+					b.Property<DateTime>("OrderDate")
 						.HasColumnType("datetime2");
 
-					b.Property<int>("ReceiveKey")
+					b.Property<int?>("ReceiveKey")
 						.HasColumnType("int");
 
 					b.Property<int>("Status")
@@ -118,10 +139,13 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
 
 					b.HasIndex("CompanyId");
 
+					b.HasIndex("Number")
+						.IsUnique();
+
 					b.ToTable("Orders");
 				});
 
-			modelBuilder.Entity("DynamicPriceCore.Models.OrderItem", b =>
+			modelBuilder.Entity("DynamicPrice.Core.Models.OrderItem", b =>
 				{
 					b.Property<int>("Id")
 						.ValueGeneratedOnAdd()
@@ -150,7 +174,7 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
 					b.ToTable("OrderItems");
 				});
 
-			modelBuilder.Entity("DynamicPriceCore.Models.PriceDynamic", b =>
+			modelBuilder.Entity("DynamicPrice.Core.Models.PriceDynamic", b =>
 				{
 					b.Property<int>("Id")
 						.ValueGeneratedOnAdd()
@@ -158,7 +182,7 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
 
 					SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-					b.Property<DateTime?>("Date")
+					b.Property<DateTime>("Date")
 						.HasColumnType("datetime2");
 
 					b.Property<decimal>("Price")
@@ -174,7 +198,7 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
 					b.ToTable("PriceDynamics");
 				});
 
-			modelBuilder.Entity("DynamicPriceCore.Models.PriceRule", b =>
+			modelBuilder.Entity("DynamicPrice.Core.Models.PriceRule", b =>
 				{
 					b.Property<int>("PriceRuleId")
 						.ValueGeneratedOnAdd()
@@ -182,14 +206,14 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
 
 					SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PriceRuleId"));
 
-					b.Property<int?>("CompanyId")
+					b.Property<int>("CompanyId")
 						.HasColumnType("int");
 
 					b.Property<double>("Increase")
 						.HasColumnType("float");
 
-					b.Property<TimeSpan?>("NoSellTime")
-						.HasColumnType("time");
+					b.Property<int>("NoSellSeconds")
+						.HasColumnType("int");
 
 					b.Property<double>("Reduction")
 						.HasColumnType("float");
@@ -201,7 +225,7 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
 					b.ToTable("PriceRules");
 				});
 
-			modelBuilder.Entity("DynamicPriceCore.Models.Product", b =>
+			modelBuilder.Entity("DynamicPrice.Core.Models.Product", b =>
 				{
 					b.Property<int>("ProductId")
 						.ValueGeneratedOnAdd()
@@ -209,7 +233,7 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
 
 					SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
 
-					b.Property<int?>("CompanyId")
+					b.Property<int>("CompanyId")
 						.HasColumnType("int");
 
 					b.Property<string>("Description")
@@ -239,9 +263,20 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
 					b.ToTable("Products");
 				});
 
-			modelBuilder.Entity("DynamicPriceCore.Models.Cart", b =>
+			modelBuilder.Entity("DynamicPrice.Core.Models.ActiveCompany", b =>
 				{
-					b.HasOne("DynamicPriceCore.Models.Company", "Company")
+					b.HasOne("DynamicPrice.Core.Models.Company", "Company")
+						.WithOne()
+						.HasForeignKey("DynamicPrice.Core.Models.ActiveCompany", "CompanyId")
+						.OnDelete(DeleteBehavior.Cascade)
+						.IsRequired();
+
+					b.Navigation("Company");
+				});
+
+			modelBuilder.Entity("DynamicPrice.Core.Models.Cart", b =>
+				{
+					b.HasOne("DynamicPrice.Core.Models.Company", "Company")
 						.WithMany()
 						.HasForeignKey("CompanyId")
 						.OnDelete(DeleteBehavior.Cascade)
@@ -250,15 +285,15 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
 					b.Navigation("Company");
 				});
 
-			modelBuilder.Entity("DynamicPriceCore.Models.CartItem", b =>
+			modelBuilder.Entity("DynamicPrice.Core.Models.CartItem", b =>
 				{
-					b.HasOne("DynamicPriceCore.Models.Cart", "Cart")
+					b.HasOne("DynamicPrice.Core.Models.Cart", "Cart")
 						.WithMany("CartItems")
 						.HasForeignKey("CartId")
 						.OnDelete(DeleteBehavior.Cascade)
 						.IsRequired();
 
-					b.HasOne("DynamicPriceCore.Models.Product", "Product")
+					b.HasOne("DynamicPrice.Core.Models.Product", "Product")
 						.WithMany()
 						.HasForeignKey("ProductId")
 						.OnDelete(DeleteBehavior.NoAction)
@@ -269,9 +304,9 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
 					b.Navigation("Product");
 				});
 
-			modelBuilder.Entity("DynamicPriceCore.Models.Order", b =>
+			modelBuilder.Entity("DynamicPrice.Core.Models.Order", b =>
 				{
-					b.HasOne("DynamicPriceCore.Models.Company", "Company")
+					b.HasOne("DynamicPrice.Core.Models.Company", "Company")
 						.WithMany()
 						.HasForeignKey("CompanyId")
 						.OnDelete(DeleteBehavior.Cascade)
@@ -280,15 +315,15 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
 					b.Navigation("Company");
 				});
 
-			modelBuilder.Entity("DynamicPriceCore.Models.OrderItem", b =>
+			modelBuilder.Entity("DynamicPrice.Core.Models.OrderItem", b =>
 				{
-					b.HasOne("DynamicPriceCore.Models.Order", "Order")
+					b.HasOne("DynamicPrice.Core.Models.Order", "Order")
 						.WithMany("OrderItems")
 						.HasForeignKey("OrderId")
 						.OnDelete(DeleteBehavior.Cascade)
 						.IsRequired();
 
-					b.HasOne("DynamicPriceCore.Models.Product", "Product")
+					b.HasOne("DynamicPrice.Core.Models.Product", "Product")
 						.WithMany()
 						.HasForeignKey("ProductId")
 						.OnDelete(DeleteBehavior.Restrict)
@@ -299,9 +334,9 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
 					b.Navigation("Product");
 				});
 
-			modelBuilder.Entity("DynamicPriceCore.Models.PriceDynamic", b =>
+			modelBuilder.Entity("DynamicPrice.Core.Models.PriceDynamic", b =>
 				{
-					b.HasOne("DynamicPriceCore.Models.Product", "Product")
+					b.HasOne("DynamicPrice.Core.Models.Product", "Product")
 						.WithMany("PriceDynamics")
 						.HasForeignKey("ProductId")
 						.OnDelete(DeleteBehavior.Cascade)
@@ -310,35 +345,39 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
 					b.Navigation("Product");
 				});
 
-			modelBuilder.Entity("DynamicPriceCore.Models.PriceRule", b =>
+			modelBuilder.Entity("DynamicPrice.Core.Models.PriceRule", b =>
 				{
-					b.HasOne("DynamicPriceCore.Models.Company", "Company")
+					b.HasOne("DynamicPrice.Core.Models.Company", "Company")
 						.WithMany()
-						.HasForeignKey("CompanyId");
+						.HasForeignKey("CompanyId")
+						.OnDelete(DeleteBehavior.Cascade)
+						.IsRequired();
 
 					b.Navigation("Company");
 				});
 
-			modelBuilder.Entity("DynamicPriceCore.Models.Product", b =>
+			modelBuilder.Entity("DynamicPrice.Core.Models.Product", b =>
 				{
-					b.HasOne("DynamicPriceCore.Models.Company", "Company")
+					b.HasOne("DynamicPrice.Core.Models.Company", "Company")
 						.WithMany()
-						.HasForeignKey("CompanyId");
+						.HasForeignKey("CompanyId")
+						.OnDelete(DeleteBehavior.Cascade)
+						.IsRequired();
 
 					b.Navigation("Company");
 				});
 
-			modelBuilder.Entity("DynamicPriceCore.Models.Cart", b =>
+			modelBuilder.Entity("DynamicPrice.Core.Models.Cart", b =>
 				{
 					b.Navigation("CartItems");
 				});
 
-			modelBuilder.Entity("DynamicPriceCore.Models.Order", b =>
+			modelBuilder.Entity("DynamicPrice.Core.Models.Order", b =>
 				{
 					b.Navigation("OrderItems");
 				});
 
-			modelBuilder.Entity("DynamicPriceCore.Models.Product", b =>
+			modelBuilder.Entity("DynamicPrice.Core.Models.Product", b =>
 				{
 					b.Navigation("PriceDynamics");
 				});

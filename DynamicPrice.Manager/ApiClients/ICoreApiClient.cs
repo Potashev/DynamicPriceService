@@ -9,7 +9,7 @@ namespace DynamicPrice.Manager.ApiClients;
 public interface ICoreApiClient
 {
 	[Post("/api/auth/login")]
-	Task<TokenResponse> LoginManager(LoginViewModel loginVm);
+	Task<TokenResponse> LoginManager(LoginRequest loginVm);
 
 	[Get("/api/company/products")]
 	Task<IEnumerable<ProductViewModel>> GetProducts();

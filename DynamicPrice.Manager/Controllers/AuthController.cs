@@ -25,7 +25,7 @@ public class AuthController : BaseController
 
 	[HttpPost]
 	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> Login(LoginViewModel loginVm)
+	public async Task<IActionResult> Login(LoginRequest loginVm)
 	{
 		if (ModelState.IsValid)
 		{

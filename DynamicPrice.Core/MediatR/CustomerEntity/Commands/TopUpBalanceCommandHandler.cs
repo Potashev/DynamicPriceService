@@ -1,6 +1,5 @@
 ﻿using DynamicPrice.Core.Services;
 using MediatR;
-using System.Globalization;
 
 namespace DynamicPrice.Core.MediatR.CustomerEntity.Commands;
 
@@ -18,9 +17,7 @@ public class TopUpBalanceCommandHandler
 	{
 		var customer = await _userService.GetRequiredCurrentUserAsync();
 
-		var replenishmentAmount = decimal.Parse(request.balanceVm.ReplenishmentAmount, CultureInfo.InvariantCulture);
-
-		customer.Balance += replenishmentAmount;
+		customer.Balance += request.balanceVm.ReplenishmentAmount;
 
 		await _userService.UpdateCurrentUserAsync();
 	}

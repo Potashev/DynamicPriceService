@@ -29,7 +29,7 @@ public static class CustomerEndPoints
 	}
 
 	private static async Task<IResult> TopUp(
-		[FromBody] BalanceViewModel balanceVm,
+		[FromBody] BalanceRequest balanceVm,
 		IMediator mediator)
 	{
 		await mediator.Send(new TopUpBalanceCommand(balanceVm));

@@ -1,15 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace DynamicPrice.Shared.Contracts.ViewModels;
+﻿namespace DynamicPrice.Shared.Contracts.ViewModels;
 
 public class ProductViewModel
 {
-	[Required]   // todo: check
-	public int ProductId { get; set; }
-	public string Title { get; set; }
-	public decimal Price { get; set; }
-	public decimal MinimumPrice { get; set; }
-	public int? Quantity { get; set; }
-	public string? Description { get; set; }
-	public PriceDynamicViewModel[]? PriceDynamics { get; set; }
+	//[Required]   // todo: check
+	public int ProductId { get; init; }
+	public string Title { get; init; } = null!;
+	public decimal Price { get; init; }
+	public decimal MinimumPrice { get; init; }
+	public int? Quantity { get; init; }
+	public string? Description { get; init; }
+	public ICollection<PriceDynamicViewModel> PriceDynamics { get; set; } = [];
 }

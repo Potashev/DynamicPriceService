@@ -13,6 +13,7 @@ public class EditPriceRuleCommandHandler
 	private readonly IMapper _mapper;
 	private readonly IUserService _userService;
 
+	// todo: di
 	public EditPriceRuleCommandHandler(
 		DynamicPriceCoreContext context,
 		IMapper mapper,

@@ -2,16 +2,16 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace DynamicPrice.Client.Infrastructure;
+namespace DynamicPrice.Client.Infrastructure.Extensions;
 
 public static class ServiceCollectionExtensions
 {
 	public static IServiceCollection AddClientCommon(this IServiceCollection services)
 	{
+		// todo: di
 		services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 		services.TryAddScoped<IAuthTokenStore, CookiesAuthTokenStore>();
 		services.AddTransient<AuthHeaderHandler>();
-
 		return services;
 	}
 }

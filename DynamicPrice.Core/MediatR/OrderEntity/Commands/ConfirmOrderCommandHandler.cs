@@ -12,6 +12,7 @@ public class ConfirmOrderCommandHandler
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IUserService _userService;
 
+	// todo: di
 	public ConfirmOrderCommandHandler(
 		DynamicPriceCoreContext context,
 		IUserService userService)

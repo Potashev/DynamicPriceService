@@ -11,7 +11,7 @@ public class AuthController : BaseController
 	private readonly IAuthTokenStore _authTokenStore;
 
 	public AuthController(
-		IAuthTokenStore authTokenStore,
+		IAuthTokenStore authTokenStore, // todo: di
 		ICoreApiClient coreApiClient)
 		: base(coreApiClient)
 	{

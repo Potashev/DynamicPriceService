@@ -2,7 +2,6 @@
 using DynamicPrice.Core.Extensions;
 using DynamicPrice.Core.Mapping;
 using DynamicPrice.Core.Middlewares;
-using DynamicPrice.Core.MinimalAPI;
 using DynamicPrice.Core.Models;
 using DynamicPrice.Core.Services;
 using MassTransit;

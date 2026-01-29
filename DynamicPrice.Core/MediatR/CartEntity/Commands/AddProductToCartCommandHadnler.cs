@@ -15,6 +15,7 @@ public class AddProductToCartCommandHadnler
 	private readonly IMapper _mapper;
 	private readonly IUserService _userService;
 
+	// todo: di
 	public AddProductToCartCommandHadnler(
 		DynamicPriceCoreContext context,
 		IMapper mapper,

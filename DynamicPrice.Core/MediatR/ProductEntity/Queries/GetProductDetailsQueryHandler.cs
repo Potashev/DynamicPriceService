@@ -14,6 +14,7 @@ public class GetProductDetailsQueryHandler
 	private readonly IMapper _mapper;
 	private readonly IUserService _userService;
 
+	// todo: di
 	public GetProductDetailsQueryHandler(
 		DynamicPriceCoreContext context,
 		IMapper mapper,

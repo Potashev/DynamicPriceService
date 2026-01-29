@@ -11,6 +11,7 @@ public class GetActiveCompaniesQueryHandler
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IMapper _mapper;
 
+	// todo: di
 	public GetActiveCompaniesQueryHandler(
 		DynamicPriceCoreContext context,
 		IMapper mapper)

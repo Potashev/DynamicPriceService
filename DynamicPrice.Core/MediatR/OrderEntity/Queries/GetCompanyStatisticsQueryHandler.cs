@@ -12,6 +12,7 @@ public class GetCompanyStatisticsQueryHandler
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IUserService _userService;
 
+	// todo: di
 	public GetCompanyStatisticsQueryHandler(
 		DynamicPriceCoreContext context,
 		IUserService userService)

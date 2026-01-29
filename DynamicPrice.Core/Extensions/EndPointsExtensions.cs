@@ -1,6 +1,8 @@
-﻿namespace DynamicPrice.Core.MinimalAPI;
+﻿using DynamicPrice.Core.MinimalAPI;
 
-public static class EndPoints
+namespace DynamicPrice.Core.Extensions;
+
+public static class EndPointsExtensions
 {
 	public static void MapEndPoints(this IEndpointRouteBuilder app)
 	{

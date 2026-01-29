@@ -7,7 +7,7 @@ public class AuthHeaderHandler : DelegatingHandler
 {
 	private readonly IAuthTokenStore _authTokenStore;
 
-	public AuthHeaderHandler(IAuthTokenStore authTokenStore)
+	public AuthHeaderHandler(IAuthTokenStore authTokenStore)    // todo: di
 	{
 		_authTokenStore = authTokenStore ?? throw new ArgumentNullException(nameof(authTokenStore));
 	}

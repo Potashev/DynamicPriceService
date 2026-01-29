@@ -11,6 +11,7 @@ public class PriceReducingCommandHandler
 	private readonly IUserService _userService;
 	private readonly DynamicPriceCoreContext _context;
 
+	// todo: di
 	public PriceReducingCommandHandler(
 		DynamicPriceCoreContext context,
 		IUserService userService)

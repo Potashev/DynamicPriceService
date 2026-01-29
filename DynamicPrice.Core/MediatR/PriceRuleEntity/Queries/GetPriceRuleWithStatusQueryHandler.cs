@@ -15,11 +15,13 @@ public class GetPriceRuleWithStatusQueryHandler
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IUserService _userService;
 
+	// todo: di
 	public GetPriceRuleWithStatusQueryHandler(
 		DynamicPriceCoreContext context,
 		IMapper mapper,
 		IUserService userService)
 		=> (_mapper, _context, _userService) = (mapper, context, userService);
+
 	public async Task<PriceRuleWithStatus> Handle(
 		GetPriceRuleWithStatusQuery request,
 		CancellationToken cancellationToken)

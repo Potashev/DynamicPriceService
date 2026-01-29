@@ -10,6 +10,7 @@ public class ExceptionHandlingMiddleware
 	private readonly ILogger<ExceptionHandlingMiddleware> _logger;
 	private readonly IHostEnvironment _env;
 
+	// todo: di
 	public ExceptionHandlingMiddleware(
 		RequestDelegate next,
 		ILogger<ExceptionHandlingMiddleware> logger,

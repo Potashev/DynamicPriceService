@@ -1,5 +1,5 @@
 ﻿using DynamicPrice.Core.MediatR.AuthEntity.Commands;
-using DynamicPrice.Shared.Contracts.ViewModels;
+using DynamicPrice.Shared.Contracts.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +18,7 @@ public static class AuthEndPoints
 	}
 
 	private static async Task<IResult> Register(
-		[FromBody] RegisterViewModel registerVm,
+		[FromBody] RegisterRequest registerVm,
 		IMediator mediator)
 	{
 		await mediator.Send(new RegisterCommand(registerVm));
@@ -26,7 +26,7 @@ public static class AuthEndPoints
 	}
 
 	private static async Task<IResult> Login(
-		[FromBody] LoginViewModel loginVm,
+		[FromBody] LoginRequest loginVm,
 		IMediator mediator)
 	{
 		var token = await mediator.Send(new LoginCommand(loginVm));

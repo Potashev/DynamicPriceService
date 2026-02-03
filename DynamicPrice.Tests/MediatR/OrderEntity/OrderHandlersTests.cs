@@ -38,7 +38,7 @@ public class OrderHandlersTests
 		}
 
 		var userServiceMock = new Mock<IUserService>();
-		userServiceMock.Setup(u => u.GetCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = customerId });
+		userServiceMock.Setup(u => u.GetRequiredCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = customerId });
 
 		using (var scope = sp.CreateScope())
 		{
@@ -102,7 +102,7 @@ public class OrderHandlersTests
 
 		var userServiceMock = new Mock<IUserService>();
 		// manager performing completion
-		userServiceMock.Setup(u => u.GetCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = managerId, CompanyId = 20 });
+		userServiceMock.Setup(u => u.GetRequiredCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = managerId, CompanyId = 20 });
 		// customer that will be charged
 		userServiceMock.Setup(u => u.GetUserByIdAsync(customerId)).ReturnsAsync(new ApplicationUser { Id = customerId, Balance = 100m });
 		userServiceMock.Setup(u => u.UpdateUserAsync(It.IsAny<ApplicationUser>())).Returns(Task.CompletedTask).Verifiable();
@@ -165,7 +165,7 @@ public class OrderHandlersTests
 
 		var publishMock = new Mock<IPublishEndpoint>();
 		var userServiceMock = new Mock<IUserService>();
-		userServiceMock.Setup(u => u.GetCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = managerId, CompanyId = 21 });
+		userServiceMock.Setup(u => u.GetRequiredCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = managerId, CompanyId = 21 });
 		userServiceMock.Setup(u => u.GetUserByIdAsync(customerId)).ReturnsAsync(new ApplicationUser { Id = customerId, Balance = 10m }); // not enough
 
 		using (var scope = sp.CreateScope())
@@ -213,7 +213,7 @@ public class OrderHandlersTests
 		}
 
 		var userServiceMock = new Mock<IUserService>();
-		userServiceMock.Setup(u => u.GetCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = customerId });
+		userServiceMock.Setup(u => u.GetRequiredCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = customerId });
 
 		using (var scope = sp.CreateScope())
 		{
@@ -265,7 +265,7 @@ public class OrderHandlersTests
 		}
 
 		var userServiceMock = new Mock<IUserService>();
-		userServiceMock.Setup(u => u.GetCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = customerId });
+		userServiceMock.Setup(u => u.GetRequiredCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = customerId });
 
 		using (var scope = sp.CreateScope())
 		{

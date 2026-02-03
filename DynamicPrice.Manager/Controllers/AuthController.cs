@@ -1,6 +1,6 @@
 ﻿using DynamicPrice.Client.Infrastructure;
 using DynamicPrice.Manager.ApiClients;
-using DynamicPrice.Shared.Contracts.ViewModels;
+using DynamicPrice.Shared.Contracts.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Manager.Controllers;
@@ -10,7 +10,9 @@ public class AuthController : BaseController
 {
 	private readonly IAuthTokenStore _authTokenStore;
 
-	public AuthController(IAuthTokenStore authTokenStore, ICoreApiClient coreApiClient)
+	public AuthController(
+		IAuthTokenStore authTokenStore,
+		ICoreApiClient coreApiClient)
 		: base(coreApiClient)
 	{
 		_authTokenStore = authTokenStore;
@@ -23,7 +25,7 @@ public class AuthController : BaseController
 
 	[HttpPost]
 	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> Login(LoginViewModel loginVm)
+	public async Task<IActionResult> Login(LoginRequest loginVm)
 	{
 		if (ModelState.IsValid)
 		{

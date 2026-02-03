@@ -19,22 +19,27 @@ public class Order
 	/// Номер заказа.
 	/// </summary>
 	[MaxLength(20)]
-	public string Number { get; set; }
+	public required string Number { get; set; }
 
 	/// <summary>
 	/// Идентификатор кастомера, оформившего заказ.
 	/// </summary>
-	public string CustomerId { get; set; }
+	public required string CustomerId { get; set; }
+
+	/// <summary>
+	/// Компания, к которой относится корзина.	//todo: fixed
+	/// </summary>
+	public int CompanyId { get; set; }
 
 	/// <summary>
 	/// Навигационное свойство компании.
 	/// </summary>
-	public Company Company { get; set; }
+	public Company Company { get; set; } = null!;   //todo: used companyId instead
 
 	/// <summary>
 	/// Позиции заказа - продукты с фиксированной ценой.
 	/// </summary>
-	public ICollection<OrderItem> OrderItems { get; set; }
+	public ICollection<OrderItem> OrderItems { get; set; } = [];
 
 	/// <summary>
 	/// Текущий статус заказа.
@@ -44,13 +49,13 @@ public class Order
 	/// <summary>
 	/// Дата и время создания заказа.
 	/// </summary>
-	public DateTime? OrderDate { get; set; }
+	public DateTime OrderDate { get; set; } = DateTime.UtcNow;
 
 	/// <summary>
 	/// Ключ получения заказа — числовой код, который может использоваться при выдаче.
 	/// Доступен кастомеру и необходим для получения заказа.
 	/// </summary>
-	public int ReceiveKey { get; set; }
+	public int? ReceiveKey { get; set; }
 }
 
 /// <summary>

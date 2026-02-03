@@ -28,7 +28,11 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 			LabelNames = new[] { "companyId" }
 		});
 
-	public ReducePriceService(IServiceProvider serviceProvider, IConfiguration config, IHubContext<PriceHub> priceHubContext, ILogger<ReducePriceService> logger)
+	public ReducePriceService(
+		IServiceProvider serviceProvider,
+		IConfiguration config,
+		IHubContext<PriceHub> priceHubContext,
+		ILogger<ReducePriceService> logger)
 	{
 		_serviceProvider = serviceProvider;
 		_priceHubContext = priceHubContext;
@@ -80,7 +84,10 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 		await NoticeOfReduce(product);
 	}
 
-	private decimal ReducePrice(decimal price, double pricingRuleReduction, bool testDrawing = false)
+	private decimal ReducePrice(
+		decimal price,
+		double pricingRuleReduction,
+		bool testDrawing = false)
 	{
 		var reduction = (decimal)pricingRuleReduction * 0.01m * price;
 		price -= reduction;

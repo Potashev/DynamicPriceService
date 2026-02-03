@@ -1,4 +1,7 @@
-﻿using DynamicPrice.Shared.Contracts.ViewModels;
+﻿using DynamicPrice.Shared.Contracts;
+using DynamicPrice.Shared.Contracts.Requests;
+using DynamicPrice.Shared.Contracts.ViewModels;
+using DynamicPrice.Shared.Contracts.ViewModels.Responses;
 using Refit;
 
 namespace DynamicPrice.Customer.ApiClients;
@@ -15,13 +18,13 @@ public interface ICoreApiClient
 	Task<CustomerInfoViewModel> GetCustomer();
 
 	[Put("/api/customer/me/balance")]
-	Task TopUpBalance(BalanceViewModel balanceVm);
+	Task TopUpBalance(BalanceRequest balanceVm);
 
 	[Post("/api/auth/register")]
-	Task RegisterCustomer(RegisterViewModel registerVm);
+	Task RegisterCustomer(RegisterRequest registerVm);
 
 	[Post("/api/auth/login")]
-	Task<TokenResponse> LoginCustomer(LoginViewModel loginVm);
+	Task<TokenResponse> LoginCustomer(LoginRequest loginVm);
 
 	[Get("/api/cart?company-id={companyId}")]
 	Task<CartViewModel> GetCartDetails(string companyId);

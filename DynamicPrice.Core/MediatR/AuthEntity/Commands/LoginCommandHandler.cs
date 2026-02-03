@@ -11,6 +11,8 @@ public class LoginCommandHandler
 	public LoginCommandHandler(IUserService userService)
 		=> _userService = userService;
 
-	public async Task<string> Handle(LoginCommand request, CancellationToken cancellationToken)
+	public async Task<string> Handle(
+		LoginCommand request,
+		CancellationToken cancellationToken)
 		=> await _userService.LoginUserAsync(request.loginVm.Username, request.loginVm.Password);
 }

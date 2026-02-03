@@ -2,8 +2,8 @@
 
 public class OrderItemViewModel
 {
-	public int Id { get; set; }
-	public ProductViewModel Product { get; set; }
-	public decimal? ProductPrice { get; set; }
-	public int Quantity { get; set; }
+	public int Id { get; init; }
+	public ProductViewModel Product { get; init; } = null!;
+	public decimal ProductPrice { get; init; }  //todo: check after removed nullable
+	public int Quantity { get; init; }
 }

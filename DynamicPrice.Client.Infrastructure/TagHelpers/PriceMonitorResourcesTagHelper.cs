@@ -5,7 +5,9 @@ namespace DynamicPrice.Client.Infrastructure.TagHelpers;
 [HtmlTargetElement("price-monitor-resources")]
 public class PriceMonitorResourcesTagHelper : TagHelper
 {
-	public override void Process(TagHelperContext context, TagHelperOutput output)
+	public override void Process(
+		TagHelperContext context,
+		TagHelperOutput output)
 	{
 		output.TagName = null;
 		output.Content.SetHtmlContent($@"

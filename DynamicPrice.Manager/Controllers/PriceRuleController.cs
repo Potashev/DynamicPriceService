@@ -17,7 +17,7 @@ public class PriceRuleController : BaseController
 			"Running" :
 			"Not running";
 
-		return View(priceRuleWithStatus.PriceRuleVm);
+		return View(priceRuleWithStatus.PriceRule);
 	}
 
 	public async Task<IActionResult> Edit(int? id)
@@ -29,12 +29,14 @@ public class PriceRuleController : BaseController
 
 		var priceRuleWithStatus = await CoreApiClient.GetPriceRule();
 
-		return View(priceRuleWithStatus.PriceRuleVm);
+		return View(priceRuleWithStatus.PriceRule);
 	}
 
 	[HttpPost]
 	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> Edit(int id, PriceRuleViewModel priceRuleVm)
+	public async Task<IActionResult> Edit(
+		int id,
+		PriceRuleViewModel priceRuleVm)
 	{
 		if (ModelState.IsValid)
 		{

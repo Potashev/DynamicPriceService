@@ -1,6 +1,6 @@
 ﻿using DynamicPrice.Core.Data;
 using DynamicPrice.Core.Services;
-using DynamicPrice.Shared.Contracts.ViewModels;
+using DynamicPrice.Shared.Contracts.ViewModels.Responses;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,12 +12,16 @@ public class GetCompanyStatisticsQueryHandler
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IUserService _userService;
 
-	public GetCompanyStatisticsQueryHandler(DynamicPriceCoreContext context, IUserService userService)
+	public GetCompanyStatisticsQueryHandler(
+		DynamicPriceCoreContext context,
+		IUserService userService)
 		=> (_context, _userService) = (context, userService);
 
-	public async Task<OrdersStatistics> Handle(GetCompanyStatisticsQuery request, CancellationToken cancellationToken)
+	public async Task<OrdersStatistics> Handle(
+		GetCompanyStatisticsQuery request,
+		CancellationToken cancellationToken)
 	{
-		var manager = await _userService.GetCurrentUserAsync();
+		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var companyOrdersWithAmount = await _context.Orders
 			.Where(o => o.Company.CompanyId == manager.CompanyId)

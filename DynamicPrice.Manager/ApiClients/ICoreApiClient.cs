@@ -1,4 +1,7 @@
-﻿using DynamicPrice.Shared.Contracts.ViewModels;
+﻿using DynamicPrice.Shared.Contracts;
+using DynamicPrice.Shared.Contracts.Requests;
+using DynamicPrice.Shared.Contracts.ViewModels;
+using DynamicPrice.Shared.Contracts.ViewModels.Responses;
 using Refit;
 
 namespace DynamicPrice.Manager.ApiClients;
@@ -6,7 +9,7 @@ namespace DynamicPrice.Manager.ApiClients;
 public interface ICoreApiClient
 {
 	[Post("/api/auth/login")]
-	Task<TokenResponse> LoginManager(LoginViewModel loginVm);
+	Task<TokenResponse> LoginManager(LoginRequest loginVm);
 
 	[Get("/api/company/products")]
 	Task<IEnumerable<ProductViewModel>> GetProducts();

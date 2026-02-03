@@ -14,12 +14,17 @@ public class RemoveProductFromCartCommandHandler
 	private readonly IMapper _mapper;
 	private readonly IUserService _userService;
 
-	public RemoveProductFromCartCommandHandler(DynamicPriceCoreContext context, IMapper mapper, IUserService userService)
+	public RemoveProductFromCartCommandHandler(
+		DynamicPriceCoreContext context,
+		IMapper mapper,
+		IUserService userService)
 		=> (_context, _mapper, _userService) = (context, mapper, userService);
 
-	public async Task<CartViewModel> Handle(RemoveProductFromCartCommand request, CancellationToken cancellationToken)
+	public async Task<CartViewModel> Handle(
+		RemoveProductFromCartCommand request,
+		CancellationToken cancellationToken)
 	{
-		var customer = await _userService.GetCurrentUserAsync();
+		var customer = await _userService.GetRequiredCurrentUserAsync();
 
 		var cartItem = await _context.CartItems
 			.Where(ci => ci.ProductId.ToString() == request.ProductId

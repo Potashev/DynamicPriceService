@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DynamicPrice.Core.Data;
 using DynamicPrice.Shared.Contracts.ViewModels;
+using DynamicPrice.Shared.Contracts.ViewModels.Responses;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,10 +13,14 @@ public class GetCompanyProductsQueryHandler
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IMapper _mapper;
 
-	public GetCompanyProductsQueryHandler(DynamicPriceCoreContext context, IMapper mapper)
+	public GetCompanyProductsQueryHandler(
+		DynamicPriceCoreContext context,
+		IMapper mapper)
 		=> (_context, _mapper) = (context, mapper);
 
-	public async Task<CompanyProductsInfo> Handle(GetCompanyProductsQuery request, CancellationToken cancellationToken)
+	public async Task<CompanyProductsInfo> Handle(
+		GetCompanyProductsQuery request,
+		CancellationToken cancellationToken)
 	{
 
 		var company = await _context.Companies

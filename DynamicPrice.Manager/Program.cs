@@ -1,4 +1,5 @@
 ﻿using DynamicPrice.Client.Infrastructure;
+using DynamicPrice.Client.Infrastructure.Extensions;
 using DynamicPrice.Manager.ApiClients;
 using Refit;
 

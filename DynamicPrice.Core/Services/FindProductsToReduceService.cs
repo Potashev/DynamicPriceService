@@ -33,7 +33,10 @@ public class FindProductsToReduceService : BackgroundService
 		});
 	private readonly ConcurrentDictionary<int, DateTime> _lastMonitorEnd = new();
 
-	public FindProductsToReduceService(IServiceProvider serviceProvider, IConfiguration config, ILogger<FindProductsToReduceService> logger)
+	public FindProductsToReduceService(
+		IServiceProvider serviceProvider,
+		IConfiguration config,
+		ILogger<FindProductsToReduceService> logger)
 	{
 		_serviceProvider = serviceProvider;
 		_logger = logger;
@@ -86,9 +89,9 @@ public class FindProductsToReduceService : BackgroundService
 	}
 
 	private async IAsyncEnumerable<Product> FindProductsToReduceAsync(
-	DynamicPriceCoreContext context,
-	CancellationToken token,
-	int? productsCount = null)
+		DynamicPriceCoreContext context,
+		CancellationToken token,
+		int? productsCount = null)
 	{
 		var activeCompaniesIds = await context.ActiveCompanies
 			.Select(ac => ac.CompanyId)
@@ -99,11 +102,12 @@ public class FindProductsToReduceService : BackgroundService
 
 		var priceRulesActiveCompaniesQuery = context.PriceRules
 			.AsNoTracking()
-			.Where(pr => activeCompaniesIds.Contains((int)pr.CompanyId));
+			.Where(pr => activeCompaniesIds.Contains(pr.CompanyId));
+
 
 		var productsActiveCompaniesQuery = context.Products
 			.AsNoTracking()
-			.Where(p => p.CompanyId.HasValue && activeCompaniesIds.Contains(p.CompanyId.Value));
+			.Where(p => activeCompaniesIds.Contains(p.CompanyId)); //todo: check
 
 		if (productsCount.HasValue)
 			productsActiveCompaniesQuery = productsActiveCompaniesQuery.Take(productsCount.Value);

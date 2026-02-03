@@ -13,16 +13,21 @@ public class CreateProductCommandHandler
 	private readonly IMapper _mapper;
 	private readonly IUserService _userService;
 
-	public CreateProductCommandHandler(DynamicPriceCoreContext context, IMapper mapper, IUserService userService)
+	public CreateProductCommandHandler(
+		DynamicPriceCoreContext context,
+		IMapper mapper,
+		IUserService userService)
 		=> (_context, _mapper, _userService) = (context, mapper, userService);
 
-	public async Task<int> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+	public async Task<int> Handle(
+		CreateProductCommand request,
+		CancellationToken cancellationToken)
 	{
-		var manager = await _userService.GetCurrentUserAsync();
+		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var product = _mapper.Map<Product>(request.ProductVm);
 
-		product.CompanyId = manager.CompanyId;
+		product.CompanyId = manager.CompanyId.Value;
 		product.LastSellTime = DateTime.UtcNow;
 
 		await _context.Products.AddAsync(product, cancellationToken);

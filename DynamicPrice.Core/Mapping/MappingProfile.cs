@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DynamicPrice.Core.Models;
 using DynamicPrice.Shared.Contracts.ViewModels;
+using DynamicPrice.Shared.Contracts.ViewModels.Responses;
 
 namespace DynamicPrice.Core.Mapping;
 

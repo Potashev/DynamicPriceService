@@ -11,7 +11,9 @@ public class RegisterCommandHandler
 	public RegisterCommandHandler(IUserService userService)
 		=> _userService = userService;
 
-	public async Task Handle(RegisterCommand request, CancellationToken cancellationToken)
+	public async Task Handle(
+		RegisterCommand request,
+		CancellationToken cancellationToken)
 		=> await _userService.RegisterUserAsync(
 			request.registerVm.Username,
 			request.registerVm.Password,

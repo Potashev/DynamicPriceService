@@ -2,6 +2,7 @@
 using DynamicPrice.Core.Data;
 using DynamicPrice.Core.Services;
 using DynamicPrice.Shared.Contracts.ViewModels;
+using DynamicPrice.Shared.Contracts.ViewModels.Responses;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,14 +13,19 @@ public class GetPriceRuleWithStatusQueryHandler
 {
 	private readonly IMapper _mapper;
 	private readonly DynamicPriceCoreContext _context;
-	//private IActiveCompaniesService _activeCompaniesService;
 	private readonly IUserService _userService;
 
-	public GetPriceRuleWithStatusQueryHandler(IMapper mapper, DynamicPriceCoreContext context, IUserService userService)
+	public GetPriceRuleWithStatusQueryHandler(
+		DynamicPriceCoreContext context,
+		IMapper mapper,
+		IUserService userService)
 		=> (_mapper, _context, _userService) = (mapper, context, userService);
-	public async Task<PriceRuleWithStatus> Handle(GetPriceRuleWithStatusQuery request, CancellationToken cancellationToken)
+
+	public async Task<PriceRuleWithStatus> Handle(
+		GetPriceRuleWithStatusQuery request,
+		CancellationToken cancellationToken)
 	{
-		var manager = await _userService.GetCurrentUserAsync();
+		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var priceRule = await _context.PriceRules
 			.Where(pr => pr.Company.CompanyId == manager.CompanyId)
@@ -32,6 +38,10 @@ public class GetPriceRuleWithStatusQueryHandler
 				.AsNoTracking()
 				.AnyAsync(ac => ac.CompanyId == cid, cancellationToken);
 
-		return new PriceRuleWithStatus(priceRuleVm, status);
+		return new PriceRuleWithStatus
+		{
+			PriceRule = priceRuleVm,
+			IsActive = status
+		};
 	}
 }

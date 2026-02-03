@@ -12,12 +12,16 @@ public class CancelOrderCommandHandler
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IUserService _userService;
 
-	public CancelOrderCommandHandler(DynamicPriceCoreContext context, IUserService userService)
+	public CancelOrderCommandHandler(
+		DynamicPriceCoreContext context,
+		IUserService userService)
 		=> (_context, _userService) = (context, userService);
 
-	public async Task Handle(CancelOrderCommand request, CancellationToken cancellationToken)
+	public async Task Handle(
+		CancelOrderCommand request,
+		CancellationToken cancellationToken)
 	{
-		var customer = await _userService.GetCurrentUserAsync();
+		var customer = await _userService.GetRequiredCurrentUserAsync();
 
 		var order = await _context.Orders
 			.Where(o => o.OrderId == request.OrderId && o.CustomerId == customer.Id)

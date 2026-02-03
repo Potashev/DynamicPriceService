@@ -2,6 +2,7 @@
 using DynamicPrice.Core.Data;
 using DynamicPrice.Core.Services;
 using DynamicPrice.Shared.Contracts.ViewModels;
+using DynamicPrice.Shared.Contracts.ViewModels.Responses;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,12 +15,17 @@ public class GetCustomerInfoQueryHandler
 	private readonly IMapper _mapper;
 	private readonly IUserService _userService;
 
-	public GetCustomerInfoQueryHandler(DynamicPriceCoreContext context, IMapper mapper, IUserService userService)
+	public GetCustomerInfoQueryHandler(
+		DynamicPriceCoreContext context,
+		IMapper mapper,
+		IUserService userService)
 		=> (_context, _mapper, _userService) = (context, mapper, userService);
 
-	public async Task<CustomerInfoViewModel> Handle(GetCustomerInfoQuery request, CancellationToken cancellationToken)
+	public async Task<CustomerInfoViewModel> Handle(
+		GetCustomerInfoQuery request,
+		CancellationToken cancellationToken)
 	{
-		var customer = await _userService.GetCurrentUserAsync();
+		var customer = await _userService.GetRequiredCurrentUserAsync();
 
 		var customerOrders = await _context.Orders
 			.Include(o => o.Company)

@@ -14,12 +14,17 @@ public class GetCompanyOrderDetailsQueryHandler
 	private readonly IMapper _mapper;
 	private readonly IUserService _userService;
 
-	public GetCompanyOrderDetailsQueryHandler(DynamicPriceCoreContext context, IMapper mapper, IUserService userService)
+	public GetCompanyOrderDetailsQueryHandler(
+		DynamicPriceCoreContext context,
+		IMapper mapper,
+		IUserService userService)
 		=> (_context, _mapper, _userService) = (context, mapper, userService);
 
-	public async Task<OrderViewModel> Handle(GetCompanyOrderDetailsQuery request, CancellationToken cancellationToken)
+	public async Task<OrderViewModel> Handle(
+		GetCompanyOrderDetailsQuery request,
+		CancellationToken cancellationToken)
 	{
-		var manager = await _userService.GetCurrentUserAsync();
+		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var companyOrder = await _context.Orders
 			.Where(o => o.OrderId.ToString() == request.OrderId && o.Company.CompanyId == manager.CompanyId)

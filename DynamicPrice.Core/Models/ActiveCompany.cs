@@ -12,6 +12,11 @@ public class ActiveCompany
 	public int CompanyId { get; set; }
 
 	/// <summary>
+	/// Навигационное свойство на сущность компании.
+	/// </summary>
+	public Company Company { get; set; } = null!;
+
+	/// <summary>
 	/// Временная метка начала мониторинга.
 	/// </summary>
 	public DateTime StartedAt { get; set; } = DateTime.UtcNow;
@@ -20,9 +25,4 @@ public class ActiveCompany
 	/// Временная метка последней проверки активности.
 	/// </summary>
 	public DateTime? LastMonitoring { get; set; }
-
-	/// <summary>
-	/// Навигационное свойство на сущность компании (опционально).
-	/// </summary>
-	public Company? Company { get; set; }
 }

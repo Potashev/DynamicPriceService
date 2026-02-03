@@ -15,14 +15,14 @@ public class PriceRule
 	public int PriceRuleId { get; set; }
 
 	/// <summary>
-	/// Навигационное свойство компании, к которой относится правило.
-	/// </summary>
-	public Company Company { get; set; }
-
-	/// <summary>
 	/// Идентификатор компании.
 	/// </summary>
-	public int? CompanyId { get; set; }     //TODO: make required
+	public int CompanyId { get; set; }
+
+	/// <summary>
+	/// Навигационное свойство компании, к которой относится правило.
+	/// </summary>
+	public Company Company { get; set; } = null!;
 
 	/// <summary>
 	/// Повышение цены продукта (в процентах).

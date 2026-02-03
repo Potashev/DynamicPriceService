@@ -44,7 +44,7 @@ public class AddRemoveCartHandlersTests
 
 		// first call - new cart
 		var userServiceMock = new Mock<IUserService>();
-		userServiceMock.Setup(u => u.GetCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = Guid.NewGuid().ToString() });
+		userServiceMock.Setup(u => u.GetRequiredCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = Guid.NewGuid().ToString() });
 
 		using (var scope = sp.CreateScope())
 		{
@@ -99,7 +99,7 @@ public class AddRemoveCartHandlersTests
 			});
 
 		var userServiceMock = new Mock<IUserService>();
-		userServiceMock.Setup(u => u.GetCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = customerId });
+		userServiceMock.Setup(u => u.GetRequiredCurrentUserAsync()).ReturnsAsync(new ApplicationUser { Id = customerId });
 
 		using (var scope = sp.CreateScope())
 		{

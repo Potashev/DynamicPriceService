@@ -1,5 +1,5 @@
 ﻿using DynamicPrice.Customer.ApiClients;
-using DynamicPrice.Shared.Contracts.ViewModels;
+using DynamicPrice.Shared.Contracts.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Customer.Controllers;
@@ -17,7 +17,8 @@ public class CustomerController : BaseController
 	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> TopUpBalance(string replenishmentAmount)
 	{
-		var balanceViewModel = new BalanceViewModel { ReplenishmentAmount = replenishmentAmount };
+		//todo: pass balancerequest from view instead of string
+		var balanceViewModel = new BalanceRequest { ReplenishmentAmount = decimal.Parse(replenishmentAmount) };
 		await CoreApiClient.TopUpBalance(balanceViewModel);
 		return RedirectToAction(nameof(Index));
 	}

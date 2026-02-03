@@ -2,8 +2,8 @@
 
 public class PriceDynamicViewModel
 {
-	public int Id { get; set; }
-	public int ProductId { get; set; }
-	public decimal Price { get; set; }
-	public DateTime? Date { get; set; }
+	public int Id { get; init; }
+	public int ProductId { get; init; }
+	public decimal Price { get; init; }
+	public DateTime Date { get; init; }
 }

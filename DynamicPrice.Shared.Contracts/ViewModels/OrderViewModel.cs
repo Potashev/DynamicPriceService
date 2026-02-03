@@ -2,15 +2,17 @@
 
 public class OrderViewModel
 {
-	public int OrderId { get; set; }
-	public string Number { get; set; }
-	public string CustomerId { get; set; }
-	public string CustomerName { get; set; }
-	public CompanyViewModel Company { get; set; }
-	public ICollection<OrderItemViewModel> OrderItems { get; set; }
-	public OrderStatus Status { get; set; }
-	public DateTime? OrderDate { get; set; }
-	public int? ReceiveKey { get; set; }
-	public decimal? OrderTotal =>
+	public int OrderId { get; init; }
+	public string Number { get; init; } = null!;
+	public string CustomerId { get; init; } = null!;
+	public string CustomerName { get; set; } = null!;
+	public CompanyViewModel Company { get; init; } = null!;
+	public ICollection<OrderItemViewModel> OrderItems { get; init; } = [];
+	public OrderStatus Status { get; init; }
+	public DateTime OrderDate { get; init; }
+	public int ReceiveKey { get; init; }  //todo: check after removed nullable
+
+	//todo: calculate on server side
+	public decimal OrderTotal =>
 		OrderItems?.Sum(i => i.ProductPrice * i.Quantity) ?? 0m;
 }

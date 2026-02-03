@@ -14,12 +14,17 @@ public class GetProductsQueryHandler
 	private readonly IMapper _mapper;
 	private readonly IUserService _userService;
 
-	public GetProductsQueryHandler(DynamicPriceCoreContext context, IMapper mapper, IUserService userService)
+	public GetProductsQueryHandler(
+		DynamicPriceCoreContext context,
+		IMapper mapper,
+		IUserService userService)
 		=> (_context, _mapper, _userService) = (context, mapper, userService);
 
-	public async Task<IEnumerable<ProductViewModel>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
+	public async Task<IEnumerable<ProductViewModel>> Handle(
+		GetProductsQuery request,
+		CancellationToken cancellationToken)
 	{
-		var manager = await _userService.GetCurrentUserAsync();
+		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var products = await _context.Products
 			.Where(p => p.Company.CompanyId == manager.CompanyId)

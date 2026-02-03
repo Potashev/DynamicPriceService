@@ -21,7 +21,7 @@ public class CartItem
 	/// Навигационное свойство корзины.
 	/// </summary>
 	[JsonIgnore]
-	public Cart Cart { get; set; }
+	public Cart Cart { get; set; } = null!;
 
 	/// <summary>
 	/// Идентификатор продукта.
@@ -31,7 +31,7 @@ public class CartItem
 	/// <summary>
 	/// Навигационное свойство продукта.
 	/// </summary>
-	public Product Product { get; set; }
+	public Product Product { get; set; } = null!;
 
 	/// <summary>
 	/// Количество единиц продукта в корзине.

@@ -8,7 +8,6 @@ public class RegisterCommandHandler
 {
 	private readonly IUserService _userService;
 
-	// todo: di
 	public RegisterCommandHandler(IUserService userService)
 		=> _userService = userService;
 

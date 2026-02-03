@@ -7,7 +7,7 @@ public class SessionAuthTokenStore : IAuthTokenStore
 {
 	private readonly IHttpContextAccessor _contextAccessor;
 
-	public SessionAuthTokenStore(IHttpContextAccessor contextAccessor) // todo: di
+	public SessionAuthTokenStore(IHttpContextAccessor contextAccessor)
 		=> _contextAccessor = contextAccessor
 		?? throw new ArgumentNullException(nameof(contextAccessor));
 
@@ -23,7 +23,7 @@ public class CookiesAuthTokenStore : IAuthTokenStore
 	private readonly IHttpContextAccessor _contextAccessor;
 	private const string CookieName = "DpAuth";
 
-	public CookiesAuthTokenStore(IHttpContextAccessor contextAccessor) // todo: di
+	public CookiesAuthTokenStore(IHttpContextAccessor contextAccessor)
 		=> _contextAccessor = contextAccessor
 		?? throw new ArgumentNullException(nameof(contextAccessor));
 

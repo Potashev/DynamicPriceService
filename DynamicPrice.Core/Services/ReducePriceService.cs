@@ -28,7 +28,6 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 			LabelNames = new[] { "companyId" }
 		});
 
-	// todo: di
 	public ReducePriceService(
 		IServiceProvider serviceProvider,
 		IConfiguration config,

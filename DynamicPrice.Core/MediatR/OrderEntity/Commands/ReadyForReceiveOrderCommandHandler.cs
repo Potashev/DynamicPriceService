@@ -13,7 +13,6 @@ public class ReadyForReceiveOrderCommandHandler
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IUserService _userService;
 
-	// todo: di
 	public ReadyForReceiveOrderCommandHandler(
 		DynamicPriceCoreContext context,
 		IUserService userService)

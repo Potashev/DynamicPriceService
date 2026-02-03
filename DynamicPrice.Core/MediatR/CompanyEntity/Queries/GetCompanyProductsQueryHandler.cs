@@ -13,7 +13,6 @@ public class GetCompanyProductsQueryHandler
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IMapper _mapper;
 
-	// todo: di
 	public GetCompanyProductsQueryHandler(
 		DynamicPriceCoreContext context,
 		IMapper mapper)

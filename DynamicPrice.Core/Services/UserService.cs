@@ -15,7 +15,6 @@ public class UserService : IUserService
 	private readonly UserManager<ApplicationUser> _userManager;
 	private readonly IConfiguration _config;
 
-	// todo: di
 	public UserService(
 		IHttpContextAccessor httpContextAccessor,
 		UserManager<ApplicationUser> userManager,

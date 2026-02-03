@@ -12,7 +12,6 @@ public class CancelOrderCommandHandler
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IUserService _userService;
 
-	// todo: di
 	public CancelOrderCommandHandler(
 		DynamicPriceCoreContext context,
 		IUserService userService)

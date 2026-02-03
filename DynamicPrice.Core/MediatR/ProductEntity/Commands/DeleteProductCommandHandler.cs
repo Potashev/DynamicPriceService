@@ -11,7 +11,6 @@ public class DeleteProductCommandHandler
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IUserService _userService;
 
-	// todo: di
 	public DeleteProductCommandHandler(
 		DynamicPriceCoreContext context,
 		IUserService userService)

@@ -15,7 +15,6 @@ public class GetPriceRuleWithStatusQueryHandler
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IUserService _userService;
 
-	// todo: di
 	public GetPriceRuleWithStatusQueryHandler(
 		DynamicPriceCoreContext context,
 		IMapper mapper,

@@ -14,7 +14,6 @@ public class CompleteOrderCommandHandler
 	private readonly IUserService _userService;
 	private readonly IPublishEndpoint _publishEndpoint;
 
-	// todo: di
 	public CompleteOrderCommandHandler(
 		DynamicPriceCoreContext context,
 		IUserService userService,

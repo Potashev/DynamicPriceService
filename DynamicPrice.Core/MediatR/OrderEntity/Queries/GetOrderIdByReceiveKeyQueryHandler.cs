@@ -12,7 +12,6 @@ public class GetOrderIdByReceiveKeyQueryHandler
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IUserService _userService;
 
-	// todo: di
 	public GetOrderIdByReceiveKeyQueryHandler(
 		DynamicPriceCoreContext context,
 		IUserService userService)

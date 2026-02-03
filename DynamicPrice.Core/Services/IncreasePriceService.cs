@@ -20,7 +20,6 @@ public class IncreasePriceService : IConsumer<PriceIncreaseEvent>
 	private readonly IHubContext<PriceHub> _priceHubContext;
 	private readonly ILogger<IncreasePriceService> _logger;
 
-	// todo: di
 	public IncreasePriceService(
 		IServiceProvider serviceProvider,
 		IHubContext<PriceHub> priceHubContext,

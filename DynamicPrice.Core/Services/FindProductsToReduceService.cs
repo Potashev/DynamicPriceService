@@ -33,7 +33,6 @@ public class FindProductsToReduceService : BackgroundService
 		});
 	private readonly ConcurrentDictionary<int, DateTime> _lastMonitorEnd = new();
 
-	// todo: di
 	public FindProductsToReduceService(
 		IServiceProvider serviceProvider,
 		IConfiguration config,
@@ -49,7 +48,6 @@ public class FindProductsToReduceService : BackgroundService
 		{
 			while (!token.IsCancellationRequested)
 			{
-				// todo: di
 				using var scope = _serviceProvider.CreateScope();
 				var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
 				var publishEndpoint = scope.ServiceProvider.GetRequiredService<IPublishEndpoint>();
@@ -90,7 +88,6 @@ public class FindProductsToReduceService : BackgroundService
 		}
 	}
 
-	// todo: di
 	private async IAsyncEnumerable<Product> FindProductsToReduceAsync(
 		DynamicPriceCoreContext context,
 		CancellationToken token,

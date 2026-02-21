@@ -32,7 +32,7 @@ public static class CartEndPoints
 	}
 
 	private static async Task<IResult> AddProduct(
-		[FromBody] int? productId,
+		[FromBody] int productId,
 		IMediator mediator)
 	{
 		var cart = await mediator.Send(new AddProductToCartCommand(productId.ToString()));
@@ -40,7 +40,7 @@ public static class CartEndPoints
 	}
 
 	private static async Task<IResult> RemoveProduct(
-		int? productId,
+		int productId,
 		IMediator mediator)
 	{
 		var cart = await mediator.Send(new RemoveProductFromCartCommand(productId.ToString()));

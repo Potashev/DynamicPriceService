@@ -31,22 +31,22 @@ public static class CustomerOrderEndPoints
 	}
 
 	private static async Task<IResult> ConfirmOrder(
-		[FromBody] int? cartId,
+		[FromBody] int cartId,
 		IMediator mediator,
 		CancellationToken cancellationToken)
 	{
 		var orderId = await mediator.Send(new ConfirmOrderCommand(
-			(int)cartId),
+			cartId),
 			cancellationToken);
 		return Results.Ok(orderId);
 	}
 
 	private static async Task<IResult> CancelOrder(
-		[FromBody] int? orderId,
+		[FromBody] int orderId,
 		IMediator mediator,
 		CancellationToken cancellationToken)
 	{
-		await mediator.Send(new CancelOrderCommand((int)orderId), cancellationToken);
+		await mediator.Send(new CancelOrderCommand(orderId), cancellationToken);
 		return Results.Ok(orderId);
 	}
 }

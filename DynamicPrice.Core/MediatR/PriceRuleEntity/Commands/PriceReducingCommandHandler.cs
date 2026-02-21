@@ -1,4 +1,5 @@
 ﻿using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Core.Models;
 using DynamicPrice.Core.Services;
 using MediatR;
@@ -22,7 +23,7 @@ public class PriceReducingCommandHandler
 	{
 		var manager = await _userService.GetRequiredCurrentUserAsync();
 
-		var companyId = (int)manager.CompanyId;
+		var companyId = manager.CompanyId.Value;
 
 		var activeCompany = await _context.ActiveCompanies.FindAsync(companyId);
 

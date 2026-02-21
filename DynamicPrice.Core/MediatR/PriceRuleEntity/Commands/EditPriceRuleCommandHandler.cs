@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Core.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -29,13 +30,13 @@ public class EditPriceRuleCommandHandler
 		var priceRule = await _context.PriceRules
 			.FirstOrDefaultAsync(pr => pr.PriceRuleId == updatedPriceRuleVm.PriceRuleId && pr.Company.CompanyId == manager.CompanyId, cancellationToken);
 
-		if (priceRule != null)
-		{
-			_mapper.Map(updatedPriceRuleVm, priceRule);
+		if (priceRule is null)
+			throw new NotFoundException("Правило не найдено!");
 
-			_context.Update(priceRule);
-			await _context.SaveChangesAsync(cancellationToken);
-		}
+		_mapper.Map(updatedPriceRuleVm, priceRule);
+
+		_context.Update(priceRule);
+		await _context.SaveChangesAsync(cancellationToken);
 
 		return priceRule.PriceRuleId;
 	}

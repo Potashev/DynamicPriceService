@@ -12,13 +12,13 @@
 	<thead>
 		<tr>
 			<th>
-				@Html.DisplayNameFor(model => model.OrderItems.FirstOrDefault().Product.Title)
+				@Html.DisplayNameFor(model => model.OrderItems.ElementAt(0).Product.Title)
 			</th>
 			<th>
-				@Html.DisplayNameFor(model => model.OrderItems.FirstOrDefault().ProductPrice)
+				@Html.DisplayNameFor(model => model.OrderItems.ElementAt(0).ProductPrice)
 			</th>
 			<th>
-				@Html.DisplayNameFor(model => model.OrderItems.FirstOrDefault().Quantity)
+				@Html.DisplayNameFor(model => model.OrderItems.ElementAt(0).Quantity)
 			</th>
 			<th></th>
 		</tr>

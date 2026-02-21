@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Core.Services;
 using DynamicPrice.Shared.Contracts.ViewModels;
 using MediatR;
@@ -32,6 +33,9 @@ public class RemoveProductFromCartCommandHandler
 			.Include(ci => ci.Cart)
 				.ThenInclude(c => c.Company)
 			.FirstOrDefaultAsync(cancellationToken);
+
+		if (cartItem is null)
+			throw new NotFoundException("Элемент корзины не найден!");
 
 		cartItem.Quantity -= 1;
 

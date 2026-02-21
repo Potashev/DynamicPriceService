@@ -39,8 +39,8 @@ public class GetCustomerInfoQueryHandler
 
 		var customerInfo = new CustomerInfoViewModel
 		{
-			Name = customer.UserName,
-			Email = customer.Email,
+			Name = customer.UserName ?? string.Empty,
+			Email = customer.Email ?? string.Empty,
 			Balance = customer.Balance,
 			Orders = ordersVm
 		};

@@ -13,9 +13,9 @@
 <table class="table table-striped">
 	<thead>
 		<tr>
-			<th>@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Title)</th>
-			<th>@Html.DisplayNameFor(model => model.Products.FirstOrDefault().PriceDynamics)</th>
-			<th>@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Price)</th>
+			<th>@Html.DisplayNameFor(model => model.Products.ElementAt(0).Title)</th>
+			<th>@Html.DisplayNameFor(model => model.Products.ElementAt(0).PriceDynamics)</th>
+			<th>@Html.DisplayNameFor(model => model.Products.ElementAt(0).Price)</th>
 			<th></th>
 		</tr>
 	</thead>

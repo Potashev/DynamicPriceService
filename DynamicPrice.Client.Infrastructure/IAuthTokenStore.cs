@@ -12,10 +12,11 @@ public class SessionAuthTokenStore : IAuthTokenStore
 		?? throw new ArgumentNullException(nameof(contextAccessor));
 
 	public async Task<string> GetToken()
-		=> _contextAccessor.HttpContext.Session.GetString("AuthToken");
+		=> _contextAccessor?.HttpContext?.Session?.GetString("AuthToken")
+		?? string.Empty; //todo: or throw?
 
 	public async Task SetToken(string authToken)
-		=> _contextAccessor.HttpContext.Session.SetString("AuthToken", authToken);
+		=> _contextAccessor?.HttpContext?.Session.SetString("AuthToken", authToken);
 }
 
 public class CookiesAuthTokenStore : IAuthTokenStore

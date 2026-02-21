@@ -37,7 +37,8 @@ public class UserService : IUserService
 			?? throw new UnauthorizedException("User is not authenticated.");
 
 	public async Task<ApplicationUser> GetUserByIdAsync(string userId)
-	=> await _userManager.FindByIdAsync(userId);
+	=> await _userManager.FindByIdAsync(userId)
+		?? throw new NotFoundException("User not found.");
 
 	public async Task<string> LoginUserAsync(
 		string username,

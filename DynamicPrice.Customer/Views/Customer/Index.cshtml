@@ -82,10 +82,10 @@
 <table class="table table-striped">
 	<thead>
 		<tr>
-			<th>@Html.DisplayNameFor(model => model.Orders.FirstOrDefault().Number)</th>
-			<th>@Html.DisplayNameFor(model => model.Orders.FirstOrDefault().Company.Title)</th>
-			<th>@Html.DisplayNameFor(model => model.Orders.FirstOrDefault().OrderDate)</th>
-			<th>@Html.DisplayNameFor(model => model.Orders.FirstOrDefault().Status)</th>
+			<th>@Html.DisplayNameFor(model => model.Orders.ElementAt(0).Number)</th>
+			<th>@Html.DisplayNameFor(model => model.Orders.ElementAt(0).Company.Title)</th>
+			<th>@Html.DisplayNameFor(model => model.Orders.ElementAt(0).OrderDate)</th>
+			<th>@Html.DisplayNameFor(model => model.Orders.ElementAt(0).Status)</th>
 			<th></th>
 		</tr>
 	</thead>

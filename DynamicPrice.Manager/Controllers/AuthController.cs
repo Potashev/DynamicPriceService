@@ -34,9 +34,7 @@ public class AuthController : BaseController
 			// return View(loginVm);
 
 			var tokenResponse = await CoreApiClient.LoginManager(loginVm);
-
-			_authTokenStore.SetToken(tokenResponse.Token);
-
+			await _authTokenStore.SetToken(tokenResponse.Token);
 			return RedirectToAction(nameof(Index), "Products");
 		}
 		return View();

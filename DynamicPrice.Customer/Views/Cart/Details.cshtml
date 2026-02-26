@@ -24,16 +24,16 @@
 			{
 				<tr>
 					<td>
-						@Html.DisplayFor(modelItem => item.Product.Title)
+						@Html.DisplayFor(modelItem => item.Product!.Title)
 					</td>
 					<td>
-						@Html.DisplayFor(modelItem => item.Product.Description)
+						@Html.DisplayFor(modelItem => item.Product!.Description)
 					</td>
 					<td>
 						@Html.DisplayFor(modelItem => item.Quantity)
 					</td>
 					<td>
-						@Html.DisplayFor(modelItem => item.Product.Price)
+						@Html.DisplayFor(modelItem => item.Product!.Price)
 					</td>
 					<td>
 						<a asp-action="AddProduct" asp-route-productId="@item.Product?.ProductId">Add</a> |

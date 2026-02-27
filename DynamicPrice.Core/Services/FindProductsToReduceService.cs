@@ -4,6 +4,7 @@ using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Prometheus;
 using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 
 namespace DynamicPrice.Core.Services;
 
@@ -90,7 +91,7 @@ public class FindProductsToReduceService : BackgroundService
 
 	private async IAsyncEnumerable<Product> FindProductsToReduceAsync(
 		DynamicPriceCoreContext context,
-		CancellationToken token,
+		[EnumeratorCancellation] CancellationToken token,	//todo: check
 		int? productsCount = null)
 	{
 		var activeCompaniesIds = await context.ActiveCompanies

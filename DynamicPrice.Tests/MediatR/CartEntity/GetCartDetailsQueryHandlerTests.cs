@@ -42,7 +42,7 @@ public class GetCartDetailsQueryHandlerTests
 			{
 				CartId = c.CartId,
 				Company = new CompanyViewModel { CompanyId = c.Company.CompanyId, Title = c.Company.Title },
-				CartItems = c.CartItems?.Select(ci => new CartItemViewModel { Id = ci.Id, CartId = ci.CartId, ProductId = ci.ProductId, Quantity = ci.Quantity, Product = new ProductViewModel { ProductId = ci.Product.ProductId, Title = ci.Product.Title, Price = ci.Product.Price } }).ToList()
+				CartItems = c.CartItems?.Select(ci => new CartItemViewModel { Id = ci.Id, CartId = ci.CartId, ProductId = ci.ProductId, Quantity = ci.Quantity, Product = new ProductViewModel { ProductId = ci.Product.ProductId, Title = ci.Product.Title, Price = ci.Product.Price } }).ToList() ?? new List<CartItemViewModel>()
 			});
 
 		var userServiceMock = new Mock<IUserService>();

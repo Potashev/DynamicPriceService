@@ -39,7 +39,7 @@ public class AddRemoveCartHandlersTests
 			{
 				CartId = c.CartId,
 				Company = new CompanyViewModel { CompanyId = c.Company.CompanyId, Title = c.Company.Title },
-				CartItems = c.CartItems?.Select(ci => new CartItemViewModel { Id = ci.Id, CartId = ci.CartId, ProductId = ci.ProductId, Product = new ProductViewModel { ProductId = ci.Product != null ? ci.Product.ProductId : ci.ProductId, Title = ci.Product?.Title, Price = ci.Product?.Price ?? default, MinimumPrice = ci.Product?.MinimumPrice ?? default, Quantity = ci.Product?.Quantity }, Quantity = ci.Quantity }).ToList()
+				CartItems = c.CartItems?.Select(ci => new CartItemViewModel { Id = ci.Id, CartId = ci.CartId, ProductId = ci.ProductId, Product = new ProductViewModel { ProductId = ci.Product != null ? ci.Product.ProductId : ci.ProductId, Title = ci.Product?.Title ?? string.Empty, Price = ci.Product?.Price ?? default, MinimumPrice = ci.Product?.MinimumPrice ?? default, Quantity = ci.Product?.Quantity }, Quantity = ci.Quantity }).ToList() ?? new List<CartItemViewModel>()
 			});
 
 		// first call - new cart
@@ -95,7 +95,7 @@ public class AddRemoveCartHandlersTests
 			{
 				CartId = c.CartId,
 				Company = new CompanyViewModel { CompanyId = c.Company.CompanyId, Title = c.Company.Title },
-				CartItems = c.CartItems?.Select(ci => new CartItemViewModel { Id = ci.Id, CartId = ci.CartId, ProductId = ci.ProductId, Product = new ProductViewModel { ProductId = ci.Product != null ? ci.Product.ProductId : ci.ProductId, Title = ci.Product?.Title, Price = ci.Product?.Price ?? default, MinimumPrice = ci.Product?.MinimumPrice ?? default, Quantity = ci.Product?.Quantity }, Quantity = ci.Quantity }).ToList()
+				CartItems = c.CartItems?.Select(ci => new CartItemViewModel { Id = ci.Id, CartId = ci.CartId, ProductId = ci.ProductId, Product = new ProductViewModel { ProductId = ci.Product != null ? ci.Product.ProductId : ci.ProductId, Title = ci.Product?.Title ?? string.Empty, Price = ci.Product?.Price ?? default, MinimumPrice = ci.Product?.MinimumPrice ?? default, Quantity = ci.Product?.Quantity }, Quantity = ci.Quantity }).ToList() ?? new List<CartItemViewModel>()
 			});
 
 		var userServiceMock = new Mock<IUserService>();

@@ -68,8 +68,8 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 		if (priceRule == null) return;
 
 		product.Price = Math.Max(
-					//ReducePrice(product.Price, priceRule.Reduction, true),
-					ReducePrice(product.Price, priceRule.Reduction),
+					ReducePrice(product.Price, priceRule.Reduction, testDrawing: true),
+			//ReducePrice(product.Price, priceRule.Reduction),
 			product.MinimumPrice);
 
 		await context.PriceDynamics.AddAsync(new PriceDynamic

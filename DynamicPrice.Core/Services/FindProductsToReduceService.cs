@@ -116,7 +116,7 @@ public class FindProductsToReduceService : BackgroundService
 			from p in productsActiveCompaniesQuery
 			join pr in priceRulesActiveCompaniesQuery
 				on p.CompanyId equals pr.CompanyId
-			where EF.Functions.DateDiffSecond(p.LastSellTime.Value, DateTime.UtcNow) > pr.NoSellSeconds
+			where EF.Functions.DateDiffSecond(p.LastSellTime, DateTime.UtcNow) > pr.NoSellSeconds
 			select p;
 
 		await foreach (var product in query.AsAsyncEnumerable().WithCancellation(token))

@@ -5,16 +5,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Customer.Controllers;
 
-public class AuthController : BaseController
+public class AuthController : Controller
 {
+	private readonly ICoreApiClient _coreApiClient;
 	private readonly IAuthTokenStore _authTokenStore;
 
 	public AuthController(
 		IAuthTokenStore authTokenStore,
 		ICoreApiClient coreApiClient)
-		: base(coreApiClient)
 	{
 		_authTokenStore = authTokenStore;
+		_coreApiClient = coreApiClient;
 	}
 
 	public IActionResult RegisterCustomer()
@@ -27,7 +28,7 @@ public class AuthController : BaseController
 	public async Task<IActionResult> RegisterCustomer(RegisterRequest registerVm)
 	{
 		//registerVm.Role = "Manager";   //todo: looks not good
-		await CoreApiClient.RegisterCustomer(registerVm);
+		await _coreApiClient.RegisterCustomer(registerVm);
 		return RedirectToAction(nameof(LoginCustomer));
 	}
 
@@ -47,9 +48,12 @@ public class AuthController : BaseController
 			// ModelState.AddModelError(string.Empty, "Invalid login attempt.");
 			// return View(loginVm);
 
-			var tokenResponse = await CoreApiClient.LoginCustomer(loginVm);
+			var tokenResponse = await _coreApiClient.LoginCustomer(loginVm);
 			await _authTokenStore.SetToken(tokenResponse.Token);
-			return RedirectToAction(nameof(Index), "Companies");
+
+			return RedirectToAction(
+				nameof(CompaniesController.Index),
+				nameof(CompaniesController).Replace("Controller", ""));
 		}
 		return View();
 	}

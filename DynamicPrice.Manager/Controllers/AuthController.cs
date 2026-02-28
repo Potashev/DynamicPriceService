@@ -5,17 +5,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Manager.Controllers;
 
-//todo: try to remove from basecontroller - customer too
-public class AuthController : BaseController
+public class AuthController : Controller
 {
+	private readonly ICoreApiClient _coreApiClient;
 	private readonly IAuthTokenStore _authTokenStore;
 
 	public AuthController(
 		IAuthTokenStore authTokenStore,
 		ICoreApiClient coreApiClient)
-		: base(coreApiClient)
 	{
 		_authTokenStore = authTokenStore;
+		_coreApiClient = coreApiClient;
 	}
 
 	public IActionResult Login()
@@ -33,9 +33,12 @@ public class AuthController : BaseController
 			// ModelState.AddModelError(string.Empty, "Invalid login attempt.");
 			// return View(loginVm);
 
-			var tokenResponse = await CoreApiClient.LoginManager(loginVm);
+			var tokenResponse = await _coreApiClient.LoginManager(loginVm);
 			await _authTokenStore.SetToken(tokenResponse.Token);
-			return RedirectToAction(nameof(Index), "Products");
+
+			return RedirectToAction(
+				nameof(ProductsController.Index),
+				nameof(ProductsController).Replace("Controller", ""));
 		}
 		return View();
 	}

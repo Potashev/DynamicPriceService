@@ -10,9 +10,17 @@ public class OrderViewModel
 	public ICollection<OrderItemViewModel> OrderItems { get; init; } = [];
 	public OrderStatus Status { get; init; }
 	public DateTime OrderDate { get; init; }
-	public int ReceiveKey { get; init; }  //todo: check after removed nullable
+	public int? ReceiveKey { get; init; } = null;
 
-	//todo: calculate on server side
+	//TODO: looks not good
 	public decimal OrderTotal =>
 		OrderItems?.Sum(i => i.ProductPrice * i.Quantity) ?? 0m;
+}
+
+public enum OrderStatus
+{
+	Confirmed,
+	Ready,
+	Completed,
+	Canceled
 }

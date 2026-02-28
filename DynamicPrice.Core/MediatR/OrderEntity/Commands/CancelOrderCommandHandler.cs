@@ -42,7 +42,7 @@ public class CancelOrderCommandHandler
 		}
 
 		order.Status = OrderStatus.Canceled;
-		order.ReceiveKey = 0;
+		order.ReceiveKey = null;
 
 		await _context.SaveChangesAsync(cancellationToken);
 

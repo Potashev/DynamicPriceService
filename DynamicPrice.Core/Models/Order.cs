@@ -13,7 +13,7 @@ public class Order
 	/// <summary>
 	/// Идентификатор заказа.
 	/// </summary>
-	public int OrderId { get; set; }    //TODO: make guid
+	public int OrderId { get; set; }    //todo: make guid
 
 	/// <summary>
 	/// Номер заказа.

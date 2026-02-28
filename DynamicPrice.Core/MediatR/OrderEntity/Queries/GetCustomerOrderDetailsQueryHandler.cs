@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Models;
 using DynamicPrice.Core.Services;
 using DynamicPrice.Shared.Contracts.ViewModels;
 using MediatR;
@@ -33,8 +34,6 @@ public class GetCustomerOrderDetailsQueryHandler
 			.Include(o => o.Company)
 			.FirstOrDefaultAsync(cancellationToken);
 
-		var customerOrderVm = _mapper.Map<OrderViewModel>(customerOrder);
-
-		return customerOrderVm;
+		return _mapper.Map<OrderViewModel>(customerOrder);
 	}
 }

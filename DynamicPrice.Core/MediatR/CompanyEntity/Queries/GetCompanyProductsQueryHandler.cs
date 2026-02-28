@@ -31,7 +31,7 @@ public class GetCompanyProductsQueryHandler
 
 		var products = await _context.Products
 			.Where(p => p.CompanyId == company.CompanyId)
-			.Include(p => p.PriceDynamics)  //TODO: linq set lenght
+			.Include(p => p.PriceDynamics)  //todo: linq set lenght
 			.ToArrayAsync(cancellationToken);
 
 		return new CompanyProductsInfo

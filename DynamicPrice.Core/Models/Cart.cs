@@ -9,7 +9,7 @@ public class Cart
 	/// <summary>
 	/// Идентификатор корзины.
 	/// </summary>
-	public int CartId { get; set; } //TODO: make guid?
+	public int CartId { get; set; } //todo: make guid?
 
 	/// <summary>
 	/// Идентификатор клиента.

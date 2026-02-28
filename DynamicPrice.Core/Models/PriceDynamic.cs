@@ -12,7 +12,7 @@ public class PriceDynamic
 	/// <summary>
 	/// Идентификатор.
 	/// </summary>
-	public int Id { get; set; }     //TODO: make guid
+	public int Id { get; set; }     //todo: make guid
 
 	/// <summary>
 	/// Идентификатор продукта.

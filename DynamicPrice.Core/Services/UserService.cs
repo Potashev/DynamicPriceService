@@ -60,7 +60,7 @@ public class UserService : IUserService
 		string email,
 		string role)
 	{
-		//TODO: make better
+		//todo: make better
 		ApplicationUser user = new()
 		{
 			UserName = username,

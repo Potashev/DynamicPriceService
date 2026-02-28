@@ -55,7 +55,7 @@ public class CompleteOrderCommandHandler
 		}
 
 		order.Status = OrderStatus.Completed;
-		order.ReceiveKey = 0;
+		order.ReceiveKey = null;
 
 		await _context.SaveChangesAsync(cancellationToken);
 		await _userService.UpdateUserAsync(customer);

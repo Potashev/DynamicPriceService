@@ -8,14 +8,14 @@ public static class MigrationExtensions
 	public static async Task ApplyMigrationsAsync(this IApplicationBuilder app)
 	{
 		using var scope = app.ApplicationServices.CreateScope();
-		var services = scope.ServiceProvider;
+		var serviceProvider = scope.ServiceProvider;
 
-		var dynamicPriceDb = services.GetRequiredService<DynamicPriceCoreContext>();
-		await dynamicPriceDb.Database.MigrateAsync();
+		var dynamicPriceContext = serviceProvider.GetRequiredService<DynamicPriceCoreContext>();
+		await dynamicPriceContext.Database.MigrateAsync();
 
-		var identityDb = services.GetRequiredService<IdentityContext>();
-		await identityDb.Database.MigrateAsync();
+		var identityContext = serviceProvider.GetRequiredService<IdentityContext>();
+		await identityContext.Database.MigrateAsync();
 
-		await DbInitializer.SeedDataAsync(services);
+		await DbInitializer.SeedDataAsync(serviceProvider);
 	}
 }

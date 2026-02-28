@@ -1,4 +1,4 @@
-﻿namespace DynamicPrice.Shared.Contracts;
+﻿namespace DynamicPrice.Shared.Contracts.ViewModels;
 
 public enum OrderStatus
 {

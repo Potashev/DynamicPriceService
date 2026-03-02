@@ -47,14 +47,9 @@ public static class ProductsEndPoints
 	}
 
 	private static async Task<IResult> Edit(
-		int id,
 		ProductViewModel productVm,
 		IMediator mediator)
 	{
-		if (id != productVm.ProductId)
-		{
-			return Results.BadRequest();
-		}
 		var productId = await mediator.Send(new EditProductCommand(productVm));
 		return Results.Ok(productId);
 	}

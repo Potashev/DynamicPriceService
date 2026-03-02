@@ -13,9 +13,9 @@ public class PriceRuleController : BaseController
 	{
 		var priceRuleWithStatus = await CoreApiClient.GetPriceRule();
 
-		ViewData["RuleStatus"] = priceRuleWithStatus.IsActive ?
-			"Running" :
-			"Not running";
+		ViewData["RuleStatus"] = priceRuleWithStatus.IsActive 
+			? "Running"
+			: "Not running";
 
 		return View(priceRuleWithStatus.PriceRule);
 	}
@@ -34,9 +34,7 @@ public class PriceRuleController : BaseController
 
 	[HttpPost]
 	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> Edit(
-		int id,
-		PriceRuleViewModel priceRuleVm)
+	public async Task<IActionResult> Edit(PriceRuleViewModel priceRuleVm)
 	{
 		if (ModelState.IsValid)
 		{

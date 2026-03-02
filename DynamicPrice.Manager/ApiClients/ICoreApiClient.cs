@@ -20,8 +20,8 @@ public interface ICoreApiClient
 	[Post("/api/company/products")]
 	Task CreateProduct(ProductViewModel productVm);
 
-	[Put("/api/company/products/{id}")]
-	Task UpdateProduct(int id, ProductViewModel productVm);
+	[Put("/api/company/products/{productVm.ProductId}")]
+	Task UpdateProduct(ProductViewModel productVm);
 
 	[Delete("/api/company/products/{id}")]
 	Task DeleteProduct(int id);

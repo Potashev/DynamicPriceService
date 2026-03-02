@@ -54,13 +54,11 @@ public class ProductsController : BaseController
 
 	[HttpPost]
 	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> Edit(
-		int id,
-		ProductViewModel productVm)   //todo: looks not good
+	public async Task<IActionResult> Edit(ProductViewModel productVm)
 	{
 		if (ModelState.IsValid)
 		{
-			await CoreApiClient.UpdateProduct(id, productVm);
+			await CoreApiClient.UpdateProduct(productVm);
 			return RedirectToAction(nameof(Index));
 		}
 		return View(productVm);
@@ -68,13 +66,12 @@ public class ProductsController : BaseController
 
 	public async Task<IActionResult> Delete(int? id)
 	{
-		if (id == null)
-		{
-			return NotFound();
-		}
+		if (id is null) return NotFound();
 
 		var productVm = await CoreApiClient.GetProduct((int)id);
-		return productVm == null ? NotFound() : View(productVm);
+		return productVm == null 
+			? NotFound() 
+			: View(productVm);
 	}
 
 	[HttpPost]

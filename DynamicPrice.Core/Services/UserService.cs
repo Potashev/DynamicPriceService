@@ -40,6 +40,7 @@ public class UserService : IUserService
 	=> await _userManager.FindByIdAsync(userId)
 		?? throw new NotFoundException("User not found.");
 
+	//todo: contains password hash in db
 	public async Task<string> LoginUserAsync(
 		string username,
 		string password)

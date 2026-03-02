@@ -14,5 +14,5 @@ public class LoginCommandHandler
 	public async Task<string> Handle(
 		LoginCommand request,
 		CancellationToken cancellationToken)
-		=> await _userService.LoginUserAsync(request.loginVm.Username, request.loginVm.Password);
+		=> await _userService.LoginUserAsync(request.loginVm);
 }

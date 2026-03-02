@@ -1,5 +1,6 @@
 ﻿using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Core.Models;
+using DynamicPrice.Shared.Contracts.Requests;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
@@ -41,12 +42,10 @@ public class UserService : IUserService
 		?? throw new NotFoundException("User not found.");
 
 	//todo: contains password hash in db
-	public async Task<string> LoginUserAsync(
-		string username,
-		string password)
+	public async Task<string> LoginUserAsync(LoginRequest request)
 	{
-		var user = await _userManager.FindByNameAsync(username);
-		if (user == null || !await _userManager.CheckPasswordAsync(user, password))
+		var user = await _userManager.FindByNameAsync(request.Username);
+		if (user == null || !await _userManager.CheckPasswordAsync(user, request.Password))
 			throw new ArgumentException("Unauthorized!");
 
 		var roles = await _userManager.GetRolesAsync(user);
@@ -55,30 +54,26 @@ public class UserService : IUserService
 		return token;
 	}
 
-	public async Task RegisterUserAsync(
-		string username,
-		string password,
-		string email,
-		string role)
+	public async Task RegisterUserAsync(RegisterRequest request)
 	{
 		//todo: make better
 		ApplicationUser user = new()
 		{
-			UserName = username,
-			Email = email,
-			Balance = role switch
+			UserName = request.Username,
+			Email = request.Email,
+			Balance = request.Role switch
 			{
 				"Customer" => 0,
 				_ => throw new ArgumentException("Invalid user role"),
 			}
 		};
-		var result = await _userManager.CreateAsync(user, password);
+		var result = await _userManager.CreateAsync(user, request.Password);
 		if (!result.Succeeded)
 		{
 			throw new ApplicationException($"User creation failed!");
 		}
 
-		await _userManager.AddToRoleAsync(user, role);
+		await _userManager.AddToRoleAsync(user, request.Role);
 	}
 
 	public async Task UpdateCurrentUserAsync()
@@ -130,6 +125,6 @@ public interface IUserService
 	Task UpdateCurrentUserAsync();
 	Task UpdateUserAsync(ApplicationUser user);
 	Task<ApplicationUser> GetUserByIdAsync(string userId);
-	Task RegisterUserAsync(string username, string password, string email, string role);
-	Task<string> LoginUserAsync(string username, string password);
+	Task RegisterUserAsync(RegisterRequest registerRequest);
+	Task<string> LoginUserAsync(LoginRequest loginRequest);
 }

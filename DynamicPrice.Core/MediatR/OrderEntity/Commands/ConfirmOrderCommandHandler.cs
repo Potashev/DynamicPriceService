@@ -40,7 +40,7 @@ public class ConfirmOrderCommandHandler
 			Company = cart.Company,
 			Status = OrderStatus.Confirmed,
 			OrderDate = DateTime.UtcNow,
-			OrderItems = []
+			//OrderItems = []
 		};
 
 		foreach (var ci in cart.CartItems)

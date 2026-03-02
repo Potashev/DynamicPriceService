@@ -39,7 +39,8 @@ public class Order
 	/// <summary>
 	/// Позиции заказа - продукты с фиксированной ценой.
 	/// </summary>
-	public ICollection<OrderItem> OrderItems { get; set; } = [];
+	//public ICollection<OrderItem> OrderItems { get; set; } = [];
+	public ICollection<OrderItem> OrderItems { get; } = [];
 
 	/// <summary>
 	/// Текущий статус заказа.
@@ -56,6 +57,32 @@ public class Order
 	/// Доступен кастомеру и необходим для получения заказа.
 	/// </summary>
 	public int? ReceiveKey { get; set; }
+
+	public void UpdateProductsLastSellTime()
+	{
+		foreach (var item in OrderItems)
+		{
+			item.Product.LastSellTime = OrderDate;
+		}
+	}
+
+	//todo: add and use other methods
+	public void MarkAsReady()
+	{
+		if (Status != OrderStatus.Confirmed)
+			throw new InvalidOperationException("Заказ не может быть подготовлен");
+
+		Status = OrderStatus.Ready;
+	}
+
+	public void MarkAsCompleted()
+	{
+		if (Status is not OrderStatus.Ready)
+			throw new InvalidOperationException("Заказ не может быть завершён");
+
+		Status = OrderStatus.Completed;
+		ReceiveKey = null;
+	}
 }
 
 /// <summary>

@@ -91,7 +91,7 @@ public class FindProductsToReduceService : BackgroundService
 
 	private async IAsyncEnumerable<Product> FindProductsToReduceAsync(
 		DynamicPriceCoreContext context,
-		[EnumeratorCancellation] CancellationToken token,	//todo: check
+		[EnumeratorCancellation] CancellationToken token,
 		int? productsCount = null)
 	{
 		var activeCompaniesIds = await context.ActiveCompanies

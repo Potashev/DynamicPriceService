@@ -89,7 +89,7 @@ public class OrderHandlersTests
 				Company = company,
 				Status = OrderStatus.Ready,
 				OrderDate = DateTime.UtcNow.AddMinutes(-5),
-				OrderItems = []
+				//OrderItems = []
 			};
 			order.OrderItems.Add(new OrderItem { Product = product, ProductId = product.ProductId, Quantity = 3, ProductPrice = product.Price });
 			await ctx.Orders.AddAsync(order);
@@ -155,7 +155,7 @@ public class OrderHandlersTests
 				Company = company,
 				Status = OrderStatus.Ready,
 				OrderDate = DateTime.UtcNow,
-				OrderItems = []
+				//OrderItems = []
 			};
 			order.OrderItems.Add(new OrderItem { Product = product, ProductId = product.ProductId, Quantity = 3, ProductPrice = product.Price });
 			await ctx.Orders.AddAsync(order);
@@ -204,7 +204,7 @@ public class OrderHandlersTests
 				Company = company,
 				Status = OrderStatus.Confirmed,
 				OrderDate = DateTime.UtcNow,
-				OrderItems = []
+				//OrderItems = []
 			};
 			order.OrderItems.Add(new OrderItem { Product = product, ProductId = product.ProductId, Quantity = 2, ProductPrice = product.Price });
 			await ctx.Orders.AddAsync(order);
@@ -256,7 +256,7 @@ public class OrderHandlersTests
 				Company = company,
 				Status = OrderStatus.Completed,
 				OrderDate = DateTime.UtcNow,
-				OrderItems = []
+				//OrderItems = []
 			};
 			order.OrderItems.Add(new OrderItem { Product = product, ProductId = product.ProductId, Quantity = 1, ProductPrice = product.Price });
 			await ctx.Orders.AddAsync(order);

@@ -49,18 +49,18 @@ public class CompleteOrderCommandHandler
 
 		customer.Balance -= orderTotalAmount;
 
-		foreach (var oi in order.OrderItems)
-		{
-			oi.Product.LastSellTime = order.OrderDate;
-		}
-
-		order.Status = OrderStatus.Completed;
-		order.ReceiveKey = null;
+		order.UpdateProductsLastSellTime();
+		order.MarkAsCompleted();
 
 		await _context.SaveChangesAsync(cancellationToken);
 		await _userService.UpdateUserAsync(customer);
 
 		await _publishEndpoint.Publish(new PriceIncreaseEvent(order.OrderItems), cancellationToken);
+
+		//foreach (var item in order.OrderItems)
+		//	await _publishEndpoint.Publish(
+		//		new PriceIncreaseEvent(item.ProductId),
+		//		cancellationToken);
 
 		return order.OrderId;
 	}

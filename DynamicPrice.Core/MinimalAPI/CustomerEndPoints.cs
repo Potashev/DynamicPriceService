@@ -2,7 +2,6 @@
 using DynamicPrice.Core.MediatR.CustomerEntity.Queries;
 using DynamicPrice.Shared.Contracts.Requests;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Core.MinimalAPI;
 
@@ -29,7 +28,7 @@ public static class CustomerEndPoints
 	}
 
 	private static async Task<IResult> TopUp(
-		[FromBody] BalanceRequest balanceVm,
+		BalanceRequest balanceVm,
 		IMediator mediator)
 	{
 		await mediator.Send(new TopUpBalanceCommand(balanceVm));

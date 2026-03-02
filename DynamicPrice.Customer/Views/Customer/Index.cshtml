@@ -1,4 +1,5 @@
-﻿@using DynamicPrice.Shared.Contracts.ViewModels
+﻿@using DynamicPrice.Shared.Contracts.Requests
+@using DynamicPrice.Shared.Contracts.ViewModels
 @using DynamicPrice.Shared.Contracts.ViewModels.Responses
 @model CustomerInfoViewModel
 
@@ -35,12 +36,15 @@
 		</dd>
 	</dl>
 </div>
-<form asp-action="TopUpBalance">
+
+@* <form asp-action="TopUpBalance">
 	@Html.AntiForgeryToken()
 	<label>Top up the balance:</label>
 	<input type="text" name="replenishmentAmount" />
 	<input type="submit" value="Top up" class="btn btn-primary" />
-</form>
+</form> *@
+
+@await Html.PartialAsync("_TopUpBalanceForm", new BalanceRequest())
 
 @if (readyForReceiveOrders.Any())
 {

@@ -15,11 +15,9 @@ public class CustomerController : BaseController
 
 	[HttpPost, ActionName("TopUpBalance")]
 	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> TopUpBalance(string replenishmentAmount)
+	public async Task<IActionResult> TopUpBalance(BalanceRequest balanceRequest)
 	{
-		//todo: pass balancerequest from view instead of string
-		var balanceViewModel = new BalanceRequest { ReplenishmentAmount = decimal.Parse(replenishmentAmount) };
-		await CoreApiClient.TopUpBalance(balanceViewModel);
+		await CoreApiClient.TopUpBalance(balanceRequest);
 		return RedirectToAction(nameof(Index));
 	}
 }

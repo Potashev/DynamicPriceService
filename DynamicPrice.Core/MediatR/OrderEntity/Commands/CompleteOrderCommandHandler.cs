@@ -55,12 +55,10 @@ public class CompleteOrderCommandHandler
 		await _context.SaveChangesAsync(cancellationToken);
 		await _userService.UpdateUserAsync(customer);
 
-		await _publishEndpoint.Publish(new PriceIncreaseEvent(order.OrderItems), cancellationToken);
-
-		//foreach (var item in order.OrderItems)
-		//	await _publishEndpoint.Publish(
-		//		new PriceIncreaseEvent(item.ProductId),
-		//		cancellationToken);
+		foreach (var item in order.OrderItems)
+			await _publishEndpoint.Publish(
+				new PriceIncreaseEvent(item.ProductId, item.Quantity),
+				cancellationToken);
 
 		return order.OrderId;
 	}

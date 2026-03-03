@@ -38,7 +38,7 @@ public class IncreasePriceService : IConsumer<PriceIncreaseEvent>
 		{
 			try
 			{
-				await IncreasePrices(msg.OrderItems);
+				await IncreasePrice(msg.ProductId, msg.Quantity);
 			}
 			catch (Exception ex)
 			{
@@ -48,53 +48,26 @@ public class IncreasePriceService : IConsumer<PriceIncreaseEvent>
 		}
 	}
 
-	private async Task IncreasePrices(IEnumerable<OrderItem> OrderItems)
+	private async Task IncreasePrice(int productId, int quantity)
 	{
 		using var scope = _serviceProvider.CreateScope();
 		var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
 
-		var companyId = OrderItems.FirstOrDefault()?.Product.CompanyId;
+		var product = await context.Products
+			.FirstOrDefaultAsync(p => p.ProductId == productId);
+
+		if (product == null) return;
+
 		var priceRule = await context.PriceRules
-			.FirstOrDefaultAsync(p => p.Company.CompanyId == companyId);
+			.FirstOrDefaultAsync(r => r.Company.CompanyId == product.CompanyId);
 
-		if (priceRule == null)
-		{
-			_logger.LogWarning("PriceRule not found for company {CompanyId}", companyId);
-			return;
-		}
+		if (priceRule == null) return;
 
-		IncreasePrice(OrderItems, priceRule);
+		var priceIncrease = product.Price * (decimal)priceRule.Increase * 0.01m * quantity;	//todo: compare with reducing
+		product.Price += priceIncrease;
 
 		await context.SaveChangesAsync();
 
-		await NoticeOfIncrease(OrderItems);
-	}
-
-	private void IncreasePrice(
-		IEnumerable<OrderItem> OrderItems,
-		PriceRule priceRule)
-	{
-		foreach (var orderProduct in OrderItems)
-		{
-			var product = orderProduct.Product;
-			var increase = product.Price * (decimal)priceRule.Increase * 0.01m * orderProduct.Quantity;
-			product.Price += increase;
-		}
-	}
-
-	private async Task NoticeOfIncrease(IEnumerable<OrderItem> OrderItems)
-	{
-		foreach (var orderProduct in OrderItems)
-		{
-			var product = orderProduct.Product;
-			try
-			{
-				await _priceHubContext.SendPriceUpdateToProductGroup(product.ProductId, product.Price);
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError(ex, "Failed to notify hub about product {ProductId}", product.ProductId);
-			}
-		}
+		await _priceHubContext.SendPriceUpdateToProductGroup(product.ProductId, product.Price);
 	}
 }

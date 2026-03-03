@@ -68,9 +68,9 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 		if (priceRule == null) return;
 
 		product.Price = Math.Max(
-					ReducePrice(product.Price, priceRule.Reduction, testDrawing: true),
-			//ReducePrice(product.Price, priceRule.Reduction),
-			product.MinimumPrice);
+					//ReducePrice(product.Price, priceRule.Reduction, testDrawing: true),
+					ReducePrice(product.Price, priceRule.Reduction),
+					product.MinimumPrice);
 
 		await context.PriceDynamics.AddAsync(new PriceDynamic
 		{
@@ -81,7 +81,7 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 
 		await context.SaveChangesAsync();
 
-		await NoticeOfReduce(product);
+		await _priceHubContext.SendPriceUpdateToProductGroup(product.ProductId, product.Price);
 	}
 
 	private decimal ReducePrice(
@@ -101,18 +101,6 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 		}
 
 		return price;
-	}
-
-	private async Task NoticeOfReduce(Product product)
-	{
-		try
-		{
-			await _priceHubContext.SendPriceUpdateToProductGroup(product.ProductId, product.Price);
-		}
-		catch (Exception ex)
-		{
-			_logger.LogError(ex, "Failed to notify hub about product {ProductId}", product.ProductId);
-		}
 	}
 }
 

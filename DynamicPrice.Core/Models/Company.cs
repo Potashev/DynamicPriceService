@@ -15,4 +15,9 @@ public class Company
 	/// Название компании.
 	/// </summary>
 	public required string Title { get; set; }
+
+	/// <summary>
+	/// 
+	/// </summary>
+	public int PriceHistoryLimit { get; set; }
 }

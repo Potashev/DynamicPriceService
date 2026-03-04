@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Shared.Contracts.ViewModels;
 using DynamicPrice.Shared.Contracts.ViewModels.Responses;
 using MediatR;
@@ -24,14 +25,14 @@ public class GetCompanyProductsQueryHandler
 	{
 
 		var company = await _context.Companies
-			.FirstOrDefaultAsync(c => c.CompanyId.ToString() == request.CompanyId, cancellationToken);
-
-		if (company == null)
-			throw new KeyNotFoundException($"Company with ID {request.CompanyId} not found.");
+			.FirstOrDefaultAsync(c => c.CompanyId.ToString() == request.CompanyId, cancellationToken)
+			?? throw new NotFoundException("Company not found");
 
 		var products = await _context.Products
 			.Where(p => p.CompanyId == company.CompanyId)
-			.Include(p => p.PriceDynamics)  //todo: linq set lenght
+			.Include(p => p.PriceDynamics
+				.OrderByDescending(pd => pd.Date)
+				.Take(company.PriceHistoryLimit))	//todo: check
 			.ToArrayAsync(cancellationToken);
 
 		return new CompanyProductsInfo

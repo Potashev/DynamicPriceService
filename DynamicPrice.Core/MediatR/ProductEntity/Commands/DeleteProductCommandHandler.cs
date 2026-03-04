@@ -1,4 +1,5 @@
 ﻿using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Core.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -23,11 +24,10 @@ public class DeleteProductCommandHandler
 		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var product = await _context.Products
-			.FirstOrDefaultAsync(p => p.ProductId == request.ProductId && p.CompanyId == manager.CompanyId, cancellationToken);
-		if (product != null)
-		{
-			_context.Products.Remove(product);
-			await _context.SaveChangesAsync(cancellationToken);
-		}
+			.FirstOrDefaultAsync(p => p.ProductId == request.ProductId && p.CompanyId == manager.CompanyId, cancellationToken)
+			?? throw new NotFoundException("Product not found.");
+
+		_context.Products.Remove(product);
+		await _context.SaveChangesAsync(cancellationToken);
 	}
 }

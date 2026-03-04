@@ -29,10 +29,8 @@ public class EditProductCommandHandler
 		var updatedProductVm = request.ProductVm;
 
 		var product = await _context.Products
-			.FirstOrDefaultAsync(p => p.ProductId == updatedProductVm.ProductId && p.CompanyId == manager.CompanyId, cancellationToken);
-
-		if (product is null)
-			throw new NotFoundException("Правило не найдено!");
+			.FirstOrDefaultAsync(p => p.ProductId == updatedProductVm.ProductId && p.CompanyId == manager.CompanyId, cancellationToken)
+			?? throw new NotFoundException("Product not found.");
 
 		_mapper.Map(updatedProductVm, product);
 

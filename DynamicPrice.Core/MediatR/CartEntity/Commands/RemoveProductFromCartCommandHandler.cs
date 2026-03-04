@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DynamicPrice.Core.Data;
 using DynamicPrice.Core.Exceptions;
+using DynamicPrice.Core.Models;
 using DynamicPrice.Core.Services;
 using DynamicPrice.Shared.Contracts.ViewModels;
 using MediatR;
@@ -27,23 +28,17 @@ public class RemoveProductFromCartCommandHandler
 	{
 		var customer = await _userService.GetRequiredCurrentUserAsync();
 
-		var cartItem = await _context.CartItems
-			.Where(ci => ci.ProductId.ToString() == request.ProductId
-				&& ci.Cart.CustomerId == customer.Id)
-			.Include(ci => ci.Cart)
-				.ThenInclude(c => c.Company)
-			.FirstOrDefaultAsync(cancellationToken);
+		var cart = await _context.Carts
+			.Where(c => c.CustomerId == customer.Id
+				&& c.CartItems.Any(ci => ci.ProductId == request.ProductId))
+			.Include(c => c.CartItems)
+			.FirstOrDefaultAsync(cancellationToken)
+			?? throw new NotFoundException("Cart not found");
 
-		if (cartItem is null)
-			throw new NotFoundException("Элемент корзины не найден!");
-
-		cartItem.Quantity -= 1;
-
-		if (cartItem.Quantity == 0)
-			_context.CartItems.Remove(cartItem);
+		cart.RemoveItem(request.ProductId);
 
 		await _context.SaveChangesAsync(cancellationToken);
 
-		return _mapper.Map<CartViewModel>(cartItem.Cart);
+		return _mapper.Map<CartViewModel>(cart);
 	}
 }

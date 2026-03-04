@@ -43,7 +43,7 @@ public static class CartEndPoints
 		int productId,
 		IMediator mediator)
 	{
-		var cart = await mediator.Send(new RemoveProductFromCartCommand(productId.ToString()));
-		return Results.Ok(cart.Company.CompanyId);
+		var cart = await mediator.Send(new RemoveProductFromCartCommand(productId));
+		return Results.Ok(cart.CompanyId);
 	}
 }

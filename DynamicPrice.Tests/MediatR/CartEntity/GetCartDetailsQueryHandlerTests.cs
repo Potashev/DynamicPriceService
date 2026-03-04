@@ -30,7 +30,9 @@ public class GetCartDetailsQueryHandlerTests
 			var product = new Product { ProductId = 50, Company = company, CompanyId = company.CompanyId, Title = "Prod", Price = 9m };
 			await ctx.Products.AddAsync(product);
 
-			var cart = new Cart { CustomerId = customerId, Company = company, CartItems = [] };
+			//var cart = new Cart { CustomerId = customerId, Company = company, CartItems = [] };
+			var cart = new Cart(customerId, company);
+
 			cart.CartItems.Add(new CartItem { Product = product, ProductId = product.ProductId, Quantity = 1, Cart = cart });
 			await ctx.Carts.AddAsync(cart);
 			await ctx.SaveChangesAsync();

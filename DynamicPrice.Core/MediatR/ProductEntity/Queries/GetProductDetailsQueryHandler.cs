@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Core.Services;
 using DynamicPrice.Shared.Contracts.ViewModels;
 using MediatR;
@@ -28,7 +29,9 @@ public class GetProductDetailsQueryHandler
 
 		var product = await _context.Products
 			.Include(p => p.PriceDynamics)
-			.FirstOrDefaultAsync(product => product.ProductId == request.ProductId && product.CompanyId == manager.CompanyId, cancellationToken);
+			.FirstOrDefaultAsync(p => p.ProductId == request.ProductId && p.CompanyId == manager.CompanyId, cancellationToken)
+			?? throw new NotFoundException("Product not found.");
+
 		return _mapper.Map<ProductViewModel>(product);
 	}
 }

@@ -1,4 +1,8 @@
-﻿namespace DynamicPrice.Core.Models;
+﻿using Bogus.DataSets;
+using DynamicPrice.Core.Exceptions;
+using Microsoft.EntityFrameworkCore;
+
+namespace DynamicPrice.Core.Models;
 
 /// <summary>
 /// Корзина клиента для конкретной компании.
@@ -14,7 +18,7 @@ public class Cart
 	/// <summary>
 	/// Идентификатор клиента.
 	/// </summary>
-	public required string CustomerId { get; set; }
+	public string CustomerId { get; set; }
 
 	/// <summary>
 	/// Компания, к которой относится корзина.	//todo: fixed
@@ -30,4 +34,44 @@ public class Cart
 	/// Коллекция элементов в корзине.
 	/// </summary>
 	public ICollection<CartItem> CartItems { get; set; } = [];
+
+	private Cart() { }
+
+	public Cart(string customerId, Company company)
+	{
+		CustomerId = customerId;
+		Company = company;
+	}
+
+	public void AddItem(int productId)
+	{
+		var existingItem = CartItems
+			.FirstOrDefault(ci => ci.ProductId == productId);
+
+		if (existingItem is null)
+		{
+			CartItems.Add(new CartItem
+			{
+				Cart = this,
+				ProductId = productId,
+				Quantity = 1
+			});
+		}
+		else
+		{
+			existingItem.Quantity += 1;
+		}
+	}
+
+	public void RemoveItem(int productId)
+	{
+		var cartItem = CartItems
+			.FirstOrDefault(ci => ci.ProductId == productId)
+			?? throw new NotFoundException("Cart item not found");
+
+		cartItem.Quantity -= 1;
+
+		if (cartItem.Quantity == 0)
+			CartItems.Remove(cartItem);
+	}
 }

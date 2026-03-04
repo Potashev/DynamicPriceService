@@ -83,7 +83,9 @@ public class AddRemoveCartHandlersTests
 			await ctx.Companies.AddAsync(company);
 			var product = new Product { ProductId = productId, Company = company, CompanyId = company.CompanyId, Title = "P2", Price = 7m };
 			await ctx.Products.AddAsync(product);
-			var cart = new Cart { CustomerId = customerId, Company = company, CartItems = [] };
+			//var cart = new Cart { CustomerId = customerId, Company = company, CartItems = [] };
+			var cart = new Cart(customerId, company);
+
 			cart.CartItems.Add(new CartItem { Product = product, ProductId = product.ProductId, Quantity = 2, Cart = cart });
 			await ctx.Carts.AddAsync(cart);
 			await ctx.SaveChangesAsync();
@@ -105,7 +107,7 @@ public class AddRemoveCartHandlersTests
 		{
 			var ctx = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
 			var handler = new RemoveProductFromCartCommandHandler(ctx, mapperMock.Object, userServiceMock.Object);
-			var result = await handler.Handle(new RemoveProductFromCartCommand(productId.ToString()), default);
+			var result = await handler.Handle(new RemoveProductFromCartCommand(productId), default);
 			result.CartItems.First().Quantity.Should().Be(1);
 		}
 
@@ -114,7 +116,7 @@ public class AddRemoveCartHandlersTests
 		{
 			var ctx = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
 			var handler = new RemoveProductFromCartCommandHandler(ctx, mapperMock.Object, userServiceMock.Object);
-			var result = await handler.Handle(new RemoveProductFromCartCommand(productId.ToString()), default);
+			var result = await handler.Handle(new RemoveProductFromCartCommand(productId), default);
 			result.CartItems.Should().BeEmpty();
 		}
 	}

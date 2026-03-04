@@ -128,7 +128,7 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 
-//todo: check need it?
+//TODO: check need it?
 app.UseCookiePolicy(new CookiePolicyOptions
 {
 	MinimumSameSitePolicy = SameSiteMode.Strict,

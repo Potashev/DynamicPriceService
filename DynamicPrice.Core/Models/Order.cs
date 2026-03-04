@@ -1,5 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DynamicPrice.Core.Exceptions;
+using MassTransit.Transports;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Cryptography;
 
 namespace DynamicPrice.Core.Models;
 
@@ -19,12 +22,12 @@ public class Order
 	/// Номер заказа.
 	/// </summary>
 	[MaxLength(20)]
-	public required string Number { get; set; }
+	public string Number { get; set; }
 
 	/// <summary>
 	/// Идентификатор кастомера, оформившего заказ.
 	/// </summary>
-	public required string CustomerId { get; set; }
+	public string CustomerId { get; set; }
 
 	/// <summary>
 	/// Компания, к которой относится корзина.	//todo: fixed
@@ -58,31 +61,89 @@ public class Order
 	/// </summary>
 	public int? ReceiveKey { get; set; }
 
-	public void UpdateProductsLastSellTime()
+	private Order() { }
+
+	public Order(string customerId, Company company)
 	{
-		foreach (var item in OrderItems)
+		CustomerId = customerId;
+		Company = company;
+
+		Number = GenerateOrderNumber();
+		Status = OrderStatus.Confirmed;
+		OrderDate = DateTime.UtcNow;
+	}
+
+	public void AddItems(ICollection<CartItem> CartItems)
+	{
+		foreach (var item in CartItems)
 		{
-			item.Product.LastSellTime = OrderDate;
+			var product = item.Product;
+
+			OrderItems.Add(new OrderItem
+			{
+				Order = this,
+				Product = product,
+				ProductPrice = product.Price,
+				Quantity = item.Quantity
+			});
+
+			if (product.Quantity is not null)
+				product.Quantity -= item.Quantity;
 		}
 	}
 
-	//todo: add and use other methods
 	public void MarkAsReady()
 	{
-		if (Status != OrderStatus.Confirmed)
-			throw new InvalidOperationException("Заказ не может быть подготовлен");
+		if (Status is not OrderStatus.Confirmed)
+			throw new BusinessException("Only confirmed orders can be set to ready for receive");
 
+		ReceiveKey = GenerateReceiveKey();
 		Status = OrderStatus.Ready;
 	}
 
 	public void MarkAsCompleted()
 	{
 		if (Status is not OrderStatus.Ready)
-			throw new InvalidOperationException("Заказ не может быть завершён");
+			throw new BusinessException("Only ready for receive orders can be set as completed");
+
+		foreach (var item in OrderItems)
+		{
+			item.Product.LastSellTime = OrderDate;
+		}
 
 		Status = OrderStatus.Completed;
 		ReceiveKey = null;
 	}
+
+	public void MarkAsCanceled()
+	{
+		if (Status is OrderStatus.Canceled or OrderStatus.Completed)
+			throw new BusinessException("Only confirmed or ready orders can be canceled.");
+
+		foreach (var item in OrderItems)
+		{
+			if (item.Product.Quantity is not null)
+				item.Product.Quantity += item.Quantity;
+		}
+
+		Status = OrderStatus.Canceled;
+		ReceiveKey = null;
+	}
+
+	// Example: "3C-48291"
+	private static string GenerateOrderNumber()
+	{
+		var guidBytes = Guid.NewGuid().ToByteArray();
+
+		int firstDigit = guidBytes[0] % 10;
+		char letter = (char)('A' + (guidBytes[1] % 26));
+		int numberPart = BitConverter.ToInt32(guidBytes, 2) & 0x7FFFFFFF;
+		string lastDigits = (numberPart % 100000).ToString("D5");
+
+		return $"{firstDigit}{letter}-{lastDigits}";
+	}
+
+	private static int GenerateReceiveKey() => RandomNumberGenerator.GetInt32(100_000, 1_000_000);
 }
 
 /// <summary>

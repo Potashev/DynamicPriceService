@@ -1,4 +1,5 @@
 ﻿using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Core.Models;
 using DynamicPrice.Core.Services;
 using MediatR;
@@ -26,22 +27,13 @@ public class ReadyForReceiveOrderCommandHandler
 
 		var order = await _context.Orders
 			.Where(o => o.OrderId.ToString() == request.OrderId && o.Company.CompanyId == manager.CompanyId)
-			.FirstOrDefaultAsync(cancellationToken);
+			.FirstOrDefaultAsync(cancellationToken)
+			?? throw new NotFoundException("Order not found.");
 
-		if (order is null)
-			throw new Exception("Order not found.");
-
-		if (order.Status is not OrderStatus.Confirmed)
-			throw new Exception("Only confirmed orders can be set to ready for receive.");
-
-		order.ReceiveKey = GenerateReceiveKey();
-		order.Status = OrderStatus.Ready;
+		order.MarkAsReady();
 
 		await _context.SaveChangesAsync(cancellationToken);
-
 		return;
 	}
-
-	private int GenerateReceiveKey() => RandomNumberGenerator.GetInt32(100_000, 1_000_000);
 }
 

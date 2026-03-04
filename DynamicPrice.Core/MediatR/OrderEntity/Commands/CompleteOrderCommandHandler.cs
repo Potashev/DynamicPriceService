@@ -1,4 +1,5 @@
 ﻿using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Core.Models;
 using DynamicPrice.Core.Services;
 using MassTransit;
@@ -30,26 +31,23 @@ public class CompleteOrderCommandHandler
 			.Where(o => o.OrderId.ToString() == request.OrderId && o.Company.CompanyId == manager.CompanyId)
 			.Include(o => o.OrderItems)
 				.ThenInclude(oi => oi.Product)
-			.FirstOrDefaultAsync(cancellationToken);
-
-		if (order is null)
-			throw new Exception("Order not found.");
+			.FirstOrDefaultAsync(cancellationToken)
+			?? throw new NotFoundException("Order not found.");
 
 		if (order.Status is not OrderStatus.Ready)
-			throw new Exception("Only ready for receive orders can be completed.");
+			throw new BusinessException("Only ready for receive orders can be completed.");
 
 		var customer = await _userService.GetUserByIdAsync(order.CustomerId)
-			?? throw new Exception("Customer not found.");
+			?? throw new NotFoundException("Customer not found.");
 
 		var orderTotalAmount = order.OrderItems
 			.Sum(oi => oi.Quantity * oi.ProductPrice);
 
 		if (customer.Balance < orderTotalAmount)
-			throw new Exception("Top up the balance.");
+			throw new BusinessException("Top up the balance.");
 
 		customer.Balance -= orderTotalAmount;
 
-		order.UpdateProductsLastSellTime();
 		order.MarkAsCompleted();
 
 		await _context.SaveChangesAsync(cancellationToken);

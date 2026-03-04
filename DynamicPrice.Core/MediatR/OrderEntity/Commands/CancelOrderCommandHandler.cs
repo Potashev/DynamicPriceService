@@ -1,4 +1,5 @@
 ﻿using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Core.Models;
 using DynamicPrice.Core.Services;
 using MediatR;
@@ -27,25 +28,12 @@ public class CancelOrderCommandHandler
 			.Where(o => o.OrderId == request.OrderId && o.CustomerId == customer.Id)
 			.Include(o => o.OrderItems)
 				.ThenInclude(oi => oi.Product)
-			.FirstOrDefaultAsync(cancellationToken);
+			.FirstOrDefaultAsync(cancellationToken)
+			?? throw new NotFoundException("Order not found.");
 
-		if (order is null)
-			throw new Exception("Order not found.");
-
-		if (order.Status is OrderStatus.Canceled or OrderStatus.Completed)
-			throw new Exception("Only confirmed or ready orders can be canceled.");
-
-		foreach (var oi in order.OrderItems)
-		{
-			if (oi.Product.Quantity != null)
-				oi.Product.Quantity += oi.Quantity;
-		}
-
-		order.Status = OrderStatus.Canceled;
-		order.ReceiveKey = null;
+		order.MarkAsCanceled();
 
 		await _context.SaveChangesAsync(cancellationToken);
-
 		return;
 	}
 }

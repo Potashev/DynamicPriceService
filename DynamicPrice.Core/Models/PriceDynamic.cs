@@ -20,11 +20,6 @@ public class PriceDynamic
 	public int ProductId { get; set; }
 
 	/// <summary>
-	/// Навигационное свойство продукта.
-	/// </summary>
-	public Product Product { get; set; } = null!;
-
-	/// <summary>
 	/// Цена продукта на момент записи.
 	/// </summary>
 	public decimal Price { get; set; }

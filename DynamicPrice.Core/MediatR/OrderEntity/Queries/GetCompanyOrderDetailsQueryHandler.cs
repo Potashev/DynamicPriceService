@@ -34,7 +34,7 @@ public class GetCompanyOrderDetailsQueryHandler
 
 		var companyOrderVm = _mapper.Map<OrderViewModel>(companyOrder);
 
-		companyOrderVm.CustomerName = (await _userService.GetUserByIdAsync(companyOrderVm.CustomerId)).UserName ?? string.Empty;	//todo: or throw?
+		companyOrderVm.CustomerName = (await _userService.GetUserByIdAsync(companyOrderVm.CustomerId)).UserName ?? string.Empty;
 
 		return companyOrderVm;
 	}

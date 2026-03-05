@@ -35,7 +35,7 @@ public class GetCompanyOrdersQueryHandler
 
 		foreach (var orderVm in companyOrdersVm)
 		{
-			orderVm.CustomerName = (await _userService.GetUserByIdAsync(orderVm.CustomerId)).UserName ?? string.Empty;	//todo: or throw
+			orderVm.CustomerName = (await _userService.GetUserByIdAsync(orderVm.CustomerId)).UserName ?? string.Empty;
 		}
 
 		return companyOrdersVm;

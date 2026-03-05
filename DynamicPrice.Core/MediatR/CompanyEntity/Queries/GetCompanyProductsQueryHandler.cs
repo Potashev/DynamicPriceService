@@ -31,8 +31,9 @@ public class GetCompanyProductsQueryHandler
 		var products = await _context.Products
 			.Where(p => p.CompanyId == company.CompanyId)
 			.Include(p => p.PriceDynamics
-				.OrderByDescending(pd => pd.Date)
-				.Take(company.PriceHistoryLimit))	//todo: check
+				//.OrderByDescending(pd => pd.Date)
+				.OrderBy(pd => pd.Date)
+				.Take(company.PriceHistoryLimit))	//TODO: check displaying (first-second frame speshally)
 			.ToArrayAsync(cancellationToken);
 
 		return new CompanyProductsInfo

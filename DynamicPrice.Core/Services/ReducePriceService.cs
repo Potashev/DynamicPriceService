@@ -53,7 +53,7 @@ public class ReducePriceService : IConsumer<PriceReduceEvent>
 
 	private async Task ReducePrice(int productId)
 	{
-		//todo: use logger
+		//TODO: use logger
 		using var scope = _serviceProvider.CreateScope();
 		var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
 

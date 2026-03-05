@@ -3,7 +3,6 @@ using MediatR;
 
 namespace DynamicPrice.Core.MinimalAPI;
 
-//todo: we try to use it befor login - check
 public static class ManagerEndPoints
 {
 	public static void MapManagerEndPoints(this IEndpointRouteBuilder app)

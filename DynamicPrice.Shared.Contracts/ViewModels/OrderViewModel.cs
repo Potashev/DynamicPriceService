@@ -11,8 +11,6 @@ public class OrderViewModel
 	public OrderStatus Status { get; init; }
 	public DateTime OrderDate { get; init; }
 	public int? ReceiveKey { get; init; } = null;
-
-	//TODO: looks not good
 	public decimal OrderTotal =>
 		OrderItems?.Sum(i => i.ProductPrice * i.Quantity) ?? 0m;
 }

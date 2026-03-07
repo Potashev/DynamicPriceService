@@ -27,7 +27,7 @@ public class GetCompanyOrdersQueryHandler
 		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var companyOrders = await _context.Orders
-			.Where(o => o.Company.CompanyId == manager.CompanyId)
+			.Where(o => o.CompanyId == manager.CompanyId)
 			.OrderByDescending(o => o.OrderDate)
 			.ToArrayAsync(cancellationToken);
 

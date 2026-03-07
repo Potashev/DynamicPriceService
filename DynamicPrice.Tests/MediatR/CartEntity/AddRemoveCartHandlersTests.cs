@@ -38,7 +38,7 @@ public class AddRemoveCartHandlersTests
 			.Returns((Cart c) => new CartViewModel
 			{
 				CartId = c.CartId,
-				Company = new CompanyViewModel { CompanyId = c.Company.CompanyId, Title = c.Company.Title },
+				Company = new CompanyViewModel { CompanyId = c.CompanyId, Title = c.Company.Title },
 				CartItems = c.CartItems?.Select(ci => new CartItemViewModel { Id = ci.Id, CartId = ci.CartId, ProductId = ci.ProductId, Product = new ProductViewModel { ProductId = ci.Product != null ? ci.Product.ProductId : ci.ProductId, Title = ci.Product?.Title ?? string.Empty, Price = ci.Product?.Price ?? default, MinimumPrice = ci.Product?.MinimumPrice ?? default, Quantity = ci.Product?.Quantity }, Quantity = ci.Quantity }).ToList() ?? new List<CartItemViewModel>()
 			});
 
@@ -84,7 +84,7 @@ public class AddRemoveCartHandlersTests
 			var product = new Product { ProductId = productId, Company = company, CompanyId = company.CompanyId, Title = "P2", Price = 7m };
 			await ctx.Products.AddAsync(product);
 			//var cart = new Cart { CustomerId = customerId, Company = company, CartItems = [] };
-			var cart = new Cart(customerId, company);
+			var cart = new Cart(customerId, company.CompanyId);
 
 			cart.CartItems.Add(new CartItem { Product = product, ProductId = product.ProductId, Quantity = 2, Cart = cart });
 			await ctx.Carts.AddAsync(cart);

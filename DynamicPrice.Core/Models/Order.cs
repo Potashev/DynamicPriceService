@@ -30,14 +30,14 @@ public class Order
 	public string CustomerId { get; set; }
 
 	/// <summary>
-	/// Компания, к которой относится корзина.	//todo: fixed
+	/// Идентификатор компании, к которой относится заказ.
 	/// </summary>
 	public int CompanyId { get; set; }
 
 	/// <summary>
 	/// Навигационное свойство компании.
 	/// </summary>
-	public Company Company { get; set; } = null!;   //todo: used companyId instead
+	public Company Company { get; set; } = null!;
 
 	/// <summary>
 	/// Позиции заказа - продукты с фиксированной ценой.
@@ -63,10 +63,11 @@ public class Order
 
 	private Order() { }
 
-	public Order(string customerId, Company company)
+	public Order(string customerId, int companyId)
 	{
 		CustomerId = customerId;
-		Company = company;
+		CompanyId = companyId;
+		//Company = company;
 
 		Number = GenerateOrderNumber();
 		Status = OrderStatus.Confirmed;

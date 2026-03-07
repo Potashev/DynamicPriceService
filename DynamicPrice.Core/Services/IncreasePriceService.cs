@@ -70,4 +70,6 @@ public class IncreasePriceService : IConsumer<PriceIncreaseEvent>
 
 		await _priceHubContext.SendPriceUpdateToProductGroup(product.ProductId, product.Price);
 	}
+
+	//private decimal
 }

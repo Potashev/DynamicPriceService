@@ -28,8 +28,6 @@ public static class ProductsEndPoints
 			.WithSummary("Удалить продукт");
 	}
 
-	//todo: used TypedResults
-
 	private static async Task<IResult> GetProducts(
 		IMediator mediator,
 		CancellationToken cancellationToken)

@@ -24,7 +24,7 @@ public class GetCompanyStatisticsQueryHandler
 		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var companyOrdersWithAmount = await _context.Orders
-			.Where(o => o.Company.CompanyId == manager.CompanyId)
+			.Where(o => o.CompanyId == manager.CompanyId)
 			.Select(o => new
 			{
 				Order = o,

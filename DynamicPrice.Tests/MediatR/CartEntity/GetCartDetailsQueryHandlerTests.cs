@@ -31,7 +31,7 @@ public class GetCartDetailsQueryHandlerTests
 			await ctx.Products.AddAsync(product);
 
 			//var cart = new Cart { CustomerId = customerId, Company = company, CartItems = [] };
-			var cart = new Cart(customerId, company);
+			var cart = new Cart(customerId, company.CompanyId);
 
 			cart.CartItems.Add(new CartItem { Product = product, ProductId = product.ProductId, Quantity = 1, Cart = cart });
 			await ctx.Carts.AddAsync(cart);

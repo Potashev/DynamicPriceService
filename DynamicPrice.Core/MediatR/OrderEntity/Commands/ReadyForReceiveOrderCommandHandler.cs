@@ -26,7 +26,7 @@ public class ReadyForReceiveOrderCommandHandler
 		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var order = await _context.Orders
-			.Where(o => o.OrderId.ToString() == request.OrderId && o.Company.CompanyId == manager.CompanyId)
+			.Where(o => o.OrderId.ToString() == request.OrderId && o.CompanyId == manager.CompanyId)
 			.FirstOrDefaultAsync(cancellationToken)
 			?? throw new NotFoundException("Order not found.");
 

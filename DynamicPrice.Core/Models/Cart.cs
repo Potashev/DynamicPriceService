@@ -28,7 +28,7 @@ public class Cart
 	/// <summary>
 	/// Компания, к которой относится корзина.
 	/// </summary>
-	public Company Company { get; set; } = null!;   //todo: check where used and replace with CompanyId
+	public Company Company { get; set; } = null!;
 
 	/// <summary>
 	/// Коллекция элементов в корзине.
@@ -37,10 +37,11 @@ public class Cart
 
 	private Cart() { }
 
-	public Cart(string customerId, Company company)
+	public Cart(string customerId, int companyId)
 	{
 		CustomerId = customerId;
-		Company = company;
+		CompanyId = companyId;
+		//Company = company;
 	}
 
 	public void AddItem(int productId)

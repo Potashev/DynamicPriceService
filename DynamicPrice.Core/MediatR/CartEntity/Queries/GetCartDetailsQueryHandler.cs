@@ -31,7 +31,7 @@ public class GetCartDetailsQueryHandler
 			.Include(c => c.CartItems)
 				.ThenInclude(ci => ci.Product)
 			.FirstOrDefaultAsync(c => c.CustomerId == customer.Id
-				&& c.Company.CompanyId == request.CompanyId, cancellationToken);
+				&& c.CompanyId == request.CompanyId, cancellationToken);
 
 		var cartVm = cart is not null
 			? _mapper.Map<CartViewModel>(cart)

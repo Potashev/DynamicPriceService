@@ -37,13 +37,13 @@ public class AddProductToCartCommandHadnler
 
 		var cart = await _context.Carts
 			.Include(c => c.CartItems)
-			.Where(c => c.CustomerId == customer.Id
-				&& c.Company == product.Company)
+			.Where(c => c.CustomerId == customer.Id	
+				&& c.CompanyId == product.CompanyId)
 			.FirstOrDefaultAsync(cancellationToken);
 
 		if (cart is null)
 		{
-			cart = new Cart(customer.Id, product.Company);
+			cart = new Cart(customer.Id, product.CompanyId);
 			await _context.Carts.AddAsync(cart);
 		}
 

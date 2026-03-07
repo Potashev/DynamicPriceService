@@ -2,7 +2,6 @@
 
 public class ProductViewModel
 {
-	//[Required]   // todo: check
 	public int ProductId { get; init; }
 	public string Title { get; init; } = null!;
 	public decimal Price { get; init; }

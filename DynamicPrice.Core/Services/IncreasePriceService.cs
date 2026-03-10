@@ -14,62 +14,73 @@ namespace DynamicPrice.Core.Services;
 /// согласно правилу повышения цены компании <see cref="PriceRule.Increase"/>.
 /// После изменения цены уведомляет всех подписавшихся клиентов через SignalR-хаб <see cref="PriceHub"/>.
 /// </summary>
-public class IncreasePriceService : IConsumer<PriceIncreaseEvent>
+public class IncreasePriceService : PriceServiceBase<PriceIncreaseEvent>
 {
-	private readonly IServiceProvider _serviceProvider;
-	private readonly IHubContext<PriceHub> _priceHubContext;
-	private readonly ILogger<IncreasePriceService> _logger;
+	//private readonly IServiceProvider _serviceProvider;
+	//private readonly IHubContext<PriceHub> _priceHubContext;
+	//private readonly ILogger<IncreasePriceService> _logger;
 
 	public IncreasePriceService(
 		IServiceProvider serviceProvider,
 		IHubContext<PriceHub> priceHubContext,
 		ILogger<IncreasePriceService> logger)
+		: base(serviceProvider, priceHubContext, logger)
 	{
-		_serviceProvider = serviceProvider;
-		_priceHubContext = priceHubContext;
-		_logger = logger;
 	}
 
-	public async Task Consume(ConsumeContext<PriceIncreaseEvent> context)
+	protected override async Task ProcessMessage(PriceIncreaseEvent message)
 	{
-		var msg = context.Message;
-
-		if (msg != null)
+		await UpdatePrice(message.ProductId, (product, rule) =>
 		{
-			try
-			{
-				await IncreasePrice(msg.ProductId, msg.Quantity);
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError(ex, "Error processing PriceIncreaseEvent");
-				throw;
-			}
-		}
+			var increase = product.Price *
+						(decimal)rule.Increase *
+						0.01m *
+						message.Quantity;
+
+			return product.Price + increase;
+		});
 	}
 
-	private async Task IncreasePrice(int productId, int quantity)
-	{
-		using var scope = _serviceProvider.CreateScope();
-		var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
+	//public async Task Consume(ConsumeContext<PriceIncreaseEvent> context)
+	//{
+	//	var msg = context.Message;
 
-		var product = await context.Products
-			.FirstOrDefaultAsync(p => p.ProductId == productId);
+	//	if (msg != null)
+	//	{
+	//		try
+	//		{
+	//			await IncreasePrice(msg.ProductId, msg.Quantity);
+	//		}
+	//		catch (Exception ex)
+	//		{
+	//			_logger.LogError(ex, "Error processing PriceIncreaseEvent");
+	//			throw;
+	//		}
+	//	}
+	//}
 
-		if (product == null) return;
+	//private async Task IncreasePrice(int productId, int quantity)
+	//{
+	//	using var scope = _serviceProvider.CreateScope();
+	//	var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
 
-		var priceRule = await context.PriceRules
-			.FirstOrDefaultAsync(r => r.Company.CompanyId == product.CompanyId);
+	//	var product = await context.Products
+	//		.FirstOrDefaultAsync(p => p.ProductId == productId);
 
-		if (priceRule == null) return;
+	//	if (product == null) return;
 
-		var priceIncrease = product.Price * (decimal)priceRule.Increase * 0.01m * quantity;	//todo: compare with reducing
-		product.Price += priceIncrease;
+	//	var priceRule = await context.PriceRules
+	//		.FirstOrDefaultAsync(r => r.Company.CompanyId == product.CompanyId);
 
-		await context.SaveChangesAsync();
+	//	if (priceRule == null) return;
 
-		await _priceHubContext.SendPriceUpdateToProductGroup(product.ProductId, product.Price);
-	}
+	//	var priceIncrease = product.Price * (decimal)priceRule.Increase * 0.01m * quantity;	//todo: compare with reducing
+	//	product.Price += priceIncrease;
+
+	//	await context.SaveChangesAsync();
+
+	//	await _priceHubContext.SendPriceUpdateToProductGroup(product.ProductId, product.Price);
+	//}
 
 	//private decimal
 }

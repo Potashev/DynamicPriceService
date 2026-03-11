@@ -5,32 +5,40 @@ using DynamicPrice.Core.SignalR;
 using MassTransit;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Prometheus;
 
 namespace DynamicPrice.Core.Services;
 
 public abstract class PriceServiceBase<TEvent> : IConsumer<TEvent>
 	where TEvent : class
 {
-	protected readonly IServiceProvider ServiceProvider;
-	protected readonly IHubContext<PriceHub> PriceHubContext;
-	protected readonly ILogger Logger;
+	protected readonly DynamicPriceCoreContext _context;
+	protected readonly IHubContext<PriceHub> _priceHubContext;
+	protected readonly ILogger _logger;
+
+	private static readonly Histogram ChangePriceDuration = Metrics
+		.CreateHistogram("dp_changeprice_duration_seconds",
+			"Время обработки события изменения цены",
+			new HistogramConfiguration
+			{
+				LabelNames = new[] { "companyId" }
+			});
+
 
 	protected PriceServiceBase(
-		IServiceProvider serviceProvider,
+		DynamicPriceCoreContext context,
 		IHubContext<PriceHub> priceHubContext,
 		ILogger logger)
 	{
-		ServiceProvider = serviceProvider;
-		PriceHubContext = priceHubContext;
-		Logger = logger;
+		_context = context;
+		_priceHubContext = priceHubContext;
+		_logger = logger;
 	}
 
 	public async Task Consume(ConsumeContext<TEvent> context)
 	{
-		var msg = context.Message;
-
-		if (msg == null)
-			return;
+		var msg = context.Message
+			?? throw new NotFoundException("Message not found.");
 
 		try
 		{
@@ -38,7 +46,7 @@ public abstract class PriceServiceBase<TEvent> : IConsumer<TEvent>
 		}
 		catch (Exception ex)
 		{
-			Logger.LogError(ex, "Error processing price event");
+			_logger.LogError(ex, "Error processing price event");
 			throw;
 		}
 	}
@@ -49,25 +57,30 @@ public abstract class PriceServiceBase<TEvent> : IConsumer<TEvent>
 		int productId,
 		Func<Product, PriceRule, decimal> priceCalculator)
 	{
-		using var scope = ServiceProvider.CreateScope();
-		var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
+		var product = await _context.Products
+			.FirstOrDefaultAsync(p => p.ProductId == productId)
+			?? throw new NotFoundException("Product not found.");
 
-		var product = await context.Products
-			.FirstOrDefaultAsync(p => p.ProductId == productId);
+		var priceRule = await _context.PriceRules
+			.FirstOrDefaultAsync(pr => pr.Company.CompanyId == product.CompanyId)
+			?? throw new NotFoundException("PriceRule not found.");
 
-		if (product == null)
-			return;
+		var updatedPrice = priceCalculator(product, priceRule);
 
-		var priceRule = await context.PriceRules
-			.FirstOrDefaultAsync(r => r.Company.CompanyId == product.CompanyId);
+		if (product.Price != updatedPrice)
+		{
+			product.Price = updatedPrice;
 
-		if (priceRule == null)
-			return;
+			await _context.PriceDynamics.AddAsync(new PriceDynamic
+			{
+				ProductId = product.ProductId,
+				Price = product.Price,
+				Date = DateTime.UtcNow
+			});
 
-		product.Price = priceCalculator(product, priceRule);
+			await _context.SaveChangesAsync();
 
-		await context.SaveChangesAsync();
-
-		await PriceHubContext.SendPriceUpdateToProductGroup(product.ProductId, product.Price);
+			await _priceHubContext.SendPriceUpdateToProductGroup(product.ProductId, product.Price);
+		}
 	}
 }

@@ -45,7 +45,7 @@ public class IncreasePriceServiceTests
 			.Returns(Task.CompletedTask);
 
 		var loggerMock = Mock.Of<Microsoft.Extensions.Logging.ILogger<IncreasePriceService>>();
-		var service = new IncreasePriceService(serviceProvider: null!, hubContextMock.Object, loggerMock);
+		var service = new IncreasePriceService(context: null!, hubContextMock.Object, loggerMock);
 
 		var method = typeof(IncreasePriceService).GetMethod("NoticeOfIncrease", BindingFlags.NonPublic | BindingFlags.Instance);
 		method.Should().NotBeNull();
@@ -65,6 +65,6 @@ public class IncreasePriceServiceTests
 	{
 		var hubContextMock = new Mock<IHubContext<PriceHub>>();
 		var loggerMock = Mock.Of<Microsoft.Extensions.Logging.ILogger<IncreasePriceService>>();
-		return new IncreasePriceService(serviceProvider: null!, hubContextMock.Object, loggerMock);
+		return new IncreasePriceService(context: null!, hubContextMock.Object, loggerMock);
 	}
 }

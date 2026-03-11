@@ -33,13 +33,14 @@ public class GetCompanyProductsQueryHandler
 			.Include(p => p.PriceDynamics
 				//.OrderByDescending(pd => pd.Date)
 				.OrderBy(pd => pd.Date)
-				.Take(company.PriceHistoryLimit))	//TODO: check displaying (first-second frame speshally)
+				.Take(company.PriceHistoryLimit))   //TODO: check displaying (first-second frame speshally)
 			.ToArrayAsync(cancellationToken);
 
 		return new CompanyProductsInfo
 		{
 			Company = _mapper.Map<CompanyViewModel>(company),
-			Products = _mapper.Map<ProductInfoViewModel[]>(products)
+			Products = _mapper.Map<ProductInfoViewModel[]>(products),
+			PriceHistoryLimit = company.PriceHistoryLimit
 		};
 	}
 }

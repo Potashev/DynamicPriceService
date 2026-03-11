@@ -1,8 +1,6 @@
 ﻿using DynamicPrice.Core.Data;
 using DynamicPrice.Core.Models;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
-using Prometheus;
 
 namespace DynamicPrice.Core.Services;
 
@@ -19,13 +17,10 @@ public class ReducePriceService : PriceServiceBase<PriceReduceEvent>
 		IConfiguration config,
 		IHubContext<PriceHub> priceHubContext,
 		ILogger<ReducePriceService> logger)
-		: base(context, priceHubContext, logger)
-	{
-	}
+		: base(context, priceHubContext, logger) { }
 
 	protected override async Task ProcessMessage(PriceReduceEvent message)
-	{
-		await UpdatePrice(message.ProductId, (product, rule) =>
+		=> await UpdatePrice(message.ProductId, (product, rule) =>
 		{
 			var reduction = product.Price * 
 						(decimal)rule.Reduction * 
@@ -35,6 +30,5 @@ public class ReducePriceService : PriceServiceBase<PriceReduceEvent>
 
 			return Math.Max(newPrice, product.MinimumPrice);
 		});
-	}
 }
 

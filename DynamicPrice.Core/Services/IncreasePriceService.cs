@@ -1,10 +1,6 @@
 ﻿using DynamicPrice.Core.Data;
 using DynamicPrice.Core.Models;
-using DynamicPrice.Core.SignalR;
-using MassTransit;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.CodeAnalysis;
-using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPrice.Core.Services;
 
@@ -20,13 +16,10 @@ public class IncreasePriceService : PriceServiceBase<PriceIncreaseEvent>
 		DynamicPriceCoreContext context,
 		IHubContext<PriceHub> priceHubContext,
 		ILogger<IncreasePriceService> logger)
-		: base(context, priceHubContext, logger)
-	{
-	}
+		: base(context, priceHubContext, logger) { }
 
 	protected override async Task ProcessMessage(PriceIncreaseEvent message)
-	{
-		await UpdatePrice(message.ProductId, (product, rule) =>
+		=> await UpdatePrice(message.ProductId, (product, rule) =>
 		{
 			var increase = product.Price *
 						(decimal)rule.Increase *
@@ -35,5 +28,4 @@ public class IncreasePriceService : PriceServiceBase<PriceIncreaseEvent>
 
 			return product.Price + increase;
 		});
-	}
 }

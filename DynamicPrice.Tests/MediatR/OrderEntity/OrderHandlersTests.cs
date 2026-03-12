@@ -82,8 +82,6 @@
 //			var product = new Product { ProductId = 200, Company = company, CompanyId = company.CompanyId, Title = "P", Price = 10m, Quantity = 10 };
 //			await ctx.Products.AddAsync(product);
 
-//			//todo: updated after updating model
-
 //			var order = new Order
 //			{
 //				Number = "ORD-100",

@@ -29,7 +29,7 @@ public static class CompaniesEndPoints
 			return Results.Ok(activeCompanies);
 		}
 
-		return Results.StatusCode(StatusCodes.Status501NotImplemented); //TODO: handle
+		return Results.StatusCode(StatusCodes.Status501NotImplemented);
 	}
 
 	private static async Task<IResult> GetCompanyProducts(

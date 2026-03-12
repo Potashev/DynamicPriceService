@@ -26,7 +26,6 @@ public static class PriceRuleEndPoints
 	}
 
 	//todo: pass cancellation
-
 	private static async Task<IResult> Get(IMediator mediator)
 	{
 		var result = await mediator.Send(new GetPriceRuleWithStatusQuery());

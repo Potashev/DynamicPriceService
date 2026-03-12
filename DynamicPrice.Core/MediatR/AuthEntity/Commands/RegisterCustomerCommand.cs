@@ -3,4 +3,4 @@ using MediatR;
 
 namespace DynamicPrice.Core.MediatR.AuthEntity.Commands;
 
-public record RegisterCommand(RegisterRequest registerVm) : IRequest;
+public record RegisterCustomerCommand(RegisterRequest registerVm) : IRequest;

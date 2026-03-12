@@ -18,21 +18,17 @@ public class AuthController : Controller
 		_coreApiClient = coreApiClient;
 	}
 
-	public IActionResult Login()
+	public IActionResult LoginManager()
 	{
 		return View();
 	}
 
 	[HttpPost]
 	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> Login(LoginRequest loginVm)
+	public async Task<IActionResult> LoginManager(LoginRequest loginVm)
 	{
 		if (ModelState.IsValid)
 		{
-			//TODO: handle invalid login attempt
-			// ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-			// return View(loginVm);
-
 			var tokenResponse = await _coreApiClient.LoginManager(loginVm);
 			await _authTokenStore.SetToken(tokenResponse.Token);
 
@@ -41,5 +37,21 @@ public class AuthController : Controller
 				nameof(ProductsController).Replace("Controller", ""));
 		}
 		return View();
+	}
+
+	public IActionResult RegisterManager()
+	{
+		return View();
+	}
+
+	[HttpPost]
+	[ValidateAntiForgeryToken]
+	public async Task<IActionResult> RegisterManager(RegisterRequest registerVm)
+	{
+		if (!ModelState.IsValid)
+			return View(registerVm);
+
+		await _coreApiClient.RegisterManager(registerVm);
+		return RedirectToAction(nameof(LoginManager));
 	}
 }

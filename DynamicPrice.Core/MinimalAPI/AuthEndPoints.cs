@@ -15,13 +15,26 @@ public static class AuthEndPoints
 			.WithSummary("Регистрация пользователя");
 		priceRule.MapPost("/login", Login)
 			.WithSummary("Аутентификация пользователя");
+
+		//todo: fixed url
+		priceRule.MapPost("/register/manager", RegisterManager)
+			.WithSummary("Регистрация пользователя")
+			.RequireAuthorization("ManagerPolicy");
 	}
 
 	private static async Task<IResult> Register(
 		[FromBody] RegisterRequest registerVm,
 		IMediator mediator)
 	{
-		await mediator.Send(new RegisterCommand(registerVm));
+		await mediator.Send(new RegisterCustomerCommand(registerVm));
+		return Results.Ok("User registered successfully");
+	}
+
+	private static async Task<IResult> RegisterManager(
+	[FromBody] RegisterRequest registerVm,
+	IMediator mediator)
+	{
+		await mediator.Send(new RegisterManagerCommand(registerVm));
 		return Results.Ok("User registered successfully");
 	}
 

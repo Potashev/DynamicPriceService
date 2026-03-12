@@ -1,10 +1,10 @@
-﻿using DynamicPrice.Core.Exceptions;
+﻿using AutoMapper;
+using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Core.Models;
 using DynamicPrice.Shared.Contracts.Requests;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
-//using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
@@ -15,15 +15,18 @@ public class UserService : IUserService
 	private readonly IHttpContextAccessor _httpContextAccessor;
 	private readonly UserManager<ApplicationUser> _userManager;
 	private readonly IConfiguration _config;
+	private readonly IMapper _mapper;
 
 	public UserService(
 		IHttpContextAccessor httpContextAccessor,
 		UserManager<ApplicationUser> userManager,
-		IConfiguration config)
+		IConfiguration config,
+		IMapper mapper)
 	{
 		_httpContextAccessor = httpContextAccessor;
 		_userManager = userManager;
 		_config = config;
+		_mapper = mapper;
 	}
 
 	//TODO: use _userManager instead HttpContext?
@@ -41,7 +44,6 @@ public class UserService : IUserService
 	=> await _userManager.FindByIdAsync(userId)
 		?? throw new NotFoundException("User not found.");
 
-	//todo: contains password hash in db
 	public async Task<string> LoginUserAsync(LoginRequest request)
 	{
 		var user = await _userManager.FindByNameAsync(request.Username);
@@ -54,19 +56,10 @@ public class UserService : IUserService
 		return token;
 	}
 
-	public async Task RegisterUserAsync(RegisterRequest request)
+	public async Task RegisterUserAsync(RegisterUserRequest request)
 	{
-		//todo: make better
-		ApplicationUser user = new()
-		{
-			UserName = request.Username,
-			Email = request.Email,
-			Balance = request.Role switch
-			{
-				"Customer" => 0,
-				_ => throw new ArgumentException("Invalid user role"),
-			}
-		};
+		var user = _mapper.Map<ApplicationUser>(request);
+
 		var result = await _userManager.CreateAsync(user, request.Password);
 		if (!result.Succeeded)
 		{
@@ -125,6 +118,6 @@ public interface IUserService
 	Task UpdateCurrentUserAsync();
 	Task UpdateUserAsync(ApplicationUser user);
 	Task<ApplicationUser> GetUserByIdAsync(string userId);
-	Task RegisterUserAsync(RegisterRequest registerRequest);
+	Task RegisterUserAsync(RegisterUserRequest registerRequest);
 	Task<string> LoginUserAsync(LoginRequest loginRequest);
 }

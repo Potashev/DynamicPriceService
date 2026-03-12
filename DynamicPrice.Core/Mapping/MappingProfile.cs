@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DynamicPrice.Core.Models;
+using DynamicPrice.Shared.Contracts.Requests;
 using DynamicPrice.Shared.Contracts.ViewModels;
 using DynamicPrice.Shared.Contracts.ViewModels.Responses;
 
@@ -27,5 +28,6 @@ public class MappingProfile : Profile
 			.ReverseMap();
 		CreateMap<CartItem, CartItemViewModel>()
 			.ReverseMap();
+		CreateMap<RegisterUserRequest, ApplicationUser>();
 	}
 }

@@ -11,6 +11,9 @@ public interface ICoreApiClient
 	[Post("/api/auth/login")]
 	Task<TokenResponse> LoginManager(LoginRequest loginVm);
 
+	[Post("/api/auth/register/manager")]
+	Task RegisterManager(RegisterRequest registerVm);
+
 	[Get("/api/company/products")]
 	Task<IEnumerable<ProductViewModel>> GetProducts();
 

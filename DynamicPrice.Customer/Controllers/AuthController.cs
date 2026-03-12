@@ -27,7 +27,9 @@ public class AuthController : Controller
 	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> RegisterCustomer(RegisterRequest registerVm)
 	{
-		//registerVm.Role = "Manager";   //todo: looks not good
+		if (!ModelState.IsValid)
+			return View(registerVm);
+
 		await _coreApiClient.RegisterCustomer(registerVm);
 		return RedirectToAction(nameof(LoginCustomer));
 	}
@@ -41,20 +43,14 @@ public class AuthController : Controller
 	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> LoginCustomer(LoginRequest loginVm)
 	{
+		if (!ModelState.IsValid)
+			return View(loginVm);
 
-		if (ModelState.IsValid)
-		{
-			// todo: handle invalid login attempt
-			// ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-			// return View(loginVm);
+		var tokenResponse = await _coreApiClient.LoginCustomer(loginVm);
+		await _authTokenStore.SetToken(tokenResponse.Token);
 
-			var tokenResponse = await _coreApiClient.LoginCustomer(loginVm);
-			await _authTokenStore.SetToken(tokenResponse.Token);
-
-			return RedirectToAction(
-				nameof(CompaniesController.Index),
-				nameof(CompaniesController).Replace("Controller", ""));
-		}
-		return View();
+		return RedirectToAction(
+			nameof(CompaniesController.Index),
+			nameof(CompaniesController).Replace("Controller", ""));
 	}
 }

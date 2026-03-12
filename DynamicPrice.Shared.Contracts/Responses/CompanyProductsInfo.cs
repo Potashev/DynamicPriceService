@@ -4,5 +4,4 @@ public class CompanyProductsInfo
 {
 	public required CompanyViewModel Company { get; init; }
 	public ICollection<ProductInfoViewModel> Products { get; init; } = [];
-	public int PriceHistoryLimit { get; init; }
 }

@@ -39,8 +39,7 @@ public class GetCompanyProductsQueryHandler
 		return new CompanyProductsInfo
 		{
 			Company = _mapper.Map<CompanyViewModel>(company),
-			Products = _mapper.Map<ProductInfoViewModel[]>(products),
-			PriceHistoryLimit = company.PriceHistoryLimit
+			Products = _mapper.Map<ProductInfoViewModel[]>(products)
 		};
 	}
 }

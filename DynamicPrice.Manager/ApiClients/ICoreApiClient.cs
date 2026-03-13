@@ -11,7 +11,10 @@ public interface ICoreApiClient
 	[Post("/api/auth/login")]
 	Task<TokenResponse> LoginManager(LoginRequest loginVm);
 
-	[Post("/api/auth/register/manager")]
+	[Get("/api/company/managers")]
+	Task<IEnumerable<ManagerInfoViewModel>> GetCompanyManagers();
+
+	[Post("/api/company/managers")]
 	Task RegisterManager(RegisterRequest registerVm);
 
 	[Get("/api/company/products")]

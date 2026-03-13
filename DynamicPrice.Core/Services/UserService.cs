@@ -3,8 +3,10 @@ using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Core.Models;
 using DynamicPrice.Shared.Contracts.Requests;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
+using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Text;
 
@@ -29,7 +31,6 @@ public class UserService : IUserService
 		_mapper = mapper;
 	}
 
-	//TODO: use _userManager instead HttpContext?
 	public string? UserId
 		=> _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -41,8 +42,14 @@ public class UserService : IUserService
 			?? throw new UnauthorizedException("User is not authenticated.");
 
 	public async Task<ApplicationUser> GetUserByIdAsync(string userId)
-	=> await _userManager.FindByIdAsync(userId)
-		?? throw new NotFoundException("User not found.");
+		=> await _userManager.FindByIdAsync(userId)
+			?? throw new NotFoundException("User not found.");
+
+	public async Task<IEnumerable<ApplicationUser>> GetUsersAsync(Expression<Func<ApplicationUser, bool>> predicate)
+		=> await _userManager.Users
+			.Where(predicate)
+			.AsNoTracking()
+			.ToListAsync();
 
 	public async Task<string> LoginUserAsync(LoginRequest request)
 	{
@@ -118,6 +125,7 @@ public interface IUserService
 	Task UpdateCurrentUserAsync();
 	Task UpdateUserAsync(ApplicationUser user);
 	Task<ApplicationUser> GetUserByIdAsync(string userId);
+	Task<IEnumerable<ApplicationUser>> GetUsersAsync(Expression<Func<ApplicationUser, bool>> predicate);
 	Task RegisterUserAsync(RegisterUserRequest registerRequest);
 	Task<string> LoginUserAsync(LoginRequest loginRequest);
 }

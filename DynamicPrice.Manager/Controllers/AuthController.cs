@@ -38,20 +38,4 @@ public class AuthController : Controller
 		}
 		return View();
 	}
-
-	public IActionResult RegisterManager()
-	{
-		return View();
-	}
-
-	[HttpPost]
-	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> RegisterManager(RegisterRequest registerVm)
-	{
-		if (!ModelState.IsValid)
-			return View(registerVm);
-
-		await _coreApiClient.RegisterManager(registerVm);
-		return RedirectToAction(nameof(LoginManager));
-	}
 }

@@ -9,33 +9,8 @@ public static class AuthEndPoints
 {
 	public static void MapAuthEndPoints(this IEndpointRouteBuilder app)
 	{
-		var priceRule = app.MapGroup("/api/auth");
-
-		//priceRule.MapPost("/register/customer", RegisterCustomer)
-		//	.WithSummary("Регистрация пользователя");
-		priceRule.MapPost("/login", Login)
+		app.MapPost("/api/auth/login", Login)
 			.WithSummary("Аутентификация пользователя");
-
-		//todo: fixed url
-		priceRule.MapPost("/register/manager", RegisterManager)
-			.WithSummary("Регистрация пользователя")
-			.RequireAuthorization("ManagerPolicy");
-	}
-
-	//private static async Task<IResult> RegisterCustomer(
-	//	[FromBody] RegisterRequest registerVm,
-	//	IMediator mediator)
-	//{
-	//	await mediator.Send(new RegisterCustomerCommand(registerVm));
-	//	return Results.Ok("User registered successfully");
-	//}
-
-	private static async Task<IResult> RegisterManager(
-	[FromBody] RegisterRequest registerVm,
-	IMediator mediator)
-	{
-		await mediator.Send(new RegisterManagerCommand(registerVm));
-		return Results.Ok("User registered successfully");
 	}
 
 	private static async Task<IResult> Login(

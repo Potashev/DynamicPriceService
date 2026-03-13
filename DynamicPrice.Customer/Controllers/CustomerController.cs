@@ -20,4 +20,23 @@ public class CustomerController : BaseController
 		await CoreApiClient.TopUpBalance(balanceRequest);
 		return RedirectToAction(nameof(Index));
 	}
+
+	public IActionResult RegisterCustomer()
+	{
+		return View();
+	}
+
+	[HttpPost]
+	[ValidateAntiForgeryToken]
+	public async Task<IActionResult> RegisterCustomer(RegisterRequest registerVm)
+	{
+		if (!ModelState.IsValid)
+			return View(registerVm);
+
+		await CoreApiClient.RegisterCustomer(registerVm);
+
+		return RedirectToAction(
+				nameof(AuthController.LoginCustomer),
+				nameof(AuthController).Replace("Controller", ""));
+	}
 }

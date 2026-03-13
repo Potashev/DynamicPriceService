@@ -14,14 +14,8 @@ public interface ICoreApiClient
 	[Get("/api/companies/{companyId}/products")]
 	Task<CompanyProductsInfo> GetCompanyProducts(int companyId);
 
-	[Get("/api/customer/me")]
-	Task<CustomerInfoViewModel> GetCustomer();
-
-	[Put("/api/customer/me/balance")]
-	Task TopUpBalance(BalanceRequest balanceVm);
-
-	[Post("/api/auth/register")]
-	Task RegisterCustomer(RegisterRequest registerVm);
+	//[Post("/api/auth/register")]
+	//Task RegisterCustomer(RegisterRequest registerVm);
 
 	[Post("/api/auth/login")]
 	Task<TokenResponse> LoginCustomer(LoginRequest loginVm);
@@ -43,4 +37,13 @@ public interface ICoreApiClient
 
 	[Get("/api/customer/order?id={orderId}")]
 	Task<OrderViewModel> OrderDetails(int orderId);
+
+	[Get("/api/customers/me")]
+	Task<CustomerInfoViewModel> GetCustomer();
+
+	[Put("/api/customers/me/balance")]
+	Task TopUpBalance(BalanceRequest balanceVm);
+
+	[Post("/api/customers")]
+	Task RegisterCustomer(RegisterRequest registerVm);
 }

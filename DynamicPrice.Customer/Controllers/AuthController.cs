@@ -18,21 +18,21 @@ public class AuthController : Controller
 		_coreApiClient = coreApiClient;
 	}
 
-	public IActionResult RegisterCustomer()
-	{
-		return View();
-	}
+	//public IActionResult RegisterCustomer()
+	//{
+	//	return View();
+	//}
 
-	[HttpPost]
-	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> RegisterCustomer(RegisterRequest registerVm)
-	{
-		if (!ModelState.IsValid)
-			return View(registerVm);
+	//[HttpPost]
+	//[ValidateAntiForgeryToken]
+	//public async Task<IActionResult> RegisterCustomer(RegisterRequest registerVm)
+	//{
+	//	if (!ModelState.IsValid)
+	//		return View(registerVm);
 
-		await _coreApiClient.RegisterCustomer(registerVm);
-		return RedirectToAction(nameof(LoginCustomer));
-	}
+	//	await _coreApiClient.RegisterCustomer(registerVm);
+	//	return RedirectToAction(nameof(LoginCustomer));
+	//}
 
 	public IActionResult LoginCustomer()
 	{

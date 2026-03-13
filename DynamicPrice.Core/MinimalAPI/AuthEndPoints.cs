@@ -11,7 +11,7 @@ public static class AuthEndPoints
 	{
 		var priceRule = app.MapGroup("/api/auth");
 
-		priceRule.MapPost("/register", Register)
+		priceRule.MapPost("/register/customer", RegisterCustomer)
 			.WithSummary("Регистрация пользователя");
 		priceRule.MapPost("/login", Login)
 			.WithSummary("Аутентификация пользователя");
@@ -22,7 +22,7 @@ public static class AuthEndPoints
 			.RequireAuthorization("ManagerPolicy");
 	}
 
-	private static async Task<IResult> Register(
+	private static async Task<IResult> RegisterCustomer(
 		[FromBody] RegisterRequest registerVm,
 		IMediator mediator)
 	{

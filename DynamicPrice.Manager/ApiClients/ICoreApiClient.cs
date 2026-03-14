@@ -17,6 +17,9 @@ public interface ICoreApiClient
 	[Post("/api/company/managers")]
 	Task RegisterManager(RegisterRequest registerVm);
 
+	[Get("/api/company/managers/me")]
+	Task<ManagerInfoViewModel> GetManager();
+
 	[Get("/api/company/products")]
 	Task<IEnumerable<ProductViewModel>> GetProducts();
 
@@ -58,9 +61,6 @@ public interface ICoreApiClient
 
 	[Patch("/api/company/orders/{orderId}/complete")]
 	Task CompleteOrder(string orderId);
-
-	[Get("/api/company/info")]
-	Task<CompanyViewModel> GetCompanyInfo();
 
 	[Get("/api/company/orders/statistics")]
 	Task<OrdersStatistics> GetOrdersStatistics();

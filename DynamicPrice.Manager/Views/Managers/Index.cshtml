@@ -3,6 +3,7 @@
 
 @{
 	ViewData["Title"] = "Index";
+	var currentManagerId = ViewData["ManagerId"]?.ToString();
 }
 
 <h1>Managers</h1>
@@ -19,7 +20,6 @@
 			<th>
 				@Html.DisplayNameFor(model => model.Email)
 			</th>
-			@* <th></th> *@
 		</tr>
 	</thead>
 	<tbody>
@@ -28,15 +28,15 @@
 			<tr>
 				<td>
 					@Html.DisplayFor(modelItem => item.Name)
+
+					@if (currentManagerId == item.Id)
+					{
+						<span class="badge bg-success">You</span>
+					}
 				</td>
 				<td>
 					@Html.DisplayFor(modelItem => item.Email)
 				</td>
-@* 				<td>
-					<a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
-					<a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
-					<a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
-				</td> *@
 			</tr>
 		}
 	</tbody>

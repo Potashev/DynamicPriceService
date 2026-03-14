@@ -1,7 +1,5 @@
-﻿using DynamicPrice.Core.MediatR.AuthEntity.Commands;
-using DynamicPrice.Core.MediatR.ManagerEntity.Commands;
+﻿using DynamicPrice.Core.MediatR.ManagerEntity.Commands;
 using DynamicPrice.Core.MediatR.ManagerEntity.Queries;
-using DynamicPrice.Core.MediatR.ProductEntity.Queries;
 using DynamicPrice.Shared.Contracts.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -12,18 +10,17 @@ public static class ManagerEndPoints
 {
 	public static void MapManagersEndPoints(this IEndpointRouteBuilder app)
 	{
-		var company = app.MapGroup("/api/company")
+		var company = app.MapGroup("/api/company/managers")
 			.RequireAuthorization("ManagerPolicy");
 
-		company.MapGet("/managers", GetCompanyManagers)
-			.WithSummary("Получить информацию о компании менеджера");
+		company.MapGet("", GetCompanyManagers)
+			.WithSummary("Получить список менеджеров компании");
 
-		company.MapPost("/managers", RegisterManager)
-			.WithSummary("Получить информацию о компании менеджера");
+		company.MapPost("", RegisterManager)
+			.WithSummary("Регистрация нового менеджера");
 
-
-		company.MapGet("/info", GetCompanyInfo)
-			.WithSummary("Получить информацию о компании менеджера");
+		company.MapGet("/me", GetManagerInfo)
+			.WithSummary("Получить информацию о текущем менеджере");
 	}
 
 	private static async Task<IResult> GetCompanyManagers(
@@ -42,11 +39,11 @@ public static class ManagerEndPoints
 		return Results.Ok("Manager registered successfully");
 	}
 
-	private static async Task<IResult> GetCompanyInfo(
+	private static async Task<IResult> GetManagerInfo(
 		IMediator mediator,
 		CancellationToken cancellationToken)
 	{
-		var managerInfo = await mediator.Send(new GetManagerInfoQuery(), cancellationToken);
-		return Results.Ok(managerInfo.Company);
+		var managerVm = await mediator.Send(new GetManagerInfoQuery(), cancellationToken);
+		return Results.Ok(managerVm);
 	}
 }

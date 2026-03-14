@@ -19,8 +19,9 @@ public class BaseController : Controller
 	{
 		try
 		{
-			var company = await CoreApiClient.GetCompanyInfo();
-			ViewData["CompanyTitle"] = company.Title;
+			var manager = await CoreApiClient.GetManager();
+			ViewData["ManagerId"] = manager.Id;
+			ViewData["CompanyTitle"] = manager.Company.Title;
 		}
 		catch (Exception) { }
 

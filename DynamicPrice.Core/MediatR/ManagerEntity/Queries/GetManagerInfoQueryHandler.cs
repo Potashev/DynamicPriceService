@@ -32,6 +32,7 @@ public class GetManagerInfoQueryHandler
 
 		return new ManagerInfoViewModel
 		{
+			Id = manager.Id ?? string.Empty,
 			Name = manager.UserName ?? string.Empty,
 			Email = manager.Email ?? string.Empty,
 			Company = _mapper.Map<CompanyViewModel>(company)

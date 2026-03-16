@@ -19,17 +19,17 @@ public class AuthController : Controller
 	}
 
 	public IActionResult LoginManager()
-	{
-		return View();
-	}
+		=> View();
 
 	[HttpPost]
 	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> LoginManager(LoginRequest loginVm)
+	public async Task<IActionResult> LoginManager(
+		LoginRequest loginVm,
+		CancellationToken cancellationToken)
 	{
 		if (ModelState.IsValid)
 		{
-			var tokenResponse = await _coreApiClient.LoginManager(loginVm);
+			var tokenResponse = await _coreApiClient.LoginManager(loginVm, cancellationToken);
 			await _authTokenStore.SetToken(tokenResponse.Token);
 
 			return RedirectToAction(

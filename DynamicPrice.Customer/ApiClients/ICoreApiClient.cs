@@ -9,41 +9,60 @@ namespace DynamicPrice.Customer.ApiClients;
 public interface ICoreApiClient
 {
 	[Get("/api/companies?status=active")]
-	Task<IEnumerable<CompanyViewModel>> GetCompanies();
+	Task<IEnumerable<CompanyViewModel>> GetCompanies(
+		CancellationToken cancellationToken);
 
 	[Get("/api/companies/{companyId}/products")]
-	Task<CompanyProductsInfo> GetCompanyProducts(int companyId);
-
-	//[Post("/api/auth/register")]
-	//Task RegisterCustomer(RegisterRequest registerVm);
+	Task<CompanyProductsInfo> GetCompanyProducts(
+		int companyId,
+		CancellationToken cancellationToken);
 
 	[Post("/api/auth/login")]
-	Task<TokenResponse> LoginCustomer(LoginRequest loginVm);
+	Task<TokenResponse> LoginCustomer(
+		LoginRequest loginVm,
+		CancellationToken cancellationToken);
 
 	[Get("/api/cart?company-id={companyId}")]
-	Task<CartViewModel> GetCartDetails(string companyId);
+	Task<CartViewModel> GetCartDetails(
+		string companyId,
+		CancellationToken cancellationToken);
 
 	[Post("/api/cart/items")]
-	Task<int> AddProduct([Body] int productId);
+	Task<int> AddCartItem(
+		[Body] int productId,
+		CancellationToken cancellationToken);
 
 	[Delete("/api/cart/items/{productId}")]
-	Task<int> DeleteProduct(int productId);
+	Task<int> RemoveCartItem(
+		int productId,
+		CancellationToken cancellationToken);
 
 	[Post("/api/customer/order/confirm")]
-	Task<int> ConfirmOrder([Body] int cartId);
+	Task<int> ConfirmOrder(
+		[Body] int cartId,
+		CancellationToken cancellationToken);
 
 	[Patch("/api/customer/order/cancel")]
-	Task CancelOrder([Body] int orderId);
+	Task CancelOrder(
+		[Body] int orderId,
+		CancellationToken cancellationToken);
 
 	[Get("/api/customer/order?id={orderId}")]
-	Task<OrderViewModel> OrderDetails(int orderId);
+	Task<OrderViewModel> OrderDetails(
+		int orderId,
+		CancellationToken cancellationToken);
 
 	[Get("/api/customers/me")]
-	Task<CustomerInfoViewModel> GetCustomer();
+	Task<CustomerInfoViewModel> GetCustomer(
+		CancellationToken cancellationToken = default);
 
 	[Put("/api/customers/me/balance")]
-	Task TopUpBalance(BalanceRequest balanceVm);
+	Task TopUpBalance(
+		BalanceRequest balanceVm,
+		CancellationToken cancellationToken);
 
 	[Post("/api/customers")]
-	Task RegisterCustomer(RegisterRequest registerVm);
+	Task RegisterCustomer(
+		RegisterRequest registerVm,
+		CancellationToken cancellationToken);
 }

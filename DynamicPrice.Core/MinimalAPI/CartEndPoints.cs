@@ -33,17 +33,19 @@ public static class CartEndPoints
 
 	private static async Task<IResult> AddProduct(
 		[FromBody] int productId,
-		IMediator mediator)
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
-		var cart = await mediator.Send(new AddProductToCartCommand(productId.ToString()));
+		var cart = await mediator.Send(new AddProductToCartCommand(productId.ToString()), cancellationToken);
 		return Results.Ok(cart.Company.CompanyId);
 	}
 
 	private static async Task<IResult> RemoveProduct(
 		int productId,
-		IMediator mediator)
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
-		var cart = await mediator.Send(new RemoveProductFromCartCommand(productId));
+		var cart = await mediator.Send(new RemoveProductFromCartCommand(productId), cancellationToken);
 		return Results.Ok(cart.CompanyId);
 	}
 }

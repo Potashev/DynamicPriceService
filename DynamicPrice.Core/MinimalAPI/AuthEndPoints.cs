@@ -15,9 +15,10 @@ public static class AuthEndPoints
 
 	private static async Task<IResult> Login(
 		[FromBody] LoginRequest loginVm,
-		IMediator mediator)
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
-		var token = await mediator.Send(new LoginCommand(loginVm));
+		var token = await mediator.Send(new LoginCommand(loginVm), cancellationToken);
 		return Results.Ok(new { token });
 	}
 }

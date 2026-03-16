@@ -8,9 +8,11 @@ public class CompaniesController : BaseController
 	public CompaniesController(ICoreApiClient coreApiClient)
 		: base(coreApiClient) { }
 
-	public async Task<IActionResult> Index()
-		=> View(await CoreApiClient.GetCompanies());
+	public async Task<IActionResult> Index(CancellationToken cancellationToken)
+		=> View(await CoreApiClient.GetCompanies(cancellationToken));
 
-	public async Task<IActionResult> CompanyProducts(int id)
-		=> View(await CoreApiClient.GetCompanyProducts(id));
+	public async Task<IActionResult> CompanyProducts(
+		int id,
+		CancellationToken cancellationToken)
+		=> View(await CoreApiClient.GetCompanyProducts(id, cancellationToken));
 }

@@ -32,39 +32,45 @@ public static class ProductsEndPoints
 		IMediator mediator,
 		CancellationToken cancellationToken)
 	{
+		var hash = cancellationToken.GetHashCode();
+
 		var productsVm = await mediator.Send(new GetProductsQuery(), cancellationToken);
 		return Results.Ok(productsVm);
 	}
 
 	private static async Task<IResult> GetProduct(
 		int id,
-		IMediator mediator)
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
-		var productVm = await mediator.Send(new GetProductDetailsQuery(id));
+		var productVm = await mediator.Send(new GetProductDetailsQuery(id), cancellationToken);
 		return Results.Ok(productVm);
 	}
 
 	private static async Task<IResult> Edit(
 		ProductViewModel productVm,
-		IMediator mediator)
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
-		var productId = await mediator.Send(new EditProductCommand(productVm));
+		var productId = await mediator.Send(new EditProductCommand(productVm), cancellationToken);
 		return Results.Ok(productId);
 	}
 
 	private static async Task<IResult> Create(
 		ProductViewModel productVm,
-		IMediator mediator)
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
-		var productId = await mediator.Send(new CreateProductCommand(productVm));
+		var productId = await mediator.Send(new CreateProductCommand(productVm), cancellationToken);
 		return Results.Ok(productId);
 	}
 
 	private static async Task<IResult> Delete(
 		int id,
-		IMediator mediator)
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
-		await mediator.Send(new DeleteProductCommand(id));
+		await mediator.Send(new DeleteProductCommand(id), cancellationToken);
 		return Results.Ok();
 	}
 }

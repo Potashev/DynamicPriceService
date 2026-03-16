@@ -27,9 +27,10 @@ public static class CustomerEndPoints
 
 	private static async Task<IResult> RegisterCustomer(
 		[FromBody] RegisterRequest registerVm,
-		IMediator mediator)
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
-		await mediator.Send(new RegisterCustomerCommand(registerVm));
+		await mediator.Send(new RegisterCustomerCommand(registerVm), cancellationToken);
 		return Results.Ok("User registered successfully");
 	}
 
@@ -43,9 +44,10 @@ public static class CustomerEndPoints
 
 	private static async Task<IResult> TopUp(
 		BalanceRequest balanceVm,
-		IMediator mediator)
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
-		await mediator.Send(new TopUpBalanceCommand(balanceVm));
+		await mediator.Send(new TopUpBalanceCommand(balanceVm), cancellationToken);
 		return Results.Ok();
 	}
 }

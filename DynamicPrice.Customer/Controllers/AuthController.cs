@@ -18,22 +18,6 @@ public class AuthController : Controller
 		_coreApiClient = coreApiClient;
 	}
 
-	//public IActionResult RegisterCustomer()
-	//{
-	//	return View();
-	//}
-
-	//[HttpPost]
-	//[ValidateAntiForgeryToken]
-	//public async Task<IActionResult> RegisterCustomer(RegisterRequest registerVm)
-	//{
-	//	if (!ModelState.IsValid)
-	//		return View(registerVm);
-
-	//	await _coreApiClient.RegisterCustomer(registerVm);
-	//	return RedirectToAction(nameof(LoginCustomer));
-	//}
-
 	public IActionResult LoginCustomer()
 	{
 		return View();
@@ -41,12 +25,14 @@ public class AuthController : Controller
 
 	[HttpPost]
 	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> LoginCustomer(LoginRequest loginVm)
+	public async Task<IActionResult> LoginCustomer(
+		LoginRequest loginVm,
+		CancellationToken cancellationToken)
 	{
 		if (!ModelState.IsValid)
 			return View(loginVm);
 
-		var tokenResponse = await _coreApiClient.LoginCustomer(loginVm);
+		var tokenResponse = await _coreApiClient.LoginCustomer(loginVm, cancellationToken);
 		await _authTokenStore.SetToken(tokenResponse.Token);
 
 		return RedirectToAction(

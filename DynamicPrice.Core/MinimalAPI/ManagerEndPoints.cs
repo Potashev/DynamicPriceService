@@ -33,9 +33,10 @@ public static class ManagerEndPoints
 
 	private static async Task<IResult> RegisterManager(
 		[FromBody] RegisterRequest registerVm,
-		IMediator mediator)
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
-		await mediator.Send(new RegisterManagerCommand(registerVm));
+		await mediator.Send(new RegisterManagerCommand(registerVm), cancellationToken);
 		return Results.Ok("Manager registered successfully");
 	}
 

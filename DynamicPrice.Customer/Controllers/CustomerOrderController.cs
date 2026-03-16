@@ -8,21 +8,27 @@ public class CustomerOrderController : BaseController
 	public CustomerOrderController(ICoreApiClient coreApiClient)
 		: base(coreApiClient) { }
 
-	public async Task<IActionResult> Confirm(int cartId)
+	public async Task<IActionResult> Confirm(
+		int cartId,
+		CancellationToken cancellationToken)
 	{
-		var orderId = await CoreApiClient.ConfirmOrder(cartId);
+		var orderId = await CoreApiClient.ConfirmOrder(cartId, cancellationToken);
 		return RedirectToAction(nameof(Details), new { id = orderId });
 	}
 
-	public async Task<IActionResult> Details(int id)
+	public async Task<IActionResult> Details(
+		int id,
+		CancellationToken cancellationToken)
 	{
-		var orderVm = await CoreApiClient.OrderDetails(id);
+		var orderVm = await CoreApiClient.OrderDetails(id, cancellationToken);
 		return View(orderVm);
 	}
 
-	public async Task<IActionResult> Cancel(int orderId)
+	public async Task<IActionResult> Cancel(
+		int orderId,
+		CancellationToken cancellationToken)
 	{
-		await CoreApiClient.CancelOrder(orderId);
+		await CoreApiClient.CancelOrder(orderId, cancellationToken);
 		return RedirectToAction(nameof(Details), new { id = orderId });
 	}
 

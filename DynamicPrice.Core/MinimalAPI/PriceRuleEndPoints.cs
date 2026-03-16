@@ -25,30 +25,36 @@ public static class PriceRuleEndPoints
 			.WithSummary("Остановить снижение цены на продукты компании");
 	}
 
-	//todo: pass cancellation
-	private static async Task<IResult> Get(IMediator mediator)
+	private static async Task<IResult> Get(
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
-		var result = await mediator.Send(new GetPriceRuleWithStatusQuery());
+		var result = await mediator.Send(new GetPriceRuleWithStatusQuery(), cancellationToken);
 		return Results.Ok(result);
 	}
 
 	private static async Task<IResult> Edit(
 		PriceRuleViewModel priceRuleVm,
-		IMediator mediator)
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
-		var result = await mediator.Send(new EditPriceRuleCommand(priceRuleVm));
+		var result = await mediator.Send(new EditPriceRuleCommand(priceRuleVm), cancellationToken);
 		return Results.Ok(result);
 	}
 
-	private static async Task<IResult> RunPriceReducing(IMediator mediator)
+	private static async Task<IResult> RunPriceReducing(
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
-		await mediator.Send(new PriceReducingCommand(true));
+		await mediator.Send(new PriceReducingCommand(true), cancellationToken);
 		return Results.Ok();
 	}
 
-	private static async Task<IResult> StopPriceReducing(IMediator mediator)
+	private static async Task<IResult> StopPriceReducing(
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
-		await mediator.Send(new PriceReducingCommand(false));
+		await mediator.Send(new PriceReducingCommand(false), cancellationToken);
 		return Results.Ok();
 	}
 }

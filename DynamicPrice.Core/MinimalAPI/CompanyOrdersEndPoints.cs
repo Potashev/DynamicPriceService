@@ -40,33 +40,37 @@ public static class CompanyOrdersEndPoints
 
 	private static async Task<IResult> GetCompanyOrder(
 		string orderId,
-		IMediator mediator)
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
-		var orderVm = await mediator.Send(new GetCompanyOrderDetailsQuery(orderId));
+		var orderVm = await mediator.Send(new GetCompanyOrderDetailsQuery(orderId), cancellationToken);
 		return Results.Ok(orderVm);
 	}
 
 	private static async Task<IResult> GetOrderByReceiveKey(
 		string key,
-		IMediator mediator)
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
-		var orderId = await mediator.Send(new GetOrderIdByReceiveKeyQuery(key));
+		var orderId = await mediator.Send(new GetOrderIdByReceiveKeyQuery(key), cancellationToken);
 		return Results.Ok(orderId);
 	}
 
 	private static async Task<IResult> ReadyForReceive(
 		string orderId,
-		IMediator mediator)
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
-		await mediator.Send(new ReadyForReceiveOrderCommand(orderId));
+		await mediator.Send(new ReadyForReceiveOrderCommand(orderId), cancellationToken);
 		return Results.Ok();
 	}
 
 	private static async Task<IResult> CompleteOrder(
 		string orderId,
-		IMediator mediator)
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
-		var id = await mediator.Send(new CompleteOrderCommand(orderId));
+		var id = await mediator.Send(new CompleteOrderCommand(orderId), cancellationToken);
 		return Results.Ok(id);
 	}
 

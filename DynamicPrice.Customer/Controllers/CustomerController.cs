@@ -9,15 +9,17 @@ public class CustomerController : BaseController
 	public CustomerController(ICoreApiClient coreApiClient)
 		: base(coreApiClient) { }
 
-	public async Task<IActionResult> Index()
-		=> View(await CoreApiClient.GetCustomer());
+	public async Task<IActionResult> Index(CancellationToken cancellationToken)
+		=> View(await CoreApiClient.GetCustomer(cancellationToken));
 
 
 	[HttpPost, ActionName("TopUpBalance")]
 	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> TopUpBalance(BalanceRequest balanceRequest)
+	public async Task<IActionResult> TopUpBalance(
+		BalanceRequest balanceRequest,
+		CancellationToken cancellationToken)
 	{
-		await CoreApiClient.TopUpBalance(balanceRequest);
+		await CoreApiClient.TopUpBalance(balanceRequest, cancellationToken);
 		return RedirectToAction(nameof(Index));
 	}
 
@@ -28,12 +30,14 @@ public class CustomerController : BaseController
 
 	[HttpPost]
 	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> RegisterCustomer(RegisterRequest registerVm)
+	public async Task<IActionResult> RegisterCustomer(
+		RegisterRequest registerVm,
+		CancellationToken cancellationToken)
 	{
 		if (!ModelState.IsValid)
 			return View(registerVm);
 
-		await CoreApiClient.RegisterCustomer(registerVm);
+		await CoreApiClient.RegisterCustomer(registerVm, cancellationToken);
 
 		return RedirectToAction(
 				nameof(AuthController.LoginCustomer),

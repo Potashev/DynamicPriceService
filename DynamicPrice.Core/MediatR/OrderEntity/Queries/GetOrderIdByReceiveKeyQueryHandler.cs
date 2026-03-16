@@ -24,7 +24,7 @@ public class GetOrderIdByReceiveKeyQueryHandler
 		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var orderId = await _context.Orders
-			.Where(o => 
+			.Where(o =>
 				o.ReceiveKey.ToString() == request.ReceiveKey &&
 				o.CompanyId == manager.CompanyId)
 			.Select(o => o.OrderId)

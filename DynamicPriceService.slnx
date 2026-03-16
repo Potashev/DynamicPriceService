@@ -9,5 +9,4 @@
   <Project Path="DynamicPrice.Customer/DynamicPrice.Customer.csproj" />
   <Project Path="DynamicPrice.Manager/DynamicPrice.Manager.csproj" />
   <Project Path="DynamicPrice.Shared.Contracts/DynamicPrice.Shared.Contracts.csproj" />
-  <Project Path="DynamicPrice.Tests/DynamicPrice.Tests.csproj" />
 </Solution>

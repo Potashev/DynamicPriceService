@@ -13,7 +13,7 @@ public class PriceRuleController : BaseController
 	{
 		var priceRuleWithStatus = await CoreApiClient.GetPriceRule();
 
-		ViewData["RuleStatus"] = priceRuleWithStatus.IsActive 
+		ViewData["RuleStatus"] = priceRuleWithStatus.IsActive
 			? "Running"
 			: "Not running";
 

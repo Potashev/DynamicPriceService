@@ -59,7 +59,7 @@ builder.Services.AddCors(options =>
 			policy.WithOrigins("https://localhost:7022", "https://localhost:7183")
 				.AllowAnyHeader()
 				.AllowAnyMethod();
-				//.AllowCredentials();
+			//.AllowCredentials();
 		});
 });
 
@@ -72,7 +72,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(cfg =>
 	cfg.AddProfile<MappingProfile>());
 
-builder.Services.AddMediatR(cfg => 
+builder.Services.AddMediatR(cfg =>
 	cfg.RegisterServicesFromAssemblyContaining<Program>());
 
 builder.Services.AddMassTransit(x =>

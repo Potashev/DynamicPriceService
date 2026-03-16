@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Bogus.DataSets;
 using DynamicPrice.Core.Data;
 using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Core.Models;
@@ -37,7 +36,7 @@ public class AddProductToCartCommandHadnler
 
 		var cart = await _context.Carts
 			.Include(c => c.CartItems)
-			.Where(c => c.CustomerId == customer.Id	
+			.Where(c => c.CustomerId == customer.Id
 				&& c.CompanyId == product.CompanyId)
 			.FirstOrDefaultAsync(cancellationToken);
 

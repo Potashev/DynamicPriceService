@@ -1,7 +1,6 @@
 ﻿using DynamicPrice.Manager.ApiClients;
 using DynamicPrice.Shared.Contracts.Requests;
 using Microsoft.AspNetCore.Mvc;
-using NuGet.Protocol.Plugins;
 
 namespace DynamicPrice.Manager.Controllers;
 

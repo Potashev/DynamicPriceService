@@ -69,8 +69,8 @@ public class ProductsController : BaseController
 		if (id is null) return NotFound();
 
 		var productVm = await CoreApiClient.GetProduct((int)id);
-		return productVm == null 
-			? NotFound() 
+		return productVm == null
+			? NotFound()
 			: View(productVm);
 	}
 

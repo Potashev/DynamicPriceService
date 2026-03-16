@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using DynamicPrice.Core.Services;
+﻿using DynamicPrice.Core.Services;
 using DynamicPrice.Shared.Contracts.Requests;
 using MediatR;
 
@@ -17,7 +16,7 @@ public class RegisterCustomerCommandHandler
 	RegisterCustomerCommand request,
 	CancellationToken cancellationToken)
 		=> await _userService.RegisterUserAsync(
-			new RegisterUserRequest(request.registerVm) 
+			new RegisterUserRequest(request.registerVm)
 			{
 				Role = "Customer",
 				Balance = 0

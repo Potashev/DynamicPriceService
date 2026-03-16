@@ -1,6 +1,5 @@
 ﻿using DynamicPrice.Core.Data;
 using DynamicPrice.Core.Exceptions;
-using DynamicPrice.Core.Models;
 using DynamicPrice.Core.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

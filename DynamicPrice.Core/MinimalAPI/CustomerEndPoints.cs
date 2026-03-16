@@ -1,5 +1,4 @@
-﻿using DynamicPrice.Core.MediatR.AuthEntity.Commands;
-using DynamicPrice.Core.MediatR.CustomerEntity.Commands;
+﻿using DynamicPrice.Core.MediatR.CustomerEntity.Commands;
 using DynamicPrice.Core.MediatR.CustomerEntity.Queries;
 using DynamicPrice.Shared.Contracts.Requests;
 using MediatR;
@@ -9,25 +8,9 @@ namespace DynamicPrice.Core.MinimalAPI;
 
 public static class CustomerEndPoints
 {
-	//public static void MapCustomerEndPoints(this IEndpointRouteBuilder app)
-	//{
-	//	var customers = app.MapGroup("/api/customers")
-	//		.RequireAuthorization("CustomerPolicy");
-
-	//	customers.MapPost("", RegisterCustomer)
-	//		.WithSummary("");
-
-	//	customers.MapGet("/me", GetCustomerInfo)
-	//		.WithSummary("Получить информацию о текущем клиенте");
-
-	//	customers.MapPut("/me/balance", TopUp)
-	//		.WithSummary("Пополнить баланс клиента");
-	//}
-
 	public static void MapCustomerEndPoints(this IEndpointRouteBuilder app)
 	{
 		var customers = app.MapGroup("/api/customers");
-			//.RequireAuthorization("CustomerPolicy");
 
 		customers.MapPost("", RegisterCustomer)
 			.WithSummary("");

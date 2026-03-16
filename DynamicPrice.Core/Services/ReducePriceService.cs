@@ -22,8 +22,8 @@ public class ReducePriceService : PriceServiceBase<PriceReduceEvent>
 	protected override async Task ProcessMessage(PriceReduceEvent message)
 		=> await UpdatePrice(message.ProductId, (product, rule) =>
 		{
-			var reduction = product.Price * 
-						(decimal)rule.Reduction * 
+			var reduction = product.Price *
+						(decimal)rule.Reduction *
 						0.01m;
 
 			var newPrice = product.Price - reduction;

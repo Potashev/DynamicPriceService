@@ -1,6 +1,4 @@
-﻿using Bogus.DataSets;
-using DynamicPrice.Core.Exceptions;
-using Microsoft.EntityFrameworkCore;
+﻿using DynamicPrice.Core.Exceptions;
 
 namespace DynamicPrice.Core.Models;
 
@@ -21,7 +19,7 @@ public class Cart
 	public string CustomerId { get; set; }
 
 	/// <summary>
-	/// Компания, к которой относится корзина.	//todo: fixed
+	/// Идентификатор компании, к которой относится корзина.
 	/// </summary>
 	public int CompanyId { get; set; }
 
@@ -41,7 +39,6 @@ public class Cart
 	{
 		CustomerId = customerId;
 		CompanyId = companyId;
-		//Company = company;
 	}
 
 	public void AddItem(int productId)

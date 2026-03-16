@@ -27,8 +27,8 @@ public class GetCustomerOrderDetailsQueryHandler
 		var customer = await _userService.GetRequiredCurrentUserAsync();
 
 		var customerOrder = await _context.Orders
-			.Where(o => 
-				o.OrderId.ToString() == request.OrderId && 
+			.Where(o =>
+				o.OrderId.ToString() == request.OrderId &&
 				o.CustomerId == customer.Id)
 			.Include(o => o.OrderItems)
 				.ThenInclude(op => op.Product)

@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using DynamicPrice.Core.Services;
+﻿using DynamicPrice.Core.Services;
 using DynamicPrice.Shared.Contracts.Requests;
 using MediatR;
 

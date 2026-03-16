@@ -41,8 +41,8 @@ public class CookiesAuthTokenStore : IAuthTokenStore
 
 	public async Task SetToken(string authToken)
 		=> _contextAccessor.HttpContext?.Response.Cookies.Append(
-			KEY, 
-			authToken, 
+			KEY,
+			authToken,
 			new CookieOptions { HttpOnly = true, Secure = true, SameSite = SameSiteMode.Strict });
 }
 

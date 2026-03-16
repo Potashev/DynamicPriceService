@@ -23,7 +23,7 @@ public class PriceReducingCommandHandler
 	{
 		var manager = await _userService.GetRequiredCurrentUserAsync();
 
-		var companyId = manager.CompanyId 
+		var companyId = manager.CompanyId
 			?? throw new BusinessException("У пользователя не указан CompanyId.");
 
 		var activeCompany = await _context.ActiveCompanies.FindAsync(companyId);

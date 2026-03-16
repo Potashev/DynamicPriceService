@@ -31,39 +31,25 @@ public static class ProductsEndPoints
 	private static async Task<IResult> GetProducts(
 		IMediator mediator,
 		CancellationToken cancellationToken)
-	{
-		var hash = cancellationToken.GetHashCode();
-
-		var productsVm = await mediator.Send(new GetProductsQuery(), cancellationToken);
-		return Results.Ok(productsVm);
-	}
+			=> Results.Ok(await mediator.Send(new GetProductsQuery(), cancellationToken));
 
 	private static async Task<IResult> GetProduct(
 		int id,
 		IMediator mediator,
 		CancellationToken cancellationToken)
-	{
-		var productVm = await mediator.Send(new GetProductDetailsQuery(id), cancellationToken);
-		return Results.Ok(productVm);
-	}
+			=> Results.Ok(await mediator.Send(new GetProductDetailsQuery(id), cancellationToken));
 
 	private static async Task<IResult> Edit(
 		ProductViewModel productVm,
 		IMediator mediator,
 		CancellationToken cancellationToken)
-	{
-		var productId = await mediator.Send(new EditProductCommand(productVm), cancellationToken);
-		return Results.Ok(productId);
-	}
+			=> Results.Ok(await mediator.Send(new EditProductCommand(productVm), cancellationToken));
 
 	private static async Task<IResult> Create(
 		ProductViewModel productVm,
 		IMediator mediator,
 		CancellationToken cancellationToken)
-	{
-		var productId = await mediator.Send(new CreateProductCommand(productVm), cancellationToken);
-		return Results.Ok(productId);
-	}
+			=> Results.Ok(await mediator.Send(new CreateProductCommand(productVm), cancellationToken));
 
 	private static async Task<IResult> Delete(
 		int id,

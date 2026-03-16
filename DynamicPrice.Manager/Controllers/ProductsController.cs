@@ -10,10 +10,7 @@ public class ProductsController : BaseController
 		: base(coreApiClient) { }
 
 	public async Task<IActionResult> Index(CancellationToken cancellationToken)
-	{
-		var productsVm = await CoreApiClient.GetProducts(cancellationToken);
-		return View(productsVm);
-	}
+		=> View(await CoreApiClient.GetProducts(cancellationToken));
 
 	public async Task<IActionResult> Details(
 		int? id,
@@ -27,9 +24,7 @@ public class ProductsController : BaseController
 	}
 
 	public IActionResult Create()
-	{
-		return View();
-	}
+		=> View();
 
 	[HttpPost]
 	[ValidateAntiForgeryToken]

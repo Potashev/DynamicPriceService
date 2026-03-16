@@ -36,8 +36,8 @@
 						@Html.DisplayFor(modelItem => item.Product!.Price)
 					</td>
 					<td>
-						<a asp-action="AddProduct" asp-route-productId="@item.Product?.ProductId">Add</a> |
-						<a asp-action="RemoveProduct" asp-route-productId="@item.Product?.ProductId">Remove</a>
+						<a asp-action="AddCartItem" asp-route-productId="@item.Product?.ProductId">Add</a> |
+						<a asp-action="RemoveCartItem" asp-route-productId="@item.Product?.ProductId">Remove</a>
 					</td>
 				</tr>
 			}

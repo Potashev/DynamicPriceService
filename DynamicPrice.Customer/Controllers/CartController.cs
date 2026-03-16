@@ -11,10 +11,7 @@ public class CartController : BaseController
 	public async Task<IActionResult> Details(
 		string companyId,
 		CancellationToken cancellationToken)
-	{
-		var cart = await CoreApiClient.GetCartDetails(companyId, cancellationToken);
-		return View(cart);
-	}
+			=> View(await CoreApiClient.GetCartDetails(companyId, cancellationToken));
 
 	public async Task<IActionResult> AddCartItem(
 		int productId,

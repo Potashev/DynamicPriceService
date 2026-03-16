@@ -26,10 +26,7 @@ public static class ManagerEndPoints
 	private static async Task<IResult> GetCompanyManagers(
 		IMediator mediator,
 		CancellationToken cancellationToken)
-	{
-		var managersVm = await mediator.Send(new GetCompanyManagersQuery(), cancellationToken);
-		return Results.Ok(managersVm);
-	}
+			=> Results.Ok(await mediator.Send(new GetCompanyManagersQuery(), cancellationToken));
 
 	private static async Task<IResult> RegisterManager(
 		[FromBody] RegisterRequest registerVm,
@@ -37,14 +34,11 @@ public static class ManagerEndPoints
 		CancellationToken cancellationToken)
 	{
 		await mediator.Send(new RegisterManagerCommand(registerVm), cancellationToken);
-		return Results.Ok("Manager registered successfully");
+		return Results.Ok();
 	}
 
 	private static async Task<IResult> GetManagerInfo(
 		IMediator mediator,
 		CancellationToken cancellationToken)
-	{
-		var managerVm = await mediator.Send(new GetManagerInfoQuery(), cancellationToken);
-		return Results.Ok(managerVm);
-	}
+			=> Results.Ok(await mediator.Send(new GetManagerInfoQuery(), cancellationToken));
 }

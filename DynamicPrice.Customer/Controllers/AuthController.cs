@@ -19,9 +19,7 @@ public class AuthController : Controller
 	}
 
 	public IActionResult LoginCustomer()
-	{
-		return View();
-	}
+		=> View();
 
 	[HttpPost]
 	[ValidateAntiForgeryToken]

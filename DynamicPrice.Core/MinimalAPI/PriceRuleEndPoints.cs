@@ -28,19 +28,13 @@ public static class PriceRuleEndPoints
 	private static async Task<IResult> Get(
 		IMediator mediator,
 		CancellationToken cancellationToken)
-	{
-		var result = await mediator.Send(new GetPriceRuleWithStatusQuery(), cancellationToken);
-		return Results.Ok(result);
-	}
+			=> Results.Ok(await mediator.Send(new GetPriceRuleWithStatusQuery(), cancellationToken));
 
 	private static async Task<IResult> Edit(
 		PriceRuleViewModel priceRuleVm,
 		IMediator mediator,
 		CancellationToken cancellationToken)
-	{
-		var result = await mediator.Send(new EditPriceRuleCommand(priceRuleVm), cancellationToken);
-		return Results.Ok(result);
-	}
+			=> Results.Ok(await mediator.Send(new EditPriceRuleCommand(priceRuleVm), cancellationToken));
 
 	private static async Task<IResult> RunPriceReducing(
 		IMediator mediator,

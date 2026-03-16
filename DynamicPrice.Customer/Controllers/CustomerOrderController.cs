@@ -19,10 +19,7 @@ public class CustomerOrderController : BaseController
 	public async Task<IActionResult> Details(
 		int id,
 		CancellationToken cancellationToken)
-	{
-		var orderVm = await CoreApiClient.OrderDetails(id, cancellationToken);
-		return View(orderVm);
-	}
+			=> View(await CoreApiClient.OrderDetails(id, cancellationToken));
 
 	public async Task<IActionResult> Cancel(
 		int orderId,

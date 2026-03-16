@@ -9,10 +9,7 @@ public class CompanyOrdersController : BaseController
 		: base(coreApiClient) { }
 
 	public async Task<IActionResult> Index(CancellationToken cancellationToken)
-	{
-		var ordersVm = await CoreApiClient.GetOrders(cancellationToken);
-		return View(ordersVm);
-	}
+		=> View(await CoreApiClient.GetOrders(cancellationToken));
 
 	public async Task<IActionResult> FindByReceiveKey(
 		string key,
@@ -25,10 +22,7 @@ public class CompanyOrdersController : BaseController
 	public async Task<IActionResult> Details(
 		int id,
 		CancellationToken cancellationToken)
-	{
-		var orderVm = await CoreApiClient.GetOrder(id, cancellationToken);
-		return View(orderVm);
-	}
+			=> View(await CoreApiClient.GetOrder(id, cancellationToken));
 
 	public async Task<IActionResult> ReadyForReceive(
 		string orderId,
@@ -47,7 +41,5 @@ public class CompanyOrdersController : BaseController
 	}
 
 	public async Task<IActionResult> Statistics(CancellationToken cancellationToken)
-	{
-		return View(await CoreApiClient.GetOrdersStatistics(cancellationToken));
-	}
+		=> View(await CoreApiClient.GetOrdersStatistics(cancellationToken));
 }

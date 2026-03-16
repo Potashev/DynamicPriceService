@@ -2,6 +2,7 @@
 using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Core.Models;
 using DynamicPrice.Shared.Contracts.Requests;
+using DynamicPrice.Shared.Contracts.Responses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -51,16 +52,18 @@ public class UserService : IUserService
 			.AsNoTracking()
 			.ToListAsync();
 
-	public async Task<string> LoginUserAsync(LoginRequest request)
+	public async Task<TokenResponse> LoginUserAsync(LoginRequest request)
 	{
 		var user = await _userManager.FindByNameAsync(request.Username);
 		if (user == null || !await _userManager.CheckPasswordAsync(user, request.Password))
 			throw new ArgumentException("Unauthorized!");
 
 		var roles = await _userManager.GetRolesAsync(user);
-		var token = GenerateJwtToken(user, roles);
 
-		return token;
+		return new TokenResponse
+		{
+			Token = GenerateJwtToken(user, roles)
+		};
 	}
 
 	public async Task RegisterUserAsync(RegisterUserRequest request)
@@ -127,5 +130,5 @@ public interface IUserService
 	Task<ApplicationUser> GetUserByIdAsync(string userId);
 	Task<IEnumerable<ApplicationUser>> GetUsersAsync(Expression<Func<ApplicationUser, bool>> predicate);
 	Task RegisterUserAsync(RegisterUserRequest registerRequest);
-	Task<string> LoginUserAsync(LoginRequest loginRequest);
+	Task<TokenResponse> LoginUserAsync(LoginRequest loginRequest);
 }

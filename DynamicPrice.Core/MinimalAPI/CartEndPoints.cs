@@ -15,10 +15,10 @@ public static class CartEndPoints
 		cart.MapGet("", GetCartDetails)
 			.WithSummary("Получить детали корзины клиента");
 
-		cart.MapPost("/items", AddProduct)
+		cart.MapPost("/items", AddCartItem)
 			.WithSummary("Добавить товар в корзину");
 
-		cart.MapDelete("/items/{productId}", RemoveProduct)
+		cart.MapDelete("/items/{productId}", RemoveCartItem)
 			.WithSummary("Удалить товар из корзины");
 	}
 
@@ -26,21 +26,18 @@ public static class CartEndPoints
 		[FromQuery(Name = "company-id")] string companyId,
 		IMediator mediator,
 		CancellationToken cancellationToken)
-	{
-		var cart = await mediator.Send(new GetCartDetailsQuery(Convert.ToInt32(companyId)), cancellationToken);
-		return Results.Ok(cart);
-	}
+			=> Results.Ok(await mediator.Send(new GetCartDetailsQuery(Convert.ToInt32(companyId)), cancellationToken));
 
-	private static async Task<IResult> AddProduct(
+	private static async Task<IResult> AddCartItem(
 		[FromBody] int productId,
 		IMediator mediator,
 		CancellationToken cancellationToken)
 	{
 		var cart = await mediator.Send(new AddProductToCartCommand(productId.ToString()), cancellationToken);
-		return Results.Ok(cart.Company.CompanyId);
+		return Results.Ok(cart.CompanyId);
 	}
 
-	private static async Task<IResult> RemoveProduct(
+	private static async Task<IResult> RemoveCartItem(
 		int productId,
 		IMediator mediator,
 		CancellationToken cancellationToken)

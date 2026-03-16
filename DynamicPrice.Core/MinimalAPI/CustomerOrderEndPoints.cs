@@ -26,26 +26,17 @@ public static class CustomerOrderEndPoints
 		[FromQuery(Name = "id")] string orderId,
 		IMediator mediator,
 		CancellationToken cancellationToken)
-	{
-		var orderVm = await mediator.Send(new GetCustomerOrderDetailsQuery(orderId), cancellationToken);
-		return Results.Ok(orderVm);
-	}
+			=> Results.Ok(await mediator.Send(new GetCustomerOrderDetailsQuery(orderId), cancellationToken));
 
 	private static async Task<IResult> ConfirmOrder(
 		[FromBody] int cartId,
 		IMediator mediator,
 		CancellationToken cancellationToken)
-	{
-		var orderId = await mediator.Send(new ConfirmOrderCommand(cartId), cancellationToken);
-		return Results.Ok(orderId);
-	}
+			=> Results.Ok(await mediator.Send(new ConfirmOrderCommand(cartId), cancellationToken));
 
 	private static async Task<IResult> CancelOrder(
 		[FromBody] int orderId,
 		IMediator mediator,
 		CancellationToken cancellationToken)
-	{
-		await mediator.Send(new CancelOrderCommand(orderId), cancellationToken);
-		return Results.Ok(orderId);
-	}
+			=> Results.Ok(await mediator.Send(new CancelOrderCommand(orderId), cancellationToken));
 }

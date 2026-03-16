@@ -36,8 +36,5 @@ public static class CompaniesEndPoints
 		string companyId,
 		IMediator mediator,
 		CancellationToken cancellationToken)
-	{
-		var companyProducts = await mediator.Send(new GetCompanyProductsQuery(companyId), cancellationToken);
-		return Results.Ok(companyProducts);
-	}
+			=> Results.Ok(await mediator.Send(new GetCompanyProductsQuery(companyId), cancellationToken));
 }

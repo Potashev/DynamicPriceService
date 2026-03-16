@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace DynamicPrice.Core.MediatR.OrderEntity.Commands;
 
 public class CancelOrderCommandHandler
-	: IRequestHandler<CancelOrderCommand>
+	: IRequestHandler<CancelOrderCommand, int>
 {
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IUserService _userService;
@@ -17,7 +17,7 @@ public class CancelOrderCommandHandler
 		IUserService userService)
 		=> (_context, _userService) = (context, userService);
 
-	public async Task Handle(
+	public async Task<int> Handle(
 		CancelOrderCommand request,
 		CancellationToken cancellationToken)
 	{
@@ -33,6 +33,6 @@ public class CancelOrderCommandHandler
 		order.MarkAsCanceled();
 
 		await _context.SaveChangesAsync(cancellationToken);
-		return;
+		return request.OrderId;
 	}
 }

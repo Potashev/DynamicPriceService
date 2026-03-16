@@ -14,5 +14,5 @@ public class CompaniesController : BaseController
 	public async Task<IActionResult> CompanyProducts(
 		int id,
 		CancellationToken cancellationToken)
-		=> View(await CoreApiClient.GetCompanyProducts(id, cancellationToken));
+			=> View(await CoreApiClient.GetCompanyProducts(id, cancellationToken));
 }

@@ -17,8 +17,5 @@ public static class AuthEndPoints
 		[FromBody] LoginRequest loginVm,
 		IMediator mediator,
 		CancellationToken cancellationToken)
-	{
-		var token = await mediator.Send(new LoginCommand(loginVm), cancellationToken);
-		return Results.Ok(new { token });
-	}
+			=> Results.Ok(await mediator.Send(new LoginCommand(loginVm), cancellationToken));
 }

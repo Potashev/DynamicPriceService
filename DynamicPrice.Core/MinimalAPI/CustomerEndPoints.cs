@@ -31,16 +31,13 @@ public static class CustomerEndPoints
 		CancellationToken cancellationToken)
 	{
 		await mediator.Send(new RegisterCustomerCommand(registerVm), cancellationToken);
-		return Results.Ok("User registered successfully");
+		return Results.Ok();
 	}
 
 	private static async Task<IResult> GetCustomerInfo(
 		IMediator mediator,
 		CancellationToken cancellationToken)
-	{
-		var customerInfo = await mediator.Send(new GetCustomerInfoQuery(), cancellationToken);
-		return Results.Ok(customerInfo);
-	}
+			=> Results.Ok(await mediator.Send(new GetCustomerInfoQuery(), cancellationToken));
 
 	private static async Task<IResult> TopUp(
 		BalanceRequest balanceVm,

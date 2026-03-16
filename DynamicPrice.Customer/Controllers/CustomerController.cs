@@ -24,9 +24,7 @@ public class CustomerController : BaseController
 	}
 
 	public IActionResult RegisterCustomer()
-	{
-		return View();
-	}
+		=> View();
 
 	[HttpPost]
 	[ValidateAntiForgeryToken]

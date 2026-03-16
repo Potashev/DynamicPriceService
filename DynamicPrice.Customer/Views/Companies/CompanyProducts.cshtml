@@ -36,7 +36,7 @@
 					<span id="price-change-@product.ProductId" class="price-change"></span>
 				</td>
 				<td>
-					<a asp-controller="Cart" asp-action="AddProduct" asp-route-productId="@product.ProductId">Add to Cart</a>
+					<a asp-controller="Cart" asp-action="AddCartItem" asp-route-productId="@product.ProductId">Add to Cart</a>
 				</td>
 			</tr>
 		}

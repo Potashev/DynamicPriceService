@@ -1,9 +1,8 @@
 ﻿using DynamicPrice.Core.Data;
-using DynamicPrice.Core.Models;
+using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Core.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
 
 namespace DynamicPrice.Core.MediatR.OrderEntity.Commands;
 
@@ -25,23 +24,14 @@ public class ReadyForReceiveOrderCommandHandler
 		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var order = await _context.Orders
-			.Where(o => o.OrderId.ToString() == request.OrderId && o.Company.CompanyId == manager.CompanyId)
-			.FirstOrDefaultAsync(cancellationToken);
+			.Where(o => o.OrderId.ToString() == request.OrderId && o.CompanyId == manager.CompanyId)
+			.FirstOrDefaultAsync(cancellationToken)
+			?? throw new NotFoundException("Order not found.");
 
-		if (order is null)
-			throw new Exception("Order not found.");
-
-		if (order.Status is not OrderStatus.Confirmed)
-			throw new Exception("Only confirmed orders can be set to ready for receive.");
-
-		order.ReceiveKey = GenerateReceiveKey();
-		order.Status = OrderStatus.Ready;
+		order.MarkAsReady();
 
 		await _context.SaveChangesAsync(cancellationToken);
-
 		return;
 	}
-
-	private int GenerateReceiveKey() => RandomNumberGenerator.GetInt32(100_000, 1_000_000);
 }
 

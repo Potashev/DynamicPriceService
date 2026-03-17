@@ -9,17 +9,36 @@ public class CustomerController : BaseController
 	public CustomerController(ICoreApiClient coreApiClient)
 		: base(coreApiClient) { }
 
-	public async Task<IActionResult> Index()
-		=> View(await CoreApiClient.GetCustomer());
+	public async Task<IActionResult> Index(CancellationToken cancellationToken)
+		=> View(await CoreApiClient.GetCustomer(cancellationToken));
 
 
 	[HttpPost, ActionName("TopUpBalance")]
 	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> TopUpBalance(string replenishmentAmount)
+	public async Task<IActionResult> TopUpBalance(
+		BalanceRequest balanceRequest,
+		CancellationToken cancellationToken)
 	{
-		//todo: pass balancerequest from view instead of string
-		var balanceViewModel = new BalanceRequest { ReplenishmentAmount = decimal.Parse(replenishmentAmount) };
-		await CoreApiClient.TopUpBalance(balanceViewModel);
+		await CoreApiClient.TopUpBalance(balanceRequest, cancellationToken);
 		return RedirectToAction(nameof(Index));
+	}
+
+	public IActionResult RegisterCustomer()
+		=> View();
+
+	[HttpPost]
+	[ValidateAntiForgeryToken]
+	public async Task<IActionResult> RegisterCustomer(
+		RegisterRequest registerVm,
+		CancellationToken cancellationToken)
+	{
+		if (!ModelState.IsValid)
+			return View(registerVm);
+
+		await CoreApiClient.RegisterCustomer(registerVm, cancellationToken);
+
+		return RedirectToAction(
+				nameof(AuthController.LoginCustomer),
+				nameof(AuthController).Replace("Controller", ""));
 	}
 }

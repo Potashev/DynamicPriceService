@@ -9,25 +9,17 @@ public class PriceRuleController : BaseController
 	public PriceRuleController(ICoreApiClient coreApiClient)
 		: base(coreApiClient) { }
 
-	public async Task<IActionResult> Details()
+	public async Task<IActionResult> Details(CancellationToken cancellationToken)
+		=> View(await CoreApiClient.GetPriceRule(cancellationToken));
+
+	public async Task<IActionResult> Edit(
+		int? id,
+		CancellationToken cancellationToken)
 	{
-		var priceRuleWithStatus = await CoreApiClient.GetPriceRule();
-
-		ViewData["RuleStatus"] = priceRuleWithStatus.IsActive ?
-			"Running" :
-			"Not running";
-
-		return View(priceRuleWithStatus.PriceRule);
-	}
-
-	public async Task<IActionResult> Edit(int? id)
-	{
-		if (id == null)
-		{
+		if (id is null)
 			return NotFound();
-		}
 
-		var priceRuleWithStatus = await CoreApiClient.GetPriceRule();
+		var priceRuleWithStatus = await CoreApiClient.GetPriceRule(cancellationToken);
 
 		return View(priceRuleWithStatus.PriceRule);
 	}
@@ -35,27 +27,27 @@ public class PriceRuleController : BaseController
 	[HttpPost]
 	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> Edit(
-		int id,
-		PriceRuleViewModel priceRuleVm)
+		PriceRuleViewModel priceRuleVm,
+		CancellationToken cancellationToken)
 	{
 		if (ModelState.IsValid)
 		{
-			await CoreApiClient.UpdatePriceRule(priceRuleVm);
+			await CoreApiClient.UpdatePriceRule(priceRuleVm, cancellationToken);
 			return RedirectToAction(nameof(Details));
 		}
 
 		return View(priceRuleVm);
 	}
 
-	public async Task<IActionResult> Run()
+	public async Task<IActionResult> Run(CancellationToken cancellationToken)
 	{
-		await CoreApiClient.RunPriceReducing();
+		await CoreApiClient.RunPriceReducing(cancellationToken);
 		return RedirectToAction(nameof(Details));
 	}
 
-	public async Task<IActionResult> Stop()
+	public async Task<IActionResult> Stop(CancellationToken cancellationToken)
 	{
-		await CoreApiClient.StopPriceReducing();
+		await CoreApiClient.StopPriceReducing(cancellationToken);
 		return RedirectToAction(nameof(Details));
 	}
 }

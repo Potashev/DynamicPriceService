@@ -10,29 +10,41 @@ public static class CustomerEndPoints
 {
 	public static void MapCustomerEndPoints(this IEndpointRouteBuilder app)
 	{
-		var customer = app.MapGroup("/api/customer")
+		var customers = app.MapGroup("/api/customers");
+
+		customers.MapPost("", RegisterCustomer)
+			.WithSummary("");
+
+		var customer = customers.MapGroup("/me")
 			.RequireAuthorization("CustomerPolicy");
 
-		customer.MapGet("/me", GetCustomerInfo)
+		customer.MapGet("", GetCustomerInfo)
 			.WithSummary("Получить информацию о текущем клиенте");
 
-		customer.MapPut("/me/balance", TopUp)
+		customer.MapPut("/balance", TopUp)
 			.WithSummary("Пополнить баланс клиента");
+	}
+
+	private static async Task<IResult> RegisterCustomer(
+		[FromBody] RegisterRequest registerVm,
+		IMediator mediator,
+		CancellationToken cancellationToken)
+	{
+		await mediator.Send(new RegisterCustomerCommand(registerVm), cancellationToken);
+		return Results.Ok();
 	}
 
 	private static async Task<IResult> GetCustomerInfo(
 		IMediator mediator,
 		CancellationToken cancellationToken)
-	{
-		var customerInfo = await mediator.Send(new GetCustomerInfoQuery(), cancellationToken);
-		return Results.Ok(customerInfo);
-	}
+			=> Results.Ok(await mediator.Send(new GetCustomerInfoQuery(), cancellationToken));
 
 	private static async Task<IResult> TopUp(
-		[FromBody] BalanceRequest balanceVm,
-		IMediator mediator)
+		BalanceRequest balanceVm,
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
-		await mediator.Send(new TopUpBalanceCommand(balanceVm));
+		await mediator.Send(new TopUpBalanceCommand(balanceVm), cancellationToken);
 		return Results.Ok();
 	}
 }

@@ -1,5 +1,5 @@
 ﻿using DynamicPrice.Core.Data;
-using DynamicPrice.Core.Models;
+using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Core.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace DynamicPrice.Core.MediatR.OrderEntity.Commands;
 
 public class CancelOrderCommandHandler
-	: IRequestHandler<CancelOrderCommand>
+	: IRequestHandler<CancelOrderCommand, int>
 {
 	private readonly DynamicPriceCoreContext _context;
 	private readonly IUserService _userService;
@@ -17,7 +17,7 @@ public class CancelOrderCommandHandler
 		IUserService userService)
 		=> (_context, _userService) = (context, userService);
 
-	public async Task Handle(
+	public async Task<int> Handle(
 		CancelOrderCommand request,
 		CancellationToken cancellationToken)
 	{
@@ -27,25 +27,12 @@ public class CancelOrderCommandHandler
 			.Where(o => o.OrderId == request.OrderId && o.CustomerId == customer.Id)
 			.Include(o => o.OrderItems)
 				.ThenInclude(oi => oi.Product)
-			.FirstOrDefaultAsync(cancellationToken);
+			.FirstOrDefaultAsync(cancellationToken)
+			?? throw new NotFoundException("Order not found.");
 
-		if (order is null)
-			throw new Exception("Order not found.");
-
-		if (order.Status is OrderStatus.Canceled or OrderStatus.Completed)
-			throw new Exception("Only confirmed or ready orders can be canceled.");
-
-		foreach (var oi in order.OrderItems)
-		{
-			if (oi.Product.Quantity != null)
-				oi.Product.Quantity += oi.Quantity;
-		}
-
-		order.Status = OrderStatus.Canceled;
-		order.ReceiveKey = 0;
+		order.MarkAsCanceled();
 
 		await _context.SaveChangesAsync(cancellationToken);
-
-		return;
+		return request.OrderId;
 	}
 }

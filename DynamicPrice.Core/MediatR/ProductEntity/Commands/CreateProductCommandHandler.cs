@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Core.Models;
 using DynamicPrice.Core.Services;
 using MediatR;
@@ -25,9 +26,12 @@ public class CreateProductCommandHandler
 	{
 		var manager = await _userService.GetRequiredCurrentUserAsync();
 
+		var companyId = manager.CompanyId
+			?? throw new BusinessException("У пользователя не указан CompanyId.");
+
 		var product = _mapper.Map<Product>(request.ProductVm);
 
-		product.CompanyId = manager.CompanyId.Value;
+		product.CompanyId = companyId;
 		product.LastSellTime = DateTime.UtcNow;
 
 		await _context.Products.AddAsync(product, cancellationToken);

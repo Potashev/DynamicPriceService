@@ -15,9 +15,10 @@ builder.Services.AddSession(options =>
 	options.Cookie.Name = "Manager.Session";   //for using manager and customer in one browser
 });
 
-var baseUrl = builder.Configuration["ApiSettings:BaseUrl"];
-
 builder.Services.AddClientCommon();
+
+var baseUrl = builder.Configuration["ApiSettings:BaseUrl"]
+	?? throw new InvalidOperationException("Missing configuration: ApiSettings:BaseUrl");
 
 builder.Services.AddRefitClient<ICoreApiClient>()
 	.ConfigureHttpClient(client =>
@@ -46,6 +47,6 @@ app.UseSession();
 
 app.MapControllerRoute(
 	name: "default",
-		pattern: "{controller=Auth}/{action=Login}");
+		pattern: "{controller=Auth}/{action=LoginManager}");
 
 app.Run();

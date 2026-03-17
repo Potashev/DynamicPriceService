@@ -27,14 +27,14 @@ public class GetCompanyOrderDetailsQueryHandler
 		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var companyOrder = await _context.Orders
-			.Where(o => o.OrderId.ToString() == request.OrderId && o.Company.CompanyId == manager.CompanyId)
+			.Where(o => o.OrderId.ToString() == request.OrderId && o.CompanyId == manager.CompanyId)
 			.Include(o => o.OrderItems)
 				.ThenInclude(op => op.Product)
 			.FirstOrDefaultAsync(cancellationToken);
 
 		var companyOrderVm = _mapper.Map<OrderViewModel>(companyOrder);
 
-		companyOrderVm.CustomerName = (await _userService.GetUserByIdAsync(companyOrderVm.CustomerId)).UserName;
+		companyOrderVm.CustomerName = (await _userService.GetUserByIdAsync(companyOrderVm.CustomerId)).UserName ?? string.Empty;
 
 		return companyOrderVm;
 	}

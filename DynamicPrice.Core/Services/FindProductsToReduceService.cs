@@ -4,6 +4,7 @@ using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Prometheus;
 using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 
 namespace DynamicPrice.Core.Services;
 
@@ -90,7 +91,7 @@ public class FindProductsToReduceService : BackgroundService
 
 	private async IAsyncEnumerable<Product> FindProductsToReduceAsync(
 		DynamicPriceCoreContext context,
-		CancellationToken token,
+		[EnumeratorCancellation] CancellationToken token,
 		int? productsCount = null)
 	{
 		var activeCompaniesIds = await context.ActiveCompanies
@@ -107,7 +108,7 @@ public class FindProductsToReduceService : BackgroundService
 
 		var productsActiveCompaniesQuery = context.Products
 			.AsNoTracking()
-			.Where(p => activeCompaniesIds.Contains(p.CompanyId)); //todo: check
+			.Where(p => activeCompaniesIds.Contains(p.CompanyId));
 
 		if (productsCount.HasValue)
 			productsActiveCompaniesQuery = productsActiveCompaniesQuery.Take(productsCount.Value);
@@ -116,7 +117,7 @@ public class FindProductsToReduceService : BackgroundService
 			from p in productsActiveCompaniesQuery
 			join pr in priceRulesActiveCompaniesQuery
 				on p.CompanyId equals pr.CompanyId
-			where EF.Functions.DateDiffSecond(p.LastSellTime.Value, DateTime.UtcNow) > pr.NoSellSeconds
+			where EF.Functions.DateDiffSecond(p.LastSellTime, DateTime.UtcNow) > pr.NoSellSeconds
 			select p;
 
 		await foreach (var product in query.AsAsyncEnumerable().WithCancellation(token))

@@ -8,38 +8,38 @@ public class CompanyOrdersController : BaseController
 	public CompanyOrdersController(ICoreApiClient coreApiClient)
 		: base(coreApiClient) { }
 
-	public async Task<IActionResult> Index()
-	{
-		var ordersVm = await CoreApiClient.GetOrders();
-		return View(ordersVm);
-	}
+	public async Task<IActionResult> Index(CancellationToken cancellationToken)
+		=> View(await CoreApiClient.GetOrders(cancellationToken));
 
-	public async Task<IActionResult> FindByReceiveKey(string key)
+	public async Task<IActionResult> FindByReceiveKey(
+		string key,
+		CancellationToken cancellationToken)
 	{
-		var orderId = await CoreApiClient.GetOrderIdByReceiveKey(key);
+		var orderId = await CoreApiClient.GetOrderIdByReceiveKey(key, cancellationToken);
 		return RedirectToAction(nameof(Details), new { id = orderId });
 	}
 
-	public async Task<IActionResult> Details(int id)
-	{
-		var orderVm = await CoreApiClient.GetOrder(id);
-		return View(orderVm);
-	}
+	public async Task<IActionResult> Details(
+		int id,
+		CancellationToken cancellationToken)
+			=> View(await CoreApiClient.GetOrder(id, cancellationToken));
 
-	public async Task<IActionResult> ReadyForReceive(string orderId)
+	public async Task<IActionResult> ReadyForReceive(
+		string orderId,
+		CancellationToken cancellationToken)
 	{
-		await CoreApiClient.ReadyForReceiveOrder(orderId);
+		await CoreApiClient.ReadyForReceiveOrder(orderId, cancellationToken);
 		return RedirectToAction(nameof(Details), new { id = orderId });
 	}
 
-	public async Task<IActionResult> Complete(string orderId)
+	public async Task<IActionResult> Complete(
+		string orderId,
+		CancellationToken cancellationToken)
 	{
-		await CoreApiClient.CompleteOrder(orderId);
+		await CoreApiClient.CompleteOrder(orderId, cancellationToken);
 		return RedirectToAction(nameof(Details), new { id = orderId });
 	}
 
-	public async Task<IActionResult> Statistics()
-	{
-		return View(await CoreApiClient.GetOrdersStatistics());
-	}
+	public async Task<IActionResult> Statistics(CancellationToken cancellationToken)
+		=> View(await CoreApiClient.GetOrdersStatistics(cancellationToken));
 }

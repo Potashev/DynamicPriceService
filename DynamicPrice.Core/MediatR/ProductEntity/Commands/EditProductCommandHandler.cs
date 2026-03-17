@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Core.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -28,15 +29,16 @@ public class EditProductCommandHandler
 		var updatedProductVm = request.ProductVm;
 
 		var product = await _context.Products
-			.FirstOrDefaultAsync(p => p.ProductId == updatedProductVm.ProductId && p.CompanyId == manager.CompanyId, cancellationToken);
+			.FirstOrDefaultAsync(p => 
+				p.ProductId == updatedProductVm.ProductId && 
+				p.CompanyId == manager.CompanyId, cancellationToken)
+			?? throw new NotFoundException("Product not found.");
 
-		if (product != null)
-		{
-			_mapper.Map(updatedProductVm, product);
+		_mapper.Map(updatedProductVm, product);
 
-			_context.Update(product);
-			await _context.SaveChangesAsync(cancellationToken);
-		}
+		_context.Update(product);
+		await _context.SaveChangesAsync(cancellationToken);
+
 		return product.ProductId;
 	}
 }

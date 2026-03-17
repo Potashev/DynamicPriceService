@@ -29,15 +29,12 @@ public static class CompaniesEndPoints
 			return Results.Ok(activeCompanies);
 		}
 
-		return Results.StatusCode(StatusCodes.Status501NotImplemented); //todo: handle
+		return Results.StatusCode(StatusCodes.Status501NotImplemented);
 	}
 
 	private static async Task<IResult> GetCompanyProducts(
 		string companyId,
 		IMediator mediator,
 		CancellationToken cancellationToken)
-	{
-		var companyProducts = await mediator.Send(new GetCompanyProductsQuery(companyId), cancellationToken);
-		return Results.Ok(companyProducts);
-	}
+			=> Results.Ok(await mediator.Send(new GetCompanyProductsQuery(companyId), cancellationToken));
 }

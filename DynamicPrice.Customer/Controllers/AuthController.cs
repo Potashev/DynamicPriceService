@@ -5,52 +5,36 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Customer.Controllers;
 
-public class AuthController : BaseController
+public class AuthController : Controller
 {
+	private readonly ICoreApiClient _coreApiClient;
 	private readonly IAuthTokenStore _authTokenStore;
 
 	public AuthController(
 		IAuthTokenStore authTokenStore,
 		ICoreApiClient coreApiClient)
-		: base(coreApiClient)
 	{
 		_authTokenStore = authTokenStore;
-	}
-
-	public IActionResult RegisterCustomer()
-	{
-		return View();
-	}
-
-	[HttpPost]
-	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> RegisterCustomer(RegisterRequest registerVm)
-	{
-		//registerVm.Role = "Manager";   //todo: looks not good
-		await CoreApiClient.RegisterCustomer(registerVm);
-		return RedirectToAction(nameof(LoginCustomer));
+		_coreApiClient = coreApiClient;
 	}
 
 	public IActionResult LoginCustomer()
-	{
-		return View();
-	}
+		=> View();
 
 	[HttpPost]
 	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> LoginCustomer(LoginRequest loginVm)
+	public async Task<IActionResult> LoginCustomer(
+		LoginRequest loginVm,
+		CancellationToken cancellationToken)
 	{
+		if (!ModelState.IsValid)
+			return View(loginVm);
 
-		if (ModelState.IsValid)
-		{
-			// todo: handle invalid login attempt
-			// ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-			// return View(loginVm);
+		var tokenResponse = await _coreApiClient.LoginCustomer(loginVm, cancellationToken);
+		await _authTokenStore.SetToken(tokenResponse.Token);
 
-			var tokenResponse = await CoreApiClient.LoginCustomer(loginVm);
-			_authTokenStore.SetToken(tokenResponse.Token);
-			return RedirectToAction(nameof(Index), "Companies");
-		}
-		return View();
+		return RedirectToAction(
+			nameof(CompaniesController.Index),
+			nameof(CompaniesController).Replace("Controller", ""));
 	}
 }

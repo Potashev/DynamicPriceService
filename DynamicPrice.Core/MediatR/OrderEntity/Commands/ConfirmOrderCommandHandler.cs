@@ -1,4 +1,5 @@
 ﻿using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Core.Models;
 using DynamicPrice.Core.Services;
 using MediatR;
@@ -28,37 +29,12 @@ public class ConfirmOrderCommandHandler
 			.Include(c => c.Company)
 			.Include(c => c.CartItems)
 				.ThenInclude(ci => ci.Product)
-			.FirstOrDefaultAsync(cancellationToken);
+			.FirstOrDefaultAsync(cancellationToken)
+			?? throw new NotFoundException("Cart not found.");
 
-		if (cart == null)
-			throw new Exception("Cart not found.");
+		var order = new Order(customer.Id, cart.CompanyId);
 
-		var order = new Order
-		{
-			Number = GenerateOrderNumber(),
-			CustomerId = customer.Id,
-			Company = cart.Company,
-			Status = OrderStatus.Confirmed,
-			OrderDate = DateTime.UtcNow,
-			OrderItems = []
-		};
-
-		foreach (var ci in cart.CartItems)
-		{
-			var product = ci.Product;
-
-			order.OrderItems.Add(new OrderItem
-			{
-				Order = order,
-				Product = product,
-				ProductPrice = product.Price,
-				Quantity = ci.Quantity
-			});
-
-			if (product.Quantity != null)
-				product.Quantity -= ci.Quantity;
-		}
-
+		order.AddItems(cart.CartItems);
 
 		_context.Orders.Add(order);
 		_context.Carts.Remove(cart);
@@ -66,18 +42,5 @@ public class ConfirmOrderCommandHandler
 		await _context.SaveChangesAsync(cancellationToken);
 
 		return order.OrderId;
-	}
-
-	// Example: "3C-48291"
-	private static string GenerateOrderNumber()
-	{
-		var guidBytes = Guid.NewGuid().ToByteArray();
-
-		int firstDigit = guidBytes[0] % 10;
-		char letter = (char)('A' + (guidBytes[1] % 26));
-		int numberPart = BitConverter.ToInt32(guidBytes, 2) & 0x7FFFFFFF;
-		string lastDigits = (numberPart % 100000).ToString("D5");
-
-		return $"{firstDigit}{letter}-{lastDigits}";
 	}
 }

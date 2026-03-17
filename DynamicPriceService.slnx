@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Project Path="DynamicPrice.Client.Infrastructure/DynamicPrice.Client.Infrastructure.csproj" />
+  <Project Path="DynamicPrice.Core/DynamicPrice.Core.csproj" />
+  <Project Path="DynamicPrice.Customer/DynamicPrice.Customer.csproj" />
+  <Project Path="DynamicPrice.Manager/DynamicPrice.Manager.csproj" />
+  <Project Path="DynamicPrice.Shared.Contracts/DynamicPrice.Shared.Contracts.csproj" />
+</Solution>

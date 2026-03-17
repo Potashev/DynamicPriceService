@@ -10,7 +10,7 @@ public class OrderItem
 	/// <summary>
 	/// Идентификатор позиции заказа.
 	/// </summary>
-	public int Id { get; set; }     //TODO: make guid
+	public int Id { get; set; } //TODO: make Guid
 
 	/// <summary>
 	/// Идентификатор заказа.

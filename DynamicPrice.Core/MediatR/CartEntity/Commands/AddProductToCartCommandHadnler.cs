@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Core.Models;
 using DynamicPrice.Core.Services;
 using DynamicPrice.Shared.Contracts.ViewModels;
@@ -30,54 +31,24 @@ public class AddProductToCartCommandHadnler
 		var product = await _context.Products
 			.Include(p => p.Company)
 			.Where(p => p.ProductId.ToString() == request.ProductId)
-			.FirstOrDefaultAsync(cancellationToken);
-
-		if (product == null)
-			throw new InvalidOperationException("Product not found.");
+			.FirstOrDefaultAsync(cancellationToken)
+			?? throw new NotFoundException("Product not found");
 
 		var cart = await _context.Carts
 			.Include(c => c.CartItems)
 			.Where(c => c.CustomerId == customer.Id
-				&& c.Company == product.Company)
+				&& c.CompanyId == product.CompanyId)
 			.FirstOrDefaultAsync(cancellationToken);
 
-		cart ??= await CreateNewCart(customer, product.Company);
-
-		var cartItem = cart.CartItems
-			.Where(ci => ci.ProductId == product.ProductId)
-			.FirstOrDefault();
-
-		if (cartItem is null)
+		if (cart is null)
 		{
-			cart.CartItems.Add(new CartItem
-			{
-				Cart = cart,
-				Product = product,
-				Quantity = 1
-			});
+			cart = new Cart(customer.Id, product.CompanyId);
+			await _context.Carts.AddAsync(cart);
 		}
-		else
-		{
-			cartItem.Quantity += 1;
-		}
+
+		cart.AddItem(product.ProductId);
 
 		await _context.SaveChangesAsync(cancellationToken);
 		return _mapper.Map<CartViewModel>(cart);
-	}
-
-	private async Task<Cart> CreateNewCart(
-		ApplicationUser customer,
-		Company company)
-	{
-		var cart = new Cart
-		{
-			CustomerId = customer.Id,
-			Company = company,
-			CartItems = []
-		};
-
-		await _context.Carts.AddAsync(cart);
-		await _context.SaveChangesAsync();
-		return cart;
 	}
 }

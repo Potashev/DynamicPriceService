@@ -13,9 +13,9 @@
 <table class="table table-striped">
 	<thead>
 		<tr>
-			<th>@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Title)</th>
-			<th>@Html.DisplayNameFor(model => model.Products.FirstOrDefault().PriceDynamics)</th>
-			<th>@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Price)</th>
+			<th>@Html.DisplayNameFor(model => model.Products.ElementAt(0).Title)</th>
+			<th>@Html.DisplayNameFor(model => model.Products.ElementAt(0).PriceDynamics)</th>
+			<th>@Html.DisplayNameFor(model => model.Products.ElementAt(0).Price)</th>
 			<th></th>
 		</tr>
 	</thead>
@@ -28,7 +28,7 @@
 					<price-monitor product-id="@product.ProductId"
 								   price="@product.Price"
 								   price-dynamics="@product.PriceDynamics"
-								   max-points="20">
+								   max-points=20>	//todo: use history limit
 					</price-monitor>
 				</td>
 				<td>
@@ -36,7 +36,7 @@
 					<span id="price-change-@product.ProductId" class="price-change"></span>
 				</td>
 				<td>
-					<a asp-controller="Cart" asp-action="AddProduct" asp-route-productId="@product.ProductId">Add to Cart</a>
+					<a asp-controller="Cart" asp-action="AddCartItem" asp-route-productId="@product.ProductId">Add to Cart</a>
 				</td>
 			</tr>
 		}

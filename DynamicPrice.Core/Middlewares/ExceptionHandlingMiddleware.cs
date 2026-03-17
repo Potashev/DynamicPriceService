@@ -1,6 +1,7 @@
 ﻿using DynamicPrice.Core.Exceptions;
 using System.Diagnostics;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace DynamicPrice.Core.Middlewares;
 
@@ -9,6 +10,7 @@ public class ExceptionHandlingMiddleware
 	private readonly RequestDelegate _next;
 	private readonly ILogger<ExceptionHandlingMiddleware> _logger;
 	private readonly IHostEnvironment _env;
+	private readonly JsonSerializerOptions _jsonSerializerOptions;
 
 	public ExceptionHandlingMiddleware(
 		RequestDelegate next,
@@ -18,6 +20,11 @@ public class ExceptionHandlingMiddleware
 		_next = next;
 		_logger = logger;
 		_env = env;
+		_jsonSerializerOptions = new JsonSerializerOptions
+		{
+			PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+			DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+		};
 	}
 
 	public async Task InvokeAsync(HttpContext context)
@@ -49,7 +56,9 @@ public class ExceptionHandlingMiddleware
 					traceId = Activity.Current?.Id ?? context.TraceIdentifier
 				};
 
-				var json = JsonSerializer.Serialize(problem, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase, DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull });
+				var json = JsonSerializer.Serialize(
+					problem,
+					_jsonSerializerOptions);
 				await context.Response.WriteAsync(json);
 			}
 		}

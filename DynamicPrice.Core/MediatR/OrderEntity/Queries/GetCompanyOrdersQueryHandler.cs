@@ -27,7 +27,7 @@ public class GetCompanyOrdersQueryHandler
 		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var companyOrders = await _context.Orders
-			.Where(o => o.Company.CompanyId == manager.CompanyId)
+			.Where(o => o.CompanyId == manager.CompanyId)
 			.OrderByDescending(o => o.OrderDate)
 			.ToArrayAsync(cancellationToken);
 
@@ -35,7 +35,7 @@ public class GetCompanyOrdersQueryHandler
 
 		foreach (var orderVm in companyOrdersVm)
 		{
-			orderVm.CustomerName = (await _userService.GetUserByIdAsync(orderVm.CustomerId)).UserName;
+			orderVm.CustomerName = (await _userService.GetUserByIdAsync(orderVm.CustomerId)).UserName ?? string.Empty;
 		}
 
 		return companyOrdersVm;

@@ -33,48 +33,37 @@ public static class CompanyOrdersEndPoints
 	private static async Task<IResult> GetCompanyOrders(
 		IMediator mediator,
 		CancellationToken cancellationToken)
-	{
-		var ordersVm = await mediator.Send(new GetCompanyOrdersQuery(), cancellationToken);
-		return Results.Ok(ordersVm);
-	}
+			=> Results.Ok(await mediator.Send(new GetCompanyOrdersQuery(), cancellationToken));
 
 	private static async Task<IResult> GetCompanyOrder(
 		string orderId,
-		IMediator mediator)
-	{
-		var orderVm = await mediator.Send(new GetCompanyOrderDetailsQuery(orderId));
-		return Results.Ok(orderVm);
-	}
+		IMediator mediator,
+		CancellationToken cancellationToken)
+			=> Results.Ok(await mediator.Send(new GetCompanyOrderDetailsQuery(orderId), cancellationToken));
 
 	private static async Task<IResult> GetOrderByReceiveKey(
 		string key,
-		IMediator mediator)
-	{
-		var orderId = await mediator.Send(new GetOrderIdByReceiveKeyQuery(key));
-		return Results.Ok(orderId);
-	}
+		IMediator mediator,
+		CancellationToken cancellationToken)
+			=> Results.Ok(await mediator.Send(new GetOrderIdByReceiveKeyQuery(key), cancellationToken));
 
 	private static async Task<IResult> ReadyForReceive(
 		string orderId,
-		IMediator mediator)
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
-		await mediator.Send(new ReadyForReceiveOrderCommand(orderId));
+		await mediator.Send(new ReadyForReceiveOrderCommand(orderId), cancellationToken);
 		return Results.Ok();
 	}
 
 	private static async Task<IResult> CompleteOrder(
 		string orderId,
-		IMediator mediator)
-	{
-		var id = await mediator.Send(new CompleteOrderCommand(orderId));
-		return Results.Ok(id);
-	}
+		IMediator mediator,
+		CancellationToken cancellationToken)
+			=> Results.Ok(await mediator.Send(new CompleteOrderCommand(orderId), cancellationToken));
 
 	private static async Task<IResult> GetCompanyStatistics(
 		IMediator mediator,
 		CancellationToken cancellationToken)
-	{
-		var orderStatistics = await mediator.Send(new GetCompanyStatisticsQuery(), cancellationToken);
-		return Results.Ok(orderStatistics);
-	}
+			=> Results.Ok(await mediator.Send(new GetCompanyStatisticsQuery(), cancellationToken));
 }

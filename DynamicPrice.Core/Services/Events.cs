@@ -8,8 +8,9 @@ namespace DynamicPrice.Core.Services;
 /// </summary>
 public record PriceReduceEvent(int ProductId);
 
+
 /// <summary>
-/// Событие о необходимости повысить цену на продукты, входящих в коллекцию позиций заказа.
+/// Событие о необходимости повысить цену на продукт после его покупки.
 /// См. также <see cref="OrderItem"/>.
 /// </summary>
-public record PriceIncreaseEvent(ICollection<OrderItem> OrderItems);
+public record PriceIncreaseEvent(int ProductId, int Quantity);

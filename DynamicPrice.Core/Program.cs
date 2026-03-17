@@ -6,7 +6,6 @@ using DynamicPrice.Core.Models;
 using DynamicPrice.Core.Services;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -45,14 +44,11 @@ builder.Services
 		};
 	});
 
-builder.Services.AddAuthorization(options =>
-{
-	options.AddPolicy("ManagerPolicy", policy =>
-		policy.RequireRole("Manager"));
-
-	options.AddPolicy("CustomerPolicy", policy =>
+builder.Services.AddAuthorizationBuilder()
+	.AddPolicy("ManagerPolicy", policy =>
+		policy.RequireRole("Manager"))
+	.AddPolicy("CustomerPolicy", policy =>
 		policy.RequireRole("Customer"));
-});
 
 builder.Services.AddCors(options =>
 {
@@ -62,8 +58,7 @@ builder.Services.AddCors(options =>
 			policy.SetIsOriginAllowedToAllowWildcardSubdomains();
 			policy.WithOrigins("https://localhost:7022", "https://localhost:7183")
 				.AllowAnyHeader()
-				.AllowAnyMethod()
-				.AllowCredentials();
+				.AllowAnyMethod();
 		});
 });
 
@@ -74,11 +69,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddAutoMapper(cfg =>
-{
-	cfg.AddProfile<MappingProfile>();
-});
+	cfg.AddProfile<MappingProfile>());
 
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
+builder.Services.AddMediatR(cfg =>
+	cfg.RegisterServicesFromAssemblyContaining<Program>());
 
 builder.Services.AddMassTransit(x =>
 {
@@ -99,11 +93,6 @@ builder.Services.AddMassTransit(x =>
 
 		cfg.ConfigureEndpoints(context);
 	});
-
-	//x.UsingInMemory((context, cfg) =>
-	//{
-	//	cfg.ConfigureEndpoints(context);
-	//});
 });
 
 builder.Services.AddHostedService<FindProductsToReduceService>();
@@ -128,15 +117,6 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 
-//todo: check need it?
-app.UseCookiePolicy(new CookiePolicyOptions
-{
-	MinimumSameSitePolicy = SameSiteMode.Strict,
-	HttpOnly = HttpOnlyPolicy.Always,
-	Secure = CookieSecurePolicy.Always,
-});
-
-
 app.UseCors("AllowSpecificOrigins");
 
 app.UseAuthentication();
@@ -145,8 +125,7 @@ app.UseAuthorization();
 app.UseHttpMetrics();
 
 app.MapEndPoints();
-
-app.MapMetrics();
 app.MapHub<PriceHub>("/priceHub");
+app.MapMetrics();
 
 app.Run();

@@ -28,50 +28,35 @@ public static class ProductsEndPoints
 			.WithSummary("Удалить продукт");
 	}
 
-	//todo: used TypedResults
-
 	private static async Task<IResult> GetProducts(
 		IMediator mediator,
 		CancellationToken cancellationToken)
-	{
-		var productsVm = await mediator.Send(new GetProductsQuery(), cancellationToken);
-		return Results.Ok(productsVm);
-	}
+			=> Results.Ok(await mediator.Send(new GetProductsQuery(), cancellationToken));
 
 	private static async Task<IResult> GetProduct(
 		int id,
-		IMediator mediator)
-	{
-		var productVm = await mediator.Send(new GetProductDetailsQuery(id));
-		return Results.Ok(productVm);
-	}
+		IMediator mediator,
+		CancellationToken cancellationToken)
+			=> Results.Ok(await mediator.Send(new GetProductDetailsQuery(id), cancellationToken));
 
 	private static async Task<IResult> Edit(
-		int id,
 		ProductViewModel productVm,
-		IMediator mediator)
-	{
-		if (id != productVm.ProductId)
-		{
-			return Results.BadRequest();
-		}
-		var productId = await mediator.Send(new EditProductCommand(productVm));
-		return Results.Ok(productId);
-	}
+		IMediator mediator,
+		CancellationToken cancellationToken)
+			=> Results.Ok(await mediator.Send(new EditProductCommand(productVm), cancellationToken));
 
 	private static async Task<IResult> Create(
 		ProductViewModel productVm,
-		IMediator mediator)
-	{
-		var productId = await mediator.Send(new CreateProductCommand(productVm));
-		return Results.Ok(productId);
-	}
+		IMediator mediator,
+		CancellationToken cancellationToken)
+			=> Results.Ok(await mediator.Send(new CreateProductCommand(productVm), cancellationToken));
 
 	private static async Task<IResult> Delete(
 		int id,
-		IMediator mediator)
+		IMediator mediator,
+		CancellationToken cancellationToken)
 	{
-		await mediator.Send(new DeleteProductCommand(id));
+		await mediator.Send(new DeleteProductCommand(id), cancellationToken);
 		return Results.Ok();
 	}
 }

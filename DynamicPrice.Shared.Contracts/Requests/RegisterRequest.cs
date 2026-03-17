@@ -12,7 +12,4 @@ public class RegisterRequest
 
 	[Required, MinLength(6)]
 	public string Password { get; init; } = null!;
-
-	[Required]
-	public string Role { get; init; } = null!;
 }

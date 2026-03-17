@@ -1,9 +1,13 @@
-﻿using DynamicPrice.Core.Exceptions;
+﻿using AutoMapper;
+using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Core.Models;
+using DynamicPrice.Shared.Contracts.Requests;
+using DynamicPrice.Shared.Contracts.Responses;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
-//using System.IdentityModel.Tokens.Jwt;
+using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Text;
 
@@ -14,18 +18,20 @@ public class UserService : IUserService
 	private readonly IHttpContextAccessor _httpContextAccessor;
 	private readonly UserManager<ApplicationUser> _userManager;
 	private readonly IConfiguration _config;
+	private readonly IMapper _mapper;
 
 	public UserService(
 		IHttpContextAccessor httpContextAccessor,
 		UserManager<ApplicationUser> userManager,
-		IConfiguration config)
+		IConfiguration config,
+		IMapper mapper)
 	{
 		_httpContextAccessor = httpContextAccessor;
 		_userManager = userManager;
 		_config = config;
+		_mapper = mapper;
 	}
 
-	//TODO: use _userManager instead HttpContext?
 	public string? UserId
 		=> _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -37,46 +43,40 @@ public class UserService : IUserService
 			?? throw new UnauthorizedException("User is not authenticated.");
 
 	public async Task<ApplicationUser> GetUserByIdAsync(string userId)
-	=> await _userManager.FindByIdAsync(userId);
+		=> await _userManager.FindByIdAsync(userId)
+			?? throw new NotFoundException("User not found.");
 
-	public async Task<string> LoginUserAsync(
-		string username,
-		string password)
+	public async Task<IEnumerable<ApplicationUser>> GetUsersAsync(Expression<Func<ApplicationUser, bool>> predicate)
+		=> await _userManager.Users
+			.Where(predicate)
+			.AsNoTracking()
+			.ToListAsync();
+
+	public async Task<TokenResponse> LoginUserAsync(LoginRequest request)
 	{
-		var user = await _userManager.FindByNameAsync(username);
-		if (user == null || !await _userManager.CheckPasswordAsync(user, password))
+		var user = await _userManager.FindByNameAsync(request.Username);
+		if (user == null || !await _userManager.CheckPasswordAsync(user, request.Password))
 			throw new ArgumentException("Unauthorized!");
 
 		var roles = await _userManager.GetRolesAsync(user);
-		var token = GenerateJwtToken(user, roles);
 
-		return token;
+		return new TokenResponse
+		{
+			Token = GenerateJwtToken(user, roles)
+		};
 	}
 
-	public async Task RegisterUserAsync(
-		string username,
-		string password,
-		string email,
-		string role)
+	public async Task RegisterUserAsync(RegisterUserRequest request)
 	{
-		//TODO: make better
-		ApplicationUser user = new()
-		{
-			UserName = username,
-			Email = email,
-			Balance = role switch
-			{
-				"Customer" => 0,
-				_ => throw new ArgumentException("Invalid user role"),
-			}
-		};
-		var result = await _userManager.CreateAsync(user, password);
+		var user = _mapper.Map<ApplicationUser>(request);
+
+		var result = await _userManager.CreateAsync(user, request.Password);
 		if (!result.Succeeded)
 		{
 			throw new ApplicationException($"User creation failed!");
 		}
 
-		await _userManager.AddToRoleAsync(user, role);
+		await _userManager.AddToRoleAsync(user, request.Role);
 	}
 
 	public async Task UpdateCurrentUserAsync()
@@ -128,6 +128,7 @@ public interface IUserService
 	Task UpdateCurrentUserAsync();
 	Task UpdateUserAsync(ApplicationUser user);
 	Task<ApplicationUser> GetUserByIdAsync(string userId);
-	Task RegisterUserAsync(string username, string password, string email, string role);
-	Task<string> LoginUserAsync(string username, string password);
+	Task<IEnumerable<ApplicationUser>> GetUsersAsync(Expression<Func<ApplicationUser, bool>> predicate);
+	Task RegisterUserAsync(RegisterUserRequest registerRequest);
+	Task<TokenResponse> LoginUserAsync(LoginRequest loginRequest);
 }

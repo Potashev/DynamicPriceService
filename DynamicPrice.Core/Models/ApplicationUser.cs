@@ -5,7 +5,7 @@ namespace DynamicPrice.Core.Models;
 /// <summary>
 /// Пользователь приложения, расширяющий стандартную IdentityUser для хранения баланса и связи с компанией.
 /// </summary>
-public class ApplicationUser : IdentityUser //todo: remane to User?
+public class ApplicationUser : IdentityUser
 {
 	/// <summary>
 	/// Баланс пользователя в денежной единице, используемой в системе (клиент).

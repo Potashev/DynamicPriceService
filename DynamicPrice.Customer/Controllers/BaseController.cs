@@ -17,15 +17,13 @@ public class BaseController : Controller
 		ActionExecutingContext context,
 		ActionExecutionDelegate next)
 	{
-		var customerName = "";
 		try
 		{
 			var customer = await CoreApiClient.GetCustomer();
-			customerName = customer.Name;
+			ViewData["CustomerName"] = customer.Name;
 		}
 		catch (Exception) { }
 
-		ViewData["CustomerName"] = customerName;
 		await next();
 	}
 }

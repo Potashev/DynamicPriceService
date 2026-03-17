@@ -1,23 +1,44 @@
-﻿using DynamicPrice.Core.MediatR.ManagerEntity.Queries;
+﻿using DynamicPrice.Core.MediatR.ManagerEntity.Commands;
+using DynamicPrice.Core.MediatR.ManagerEntity.Queries;
+using DynamicPrice.Shared.Contracts.Requests;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Core.MinimalAPI;
 
-//todo: we try to use it befor login - check
 public static class ManagerEndPoints
 {
-	public static void MapManagerEndPoints(this IEndpointRouteBuilder app)
+	public static void MapManagersEndPoints(this IEndpointRouteBuilder app)
 	{
-		app.MapGet("/api/company/info", GetCompanyInfo)
-			.RequireAuthorization("ManagerPolicy")
-			.WithSummary("Получить информацию о компании менеджера");
+		var company = app.MapGroup("/api/company/managers")
+			.RequireAuthorization("ManagerPolicy");
+
+		company.MapGet("", GetCompanyManagers)
+			.WithSummary("Получить список менеджеров компании");
+
+		company.MapPost("", RegisterManager)
+			.WithSummary("Регистрация нового менеджера");
+
+		company.MapGet("/me", GetManagerInfo)
+			.WithSummary("Получить информацию о текущем менеджере");
 	}
 
-	private static async Task<IResult> GetCompanyInfo(
+	private static async Task<IResult> GetCompanyManagers(
+		IMediator mediator,
+		CancellationToken cancellationToken)
+			=> Results.Ok(await mediator.Send(new GetCompanyManagersQuery(), cancellationToken));
+
+	private static async Task<IResult> RegisterManager(
+		[FromBody] RegisterRequest registerVm,
 		IMediator mediator,
 		CancellationToken cancellationToken)
 	{
-		var managerInfo = await mediator.Send(new GetManagerInfoQuery(), cancellationToken);
-		return Results.Ok(managerInfo.Company);
+		await mediator.Send(new RegisterManagerCommand(registerVm), cancellationToken);
+		return Results.Ok();
 	}
+
+	private static async Task<IResult> GetManagerInfo(
+		IMediator mediator,
+		CancellationToken cancellationToken)
+			=> Results.Ok(await mediator.Send(new GetManagerInfoQuery(), cancellationToken));
 }

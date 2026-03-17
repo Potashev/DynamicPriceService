@@ -24,7 +24,7 @@ public class GetCompanyStatisticsQueryHandler
 		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var companyOrdersWithAmount = await _context.Orders
-			.Where(o => o.Company.CompanyId == manager.CompanyId)
+			.Where(o => o.CompanyId == manager.CompanyId)
 			.Select(o => new
 			{
 				Order = o,
@@ -32,14 +32,11 @@ public class GetCompanyStatisticsQueryHandler
 			})
 			.ToArrayAsync(cancellationToken);
 
-
-		var orderStatistics = new OrdersStatistics
+		return new OrdersStatistics
 		{
 			OrdersQuantity = companyOrdersWithAmount.Length,
 			TotalAmount = companyOrdersWithAmount.Sum(o => o.OrderAmount),
 			AverageOrderTotal = companyOrdersWithAmount.Average(o => o.OrderAmount)
 		};
-
-		return orderStatistics;
 	}
 }

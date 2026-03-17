@@ -6,7 +6,7 @@ public static class EndPointsExtensions
 {
 	public static void MapEndPoints(this IEndpointRouteBuilder app)
 	{
-		app.MapManagerEndPoints();
+		app.MapManagersEndPoints();
 		app.MapProductsEndPoints();
 		app.MapPriceRuleEndPoints();
 		app.MapCompanyOrdersEndPoints();

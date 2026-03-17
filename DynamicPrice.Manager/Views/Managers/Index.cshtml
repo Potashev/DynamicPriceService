@@ -1,0 +1,43 @@
+﻿@using DynamicPrice.Shared.Contracts.ViewModels.Responses
+@model IEnumerable<ManagerInfoViewModel>
+
+@{
+	ViewData["Title"] = "Index";
+	var currentManagerId = ViewData["ManagerId"]?.ToString();
+}
+
+<h1>Managers</h1>
+
+<p>
+	<a asp-action="RegisterManager">Add new</a>
+</p>
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.Name)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Email)
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.Name)
+
+					@if (currentManagerId == item.Id)
+					{
+						<span class="badge bg-success">You</span>
+					}
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Email)
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

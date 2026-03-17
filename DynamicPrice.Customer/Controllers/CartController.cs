@@ -8,21 +8,24 @@ public class CartController : BaseController
 	public CartController(ICoreApiClient coreApiClient)
 		: base(coreApiClient) { }
 
-	public async Task<IActionResult> Details(string companyId)
-	{
-		var cart = await CoreApiClient.GetCartDetails(companyId);
-		return View(cart);
-	}
+	public async Task<IActionResult> Details(
+		string companyId,
+		CancellationToken cancellationToken)
+			=> View(await CoreApiClient.GetCartDetails(companyId, cancellationToken));
 
-	public async Task<IActionResult> AddProduct(int productId)
+	public async Task<IActionResult> AddCartItem(
+		int productId,
+		CancellationToken cancellationToken)
 	{
-		var companyId = await CoreApiClient.AddProduct(productId);
+		var companyId = await CoreApiClient.AddCartItem(productId, cancellationToken);
 		return RedirectToAction(nameof(Details), new { companyId });
 	}
 
-	public async Task<IActionResult> RemoveProduct(int productId)
+	public async Task<IActionResult> RemoveCartItem(
+		int productId,
+		CancellationToken cancellationToken)
 	{
-		var companyId = await CoreApiClient.DeleteProduct(productId);
+		var companyId = await CoreApiClient.RemoveCartItem(productId, cancellationToken);
 		return RedirectToAction(nameof(Details), new { companyId });
 	}
 }

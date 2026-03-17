@@ -10,25 +10,14 @@ public class PriceRuleController : BaseController
 		: base(coreApiClient) { }
 
 	public async Task<IActionResult> Details(CancellationToken cancellationToken)
-	{
-		var priceRuleWithStatus = await CoreApiClient.GetPriceRule(cancellationToken);
-
-		//todo: move logic to view
-		ViewData["RuleStatus"] = priceRuleWithStatus.IsActive
-			? "Running"
-			: "Not running";
-
-		return View(priceRuleWithStatus.PriceRule);
-	}
+		=> View(await CoreApiClient.GetPriceRule(cancellationToken));
 
 	public async Task<IActionResult> Edit(
 		int? id,
 		CancellationToken cancellationToken)
 	{
-		if (id == null)
-		{
+		if (id is null)
 			return NotFound();
-		}
 
 		var priceRuleWithStatus = await CoreApiClient.GetPriceRule(cancellationToken);
 

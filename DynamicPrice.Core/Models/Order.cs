@@ -15,7 +15,7 @@ public class Order
 	/// <summary>
 	/// Идентификатор заказа.
 	/// </summary>
-	public int OrderId { get; set; }    //todo: make guid
+	public int OrderId { get; set; }
 
 	/// <summary>
 	/// Номер заказа.
@@ -66,7 +66,6 @@ public class Order
 	{
 		CustomerId = customerId;
 		CompanyId = companyId;
-		//Company = company;
 
 		Number = GenerateOrderNumber();
 		Status = OrderStatus.Confirmed;

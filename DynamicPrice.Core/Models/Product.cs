@@ -10,7 +10,7 @@ public class Product
 	/// <summary>
 	/// Идентификатор продукта.
 	/// </summary>
-	public int ProductId { get; set; }  //todo: make Guid
+	public int ProductId { get; set; }
 
 	/// <summary>
 	/// Идентификатор компании.

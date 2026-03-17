@@ -32,7 +32,6 @@ public class ConfirmOrderCommandHandler
 			.FirstOrDefaultAsync(cancellationToken)
 			?? throw new NotFoundException("Cart not found.");
 
-		//var order = new Order(customer.Id, cart.Company);
 		var order = new Order(customer.Id, cart.CompanyId);
 
 		order.AddItems(cart.CartItems);

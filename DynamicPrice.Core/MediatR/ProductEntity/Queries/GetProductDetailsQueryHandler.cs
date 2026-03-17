@@ -29,7 +29,9 @@ public class GetProductDetailsQueryHandler
 
 		var product = await _context.Products
 			.Include(p => p.PriceDynamics)
-			.FirstOrDefaultAsync(p => p.ProductId == request.ProductId && p.CompanyId == manager.CompanyId, cancellationToken)
+			.FirstOrDefaultAsync(p => 
+				p.ProductId == request.ProductId && 
+				p.CompanyId == manager.CompanyId, cancellationToken)
 			?? throw new NotFoundException("Product not found.");
 
 		return _mapper.Map<ProductViewModel>(product);

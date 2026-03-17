@@ -59,7 +59,6 @@ builder.Services.AddCors(options =>
 			policy.WithOrigins("https://localhost:7022", "https://localhost:7183")
 				.AllowAnyHeader()
 				.AllowAnyMethod();
-			//.AllowCredentials();
 		});
 });
 
@@ -117,14 +116,6 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
-
-//app.UseCookiePolicy(new CookiePolicyOptions
-//{
-//	MinimumSameSitePolicy = SameSiteMode.Strict,
-//	HttpOnly = HttpOnlyPolicy.Always,
-//	Secure = CookieSecurePolicy.Always,
-//});
-
 
 app.UseCors("AllowSpecificOrigins");
 

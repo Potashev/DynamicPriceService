@@ -8,4 +8,7 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Build" />
 	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\DynamicPrice.Shared.Contracts\DynamicPrice.Shared.Contracts.csproj" />
+	</ItemGroup>
 </Project>

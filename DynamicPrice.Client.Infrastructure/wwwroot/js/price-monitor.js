@@ -22,8 +22,8 @@
 			.withUrl(this.hubUrl)
 			.build();
 
-		this.connection.on("ReceivePriceUpdate", (productId, newPrice) => {
-			this.updateChart(productId, newPrice);
+		this.connection.on("ReceivePriceUpdate", (productId, newPrice, dateUtc) => {
+			this.updateChart(productId, newPrice, dateUtc);
 			this.updatePriceLabel(productId, newPrice);
 		});
 
@@ -144,7 +144,24 @@
 		this.charts[productId] = chart;
 	}
 
-	updateChart(productId, newPrice) {
+	//updateChart(productId, newPrice) {
+	//	const chart = this.charts[productId];
+	//	if (!chart) return;
+
+	//	const maxPoints = this.chartMaxPoints[productId] ?? this.config.maxPoints;
+
+	//	if (chart.data.datasets[0].data.length >= maxPoints) {
+	//		chart.data.datasets[0].data.shift();
+	//		chart.data.labels.shift();
+	//	}
+
+	//	chart.data.datasets[0].data.push(newPrice);
+	//	chart.data.labels.push(new Date().toLocaleTimeString());
+
+	//	chart.update();
+	//}
+
+	updateChart(productId, newPrice, dateUtc) {
 		const chart = this.charts[productId];
 		if (!chart) return;
 
@@ -155,10 +172,20 @@
 			chart.data.labels.shift();
 		}
 
+		// ❗ теперь используем UTC от сервера
 		chart.data.datasets[0].data.push(newPrice);
-		chart.data.labels.push(new Date().toLocaleTimeString());
+		/*		chart.data.labels.push(formatUtcTime(dateUtc));*/
+		chart.data.labels.push(dateUtc.toString());
 
 		chart.update();
+	}
+
+	async formatUtcTime(dateUtc) {
+	const d = new Date(dateUtc);
+
+	return d.getUTCHours().toString().padStart(2, '0') + ':' +
+		d.getUTCMinutes().toString().padStart(2, '0') + ':' +
+		d.getUTCSeconds().toString().padStart(2, '0');
 	}
 
 	updatePriceLabel(productId, newPrice) {

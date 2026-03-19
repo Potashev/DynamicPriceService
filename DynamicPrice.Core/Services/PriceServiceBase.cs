@@ -80,8 +80,6 @@ public abstract class PriceServiceBase<TEvent> : IConsumer<TEvent>
 
 			await _context.SaveChangesAsync();
 
-			var date = DateTime.UtcNow;
-
 			await _priceHubContext.SendPriceUpdateToProductGroup(product.ProductId, product.Price);
 		}
 	}

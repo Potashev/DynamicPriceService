@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using DynamicPrice.Shared.Contracts.ViewModels;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using System.Text.Json;
 
 [HtmlTargetElement("price-monitor")]
@@ -11,7 +12,7 @@ public class PriceMonitorTagHelper : TagHelper
 	public decimal Price { get; set; }
 
 	[HtmlAttributeName("price-dynamics")]
-	public IEnumerable<dynamic>? PriceDynamics { get; set; }
+	public IEnumerable<PriceDynamicViewModel>? PriceDynamics { get; set; }
 
 	[HtmlAttributeName("max-points")]
 	public int? MaxPoints { get; set; }
@@ -27,10 +28,13 @@ public class PriceMonitorTagHelper : TagHelper
 		TagHelperOutput output)
 	{
 		output.TagName = "div";
-		output.Attributes.SetAttribute("class", "chart-container");
+		output.Attributes.SetAttribute("class", "price-monitor");
+
+		var dynamics = (PriceDynamics ?? Enumerable.Empty<PriceDynamicViewModel>())
+			.OrderBy(d => d.Date);
 
 		var dynamicsJson = JsonSerializer.Serialize(
-			PriceDynamics?.Select(d => new { date = d.Date, price = d.Price }) ?? Enumerable.Empty<object>()
+			dynamics.Select(d => new { date = d.Date, price = d.Price })
 		);
 
 		var options = new

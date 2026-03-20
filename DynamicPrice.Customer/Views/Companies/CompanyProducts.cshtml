@@ -28,7 +28,7 @@
 					<price-monitor product-id="@product.ProductId"
 								   price="@product.Price"
 								   price-dynamics="@product.PriceDynamics"
-								   max-points=20>	//todo: use history limit
+								   max-points="@Model.PriceHistoryLimit">
 					</price-monitor>
 				</td>
 				<td>
@@ -42,18 +42,3 @@
 		}
 	</tbody>
 </table>
-
-<style>
-	.price-change {
-		margin-left: 8px;
-		font-weight: bold;
-	}
-
-	.price-up {
-		color: green;
-	}
-
-	.price-down {
-		color: red;
-	}
-</style>

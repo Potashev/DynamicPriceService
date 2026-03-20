@@ -22,8 +22,8 @@
 			.withUrl(this.hubUrl)
 			.build();
 
-		this.connection.on("ReceivePriceUpdate", (productId, newPrice) => {
-			this.updateChart(productId, newPrice);
+		this.connection.on("ReceivePriceUpdate", (productId, newPrice, dateUtc) => {
+			this.updateChart(productId, newPrice, dateUtc);
 			this.updatePriceLabel(productId, newPrice);
 		});
 
@@ -144,7 +144,7 @@
 		this.charts[productId] = chart;
 	}
 
-	updateChart(productId, newPrice) {
+	updateChart(productId, newPrice, dateUtc) {
 		const chart = this.charts[productId];
 		if (!chart) return;
 
@@ -156,7 +156,13 @@
 		}
 
 		chart.data.datasets[0].data.push(newPrice);
-		chart.data.labels.push(new Date().toLocaleTimeString());
+
+		const d = new Date(dateUtc);
+		const time = d.getUTCHours().toString().padStart(2, '0') + ':' +
+			d.getUTCMinutes().toString().padStart(2, '0') + ':' +
+			d.getUTCSeconds().toString().padStart(2, '0');
+
+		chart.data.labels.push(time);
 
 		chart.update();
 	}

@@ -37,7 +37,7 @@
 <price-monitor product-id="@Model.ProductId"
 			   price="@Model.Price"
 			   price-dynamics="@Model.PriceDynamics"
-			   max-points="300"
+			   max-points="@Model.PriceDynamics.Count"
 			   show-axes="true"
 			   show-grid="true">
 </price-monitor>
@@ -48,22 +48,9 @@
 </div>
 
 <style>
-	.chart-container {
+	.price-monitor {
 		width: 600px;
 		height: 300px;
 		margin: 20px 0;
-	}
-
-	.price-change {
-		margin-left: 8px;
-		font-weight: bold;
-	}
-
-	.price-up {
-		color: green;
-	}
-
-	.price-down {
-		color: red;
 	}
 </style>

@@ -9,5 +9,5 @@ public static class PriceHubExtensions
 		int productId,
 		decimal updatedPrice)
 		=> hubContext.Clients.Group(PriceHub.GetProductGroup(productId))
-			.SendAsync("ReceivePriceUpdate", productId, updatedPrice);
+			.SendAsync("ReceivePriceUpdate", productId, updatedPrice, DateTime.UtcNow);
 }

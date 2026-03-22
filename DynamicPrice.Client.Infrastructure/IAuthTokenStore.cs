@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System.Text;
 
 namespace DynamicPrice.Client.Infrastructure;
 
@@ -12,14 +11,20 @@ public class SessionAuthTokenStore : IAuthTokenStore
 		=> _contextAccessor = contextAccessor
 		?? throw new ArgumentNullException(nameof(contextAccessor));
 
-	public async Task<string> GetToken()
-		=> _contextAccessor.HttpContext?.Session.GetString(KEY)
-		?? string.Empty;
+    public string GetToken()
+	{
+		var httpContext = _contextAccessor.HttpContext
+			?? throw new ArgumentNullException(nameof(_contextAccessor.HttpContext));
 
-	public async Task SetToken(string authToken)
+		return httpContext.Session.GetString(KEY) 
+			?? string.Empty;
+	}
+
+	public void SetToken(string authToken)
 		=> _contextAccessor.HttpContext?.Session.SetString(KEY, authToken);
 }
 
+// Do not use when auth customer and manager together, since the KEY-cookie will be overwritten.
 public class CookiesAuthTokenStore : IAuthTokenStore
 {
 	private readonly IHttpContextAccessor _contextAccessor;
@@ -29,7 +34,7 @@ public class CookiesAuthTokenStore : IAuthTokenStore
 		=> _contextAccessor = contextAccessor
 		?? throw new ArgumentNullException(nameof(contextAccessor));
 
-	public async Task<string> GetToken()
+	public string GetToken()
 	{
 		var httpContext = _contextAccessor.HttpContext
 			?? throw new ArgumentNullException(nameof(_contextAccessor.HttpContext));
@@ -39,7 +44,7 @@ public class CookiesAuthTokenStore : IAuthTokenStore
 			: string.Empty;
 	}
 
-	public async Task SetToken(string authToken)
+	public void SetToken(string authToken)
 		=> _contextAccessor.HttpContext?.Response.Cookies.Append(
 			KEY,
 			authToken,
@@ -48,6 +53,6 @@ public class CookiesAuthTokenStore : IAuthTokenStore
 
 public interface IAuthTokenStore
 {
-	Task<string> GetToken();
-	Task SetToken(string authToken);
+	string GetToken();
+	void SetToken(string authToken);
 }

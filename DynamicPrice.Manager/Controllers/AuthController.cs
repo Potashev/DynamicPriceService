@@ -30,7 +30,7 @@ public class AuthController : Controller
 		if (ModelState.IsValid)
 		{
 			var tokenResponse = await _coreApiClient.LoginManager(loginVm, cancellationToken);
-			await _authTokenStore.SetToken(tokenResponse.Token);
+			_authTokenStore.SetToken(tokenResponse.Token);
 
 			return RedirectToAction(
 				nameof(ProductsController.Index),

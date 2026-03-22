@@ -31,7 +31,7 @@ public class AuthController : Controller
 			return View(loginVm);
 
 		var tokenResponse = await _coreApiClient.LoginCustomer(loginVm, cancellationToken);
-		await _authTokenStore.SetToken(tokenResponse.Token);
+		_authTokenStore.SetToken(tokenResponse.Token);
 
 		return RedirectToAction(
 			nameof(CompaniesController.Index),

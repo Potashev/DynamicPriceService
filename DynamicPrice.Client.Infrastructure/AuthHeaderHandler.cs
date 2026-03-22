@@ -16,7 +16,7 @@ public class AuthHeaderHandler : DelegatingHandler
 		HttpRequestMessage request,
 		CancellationToken cancellationToken)
 	{
-		var token = await _authTokenStore.GetToken();
+        var token = _authTokenStore.GetToken();
 
 		if (!string.IsNullOrEmpty(token))
 			request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);

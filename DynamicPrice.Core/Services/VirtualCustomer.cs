@@ -9,17 +9,16 @@ public class VirtualCustomer
 	public string Id { get; set; }
 	public int ThresholdPercent { get; set; }
 
-	public List<Product> MonitorProducts(Product[] products) 
+	public List<CartItem> MonitorProducts(Product[] products) 
 	{
-		var random = new Random();
+		var rnd = new Random();
 
-		//todo: check
 		var interestedProducts = products
-			.OrderBy(x => random.Next())
+			.OrderBy(x => rnd.Next())
 			.Take(3)	//todo: fixed or optimized
 			.ToList();
 
-		var productsToBuy = new List<Product>();
+		var productsToBuy = new List<CartItem>();
 
 		foreach (var product in interestedProducts)
 		{
@@ -31,7 +30,7 @@ public class VirtualCustomer
 
 			// сравниваем с текущей и добавляем к покупке
 			if (product.Price <= maxPricetoBuy)
-				productsToBuy.Add(product);
+				productsToBuy.Add(new CartItem { Product = product, Quantity = rnd.Next(3) + 1 });	//todo: quantity can depend on product.price/maxPriceTobuy value
 
 		}
 

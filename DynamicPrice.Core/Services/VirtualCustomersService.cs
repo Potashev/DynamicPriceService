@@ -3,7 +3,6 @@ using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Core.Models;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.CompilerServices;
 
 namespace DynamicPrice.Core.Services;
 
@@ -49,11 +48,11 @@ public class VirtualCustomersService : BackgroundService
 
 				var productsToBuy = virtualCustomer.MonitorProducts(companyProducts);
 
-				var cartItems = productsToBuy.Select(p => new CartItem { Product = p, Quantity = 1 });	//todo: check
+				//var cartItems = productsToBuy.Select(p => new CartItem { Product = p, Quantity = rnd.Next(3) });
 
 				//confirm order
 				var order = new Order(virtualCustomer.Id, company.CompanyId);
-				order.AddItems(cartItems);
+				order.AddItems(productsToBuy);
 
 				context.Orders.Add(order);
 
@@ -74,39 +73,6 @@ public class VirtualCustomersService : BackgroundService
 
 
 				await Task.Delay(TimeSpan.FromSeconds(5), token);
-
-				//	using var scope = _serviceProvider.CreateScope();
-				//	var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
-				//	var publishEndpoint = scope.ServiceProvider.GetRequiredService<IPublishEndpoint>();
-
-				//	var productStream = FindProductsToReduceAsync(context, token);
-				//	var options = new ParallelOptions { CancellationToken = token };
-
-				//	try
-				//	{
-				//		await Parallel.ForEachAsync(productStream, options, async (product, token) =>
-				//		{
-				//			try
-				//			{
-				//				await publishEndpoint.Publish(new PriceReduceEvent(product.ProductId), token);
-				//			}
-				//			catch (Exception ex)
-				//			{
-				//				_logger.LogError(ex, "Failed to publish PriceReduceEvent for ProductId {ProductId}", product.ProductId);
-				//			}
-				//		});
-				//	}
-				//	catch (OperationCanceledException) when (token.IsCancellationRequested)
-				//	{
-				//		break;
-				//	}
-				//	catch (Exception ex)
-				//	{
-				//		_logger.LogError(ex, "Error during parallel processing of products");
-				//	}
-
-				//	//await Task.Delay(TimeSpan.FromMilliseconds(30), token);
-				//await Task.Delay(TimeSpan.FromSeconds(5), token);
 			}
 		}
 		catch (Exception ex)

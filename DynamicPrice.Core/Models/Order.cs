@@ -72,7 +72,7 @@ public class Order
 		OrderDate = DateTime.UtcNow;
 	}
 
-	public void AddItems(ICollection<CartItem> CartItems)
+	public void AddItems(IEnumerable<CartItem> CartItems)
 	{
 		foreach (var item in CartItems)
 		{

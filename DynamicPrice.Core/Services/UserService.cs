@@ -43,8 +43,8 @@ public class UserService : IUserService
 			?? throw new UnauthorizedException("User is not authenticated.");
 
 	public async Task<ApplicationUser> GetUserByIdAsync(string userId)
-		=> await _userManager.FindByIdAsync(userId)
-			?? throw new NotFoundException("User not found.");
+		=> await _userManager.FindByIdAsync(userId);	//todo: fixed warning
+			//?? throw new NotFoundException("User not found.");
 
 	public async Task<IEnumerable<ApplicationUser>> GetUsersAsync(Expression<Func<ApplicationUser, bool>> predicate)
 		=> await _userManager.Users

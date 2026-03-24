@@ -1,7 +1,9 @@
 ﻿using DynamicPrice.Client.Infrastructure;
 using DynamicPrice.Client.Infrastructure.Extensions;
 using DynamicPrice.Manager.ApiClients;
+using Microsoft.AspNetCore.Localization;
 using Refit;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +32,16 @@ builder.Services.AddRefitClient<ICoreApiClient>()
 	.AddHttpMessageHandler<AuthHeaderHandler>();
 
 var app = builder.Build();
+
+var culture = new CultureInfo("ru-RU");
+var localizationOptions = new RequestLocalizationOptions
+{
+	DefaultRequestCulture = new RequestCulture(culture),
+	SupportedCultures = new[] { culture },
+	SupportedUICultures = new[] { culture }
+};
+
+app.UseRequestLocalization(localizationOptions);
 
 if (!app.Environment.IsDevelopment())
 {

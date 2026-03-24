@@ -28,15 +28,18 @@ public class VirtualCustomersService : BackgroundService
 
 			while (!token.IsCancellationRequested)
 			{
+				await Task.Delay(TimeSpan.FromSeconds(5), token);
+
 				using var scope = _serviceProvider.CreateScope();
 				var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
-				var publishEndpoint = scope.ServiceProvider.GetRequiredService<IPublishEndpoint>();	//todo: check
+				var publishEndpoint = scope.ServiceProvider.GetRequiredService<IPublishEndpoint>();
 
-				//todo: use mediatr getcompanyproducts?
+				var company = await context.ActiveCompanies
+					.Where(ac => ac.CompanyId == 1) //todo: fixed
+					.Select(ac => ac.Company)
+					.FirstOrDefaultAsync(token);
 
-				var company = await context.Companies
-				.FirstOrDefaultAsync(c => c.CompanyId == 1, token)	//todo: fixed
-				?? throw new NotFoundException("Company not found");
+				if (company is null) continue;
 
 				//get companyprodycts
 				var companyProducts = await context.Products
@@ -47,8 +50,6 @@ public class VirtualCustomersService : BackgroundService
 					.ToArrayAsync(token);
 
 				var productsToBuy = virtualCustomer.MonitorProducts(companyProducts);
-
-				//var cartItems = productsToBuy.Select(p => new CartItem { Product = p, Quantity = rnd.Next(3) });
 
 				//confirm order
 				var order = new Order(virtualCustomer.Id, company.CompanyId);
@@ -70,9 +71,6 @@ public class VirtualCustomersService : BackgroundService
 					await publishEndpoint.Publish(
 						new PriceIncreaseEvent(item.ProductId, item.Quantity),
 						token);
-
-
-				await Task.Delay(TimeSpan.FromSeconds(5), token);
 			}
 		}
 		catch (Exception ex)

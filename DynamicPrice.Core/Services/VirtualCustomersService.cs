@@ -1,5 +1,4 @@
 ﻿using DynamicPrice.Core.Data;
-using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Core.Models;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +8,6 @@ namespace DynamicPrice.Core.Services;
 public class VirtualCustomersService : BackgroundService
 {
 	private readonly IServiceProvider _serviceProvider;
-	//private readonly ILogger<FindProductsToReduceService> _logger;
 
 	public VirtualCustomersService(IServiceProvider serviceProvider)
 	{
@@ -20,11 +18,14 @@ public class VirtualCustomersService : BackgroundService
 	{
 		try
 		{
-			var virtualCustomer = new VirtualCustomer 
-			{
-				Id = "virt-cust",
-				ThresholdPercent = 5
-			};
+			//var virtualCustomer = new VirtualCustomer 
+			//{
+			//	Id = "virt-cust",
+			//	ThresholdPercent = 5
+			//};
+
+			var virtualCustomers = VirtualCustomer.GenerateCustomers();
+			var virtualCustomer = virtualCustomers.FirstOrDefault();
 
 			while (!token.IsCancellationRequested)
 			{

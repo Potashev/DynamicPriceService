@@ -87,7 +87,7 @@ public class Order
 			});
 
 			if (product.Quantity is not null)
-				product.Quantity -= item.Quantity;
+				product.Quantity -= item.Quantity;	//todo: avoid negative values - throw?
 		}
 	}
 

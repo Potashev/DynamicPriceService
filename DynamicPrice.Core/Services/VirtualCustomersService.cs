@@ -24,12 +24,12 @@ public class VirtualCustomersService : BackgroundService
 			//	ThresholdPercent = 5
 			//};
 
-			var virtualCustomers = VirtualCustomer.GenerateCustomers();
-			var virtualCustomer = virtualCustomers.FirstOrDefault();
+			// todo: add factory?
+			VirtualCustomer.CreateCustomersPool();
 
 			while (!token.IsCancellationRequested)
 			{
-				await Task.Delay(TimeSpan.FromSeconds(5), token);
+				await Task.Delay(VirtualCustomer.WaitNextMonitor(), token);
 
 				using var scope = _serviceProvider.CreateScope();
 				var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
@@ -49,6 +49,8 @@ public class VirtualCustomersService : BackgroundService
 						.OrderByDescending(pd => pd.Date)
 						.Take(company.PriceHistoryLimit))
 					.ToArrayAsync(token);
+
+				var virtualCustomer = VirtualCustomer.GetCustomer();
 
 				var productsToBuy = virtualCustomer.MonitorProducts(companyProducts);
 

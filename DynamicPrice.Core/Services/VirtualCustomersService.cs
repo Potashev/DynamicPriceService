@@ -18,12 +18,6 @@ public class VirtualCustomersService : BackgroundService
 	{
 		try
 		{
-			//var virtualCustomer = new VirtualCustomer 
-			//{
-			//	Id = "virt-cust",
-			//	ThresholdPercent = 5
-			//};
-
 			// todo: add factory?
 			VirtualCustomer.CreateCustomersPool();
 

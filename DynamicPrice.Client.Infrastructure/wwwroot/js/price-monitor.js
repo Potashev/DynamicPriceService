@@ -173,13 +173,21 @@
 
 		if (priceEl) priceEl.innerText = newPrice.toFixed(2);
 
-		const prevPrice = this.lastPrices[productId];
-		this.lastPrices[productId] = newPrice;
+		const chart = this.charts[productId];
+		if (!chart || !changeEl) return;
 
-		if (!changeEl || prevPrice === null || prevPrice === undefined) return;
+		const data = chart.data.datasets[0].data;
 
-		const diff = newPrice - prevPrice;
-		const percentChange = (diff / prevPrice) * 100;
+		if (!data || data.length < 2) {
+			changeEl.innerHTML = "";
+			return;
+		}
+
+		const firstPrice = data[0];
+		const lastPrice = data[data.length - 1];
+
+		const diff = lastPrice - firstPrice;
+		const percentChange = (diff / firstPrice) * 100;
 
 		changeEl.classList.remove("price-up", "price-down");
 

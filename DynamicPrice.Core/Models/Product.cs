@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DynamicPrice.Core.Exceptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPrice.Core.Models;
 
@@ -57,4 +58,19 @@ public class Product
 	/// История изменений цены для данного товара.
 	/// </summary>
 	public ICollection<PriceDynamic> PriceDynamics { get; set; } = [];
+
+	//for ef wrap to expression only
+	public bool CanBeReduced()
+		=> Quantity is null or > 0;
+
+	public void ReduceQuantity(int amount)
+	{
+		if (Quantity is null)
+			return;
+
+		if (Quantity < amount)
+			throw new BusinessException("Not enough products");
+
+		Quantity -= amount;
+	}
 }

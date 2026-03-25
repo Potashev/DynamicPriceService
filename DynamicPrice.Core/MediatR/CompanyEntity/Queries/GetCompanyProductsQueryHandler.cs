@@ -30,7 +30,10 @@ public class GetCompanyProductsQueryHandler
 			?? throw new NotFoundException("Company not found or not active");
 
 		var products = await _context.Products
-			.Where(p => p.CompanyId == company.CompanyId)
+			.Where(p => 
+				p.CompanyId == company.CompanyId &&
+				//p.CanBeReduced())
+				(p.Quantity == null || p.Quantity > 0))
 			.Include(p => p.PriceDynamics
 				.OrderByDescending(pd => pd.Date)
 				.Take(company.PriceHistoryLimit))

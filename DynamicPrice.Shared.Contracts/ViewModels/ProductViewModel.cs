@@ -1,11 +1,19 @@
-﻿namespace DynamicPrice.Shared.Contracts.ViewModels;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DynamicPrice.Shared.Contracts.ViewModels;
 
 public class ProductViewModel
 {
 	public int ProductId { get; init; }
 	public string Title { get; init; } = null!;
+
+	[Range(0, double.MaxValue, ErrorMessage = "Price cannot be negative")]
 	public decimal Price { get; init; }
+
+	[Range(0, double.MaxValue, ErrorMessage = "Price cannot be negative")]
 	public decimal MinimumPrice { get; init; }
+
+	[Range(0, int.MaxValue, ErrorMessage = "Quantity cannot be negative")]
 	public int? Quantity { get; init; }
 	public string? Description { get; init; }
 	public ICollection<PriceDynamicViewModel> PriceDynamics { get; init; } = [];

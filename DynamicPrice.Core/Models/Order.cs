@@ -78,6 +78,19 @@ public class Order
 		{
 			var product = item.Product;
 
+			product.ReduceQuantity(item.Quantity);
+
+			//if (product.Quantity is not null)
+			//{
+			//	if (product.Quantity < item.Quantity)
+			//		throw new BusinessException("Not enough products to buy");
+
+			//	product.Quantity -= item.Quantity;
+			//}
+
+			//if (product.Quantity is not null)
+			//	product.Quantity -= item.Quantity;  //todo: avoid negative values - throw?
+
 			OrderItems.Add(new OrderItem
 			{
 				Order = this,
@@ -85,9 +98,6 @@ public class Order
 				ProductPrice = product.Price,
 				Quantity = item.Quantity
 			});
-
-			if (product.Quantity is not null)
-				product.Quantity -= item.Quantity;	//todo: avoid negative values - throw?
 		}
 	}
 

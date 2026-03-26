@@ -7,10 +7,11 @@ public class VirtualCustomer
 	const int PRODUCTS_NUMBER_FOR_MONITORING = 3;
 	const int MAX_PRODUCTS_NUMBER_FOR_BUYING = 3;
 	const int MAX_NEXT_MONITOR_MILLISECONDS = 7000;
+	const string CUSTOMER_ID = "virt-cust";
 
 	private static List<VirtualCustomer> _virtualCustomers;
 
-	public string Id { get; }
+	public string CustomerId { get; }
 	public int ThresholdPercent { get; }
 
 	public List<CartItem> MonitorProducts(Product[] products) 
@@ -49,10 +50,13 @@ public class VirtualCustomer
 	public static VirtualCustomer GetCustomer()
 		=> _virtualCustomers[new Random().Next(_virtualCustomers.Count)];
 
+	public static string Id
+		=> CUSTOMER_ID;
+
 	private VirtualCustomer(int thresholdPercent)
 	{
 		ThresholdPercent = thresholdPercent;
-		Id = "virt-cust";
+		CustomerId = Id;
 	}
 
 	public static void CreateCustomersPool()	//todo: add int customersCount with each VirtualCustomer(rnd.Next())...

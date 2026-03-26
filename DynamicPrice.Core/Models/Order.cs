@@ -41,7 +41,6 @@ public class Order
 	/// <summary>
 	/// Позиции заказа - продукты с фиксированной ценой.
 	/// </summary>
-	//public ICollection<OrderItem> OrderItems { get; set; } = [];
 	public ICollection<OrderItem> OrderItems { get; } = [];
 
 	/// <summary>
@@ -130,7 +129,6 @@ public class Order
 		ReceiveKey = null;
 	}
 
-	// Example: "3C-48291"
 	private static string GenerateOrderNumber()
 	{
 		var guidBytes = Guid.NewGuid().ToByteArray();
@@ -140,7 +138,7 @@ public class Order
 		int numberPart = BitConverter.ToInt32(guidBytes, 2) & 0x7FFFFFFF;
 		string lastDigits = (numberPart % 100000).ToString("D5");
 
-		return $"{firstDigit}{letter}-{lastDigits}";
+		return $"{firstDigit}{letter}-{lastDigits}"; // Example: "3C-48291"
 	}
 
 	private static int GenerateReceiveKey() => RandomNumberGenerator.GetInt32(100_000, 1_000_000);

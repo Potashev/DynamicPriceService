@@ -40,8 +40,6 @@ public class VirtualCustomersService : BackgroundService
 				var companyProducts = await context.Products
 					.Where(p => p.CompanyId == company.CompanyId)
 					.Where(Product.CanBeReducedExpr)
-						//p.CanBeReduced())
-						//(p.Quantity == null || p.Quantity > 0))
 					.Include(p => p.PriceDynamics
 						.OrderByDescending(pd => pd.Date)
 						.Take(company.PriceHistoryLimit))
@@ -52,7 +50,7 @@ public class VirtualCustomersService : BackgroundService
 				var productsToBuy = virtualCustomer.MonitorProducts(companyProducts);
 
 				//confirm order
-				var order = new Order(virtualCustomer.Id, company.CompanyId);
+				var order = new Order(virtualCustomer.CustomerId, company.CompanyId);
 				order.AddItems(productsToBuy);
 
 				context.Orders.Add(order);

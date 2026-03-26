@@ -80,17 +80,6 @@ public class Order
 
 			product.ReduceQuantity(item.Quantity);
 
-			//if (product.Quantity is not null)
-			//{
-			//	if (product.Quantity < item.Quantity)
-			//		throw new BusinessException("Not enough products to buy");
-
-			//	product.Quantity -= item.Quantity;
-			//}
-
-			//if (product.Quantity is not null)
-			//	product.Quantity -= item.Quantity;  //todo: avoid negative values - throw?
-
 			OrderItems.Add(new OrderItem
 			{
 				Order = this,
@@ -131,8 +120,10 @@ public class Order
 
 		foreach (var item in OrderItems)
 		{
-			if (item.Product.Quantity is not null)
-				item.Product.Quantity += item.Quantity;
+			item.Product.IncreaseQuantity(item.Quantity);	//todo check
+
+			//if (item.Product.Quantity is not null)
+			//	item.Product.Quantity += item.Quantity;
 		}
 
 		Status = OrderStatus.Canceled;

@@ -1,5 +1,6 @@
 ﻿using DynamicPrice.Core.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace DynamicPrice.Core.Models;
 
@@ -59,9 +60,13 @@ public class Product
 	/// </summary>
 	public ICollection<PriceDynamic> PriceDynamics { get; set; } = [];
 
-	//for ef wrap to expression only
-	public bool CanBeReduced()
-		=> Quantity is null or > 0;
+	public void IncreaseQuantity(int amount)
+	{
+		if (Quantity is null)
+			return;
+
+		Quantity += amount;
+	}
 
 	public void ReduceQuantity(int amount)
 	{
@@ -73,4 +78,8 @@ public class Product
 
 		Quantity -= amount;
 	}
+
+	//todo: check
+	public static Expression<Func<Product, bool>> CanBeReducedExpr =>
+		p => p.Quantity == null || p.Quantity > 0;
 }

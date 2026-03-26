@@ -38,10 +38,10 @@ public class VirtualCustomersService : BackgroundService
 
 				//get companyprodycts
 				var companyProducts = await context.Products
-					.Where(p => 
-						p.CompanyId == company.CompanyId &&
+					.Where(p => p.CompanyId == company.CompanyId)
+					.Where(Product.CanBeReducedExpr)
 						//p.CanBeReduced())
-						(p.Quantity == null || p.Quantity > 0))
+						//(p.Quantity == null || p.Quantity > 0))
 					.Include(p => p.PriceDynamics
 						.OrderByDescending(pd => pd.Date)
 						.Take(company.PriceHistoryLimit))

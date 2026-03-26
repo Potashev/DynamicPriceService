@@ -98,7 +98,7 @@ builder.Services.AddMassTransit(x =>
 
 builder.Services.AddHostedService<FindProductsToReduceService>();
 
-//builder.Services.AddHostedService<VirtualCustomersService>();
+builder.Services.AddHostedService<VirtualCustomersService>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserService, UserService>();

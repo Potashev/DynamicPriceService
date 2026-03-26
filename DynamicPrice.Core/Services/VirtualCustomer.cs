@@ -7,38 +7,39 @@ public class VirtualCustomer
 	const int PRODUCTS_NUMBER_FOR_MONITORING = 3;
 	const int MAX_PRODUCTS_NUMBER_FOR_BUYING = 3;
 	const int MAX_NEXT_MONITOR_MILLISECONDS = 7000;
-	const string CUSTOMER_ID = "virt-cust";
+	const string ID_PREFIX = "virt-cust";
 
-	private static List<VirtualCustomer> _virtualCustomers;
+	//private static List<VirtualCustomer> _virtualCustomers = new ();
+	private static readonly Random _rnd = new();
 
 	public string CustomerId { get; }
 	public int ThresholdPercent { get; }
 
 	public List<CartItem> MonitorProducts(Product[] products) 
 	{
-		var rnd = new Random();
-
-		var interestedProducts = products
-			.OrderBy(x => rnd.Next())	//todo: check
-			.Take(PRODUCTS_NUMBER_FOR_MONITORING)
-			.ToList();
+		var interestedProducts = SelectRandomProducts(products);
 
 		var productsToBuy = new List<CartItem>();
 
 		foreach (var product in interestedProducts)
 		{
 			// получаем среднюю цену продукта
-			var averagePrice = product.PriceDynamics.Average(pd => pd.Price);
+			//var averagePrice = product.PriceDynamics.Average(pd => pd.Price);
+			var averagePrice = product.PriceDynamics.Any()	//todo: check
+				? product.PriceDynamics.Average(pd => pd.Price)
+				: product.Price;
 
 			// получаем допустимую цену по которой готовы взять
-			var maxPricetoBuy = averagePrice * 0.01m * ThresholdPercent + averagePrice;
+			var maxPriceToBuyOLD = averagePrice * 0.01m * ThresholdPercent + averagePrice;
+
+			var maxPriceToBuy = averagePrice * (1 + ThresholdPercent / 100m);	//todo: check
 
 			// сравниваем с текущей и добавляем к покупке
-			if (product.Price <= maxPricetoBuy)
+			if (product.Price <= maxPriceToBuy)
 				productsToBuy.Add(new CartItem 
 				{ 
 					Product = product, 
-					Quantity = rnd.Next(MAX_PRODUCTS_NUMBER_FOR_BUYING) + 1 
+					Quantity = _rnd.Next(MAX_PRODUCTS_NUMBER_FOR_BUYING) + 1 
 				});	//todo: quantity can depend on product.price/maxPriceTobuy value
 
 		}
@@ -47,26 +48,24 @@ public class VirtualCustomer
 		return productsToBuy;
 	}
 
-	public static VirtualCustomer GetCustomer()
-		=> _virtualCustomers[new Random().Next(_virtualCustomers.Count)];
+	private Product[] SelectRandomProducts(Product[] products)
+		=> products
+		.OrderBy(x => _rnd.Next())
+		.Take(PRODUCTS_NUMBER_FOR_MONITORING)
+		.ToArray();
 
-	public static string Id
-		=> CUSTOMER_ID;
+	public static string IdPrefix
+		=> ID_PREFIX;
 
-	private VirtualCustomer(int thresholdPercent)
+	public VirtualCustomer(int thresholdPercent)
 	{
 		ThresholdPercent = thresholdPercent;
-		CustomerId = Id;
+		CustomerId = $"{IdPrefix}-{Guid.NewGuid()}";
 	}
 
-	public static void CreateCustomersPool()	//todo: add int customersCount with each VirtualCustomer(rnd.Next())...
-		=> _virtualCustomers =
-		[
-			new VirtualCustomer(5),
-			new VirtualCustomer(3),
-			new VirtualCustomer(1)
-		];
+	public static bool IsVirtualCustomer(string customerId)
+		=> customerId.StartsWith(IdPrefix);
 
 	public static TimeSpan WaitNextMonitor()
-		=> TimeSpan.FromMilliseconds(new Random().Next(MAX_NEXT_MONITOR_MILLISECONDS));
+		=> TimeSpan.FromMilliseconds(_rnd.Next(MAX_NEXT_MONITOR_MILLISECONDS));
 }

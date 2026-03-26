@@ -19,7 +19,9 @@ public class VirtualCustomersService : BackgroundService
 		try
 		{
 			// todo: add factory?
-			VirtualCustomer.CreateCustomersPool();
+			//VirtualCustomer.CreateCustomersPool();
+
+			var virtualCustomerProvider = new VirtualCustomerProvider();
 
 			while (!token.IsCancellationRequested)
 			{
@@ -45,7 +47,8 @@ public class VirtualCustomersService : BackgroundService
 						.Take(company.PriceHistoryLimit))
 					.ToArrayAsync(token);
 
-				var virtualCustomer = VirtualCustomer.GetCustomer();
+				//var virtualCustomer = VirtualCustomer.GetCustomer();
+				var virtualCustomer = virtualCustomerProvider.GetRandom();
 
 				var productsToBuy = virtualCustomer.MonitorProducts(companyProducts);
 

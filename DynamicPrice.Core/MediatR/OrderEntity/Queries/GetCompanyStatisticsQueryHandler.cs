@@ -32,6 +32,7 @@ public class GetCompanyStatisticsQueryHandler
 			})
 			.ToArrayAsync(cancellationToken);
 
+		//todo: extend statistics, i.e best sellers for products (items), average sell price for it (also min/max)
 		return new OrdersStatistics
 		{
 			OrdersQuantity = companyOrdersWithAmount.Length,

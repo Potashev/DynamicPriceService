@@ -4,12 +4,11 @@ namespace DynamicPrice.Core.Services;
 
 public class VirtualCustomer
 {
-	const int PRODUCTS_NUMBER_FOR_MONITORING = 3;
-	const int MAX_PRODUCTS_NUMBER_FOR_BUYING = 3;
-	const int MAX_NEXT_MONITOR_MILLISECONDS = 7000;
+	const int PRODUCTS_NUMBER_FOR_MONITORING = 2;
+	const int MAX_PRODUCTS_QUANTITY_FOR_BUYING = 4;
+	const int MAX_NEXT_MONITOR_MILLISECONDS = 5000;
 	const string ID_PREFIX = "virt-cust";
 
-	//private static List<VirtualCustomer> _virtualCustomers = new ();
 	private static readonly Random _rnd = new();
 
 	public string CustomerId { get; }
@@ -39,8 +38,8 @@ public class VirtualCustomer
 				productsToBuy.Add(new CartItem 
 				{ 
 					Product = product, 
-					Quantity = _rnd.Next(MAX_PRODUCTS_NUMBER_FOR_BUYING) + 1 
-				});	//todo: quantity can depend on product.price/maxPriceTobuy value
+					Quantity = SelectProductQuantity()
+				});
 
 		}
 
@@ -53,6 +52,9 @@ public class VirtualCustomer
 		.OrderBy(x => _rnd.Next())
 		.Take(PRODUCTS_NUMBER_FOR_MONITORING)
 		.ToArray();
+
+	private int SelectProductQuantity()
+		=> _rnd.Next(MAX_PRODUCTS_QUANTITY_FOR_BUYING) + 1;
 
 	public static string IdPrefix
 		=> ID_PREFIX;

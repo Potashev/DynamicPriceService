@@ -8,21 +8,20 @@ namespace DynamicPrice.Core.Services;
 public class VirtualCustomersService : BackgroundService
 {
 	private readonly IServiceProvider _serviceProvider;
+	private readonly VirtualCustomerProvider _virtualCustomerProvider;
 
-	public VirtualCustomersService(IServiceProvider serviceProvider)
+	public VirtualCustomersService(
+		IServiceProvider serviceProvider,
+		VirtualCustomerProvider provider)
 	{
 		_serviceProvider = serviceProvider;
+		_virtualCustomerProvider = provider;
 	}
 
 	protected override async Task ExecuteAsync(CancellationToken token)
 	{
 		try
 		{
-			// todo: add factory?
-			//VirtualCustomer.CreateCustomersPool();
-
-			var virtualCustomerProvider = new VirtualCustomerProvider();
-
 			while (!token.IsCancellationRequested)
 			{
 				await Task.Delay(VirtualCustomer.WaitNextMonitor(), token);
@@ -31,29 +30,29 @@ public class VirtualCustomersService : BackgroundService
 				var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
 				var publishEndpoint = scope.ServiceProvider.GetRequiredService<IPublishEndpoint>();
 
-				var company = await context.ActiveCompanies
-					.Where(ac => ac.CompanyId == 1) //todo: fixed
+				var companyForMonitoring = await context.ActiveCompanies
+					.Where(ac => ac.CompanyId == COMPANY_ID)
 					.Select(ac => ac.Company)
 					.FirstOrDefaultAsync(token);
 
-				if (company is null) continue;
+				if (companyForMonitoring is null) continue;
 
 				//get companyprodycts
 				var companyProducts = await context.Products
-					.Where(p => p.CompanyId == company.CompanyId)
+					.Where(p => p.CompanyId == companyForMonitoring.CompanyId)
 					.Where(Product.CanBeReducedExpr)
 					.Include(p => p.PriceDynamics
 						.OrderByDescending(pd => pd.Date)
-						.Take(company.PriceHistoryLimit))
+						.Take(companyForMonitoring.PriceHistoryLimit))
 					.ToArrayAsync(token);
 
 				//var virtualCustomer = VirtualCustomer.GetCustomer();
-				var virtualCustomer = virtualCustomerProvider.GetRandom();
+				var virtualCustomer = _virtualCustomerProvider.GetRandom();
 
 				var productsToBuy = virtualCustomer.MonitorProducts(companyProducts);
 
 				//confirm order
-				var order = new Order(virtualCustomer.CustomerId, company.CompanyId);
+				var order = new Order(virtualCustomer.CustomerId, companyForMonitoring.CompanyId);
 				order.AddItems(productsToBuy);
 
 				context.Orders.Add(order);
@@ -79,4 +78,6 @@ public class VirtualCustomersService : BackgroundService
 			//_logger.LogError(ex, "Unhandled exception in FindProductsToReduceService");
 		}
 	}
+
+	private const int COMPANY_ID = 1;
 }

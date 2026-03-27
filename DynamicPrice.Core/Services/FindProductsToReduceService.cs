@@ -79,8 +79,8 @@ public class FindProductsToReduceService : BackgroundService
 					_logger.LogError(ex, "Error during parallel processing of products");
 				}
 
-				//await Task.Delay(TimeSpan.FromMilliseconds(30), token);
-				await Task.Delay(TimeSpan.FromSeconds(1), token);
+				await Task.Delay(TimeSpan.FromMilliseconds(NEXT_MONITOR_MILLISECONDS), token);
+				//await Task.Delay(TimeSpan.FromSeconds(1), token);
 			}
 		}
 		catch (Exception ex)
@@ -110,8 +110,6 @@ public class FindProductsToReduceService : BackgroundService
 			.AsNoTracking()
 			.Where(p => activeCompaniesIds.Contains(p.CompanyId))
 			.Where(Product.CanBeReducedExpr);
-				//(p.Quantity == null || p.Quantity > 0));
-				//p.CanBeReduced());
 
 		if (productsCount.HasValue)
 			productsActiveCompaniesQuery = productsActiveCompaniesQuery.Take(productsCount.Value);
@@ -126,4 +124,6 @@ public class FindProductsToReduceService : BackgroundService
 		await foreach (var product in query.AsAsyncEnumerable().WithCancellation(token))
 			yield return product;
 	}
+
+	const int NEXT_MONITOR_MILLISECONDS = 1000;
 }

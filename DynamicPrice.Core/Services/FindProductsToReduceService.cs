@@ -80,7 +80,6 @@ public class FindProductsToReduceService : BackgroundService
 				}
 
 				await Task.Delay(TimeSpan.FromMilliseconds(NEXT_MONITOR_MILLISECONDS), token);
-				//await Task.Delay(TimeSpan.FromSeconds(1), token);
 			}
 		}
 		catch (Exception ex)

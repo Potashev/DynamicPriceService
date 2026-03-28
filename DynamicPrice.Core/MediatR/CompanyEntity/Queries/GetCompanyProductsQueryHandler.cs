@@ -33,8 +33,6 @@ public class GetCompanyProductsQueryHandler
 		var products = await _context.Products
 			.Where(p => p.CompanyId == company.CompanyId)
 			.Where(Product.CanBeReducedExpr)
-			//p.CanBeReduced())
-			//(p.Quantity == null || p.Quantity > 0))
 			.Include(p => p.PriceDynamics
 				.OrderByDescending(pd => pd.Date)
 				.Take(company.PriceHistoryLimit))

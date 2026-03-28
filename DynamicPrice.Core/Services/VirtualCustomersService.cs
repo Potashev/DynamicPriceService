@@ -7,22 +7,27 @@ namespace DynamicPrice.Core.Services;
 
 public class VirtualCustomersService : BackgroundService
 {
+	private const int COMPANY_ID = 1; // demonstate virtual customers only for 
+
 	private readonly IServiceProvider _serviceProvider;
+	private readonly ILogger<VirtualCustomersService> _logger;
 	private readonly VirtualCustomerProvider _virtualCustomerProvider;
 
 	public VirtualCustomersService(
 		IServiceProvider serviceProvider,
+		ILogger<VirtualCustomersService> logger,
 		VirtualCustomerProvider provider)
 	{
 		_serviceProvider = serviceProvider;
+		_logger = logger;
 		_virtualCustomerProvider = provider;
 	}
 
 	protected override async Task ExecuteAsync(CancellationToken token)
 	{
-		try
+		while (!token.IsCancellationRequested)
 		{
-			while (!token.IsCancellationRequested)
+			try
 			{
 				await Task.Delay(VirtualCustomer.WaitNextMonitor(), token);
 
@@ -37,7 +42,6 @@ public class VirtualCustomersService : BackgroundService
 
 				if (companyForMonitoring is null) continue;
 
-				//get companyprodycts
 				var companyProducts = await context.Products
 					.Where(p => p.CompanyId == companyForMonitoring.CompanyId)
 					.Where(Product.CanBeReducedExpr)
@@ -46,25 +50,18 @@ public class VirtualCustomersService : BackgroundService
 						.Take(companyForMonitoring.PriceHistoryLimit))
 					.ToArrayAsync(token);
 
-				//var virtualCustomer = VirtualCustomer.GetCustomer();
 				var virtualCustomer = _virtualCustomerProvider.GetRandom();
 
 				var productsToBuy = virtualCustomer.MonitorProducts(companyProducts);
 
-				//confirm order
 				var order = new Order(virtualCustomer.CustomerId, companyForMonitoring.CompanyId);
+
 				order.AddItems(productsToBuy);
+				order.MarkAsReady();
+				order.MarkAsCompleted();
 
 				context.Orders.Add(order);
 
-				await context.SaveChangesAsync(token);
-
-				//ready to reacieve order
-				order.MarkAsReady();
-				await context.SaveChangesAsync(token);
-
-				//completer order
-				order.MarkAsCompleted();
 				await context.SaveChangesAsync(token);
 
 				foreach (var item in order.OrderItems)
@@ -72,12 +69,10 @@ public class VirtualCustomersService : BackgroundService
 						new PriceIncreaseEvent(item.ProductId, item.Quantity),
 						token);
 			}
-		}
-		catch (Exception ex)
-		{
-			//_logger.LogError(ex, "Unhandled exception in FindProductsToReduceService");
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Unhandled exception in VirtualCustomersService");
+			}
 		}
 	}
-
-	private const int COMPANY_ID = 1;
 }

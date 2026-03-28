@@ -105,7 +105,7 @@ public class Order
 
 		foreach (var item in OrderItems)
 		{
-			item.Product.LastSellTime = OrderDate;
+			item.Product.UpdateLastSellTime(OrderDate);
 		}
 
 		Status = OrderStatus.Completed;
@@ -119,10 +119,7 @@ public class Order
 
 		foreach (var item in OrderItems)
 		{
-			item.Product.IncreaseQuantity(item.Quantity);	//todo check
-
-			//if (item.Product.Quantity is not null)
-			//	item.Product.Quantity += item.Quantity;
+			item.Product.IncreaseQuantity(item.Quantity);
 		}
 
 		Status = OrderStatus.Canceled;

@@ -79,7 +79,9 @@ public class Product
 		Quantity -= amount;
 	}
 
-	//todo: check
+	public void UpdateLastSellTime(DateTime time)
+		=> LastSellTime = time;
+
 	public static Expression<Func<Product, bool>> CanBeReducedExpr =>
 		p => p.Quantity == null || p.Quantity > 0;
 }

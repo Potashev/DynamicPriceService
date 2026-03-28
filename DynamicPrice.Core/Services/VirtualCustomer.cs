@@ -4,10 +4,10 @@ namespace DynamicPrice.Core.Services;
 
 public class VirtualCustomer
 {
-	const int PRODUCTS_NUMBER_FOR_MONITORING = 2;
-	const int MAX_PRODUCTS_QUANTITY_FOR_BUYING = 4;
-	const int MAX_NEXT_MONITOR_MILLISECONDS = 5000;
-	const string ID_PREFIX = "virt-cust";
+	private const int PRODUCTS_NUMBER_FOR_MONITORING = 2;
+	private const int MAX_PRODUCTS_QUANTITY_FOR_BUYING = 4;
+	private const int MAX_NEXT_MONITOR_MILLISECONDS = 5000;
+	private const string ID_PREFIX = "virt-cust";
 
 	private static readonly Random _rnd = new();
 
@@ -22,18 +22,12 @@ public class VirtualCustomer
 
 		foreach (var product in interestedProducts)
 		{
-			// получаем среднюю цену продукта
-			//var averagePrice = product.PriceDynamics.Average(pd => pd.Price);
-			var averagePrice = product.PriceDynamics.Any()	//todo: check
+			var averagePrice = product.PriceDynamics.Any()
 				? product.PriceDynamics.Average(pd => pd.Price)
 				: product.Price;
 
-			// получаем допустимую цену по которой готовы взять
-			var maxPriceToBuyOLD = averagePrice * 0.01m * ThresholdPercent + averagePrice;
+			var maxPriceToBuy = GetMaximumBuyPrice(averagePrice);
 
-			var maxPriceToBuy = averagePrice * (1 + ThresholdPercent / 100m);	//todo: check
-
-			// сравниваем с текущей и добавляем к покупке
 			if (product.Price <= maxPriceToBuy)
 				productsToBuy.Add(new CartItem 
 				{ 
@@ -43,7 +37,6 @@ public class VirtualCustomer
 
 		}
 
-		// результатом работы будет список продуктов, которые будем в заказ оформлять
 		return productsToBuy;
 	}
 
@@ -52,6 +45,9 @@ public class VirtualCustomer
 		.OrderBy(x => _rnd.Next())
 		.Take(PRODUCTS_NUMBER_FOR_MONITORING)
 		.ToArray();
+
+	private decimal GetMaximumBuyPrice(decimal averagePrice)
+		=> averagePrice * (1 + ThresholdPercent / 100m);
 
 	private int SelectProductQuantity()
 		=> _rnd.Next(MAX_PRODUCTS_QUANTITY_FOR_BUYING) + 1;

@@ -33,16 +33,6 @@ builder.Services.AddRefitClient<ICoreApiClient>()
 
 var app = builder.Build();
 
-//var culture = new CultureInfo("ru-RU");
-//var localizationOptions = new RequestLocalizationOptions
-//{
-//	DefaultRequestCulture = new RequestCulture(culture),
-//	SupportedCultures = new[] { culture },
-//	SupportedUICultures = new[] { culture }
-//};
-
-//app.UseRequestLocalization(localizationOptions);
-
 if (!app.Environment.IsDevelopment())
 {
 	app.UseExceptionHandler("/Home/Error");

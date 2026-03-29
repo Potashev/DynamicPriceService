@@ -1,0 +1,69 @@
+﻿using DynamicPrice.Core.Models;
+
+namespace DynamicPrice.Core.Services;
+
+/// <summary>
+/// Синтетическая сущность для демонстрации работы <c>DynamicPriceService</c>.
+/// Имитирует поведение реального покупателя - выбор продуктов и их покупка в зависимости от цены.
+/// См. также <see cref="VirtualCustomersService"/>.
+/// </summary>
+public class VirtualCustomer
+{
+	private const int PRODUCTS_NUMBER_FOR_MONITORING = 2;
+	private const int MAX_PRODUCTS_QUANTITY_FOR_BUYING = 4;
+	private const int MAX_NEXT_MONITOR_MILLISECONDS = 5000;
+	private const string ID_PREFIX = "virt-cust";
+
+	public string CustomerId { get; }
+	public int ThresholdPercent { get; }
+
+	public VirtualCustomer(int thresholdPercent)
+	{
+		ThresholdPercent = thresholdPercent;
+		CustomerId = $"{ID_PREFIX}-{Guid.NewGuid()}";
+	}
+
+	public List<CartItem> MonitorProducts(Product[] products) 
+	{
+		var interestedProducts = SelectRandomProducts(products);
+
+		var productsToBuy = new List<CartItem>();
+
+		foreach (var product in interestedProducts)
+		{
+			var averagePrice = product.PriceDynamics.Any()
+				? product.PriceDynamics.Average(pd => pd.Price)
+				: product.Price;
+
+			var maxPriceToBuy = GetMaximumBuyPrice(averagePrice);
+
+			if (product.Price <= maxPriceToBuy)
+				productsToBuy.Add(new CartItem 
+				{ 
+					Product = product, 
+					Quantity = SelectProductQuantity()
+				});
+
+		}
+
+		return productsToBuy;
+	}
+
+	public static bool IsVirtualCustomer(string customerId)
+		=> customerId.StartsWith(ID_PREFIX);
+
+	public static TimeSpan WaitNextMonitor()
+		=> TimeSpan.FromMilliseconds(Random.Shared.Next(MAX_NEXT_MONITOR_MILLISECONDS));
+
+	private Product[] SelectRandomProducts(Product[] products)
+		=> products
+		.OrderBy(x => Random.Shared.Next())
+		.Take(PRODUCTS_NUMBER_FOR_MONITORING)
+		.ToArray();
+
+	private decimal GetMaximumBuyPrice(decimal averagePrice)
+		=> averagePrice * (1 + ThresholdPercent / 100m);
+
+	private int SelectProductQuantity()
+		=> Random.Shared.Next(MAX_PRODUCTS_QUANTITY_FOR_BUYING) + 1;
+}

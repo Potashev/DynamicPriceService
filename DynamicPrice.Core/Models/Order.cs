@@ -41,7 +41,6 @@ public class Order
 	/// <summary>
 	/// Позиции заказа - продукты с фиксированной ценой.
 	/// </summary>
-	//public ICollection<OrderItem> OrderItems { get; set; } = [];
 	public ICollection<OrderItem> OrderItems { get; } = [];
 
 	/// <summary>
@@ -72,11 +71,13 @@ public class Order
 		OrderDate = DateTime.UtcNow;
 	}
 
-	public void AddItems(ICollection<CartItem> CartItems)
+	public void AddItems(IEnumerable<CartItem> CartItems)
 	{
 		foreach (var item in CartItems)
 		{
 			var product = item.Product;
+
+			product.ReduceQuantity(item.Quantity);
 
 			OrderItems.Add(new OrderItem
 			{
@@ -85,9 +86,6 @@ public class Order
 				ProductPrice = product.Price,
 				Quantity = item.Quantity
 			});
-
-			if (product.Quantity is not null)
-				product.Quantity -= item.Quantity;
 		}
 	}
 
@@ -107,7 +105,7 @@ public class Order
 
 		foreach (var item in OrderItems)
 		{
-			item.Product.LastSellTime = OrderDate;
+			item.Product.UpdateLastSellTime(OrderDate);
 		}
 
 		Status = OrderStatus.Completed;
@@ -121,15 +119,13 @@ public class Order
 
 		foreach (var item in OrderItems)
 		{
-			if (item.Product.Quantity is not null)
-				item.Product.Quantity += item.Quantity;
+			item.Product.IncreaseQuantity(item.Quantity);
 		}
 
 		Status = OrderStatus.Canceled;
 		ReceiveKey = null;
 	}
 
-	// Example: "3C-48291"
 	private static string GenerateOrderNumber()
 	{
 		var guidBytes = Guid.NewGuid().ToByteArray();
@@ -139,7 +135,7 @@ public class Order
 		int numberPart = BitConverter.ToInt32(guidBytes, 2) & 0x7FFFFFFF;
 		string lastDigits = (numberPart % 100000).ToString("D5");
 
-		return $"{firstDigit}{letter}-{lastDigits}";
+		return $"{firstDigit}{letter}-{lastDigits}"; // Example: "3C-48291"
 	}
 
 	private static int GenerateReceiveKey() => RandomNumberGenerator.GetInt32(100_000, 1_000_000);

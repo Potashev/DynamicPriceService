@@ -15,6 +15,8 @@ namespace DynamicPrice.Core.Services;
 /// </summary>
 public class FindProductsToReduceService : BackgroundService
 {
+	private const int NEXT_MONITOR_MILLISECONDS = 1000;
+
 	private readonly IServiceProvider _serviceProvider;
 	private readonly ILogger<FindProductsToReduceService> _logger;
 
@@ -79,8 +81,7 @@ public class FindProductsToReduceService : BackgroundService
 					_logger.LogError(ex, "Error during parallel processing of products");
 				}
 
-				//await Task.Delay(TimeSpan.FromMilliseconds(30), token);
-				await Task.Delay(TimeSpan.FromSeconds(5), token);
+				await Task.Delay(TimeSpan.FromMilliseconds(NEXT_MONITOR_MILLISECONDS), token);
 			}
 		}
 		catch (Exception ex)
@@ -108,7 +109,8 @@ public class FindProductsToReduceService : BackgroundService
 
 		var productsActiveCompaniesQuery = context.Products
 			.AsNoTracking()
-			.Where(p => activeCompaniesIds.Contains(p.CompanyId));
+			.Where(p => activeCompaniesIds.Contains(p.CompanyId))
+			.Where(Product.CanBeReducedExpr);
 
 		if (productsCount.HasValue)
 			productsActiveCompaniesQuery = productsActiveCompaniesQuery.Take(productsCount.Value);

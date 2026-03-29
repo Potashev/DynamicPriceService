@@ -6,6 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPrice.Core.Services;
 
+/// <summary>
+/// Фоновый сервис, имитирующий активность виртуальных покупателей <see cref="VirtualCustomer"/>.
+/// Выполняет выбор продуктов и формирование заказов, проходящих полный жизненный цикл —
+/// от подтверждения <see cref="OrderStatus.Confirmed"/> до завершения <see cref="OrderStatus.Completed"/>.
+/// </summary>
 public class VirtualCustomersService : BackgroundService
 {
 	private readonly IServiceProvider _serviceProvider;

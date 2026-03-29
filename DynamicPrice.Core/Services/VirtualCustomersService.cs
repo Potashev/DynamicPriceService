@@ -8,7 +8,7 @@ namespace DynamicPrice.Core.Services;
 
 /// <summary>
 /// Фоновый сервис, имитирующий активность виртуальных покупателей <see cref="VirtualCustomer"/>.
-/// Выполняет выбор продуктов и формирование заказов, проходящих полный жизненный цикл —
+/// Выполняет выбор продуктов и формирование заказов, проходящих полный жизненный цикл -
 /// от подтверждения <see cref="OrderStatus.Confirmed"/> до завершения <see cref="OrderStatus.Completed"/>.
 /// </summary>
 public class VirtualCustomersService : BackgroundService
@@ -45,7 +45,7 @@ public class VirtualCustomersService : BackgroundService
 
 				if (companies.Count == 0) continue;
 
-				var companyForMonitoring = companies.GetRandom();
+				var companyForMonitoring = companies.GetRandomItem();
 
 				var companyProducts = await context.Products
 					.Where(p => p.CompanyId == companyForMonitoring.CompanyId)
@@ -55,7 +55,7 @@ public class VirtualCustomersService : BackgroundService
 						.Take(companyForMonitoring.PriceHistoryLimit))
 					.ToArrayAsync(token);
 
-				var virtualCustomer = _virtualCustomerProvider.Customers.GetRandom();
+				var virtualCustomer = _virtualCustomerProvider.Customers.GetRandomItem();
 
 				var productsToBuy = virtualCustomer.MonitorProducts(companyProducts);
 

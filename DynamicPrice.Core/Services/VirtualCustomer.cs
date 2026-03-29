@@ -17,6 +17,12 @@ public class VirtualCustomer
 	public string CustomerId { get; }
 	public int ThresholdPercent { get; }
 
+	public VirtualCustomer(int thresholdPercent)
+	{
+		ThresholdPercent = thresholdPercent;
+		CustomerId = $"{ID_PREFIX}-{Guid.NewGuid()}";
+	}
+
 	public List<CartItem> MonitorProducts(Product[] products) 
 	{
 		var interestedProducts = SelectRandomProducts(products);
@@ -43,14 +49,8 @@ public class VirtualCustomer
 		return productsToBuy;
 	}
 
-	public VirtualCustomer(int thresholdPercent)
-	{
-		ThresholdPercent = thresholdPercent;
-		CustomerId = $"{IdPrefix}-{Guid.NewGuid()}";
-	}
-
 	public static bool IsVirtualCustomer(string customerId)
-		=> customerId.StartsWith(IdPrefix);
+		=> customerId.StartsWith(ID_PREFIX);
 
 	public static TimeSpan WaitNextMonitor()
 		=> TimeSpan.FromMilliseconds(Random.Shared.Next(MAX_NEXT_MONITOR_MILLISECONDS));
@@ -66,7 +66,4 @@ public class VirtualCustomer
 
 	private int SelectProductQuantity()
 		=> Random.Shared.Next(MAX_PRODUCTS_QUANTITY_FOR_BUYING) + 1;
-
-	public static string IdPrefix
-		=> ID_PREFIX;
 }

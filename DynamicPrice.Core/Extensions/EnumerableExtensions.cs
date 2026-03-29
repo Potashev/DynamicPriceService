@@ -2,7 +2,7 @@
 
 public static class EnumerableExtensions
 {
-	public static T GetRandom<T>(this IReadOnlyList<T> list)
+	public static T GetRandomItem<T>(this IReadOnlyList<T> list)
 	{
 		if (list.Count == 0)
 			throw new InvalidOperationException("Collection is empty");

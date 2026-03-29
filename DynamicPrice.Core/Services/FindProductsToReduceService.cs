@@ -15,6 +15,8 @@ namespace DynamicPrice.Core.Services;
 /// </summary>
 public class FindProductsToReduceService : BackgroundService
 {
+	private const int NEXT_MONITOR_MILLISECONDS = 1000;
+
 	private readonly IServiceProvider _serviceProvider;
 	private readonly ILogger<FindProductsToReduceService> _logger;
 
@@ -123,6 +125,4 @@ public class FindProductsToReduceService : BackgroundService
 		await foreach (var product in query.AsAsyncEnumerable().WithCancellation(token))
 			yield return product;
 	}
-
-	const int NEXT_MONITOR_MILLISECONDS = 1000;
 }

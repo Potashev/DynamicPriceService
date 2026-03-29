@@ -1,9 +1,7 @@
 ﻿using DynamicPrice.Client.Infrastructure;
 using DynamicPrice.Client.Infrastructure.Extensions;
 using DynamicPrice.Manager.ApiClients;
-using Microsoft.AspNetCore.Localization;
 using Refit;
-using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 

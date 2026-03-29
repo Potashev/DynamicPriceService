@@ -1,4 +1,5 @@
 ﻿using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Extensions;
 using DynamicPrice.Core.Models;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -7,8 +8,6 @@ namespace DynamicPrice.Core.Services;
 
 public class VirtualCustomersService : BackgroundService
 {
-	private const int COMPANY_ID = 1; // demonstate virtual customers only for 
-
 	private readonly IServiceProvider _serviceProvider;
 	private readonly ILogger<VirtualCustomersService> _logger;
 	private readonly VirtualCustomerProvider _virtualCustomerProvider;
@@ -35,12 +34,13 @@ public class VirtualCustomersService : BackgroundService
 				var context = scope.ServiceProvider.GetRequiredService<DynamicPriceCoreContext>();
 				var publishEndpoint = scope.ServiceProvider.GetRequiredService<IPublishEndpoint>();
 
-				var companyForMonitoring = await context.ActiveCompanies
-					.Where(ac => ac.CompanyId == COMPANY_ID)
+				var companies = await context.ActiveCompanies
 					.Select(ac => ac.Company)
-					.FirstOrDefaultAsync(token);
+					.ToListAsync(token);
 
-				if (companyForMonitoring is null) continue;
+				if (companies.Count == 0) continue;
+
+				var companyForMonitoring = companies.GetRandom();
 
 				var companyProducts = await context.Products
 					.Where(p => p.CompanyId == companyForMonitoring.CompanyId)
@@ -50,7 +50,7 @@ public class VirtualCustomersService : BackgroundService
 						.Take(companyForMonitoring.PriceHistoryLimit))
 					.ToArrayAsync(token);
 
-				var virtualCustomer = _virtualCustomerProvider.GetRandom();
+				var virtualCustomer = _virtualCustomerProvider.Customers.GetRandom();
 
 				var productsToBuy = virtualCustomer.MonitorProducts(companyProducts);
 

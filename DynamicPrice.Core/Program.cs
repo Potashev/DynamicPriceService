@@ -16,6 +16,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Configuration;
 
+builder.Services.AddProblemDetails(configure =>
+{
+	configure.CustomizeProblemDetails = context =>
+	{
+		context.ProblemDetails.Extensions.TryAdd("requestId", context.HttpContext.TraceIdentifier);
+	};
+});
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
 builder.Services.AddDbContext<DynamicPriceCoreContext>(options =>
 	options.UseSqlServer(configuration.GetConnectionString("DynamicPriceDb") ?? throw new InvalidOperationException("Connection string 'DynamicPriceDb' not found.")));
 builder.Services.AddDbContext<IdentityContext>(options =>
@@ -117,7 +126,8 @@ if (app.Environment.IsDevelopment())
 	await app.ApplyMigrationsAsync();
 }
 
-app.UseMiddleware<ExceptionHandlingMiddleware>();
+//app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseExceptionHandler();
 
 app.UseHttpsRedirection();
 

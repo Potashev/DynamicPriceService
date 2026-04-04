@@ -54,6 +54,8 @@ public class UserService : IUserService
 
 	public async Task<TokenResponse> LoginUserAsync(LoginRequest request)
 	{
+		//throw new Exception();
+
 		var user = await _userManager.FindByNameAsync(request.Username);
 		if (user == null || !await _userManager.CheckPasswordAsync(user, request.Password))
 			throw new ArgumentException("Unauthorized!");

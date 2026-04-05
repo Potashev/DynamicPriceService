@@ -46,35 +46,11 @@ public class ApiExceptionFilter : IAsyncExceptionFilter
 		switch ((int)ex.StatusCode)
 		{
 			case 400:
-				//return CreateViewResult(context, problem?.Detail ?? "Bad request");
-
 			case 401:
-				//return new RedirectToActionResult("Login", "Auth", null);
-
 			case 403:
-				//return new ViewResult { ViewName = "Forbidden" };
-
 			case 404:
-				//return new NotFoundResult();
-
 			case 409:
-
-				return CreateViewResult(context, problem?.Detail ?? "Conflict");
-
-				var tempDataFactory = context.HttpContext.RequestServices
-					.GetRequiredService<ITempDataDictionaryFactory>();
-
-				var tempData = tempDataFactory.GetTempData(context.HttpContext);
-
-				tempData["Error"] = problem?.Detail ?? "Conflict";
-				//tempData["Error"] = "...";
-
-				//context.HttpContext.TempData()["Error"] = problem?.Detail ?? "Conflict";
-				return new RedirectToActionResult(
-					context.RouteData.Values["action"]!.ToString(),
-					context.RouteData.Values["controller"]!.ToString(),
-					context.RouteData.Values);
-
+				return CreateViewResult(context, problem?.Detail ?? "Request failed");
 			default:
 				return CreateViewResult(context, "Something went wrong");
 		}

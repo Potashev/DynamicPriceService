@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Shared.Contracts.ViewModels;
 using MediatR;
 
@@ -19,5 +20,6 @@ public class GetActiveCompaniesQueryHandler
 	public async Task<IEnumerable<CompanyViewModel>> Handle(
 		GetActiveCompaniesQuery request,
 		CancellationToken cancellationToken)
-		=> _mapper.Map<CompanyViewModel[]>(_context.ActiveCompanies.Select(ac => ac.Company).ToList());
+	//=> throw new BusinessException("BusinessException!");
+	=> _mapper.Map<CompanyViewModel[]>(_context.ActiveCompanies.Select(ac => ac.Company).ToList());
 }

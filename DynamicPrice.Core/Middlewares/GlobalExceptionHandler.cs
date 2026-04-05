@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using DynamicPrice.Core.Exceptions;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Core.Middlewares;
@@ -16,7 +17,10 @@ internal sealed class GlobalExceptionHandler(
 
 		httpContext.Response.StatusCode = exception switch
 		{
-			ApplicationException => StatusCodes.Status400BadRequest,	//todo: separete error types
+			ValidationException => StatusCodes.Status400BadRequest,
+			UnauthorizedException => StatusCodes.Status401Unauthorized,
+			NotFoundException => StatusCodes.Status404NotFound,
+			BusinessException => StatusCodes.Status409Conflict,
 			_ => StatusCodes.Status500InternalServerError
 		};
 

@@ -46,18 +46,21 @@ public class ApiExceptionFilter : IAsyncExceptionFilter
 		switch ((int)ex.StatusCode)
 		{
 			case 400:
-				return CreateViewResult(context, problem?.Detail ?? "Bad request");
+				//return CreateViewResult(context, problem?.Detail ?? "Bad request");
 
 			case 401:
-				return new RedirectToActionResult("Login", "Auth", null);
+				//return new RedirectToActionResult("Login", "Auth", null);
 
 			case 403:
-				return new ViewResult { ViewName = "Forbidden" };
+				//return new ViewResult { ViewName = "Forbidden" };
 
 			case 404:
-				return new NotFoundResult();
+				//return new NotFoundResult();
 
 			case 409:
+
+				return CreateViewResult(context, problem?.Detail ?? "Conflict");
+
 				var tempDataFactory = context.HttpContext.RequestServices
 					.GetRequiredService<ITempDataDictionaryFactory>();
 
@@ -77,13 +80,13 @@ public class ApiExceptionFilter : IAsyncExceptionFilter
 		}
 	}
 
-	private ViewResult CreateViewResult(ExceptionContext context, string error)
+	private ViewResult CreateViewResult(ExceptionContext context, string errorMessage)
 	{
 		var viewData = new ViewDataDictionary(
 			new EmptyModelMetadataProvider(),
 			context.ModelState);
 
-		viewData.ModelState.AddModelError("", error);
+		viewData.ModelState.AddModelError("", errorMessage);
 
 		return new ViewResult
 		{

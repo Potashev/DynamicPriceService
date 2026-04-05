@@ -45,6 +45,7 @@
 	</header>
 	<div class="container">
 		<main role="main" class="pb-3">
+			@RenderBody()
 
 			@if (TempData["Error"] != null)
 			{
@@ -56,12 +57,15 @@
 
 			@if (!ViewData.ModelState.IsValid)
 			{
-				<div class="alert alert-danger">
+@* 				<div class="alert alert-danger">
 					<div asp-validation-summary="All"></div>
+				</div> *@
+				<div class="alert alert-danger alert-dismissible fade show" role="alert">
+					<div asp-validation-summary="All"></div>
+					<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 				</div>
 			}
 
-			@RenderBody()
 		</main>
 	</div>
 

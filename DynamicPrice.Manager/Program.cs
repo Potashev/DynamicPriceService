@@ -1,11 +1,15 @@
 ﻿using DynamicPrice.Client.Infrastructure;
 using DynamicPrice.Client.Infrastructure.Extensions;
+using DynamicPrice.Customer.Extension;
 using DynamicPrice.Manager.ApiClients;
 using Refit;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+	options.Filters.Add<ApiExceptionFilter>();
+});
 
 builder.Services.AddSession(options =>
 {

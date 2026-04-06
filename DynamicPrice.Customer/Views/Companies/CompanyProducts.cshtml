@@ -2,6 +2,8 @@
 @model CompanyProductsInfo
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 
+@if (Model is null || !Model.Products.Any()) return;
+
 <h1>@Model.Company.Title</h1>
 
 <p>

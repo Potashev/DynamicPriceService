@@ -4,6 +4,7 @@
 
 @{
 	ViewData["Title"] = "Details";
+	if (Model is null || !Model.OrderItems.Any()) return;
 }
 
 <h1>Order @Model.Number</h1>

@@ -17,7 +17,7 @@ public class CartController : BaseController
 		int productId,
 		CancellationToken cancellationToken)
 	{
-		var companyId = await CoreApiClient.AddCartItem(productId, cancellationToken);
+		var companyId = await CoreApiClient.AddCartItem(productId, cancellationToken);	//todo: redirect when throw?
 		return RedirectToAction(nameof(Details), new { companyId });
 	}
 
@@ -25,7 +25,7 @@ public class CartController : BaseController
 		int productId,
 		CancellationToken cancellationToken)
 	{
-		var companyId = await CoreApiClient.RemoveCartItem(productId, cancellationToken);
+		var companyId = await CoreApiClient.RemoveCartItem(productId, cancellationToken); //todo: redirect when throw?
 		return RedirectToAction(nameof(Details), new { companyId });
 	}
 }

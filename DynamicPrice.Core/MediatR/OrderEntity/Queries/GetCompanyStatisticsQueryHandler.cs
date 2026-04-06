@@ -1,4 +1,5 @@
 ﻿using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Core.Services;
 using DynamicPrice.Shared.Contracts.ViewModels.Responses;
 using MediatR;
@@ -21,6 +22,8 @@ public class GetCompanyStatisticsQueryHandler
 		GetCompanyStatisticsQuery request,
 		CancellationToken cancellationToken)
 	{
+		throw new NotFoundException("NotFoundException!");
+
 		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var companyOrdersWithAmount = await _context.Orders

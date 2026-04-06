@@ -57,7 +57,7 @@ public class UserService : IUserService
 		//throw new Exception("Test");							// layout - *sww ()
 		//throw new ValidationException("ValidationException!");// layout - *ValidationException! ()
 		//throw new UnauthorizedException("Unauthorized!");		// browser
-		throw new NotFoundException("NotFoundException!");	// browser
+		//throw new NotFoundException("NotFoundException!");	// browser
 		//throw new BusinessException("BusinessException!");      // layout - BusinessException! (x)		<- вот такой вывод предподчтительнее
 
 

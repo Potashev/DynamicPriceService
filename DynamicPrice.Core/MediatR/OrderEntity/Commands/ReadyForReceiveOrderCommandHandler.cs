@@ -21,6 +21,8 @@ public class ReadyForReceiveOrderCommandHandler
 		ReadyForReceiveOrderCommand request,
 		CancellationToken cancellationToken)
 	{
+		throw new NotFoundException("NotFoundException!");
+
 		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var order = await _context.Orders

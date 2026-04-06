@@ -4,6 +4,7 @@
 
 @{
 	ViewData["Title"] = "Index";
+	if (Model is null) return;
 	var confirmedOrders = Model
 		.Where(o => o.Status == OrderStatus.Confirmed)
 		.OrderBy(o => o.OrderDate);

@@ -3,11 +3,12 @@
 
 @{
 	ViewData["Title"] = "Cart";
+	if (Model is null) return;
 }
 
 <h1>@(Model?.Company?.Title ?? "Company") — Cart details</h1>
 
-@if (Model?.CartItems != null && Model.CartItems.Any())
+@if (Model?.CartItems != null && Model.CartItems.Any())	//todo: make better
 {
 	<table class="table table-striped">
 		<thead>

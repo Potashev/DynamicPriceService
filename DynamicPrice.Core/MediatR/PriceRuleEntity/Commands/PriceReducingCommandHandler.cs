@@ -21,6 +21,8 @@ public class PriceReducingCommandHandler
 		PriceReducingCommand request,
 		CancellationToken cancellationToken)
 	{
+		throw new NotFoundException("NotFoundException!");
+
 		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var companyId = manager.CompanyId

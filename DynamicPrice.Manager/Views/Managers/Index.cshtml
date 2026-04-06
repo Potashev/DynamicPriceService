@@ -4,6 +4,7 @@
 @{
 	ViewData["Title"] = "Index";
 	var currentManagerId = ViewData["ManagerId"]?.ToString();
+	if (Model is null) return;
 }
 
 <h1>Managers</h1>

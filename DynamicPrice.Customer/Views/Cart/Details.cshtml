@@ -37,8 +37,15 @@
 						@Html.DisplayFor(modelItem => item.Product!.Price)
 					</td>
 					<td>
-						<a asp-action="AddCartItem" asp-route-productId="@item.Product?.ProductId">Add</a> |
-						<a asp-action="RemoveCartItem" asp-route-productId="@item.Product?.ProductId">Remove</a>
+						<form asp-controller="Cart" asp-action="AddCartItem" method="post" style="display:inline">
+							<input type="hidden" name="productId" value="@item.Product?.ProductId" />
+							<button type="submit" class="btn btn-link p-0">Add</button>
+						</form>
+						|
+						<form asp-controller="Cart" asp-action="RemoveCartItem" method="post" style="display:inline">
+							<input type="hidden" name="productId" value="@item.Product?.ProductId" />
+							<button type="submit" class="btn btn-link p-0">Remove</button>
+						</form>
 					</td>
 				</tr>
 			}

@@ -18,15 +18,16 @@ public class CartController : BaseController
 		int productId,
 		CancellationToken cancellationToken)
 	{
-		var companyId = await CoreApiClient.AddCartItem(productId, cancellationToken);	//todo: redirect when throw?
+		var companyId = await CoreApiClient.AddCartItem(productId, cancellationToken);
 		return RedirectToAction(nameof(Details), new { companyId });
 	}
 
+	[HttpPost]
 	public async Task<IActionResult> RemoveCartItem(
 		int productId,
 		CancellationToken cancellationToken)
 	{
-		var companyId = await CoreApiClient.RemoveCartItem(productId, cancellationToken); //todo: redirect when throw?
+		var companyId = await CoreApiClient.RemoveCartItem(productId, cancellationToken);
 		return RedirectToAction(nameof(Details), new { companyId });
 	}
 }

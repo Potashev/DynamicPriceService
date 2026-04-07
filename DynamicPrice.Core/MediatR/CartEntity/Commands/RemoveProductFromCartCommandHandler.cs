@@ -25,6 +25,8 @@ public class RemoveProductFromCartCommandHandler
 		RemoveProductFromCartCommand request,
 		CancellationToken cancellationToken)
 	{
+		//throw new NotFoundException("Product not found");
+
 		var customer = await _userService.GetRequiredCurrentUserAsync();
 
 		var cart = await _context.Carts

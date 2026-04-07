@@ -18,11 +18,11 @@ public class AuthController : Controller
 		_coreApiClient = coreApiClient;
 	}
 
+	[HttpGet]
 	public IActionResult LoginManager()
 		=> View();
 
 	[HttpPost]
-	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> LoginManager(
 		LoginRequest loginVm,
 		CancellationToken cancellationToken)

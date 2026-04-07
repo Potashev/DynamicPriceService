@@ -8,6 +8,7 @@ public class CartController : BaseController
 	public CartController(ICoreApiClient coreApiClient)
 		: base(coreApiClient) { }
 
+	[HttpGet]
 	public async Task<IActionResult> Details(
 		string companyId,
 		CancellationToken cancellationToken)

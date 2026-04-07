@@ -17,6 +17,7 @@ public class CustomerOrderController : BaseController
 		return RedirectToAction(nameof(Details), new { id = orderId });
 	}
 
+	[HttpGet]
 	public async Task<IActionResult> Details(
 		int id,
 		CancellationToken cancellationToken)
@@ -31,6 +32,7 @@ public class CustomerOrderController : BaseController
 		return RedirectToAction(nameof(Details), new { id = orderId });
 	}
 
+	[HttpGet]
 	public async Task<IActionResult> GetReceiveKey(
 		int orderId,
 		int receiveKey)

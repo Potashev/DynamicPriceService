@@ -9,9 +9,11 @@ public class PriceRuleController : BaseController
 	public PriceRuleController(ICoreApiClient coreApiClient)
 		: base(coreApiClient) { }
 
+	[HttpGet]
 	public async Task<IActionResult> Details(CancellationToken cancellationToken)
 		=> View(await CoreApiClient.GetPriceRule(cancellationToken));
 
+	[HttpGet]
 	public async Task<IActionResult> Edit(
 		int? id,
 		CancellationToken cancellationToken)
@@ -25,7 +27,6 @@ public class PriceRuleController : BaseController
 	}
 
 	[HttpPost]
-	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> Edit(
 		PriceRuleViewModel priceRuleVm,
 		CancellationToken cancellationToken)

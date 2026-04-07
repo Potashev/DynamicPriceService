@@ -2,8 +2,6 @@
 @model BalanceRequest
 
 <form asp-action="TopUpBalance" method="post">
-	@Html.AntiForgeryToken()
-
 	<input asp-for="ReplenishmentAmount" />
 	<input type="submit" value="Top up balance" class="btn btn-primary" />
 </form>

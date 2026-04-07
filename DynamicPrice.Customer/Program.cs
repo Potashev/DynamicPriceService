@@ -2,6 +2,7 @@ using DynamicPrice.Client.Infrastructure;
 using DynamicPrice.Client.Infrastructure.Extensions;
 using DynamicPrice.Customer.ApiClients;
 using DynamicPrice.Customer.Extension;
+using Microsoft.AspNetCore.Mvc;
 using Refit;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews(options =>
 {
 	options.Filters.Add<ApiExceptionFilter>();
+	options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 });
 
 builder.Services.AddDistributedMemoryCache();

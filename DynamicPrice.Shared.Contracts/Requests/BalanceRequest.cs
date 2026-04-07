@@ -5,6 +5,6 @@ namespace DynamicPrice.Shared.Contracts.Requests;
 public class BalanceRequest
 {
 	[Required]
-	[Range(0.01, 1_000_000)]
+	[Range(0, double.MaxValue, ErrorMessage = "Cannot be negative")]
 	public decimal ReplenishmentAmount { get; init; }
 }

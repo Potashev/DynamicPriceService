@@ -19,7 +19,10 @@ public class CustomerController : BaseController
 		BalanceRequest balanceRequest,
 		CancellationToken cancellationToken)
 	{
-		await CoreApiClient.TopUpBalance(balanceRequest, cancellationToken);
+		if (ModelState.IsValid)
+		{
+			await CoreApiClient.TopUpBalance(balanceRequest, cancellationToken);
+		}
 		return RedirectToAction(nameof(Index));
 	}
 

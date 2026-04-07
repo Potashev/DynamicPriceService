@@ -1,9 +1,11 @@
 ﻿namespace DynamicPrice.Customer.Extension;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Refit;
 using System.Text.Json;
@@ -44,17 +46,25 @@ public class ApiExceptionFilter : IAsyncExceptionFilter
 		ApiException ex,
 		ProblemDetails? problem)
 	{
-		switch ((int)ex.StatusCode)
+		var message = problem?.Detail ?? "Request failed";
+
+		if (HttpMethods.IsGet(context.HttpContext.Request.Method))
 		{
-			case 400:
-			case 401:
-			case 403:
-			case 404:
-			case 409:
-				return CreateViewResult(context, problem?.Detail ?? "Request failed");
-			default:
-				return CreateViewResult(context, "Something went wrong");
+			return CreateViewResult(context, message);
 		}
+
+		var tempDataFactory = context.HttpContext.RequestServices
+			.GetRequiredService<ITempDataDictionaryFactory>();
+
+		var tempData = tempDataFactory.GetTempData(context.HttpContext);
+		tempData["Error"] = message;
+
+		var referer = context.HttpContext.Request.Headers["Referer"].ToString();
+
+		if (!string.IsNullOrEmpty(referer))
+			return new RedirectResult(referer);
+
+		return new RedirectToActionResult("Index", "Home", null);
 	}
 
 	private ViewResult CreateViewResult(ExceptionContext context, string errorMessage)

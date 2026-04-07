@@ -13,6 +13,7 @@ public class CartController : BaseController
 		CancellationToken cancellationToken)
 			=> View(await CoreApiClient.GetCartDetails(companyId, cancellationToken));
 
+	[HttpPost]
 	public async Task<IActionResult> AddCartItem(
 		int productId,
 		CancellationToken cancellationToken)

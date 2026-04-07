@@ -26,6 +26,8 @@ public class AddProductToCartCommandHadnler
 		AddProductToCartCommand request,
 		CancellationToken cancellationToken)
 	{
+		//throw new UnauthorizedException("Unauthorized!");
+
 		var customer = await _userService.GetRequiredCurrentUserAsync();
 
 		var product = await _context.Products

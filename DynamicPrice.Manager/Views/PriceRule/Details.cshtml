@@ -40,7 +40,15 @@
 	</dl>
 </div>
 <div>
-	<a asp-action="Run" asp-route-id="@Model?.PriceRule.PriceRuleId" class="btn btn-primary">Run</a> |
-	<a asp-action="Stop" asp-route-id="@Model?.PriceRule.PriceRuleId" class="btn btn-primary">Stop</a> |
+	<form asp-action="Run" method="post" style="display:inline">
+		<input type="hidden" name="id" value="@Model?.PriceRule.PriceRuleId" />
+		<button type="submit" class="btn btn-primary">Run</button>
+	</form>
+	<span>|</span>
+	<form asp-action="Stop" method="post" style="display:inline">
+		<input type="hidden" name="id" value="@Model?.PriceRule.PriceRuleId" />
+		<button type="submit" class="btn btn-primary">Stop</button>
+	</form>
+	<span>|</span>
 	<a asp-action="Edit" asp-route-id="@Model?.PriceRule.PriceRuleId">Edit</a>
 </div>

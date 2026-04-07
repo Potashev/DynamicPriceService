@@ -24,6 +24,7 @@ public class CompanyOrdersController : BaseController
 		CancellationToken cancellationToken)
 			=> View(await CoreApiClient.GetOrder(id, cancellationToken));
 
+	[HttpPost]
 	public async Task<IActionResult> ReadyForReceive(
 		string orderId,
 		CancellationToken cancellationToken)
@@ -32,6 +33,7 @@ public class CompanyOrdersController : BaseController
 		return RedirectToAction(nameof(Details), new { id = orderId });
 	}
 
+	[HttpPost]
 	public async Task<IActionResult> Complete(
 		string orderId,
 		CancellationToken cancellationToken)

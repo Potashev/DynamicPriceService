@@ -39,12 +39,14 @@ public class PriceRuleController : BaseController
 		return View(priceRuleVm);
 	}
 
+	[HttpPost]
 	public async Task<IActionResult> Run(CancellationToken cancellationToken)
 	{
 		await CoreApiClient.RunPriceReducing(cancellationToken);
 		return RedirectToAction(nameof(Details));
 	}
 
+	[HttpPost]
 	public async Task<IActionResult> Stop(CancellationToken cancellationToken)
 	{
 		await CoreApiClient.StopPriceReducing(cancellationToken);

@@ -1,4 +1,5 @@
-﻿using DynamicPrice.Core.Services;
+﻿using DynamicPrice.Core.Exceptions;
+using DynamicPrice.Core.Services;
 using DynamicPrice.Shared.Contracts.Requests;
 using MediatR;
 
@@ -16,6 +17,8 @@ public class RegisterManagerCommandHandler
 	RegisterManagerCommand request,
 	CancellationToken cancellationToken)
 	{
+		throw new BusinessException("BusinessException!");
+
 		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		await _userService.RegisterUserAsync(

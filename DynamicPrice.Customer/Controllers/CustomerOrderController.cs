@@ -8,6 +8,7 @@ public class CustomerOrderController : BaseController
 	public CustomerOrderController(ICoreApiClient coreApiClient)
 		: base(coreApiClient) { }
 
+	[HttpPost]
 	public async Task<IActionResult> Confirm(
 		int cartId,
 		CancellationToken cancellationToken)
@@ -21,6 +22,7 @@ public class CustomerOrderController : BaseController
 		CancellationToken cancellationToken)
 			=> View(await CoreApiClient.OrderDetails(id, cancellationToken));
 
+	[HttpPost]
 	public async Task<IActionResult> Cancel(
 		int orderId,
 		CancellationToken cancellationToken)

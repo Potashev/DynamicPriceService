@@ -21,6 +21,8 @@ public class CancelOrderCommandHandler
 		CancelOrderCommand request,
 		CancellationToken cancellationToken)
 	{
+		throw new BusinessException("BusinessException!");
+
 		var customer = await _userService.GetRequiredCurrentUserAsync();
 
 		var order = await _context.Orders

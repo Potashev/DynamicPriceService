@@ -1,4 +1,5 @@
-﻿using DynamicPrice.Core.Services;
+﻿using DynamicPrice.Core.Exceptions;
+using DynamicPrice.Core.Services;
 using MediatR;
 
 namespace DynamicPrice.Core.MediatR.CustomerEntity.Commands;
@@ -15,6 +16,8 @@ public class TopUpBalanceCommandHandler
 		TopUpBalanceCommand request,
 		CancellationToken cancellationToken)
 	{
+		//throw new BusinessException("BusinessException!");
+
 		var customer = await _userService.GetRequiredCurrentUserAsync();
 
 		customer.Balance += request.balanceVm.ReplenishmentAmount;

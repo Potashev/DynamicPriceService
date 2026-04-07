@@ -22,6 +22,8 @@ public class ConfirmOrderCommandHandler
 		ConfirmOrderCommand request,
 		CancellationToken cancellationToken)
 	{
+		//throw new BusinessException("BusinessException!");
+
 		var customer = await _userService.GetRequiredCurrentUserAsync();
 
 		var cart = await _context.Carts

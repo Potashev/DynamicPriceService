@@ -60,8 +60,11 @@ else
 <div>
 	@if (Model?.CartItems != null && Model.CartItems.Any())
 	{
-		<a asp-controller="CustomerOrder" asp-action="Confirm" asp-route-cartId="@Model?.CartId" class="btn btn-primary">Confirm order</a>
-		@: |
+		<form asp-controller="CustomerOrder" asp-action="Confirm" method="post" style="display:inline">
+			<input type="hidden" name="cartId" value="@Model?.CartId" />
+			<button type="submit" class="btn btn-primary">Confirm order</button>
+		</form>
+		<span>|</span>
 	}
 	<a asp-controller="Companies" asp-action="CompanyProducts" asp-route-id="@Model?.Company?.CompanyId">Back to List</a>
 </div>

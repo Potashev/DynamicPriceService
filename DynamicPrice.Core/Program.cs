@@ -1,7 +1,7 @@
 ﻿using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Core.Extensions;
 using DynamicPrice.Core.Mapping;
-using DynamicPrice.Core.Middlewares;
 using DynamicPrice.Core.Models;
 using DynamicPrice.Core.Services;
 using MassTransit;
@@ -126,7 +126,6 @@ if (app.Environment.IsDevelopment())
 	await app.ApplyMigrationsAsync();
 }
 
-//app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseExceptionHandler();
 
 app.UseHttpsRedirection();

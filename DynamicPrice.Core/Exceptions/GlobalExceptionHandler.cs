@@ -1,8 +1,7 @@
-﻿using DynamicPrice.Core.Exceptions;
-using Microsoft.AspNetCore.Diagnostics;
+﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DynamicPrice.Core.Middlewares;
+namespace DynamicPrice.Core.Exceptions;
 
 internal sealed class GlobalExceptionHandler(
 	IProblemDetailsService problemDetailsService,

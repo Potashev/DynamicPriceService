@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Core.Services;
 using DynamicPrice.Shared.Contracts.ViewModels;
 using DynamicPrice.Shared.Contracts.ViewModels.Responses;
@@ -25,6 +26,8 @@ public class GetCustomerInfoQueryHandler
 		GetCustomerInfoQuery request,
 		CancellationToken cancellationToken)
 	{
+		//throw new NotFoundException("NotFoundException!");
+
 		var customer = await _userService.GetRequiredCurrentUserAsync();
 
 		var customerOrders = await _context.Orders

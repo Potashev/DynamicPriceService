@@ -12,21 +12,22 @@ using System.Text.Json;
 using ProblemDetails = Microsoft.AspNetCore.Mvc.ProblemDetails;
 
 
-public class ApiExceptionFilter : IAsyncExceptionFilter
+public class ApiExceptionFilter(
+	ILogger<ApiExceptionFilter> logger) : IAsyncExceptionFilter
 {
-	private readonly ILogger<ApiExceptionFilter> _logger;
+	//private readonly ILogger<ApiExceptionFilter> _logger;
 
-	public ApiExceptionFilter(ILogger<ApiExceptionFilter> logger)
-	{
-		_logger = logger;
-	}
+	//public ApiExceptionFilter(ILogger<ApiExceptionFilter> logger)
+	//{
+	//	_logger = logger;
+	//}
 
 	public async Task OnExceptionAsync(ExceptionContext context)
 	{
 		if (context.Exception is not ApiException apiEx)
 			return;
 
-		_logger.LogWarning(apiEx, "API error");
+		logger.LogWarning(apiEx, "API error");
 
 		ProblemDetails? problem = null;
 
@@ -34,7 +35,10 @@ public class ApiExceptionFilter : IAsyncExceptionFilter
 		{
 			problem = JsonSerializer.Deserialize<ProblemDetails>(apiEx.Content);
 		}
-		catch { }
+		catch (Exception ex)
+		{
+			logger.LogWarning(ex, "Failed to deserialize ProblemDetails");
+		}
 
 		context.ExceptionHandled = true;
 

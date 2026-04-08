@@ -47,10 +47,8 @@ public class ProductsController : BaseController
 		int? id,
 		CancellationToken cancellationToken)
 	{
-		if (id == null)
-		{
-			return NotFound();
-		}
+		if (id is null) return NotFound();
+
 		var productVm = await CoreApiClient.GetProduct((int)id, cancellationToken);
 		return View(productVm);
 	}

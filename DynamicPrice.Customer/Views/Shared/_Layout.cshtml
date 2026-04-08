@@ -45,27 +45,8 @@
 	</header>
 	<div class="container">
 		<main role="main" class="pb-3">
-
 			@RenderBody()
-
-			@if (TempData["Error"] != null || !ViewData.ModelState.IsValid)
-			{
-				<div class="alert alert-danger alert-dismissible fade show" role="alert">
-
-					@if (TempData["Error"] != null)
-					{
-						<div>@TempData["Error"]</div>
-					}
-
-					@if (!ViewData.ModelState.IsValid)
-					{
-						<div asp-validation-summary="All"></div>
-					}
-
-					<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-				</div>
-			}
-
+			<app-error-alert />
 		</main>
 	</div>
 

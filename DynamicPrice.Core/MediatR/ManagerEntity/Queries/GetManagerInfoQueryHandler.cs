@@ -26,8 +26,6 @@ public class GetManagerInfoQueryHandler
 		GetManagerInfoQuery request,
 		CancellationToken cancellationToken)
 	{
-		throw new NotFoundException("NotFoundException!");
-
 		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var company = await _context.Companies

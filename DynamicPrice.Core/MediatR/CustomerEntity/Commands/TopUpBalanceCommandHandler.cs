@@ -16,8 +16,6 @@ public class TopUpBalanceCommandHandler
 		TopUpBalanceCommand request,
 		CancellationToken cancellationToken)
 	{
-		//throw new BusinessException("BusinessException!");
-
 		var customer = await _userService.GetRequiredCurrentUserAsync();
 
 		customer.Balance += request.balanceVm.ReplenishmentAmount;

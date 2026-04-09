@@ -16,10 +16,10 @@ public class RegisterCustomerCommandHandler
 	public async Task Handle(
 	RegisterCustomerCommand request,
 	CancellationToken cancellationToken)
-	=> await _userService.RegisterUserAsync(
-		new RegisterUserRequest(request.registerVm)
-		{
-			Role = "Customer",
-			Balance = 0
-		});
+		=> await _userService.RegisterUserAsync(
+			new RegisterUserRequest(request.registerVm)
+			{
+				Role = "Customer",
+				Balance = 0
+			});
 }

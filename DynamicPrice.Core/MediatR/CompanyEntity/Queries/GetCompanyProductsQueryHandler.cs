@@ -24,8 +24,6 @@ public class GetCompanyProductsQueryHandler
 		GetCompanyProductsQuery request,
 		CancellationToken cancellationToken)
 	{
-		throw new BusinessException("BusinessException!");
-
 		var company = await _context.ActiveCompanies
 			.Where(ac => ac.CompanyId.ToString() == request.CompanyId)
 			.Select(ac => ac.Company)

@@ -17,8 +17,6 @@ public class RegisterManagerCommandHandler
 	RegisterManagerCommand request,
 	CancellationToken cancellationToken)
 	{
-		throw new BusinessException("BusinessException!");
-
 		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		await _userService.RegisterUserAsync(

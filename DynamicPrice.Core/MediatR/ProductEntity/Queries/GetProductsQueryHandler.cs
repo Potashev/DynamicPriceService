@@ -25,8 +25,6 @@ public class GetProductsQueryHandler
 		GetProductsQuery request,
 		CancellationToken cancellationToken)
 	{
-		//throw new NotFoundException("NotFoundException!");
-
 		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var products = await _context.Products

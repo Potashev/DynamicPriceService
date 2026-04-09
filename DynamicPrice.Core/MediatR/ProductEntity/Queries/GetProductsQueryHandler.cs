@@ -25,6 +25,8 @@ public class GetProductsQueryHandler
 		GetProductsQuery request,
 		CancellationToken cancellationToken)
 	{
+		//throw new UnauthorizedException("Unauthorized!");
+
 		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var products = await _context.Products

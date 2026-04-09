@@ -45,11 +45,6 @@ public class ApiExceptionFilter(
 	{
 		var message = problem?.Detail ?? "Request failed";
 
-		if (HttpMethods.IsGet(context.HttpContext.Request.Method))
-		{
-			return CreateViewResult(context, message);
-		}
-
 		var tempDataFactory = context.HttpContext.RequestServices
 			.GetRequiredService<ITempDataDictionaryFactory>();
 
@@ -64,17 +59,17 @@ public class ApiExceptionFilter(
 		return new RedirectToActionResult("Index", "Home", null);
 	}
 
-	private ViewResult CreateViewResult(ExceptionContext context, string errorMessage)
-	{
-		var viewData = new ViewDataDictionary(
-			new EmptyModelMetadataProvider(),
-			context.ModelState);
+	//private ViewResult CreateViewResult(ExceptionContext context, string errorMessage)
+	//{
+	//	var viewData = new ViewDataDictionary(
+	//		new EmptyModelMetadataProvider(),
+	//		context.ModelState);
 
-		viewData.ModelState.AddModelError("", errorMessage);
+	//	viewData.ModelState.AddModelError("", errorMessage);
 
-		return new ViewResult
-		{
-			ViewData = viewData
-		};
-	}
+	//	return new ViewResult
+	//	{
+	//		ViewData = viewData
+	//	};
+	//}
 }

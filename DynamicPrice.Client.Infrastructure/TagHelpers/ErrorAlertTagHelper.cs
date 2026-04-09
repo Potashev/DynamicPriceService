@@ -5,8 +5,7 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 namespace DynamicPrice.Client.Infrastructure.TagHelpers;
 
 [HtmlTargetElement("error-alert")]
-public class ErrorAlertTagHelper(
-	IHtmlGenerator generator) : TagHelper
+public class ErrorAlertTagHelper : TagHelper
 {
 	[ViewContext]
 	[HtmlAttributeNotBound]
@@ -14,13 +13,9 @@ public class ErrorAlertTagHelper(
 
 	public override void Process(TagHelperContext context, TagHelperOutput output)
 	{
-		var tempData = ViewContext.TempData;
-		var modelState = ViewContext.ModelState;
+		var error = ViewContext.TempData["Error"]?.ToString();
 
-		var hasTempError = tempData["Error"] != null;
-		var hasModelErrors = !modelState.IsValid;
-
-		if (!hasTempError && !hasModelErrors)
+		if (string.IsNullOrEmpty(error))
 		{
 			output.SuppressOutput();
 			return;
@@ -31,26 +26,9 @@ public class ErrorAlertTagHelper(
 		output.Attributes.SetAttribute("class", "alert alert-danger alert-dismissible fade show");
 		output.Attributes.SetAttribute("role", "alert");
 
-		if (hasTempError)
-		{
-			output.Content.AppendHtml($"<div>{tempData["Error"]}</div>");
-		}
-
-		if (hasModelErrors)
-		{
-			var validationSummary = generator.GenerateValidationSummary(
-				ViewContext,
-				false,
-				null,
-				null,
-				null
-			);
-
-			output.Content.AppendHtml(validationSummary);
-		}
-
-		output.Content.AppendHtml(
-			"<button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\"></button>"
-		);
+		output.Content.SetHtmlContent($@"
+			<div>{error}</div>
+			<button type=""button"" class=""btn-close"" data-bs-dismiss=""alert""></button>
+		");
 	}
 }

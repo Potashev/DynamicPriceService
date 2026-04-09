@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using System.Reflection.Emit;
 
 namespace DynamicPrice.Client.Infrastructure.TagHelpers;
 
-[HtmlTargetElement("app-error-alert")]
+[HtmlTargetElement("error-alert")]
 public class ErrorAlertTagHelper(
 	IHtmlGenerator generator) : TagHelper
 {
@@ -28,7 +27,7 @@ public class ErrorAlertTagHelper(
 		}
 
 		output.TagName = "div";
-		output.TagMode = TagMode.StartTagAndEndTag; // 🔥 ВОТ ЭТО КРИТИЧНО
+		output.TagMode = TagMode.StartTagAndEndTag;
 		output.Attributes.SetAttribute("class", "alert alert-danger alert-dismissible fade show");
 		output.Attributes.SetAttribute("role", "alert");
 

@@ -18,19 +18,9 @@ public class BaseController : Controller
 		ActionExecutingContext context,
 		ActionExecutionDelegate next)
 	{
-		try
-		{
-			var customer = await CoreApiClient.GetCustomer();
-			ViewData["CustomerName"] = customer.Name;
-		}
-		catch (ApiException ex)
-		{
-			// можно игнорить или логировать
-		}
-		catch (Exception ex)
-		{
-			// логировать обязательно
-		}
+		var customer = await CoreApiClient.GetCustomer();
+
+		ViewData["CustomerName"] = customer.Name;
 
 		await next();
 	}

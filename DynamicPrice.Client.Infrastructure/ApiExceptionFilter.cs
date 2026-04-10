@@ -1,9 +1,7 @@
 ﻿namespace DynamicPrice.Customer.Extension;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -58,18 +56,4 @@ public class ApiExceptionFilter(
 
 		return new RedirectToActionResult("Index", "Home", null);
 	}
-
-	//private ViewResult CreateViewResult(ExceptionContext context, string errorMessage)
-	//{
-	//	var viewData = new ViewDataDictionary(
-	//		new EmptyModelMetadataProvider(),
-	//		context.ModelState);
-
-	//	viewData.ModelState.AddModelError("", errorMessage);
-
-	//	return new ViewResult
-	//	{
-	//		ViewData = viewData
-	//	};
-	//}
 }

@@ -13,7 +13,6 @@ public class CompanyOrdersController : BaseController
 		=> View(await CoreApiClient.GetOrders(cancellationToken));
 
 	[HttpGet]
-	//[HttpPost]
 	public async Task<IActionResult> FindByReceiveKey(
 		string key,
 		CancellationToken cancellationToken)

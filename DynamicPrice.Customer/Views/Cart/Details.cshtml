@@ -3,12 +3,16 @@
 
 @{
 	ViewData["Title"] = "Cart";
-	if (Model is null) return;
+
+	if (Model is null)return;
+
+	var hasItems = Model.CartItems?.Any() == true;
+	var companyTitle = Model.Company?.Title ?? "Company";
 }
 
-<h1>@(Model?.Company?.Title ?? "Company") — Cart details</h1>
+<h1>@companyTitle — Cart details</h1>
 
-@if (Model?.CartItems != null && Model.CartItems.Any())	//todo: make better
+@if (hasItems)
 {
 	<table class="table table-striped">
 		<thead>
@@ -21,29 +25,23 @@
 			</tr>
 		</thead>
 		<tbody>
-			@foreach (var item in Model.CartItems)
+			@foreach (var item in Model.CartItems!)
 			{
+				var product = item.Product;
+
 				<tr>
+					<td>@product?.Title</td>
+					<td>@product?.Description</td>
+					<td>@item.Quantity</td>
+					<td>@product?.Price</td>
 					<td>
-						@Html.DisplayFor(modelItem => item.Product!.Title)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.Product!.Description)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.Quantity)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.Product!.Price)
-					</td>
-					<td>
-						<form asp-controller="Cart" asp-action="AddCartItem" method="post" style="display:inline">
-							<input type="hidden" name="productId" value="@item.Product?.ProductId" />
+						<form asp-controller="Cart" asp-action="AddCartItem" method="post" class="d-inline">
+							<input type="hidden" name="productId" value="@product?.ProductId" />
 							<button type="submit" class="btn btn-link p-0">Add</button>
 						</form>
 						|
-						<form asp-controller="Cart" asp-action="RemoveCartItem" method="post" style="display:inline">
-							<input type="hidden" name="productId" value="@item.Product?.ProductId" />
+						<form asp-controller="Cart" asp-action="RemoveCartItem" method="post" class="d-inline">
+							<input type="hidden" name="productId" value="@product?.ProductId" />
 							<button type="submit" class="btn btn-link p-0">Remove</button>
 						</form>
 					</td>
@@ -58,13 +56,18 @@ else
 }
 
 <div>
-	@if (Model?.CartItems != null && Model.CartItems.Any())
+	@if (hasItems)
 	{
-		<form asp-controller="CustomerOrder" asp-action="Confirm" method="post" style="display:inline">
-			<input type="hidden" name="cartId" value="@Model?.CartId" />
+		<form asp-controller="CustomerOrder" asp-action="Confirm" method="post" class="d-inline">
+			<input type="hidden" name="cartId" value="@Model.CartId" />
 			<button type="submit" class="btn btn-primary">Confirm order</button>
 		</form>
 		<span>|</span>
 	}
-	<a asp-controller="Companies" asp-action="CompanyProducts" asp-route-id="@Model?.Company?.CompanyId">Back to List</a>
+
+	<a asp-controller="Companies"
+		   asp-action="CompanyProducts"
+		   asp-route-id="@Model.Company?.CompanyId">
+		Back to List
+	</a>
 </div>

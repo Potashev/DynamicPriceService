@@ -2,7 +2,7 @@
 
 namespace DynamicPrice.Shared.Contracts.ViewModels;
 
-public class ProductViewModel
+public class ProductViewModel : IValidatableObject
 {
 	public int ProductId { get; init; }
 	public string Title { get; init; } = null!;
@@ -15,6 +15,19 @@ public class ProductViewModel
 
 	[Range(0, int.MaxValue, ErrorMessage = "Quantity cannot be negative")]
 	public int? Quantity { get; init; }
+
 	public string? Description { get; init; }
+
 	public ICollection<PriceDynamicViewModel> PriceDynamics { get; init; } = [];
+
+	public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+	{
+		if (MinimumPrice > Price)
+		{
+			yield return new ValidationResult(
+				"Minimum price cannot be greater than price",
+				new[] { nameof(MinimumPrice) }
+			);
+		}
+	}
 }

@@ -1,6 +1,5 @@
 ﻿@using DynamicPrice.Shared.Contracts.Requests
 @model BalanceRequest
-@* todo: try to validate *@
 <form asp-action="TopUpBalance" method="post">
 	<input asp-for="ReplenishmentAmount" />
 	<input type="submit" value="Top up balance" class="btn btn-primary" />

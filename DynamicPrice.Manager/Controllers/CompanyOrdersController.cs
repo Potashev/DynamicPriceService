@@ -1,4 +1,5 @@
 ﻿using DynamicPrice.Manager.ApiClients;
+using DynamicPrice.Shared.Contracts.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Manager.Controllers;
@@ -13,13 +14,22 @@ public class CompanyOrdersController : BaseController
 		=> View(await CoreApiClient.GetOrders(cancellationToken));
 
 	[HttpGet]
-	//[HttpPost]
 	public async Task<IActionResult> FindByReceiveKey(
-		string key,
+		ReceiveKeyRequest receiveKey,
 		CancellationToken cancellationToken)
 	{
-		var orderId = await CoreApiClient.GetOrderIdByReceiveKey(key, cancellationToken);
-		return RedirectToAction(nameof(Details), new { id = orderId });
+		if (ModelState.IsValid)
+		{
+			var orderId = await CoreApiClient.GetOrderIdByReceiveKey(receiveKey.Key.ToString(), cancellationToken);
+			return RedirectToAction(nameof(Details), new { id = orderId });
+		}
+
+		var orders = await CoreApiClient.GetOrders(cancellationToken);
+		ViewData["FindModel"] = receiveKey;
+
+		return View(nameof(Index), orders);
+
+		//return RedirectToAction(nameof(Index));
 	}
 
 	[HttpGet]

@@ -10,6 +10,7 @@ public class ProductViewModel
 	[Range(0, double.MaxValue, ErrorMessage = "Price cannot be negative")]
 	public decimal Price { get; init; }
 
+	//todo: compare with price?
 	[Range(0, double.MaxValue, ErrorMessage = "Price cannot be negative")]
 	public decimal MinimumPrice { get; init; }
 

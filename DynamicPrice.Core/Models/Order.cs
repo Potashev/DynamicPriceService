@@ -138,8 +138,7 @@ public class Order
 		return $"{firstDigit}{letter}-{lastDigits}"; // Example: "3C-48291"
 	}
 
-	private static int GenerateReceiveKey() 
-		=> RandomNumberGenerator.GetInt32(100_000, 1_000_000);
+	private static int GenerateReceiveKey() => RandomNumberGenerator.GetInt32(100_000, 1_000_000);
 }
 
 /// <summary>

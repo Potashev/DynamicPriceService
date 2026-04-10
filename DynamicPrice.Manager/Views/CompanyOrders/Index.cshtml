@@ -1,5 +1,4 @@
 ﻿@using DynamicPrice.Shared.Contracts
-@using DynamicPrice.Shared.Contracts.Requests
 @using DynamicPrice.Shared.Contracts.ViewModels
 @model IEnumerable<OrderViewModel>
 
@@ -15,7 +14,7 @@
 <h2>Complete order</h2>
 
 @* todo: try to validate *@
-@* <div class="row">
+<div class="row">
 	<div class="col-md-4">
 		<form asp-action="FindByReceiveKey" method="get">
 			<label>Enter the receive key:</label>
@@ -23,12 +22,7 @@
 			<input type="submit" value="Find order" class="btn btn-primary" />
 		</form>
 	</div>
-</div> *@
-
-@await Html.PartialAsync(
-	"_FindByReceiveKeyForm",
-	ViewData["FindModel"] ?? new ReceiveKeyRequest()
-)
+</div>
 
 @if (confirmedOrders.Any())
 {

@@ -41,7 +41,7 @@ public class ApiExceptionFilter(
 		ApiException ex,
 		ProblemDetails? problem)
 	{
-		var message = problem?.Detail ?? "Request failed";
+		var message = ResolveMessage(ex, problem);
 
 		var tempDataFactory = context.HttpContext.RequestServices
 			.GetRequiredService<ITempDataDictionaryFactory>();
@@ -55,5 +55,13 @@ public class ApiExceptionFilter(
 			return new RedirectResult(referer);
 
 		return new RedirectToActionResult("Index", "Home", null);
+	}
+
+	private static string ResolveMessage(ApiException ex, ProblemDetails? problem)
+	{
+		if (!string.IsNullOrWhiteSpace(problem?.Detail))
+			return problem.Detail;
+
+		return "Unable to reach server. Please try again later.";
 	}
 }

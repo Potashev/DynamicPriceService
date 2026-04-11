@@ -20,5 +20,5 @@ public class GetActiveCompaniesQueryHandler
 	public async Task<IEnumerable<CompanyViewModel>> Handle(
 		GetActiveCompaniesQuery request,
 		CancellationToken cancellationToken)
-	=> _mapper.Map<CompanyViewModel[]>(_context.ActiveCompanies.Select(ac => ac.Company).ToList());
+		=> _mapper.Map<CompanyViewModel[]>(_context.ActiveCompanies.Select(ac => ac.Company).ToList());
 }

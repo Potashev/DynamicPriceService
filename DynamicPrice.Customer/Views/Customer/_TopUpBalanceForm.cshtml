@@ -1,9 +1,15 @@
 ﻿@using DynamicPrice.Shared.Contracts.Requests
 @model BalanceRequest
+<div class="row">
+	<div class="col-md-4">
+		<form asp-action="TopUpBalance" method="post">
+			
+			<div class="input-group">
+				<input asp-for="ReplenishmentAmount" class="form-control" />
+				<button type="submit" class="btn btn-primary">Top up balance</button>
+			</div>
 
-<form asp-action="TopUpBalance" method="post">
-	@Html.AntiForgeryToken()
-
-	<input asp-for="ReplenishmentAmount" />
-	<input type="submit" value="Top up" />
-</form>
+			<span asp-validation-for="ReplenishmentAmount" class="text-danger"></span>
+		</form>
+	</div>
+</div>

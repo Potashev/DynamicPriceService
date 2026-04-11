@@ -9,9 +9,11 @@ public class ProductsController : BaseController
 	public ProductsController(ICoreApiClient coreApiClient)
 		: base(coreApiClient) { }
 
+	[HttpGet]
 	public async Task<IActionResult> Index(CancellationToken cancellationToken)
 		=> View(await CoreApiClient.GetProducts(cancellationToken));
 
+	[HttpGet]
 	public async Task<IActionResult> Details(
 		int? id,
 		CancellationToken cancellationToken)
@@ -23,11 +25,11 @@ public class ProductsController : BaseController
 		return View(productVm);
 	}
 
+	[HttpGet]
 	public IActionResult Create()
 		=> View();
 
 	[HttpPost]
-	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> Create(
 		ProductViewModel productVm,
 		CancellationToken cancellationToken)
@@ -40,20 +42,18 @@ public class ProductsController : BaseController
 		return View(productVm);
 	}
 
+	[HttpGet]
 	public async Task<IActionResult> Edit(
 		int? id,
 		CancellationToken cancellationToken)
 	{
-		if (id == null)
-		{
-			return NotFound();
-		}
+		if (id is null) return NotFound();
+
 		var productVm = await CoreApiClient.GetProduct((int)id, cancellationToken);
 		return View(productVm);
 	}
 
 	[HttpPost]
-	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> Edit(
 		ProductViewModel productVm,
 		CancellationToken cancellationToken)
@@ -66,6 +66,7 @@ public class ProductsController : BaseController
 		return View(productVm);
 	}
 
+	[HttpGet]
 	public async Task<IActionResult> Delete(
 		int? id,
 		CancellationToken cancellationToken)
@@ -79,7 +80,6 @@ public class ProductsController : BaseController
 	}
 
 	[HttpPost]
-	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> DeleteConfirmed(
 		int id,
 		CancellationToken cancellationToken)

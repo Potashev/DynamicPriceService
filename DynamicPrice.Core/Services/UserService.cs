@@ -56,7 +56,7 @@ public class UserService : IUserService
 	{
 		var user = await _userManager.FindByNameAsync(request.Username);
 		if (user == null || !await _userManager.CheckPasswordAsync(user, request.Password))
-			throw new ArgumentException("Unauthorized!");
+			throw new UnauthorizedException("Unauthorized!");
 
 		var roles = await _userManager.GetRolesAsync(user);
 

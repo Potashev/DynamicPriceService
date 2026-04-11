@@ -31,7 +31,7 @@ public class GetOrderIdByReceiveKeyQueryHandler
 			.FirstOrDefaultAsync(cancellationToken);
 
 		return orderId == 0
-			? throw new NotFoundException($"Order with receive key '{request.ReceiveKey}' not found.")
+			? throw new NotFoundException($"Order with receive key '{request.ReceiveKey}' not found. Key must be a 6-digit number.")
 			: orderId;
 	}
 }

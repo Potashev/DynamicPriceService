@@ -1,4 +1,5 @@
 ﻿using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Core.Services;
 using DynamicPrice.Shared.Contracts.ViewModels.Responses;
 using MediatR;

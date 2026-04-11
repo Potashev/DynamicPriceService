@@ -1,4 +1,5 @@
-﻿using DynamicPrice.Core.Services;
+﻿using DynamicPrice.Core.Exceptions;
+using DynamicPrice.Core.Services;
 using MediatR;
 
 namespace DynamicPrice.Core.MediatR.CustomerEntity.Commands;

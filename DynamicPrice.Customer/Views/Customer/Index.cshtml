@@ -5,6 +5,9 @@
 
 @{
 	ViewData["Title"] = "Customer info";
+
+	if (Model is null || !Model.Orders.Any()) return;
+
 	var readyForReceiveOrders = Model.Orders
 		.Where(o => o.Status == OrderStatus.Ready)
 		.OrderBy(o => o.OrderDate);

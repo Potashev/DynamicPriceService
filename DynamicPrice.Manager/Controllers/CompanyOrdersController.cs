@@ -8,9 +8,11 @@ public class CompanyOrdersController : BaseController
 	public CompanyOrdersController(ICoreApiClient coreApiClient)
 		: base(coreApiClient) { }
 
+	[HttpGet]
 	public async Task<IActionResult> Index(CancellationToken cancellationToken)
 		=> View(await CoreApiClient.GetOrders(cancellationToken));
 
+	[HttpGet]
 	public async Task<IActionResult> FindByReceiveKey(
 		string key,
 		CancellationToken cancellationToken)
@@ -19,11 +21,13 @@ public class CompanyOrdersController : BaseController
 		return RedirectToAction(nameof(Details), new { id = orderId });
 	}
 
+	[HttpGet]
 	public async Task<IActionResult> Details(
 		int id,
 		CancellationToken cancellationToken)
 			=> View(await CoreApiClient.GetOrder(id, cancellationToken));
 
+	[HttpPost]
 	public async Task<IActionResult> ReadyForReceive(
 		string orderId,
 		CancellationToken cancellationToken)
@@ -32,6 +36,7 @@ public class CompanyOrdersController : BaseController
 		return RedirectToAction(nameof(Details), new { id = orderId });
 	}
 
+	[HttpPost]
 	public async Task<IActionResult> Complete(
 		string orderId,
 		CancellationToken cancellationToken)
@@ -40,6 +45,7 @@ public class CompanyOrdersController : BaseController
 		return RedirectToAction(nameof(Details), new { id = orderId });
 	}
 
+	[HttpGet]
 	public async Task<IActionResult> Statistics(CancellationToken cancellationToken)
 		=> View(await CoreApiClient.GetOrdersStatistics(cancellationToken));
 }

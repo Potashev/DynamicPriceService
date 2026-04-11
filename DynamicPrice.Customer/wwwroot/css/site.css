@@ -21,3 +21,9 @@ body {
 	margin-bottom: 60px;
 	background-color: #ffcccc;
 }
+
+.validation-summary-errors ul {
+	list-style: none;
+	padding-left: 0;
+	margin-bottom: 0;
+}

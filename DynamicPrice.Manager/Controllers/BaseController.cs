@@ -1,6 +1,7 @@
 ﻿using DynamicPrice.Manager.ApiClients;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Refit;
 
 namespace DynamicPrice.Manager.Controllers;
 
@@ -17,13 +18,10 @@ public class BaseController : Controller
 		ActionExecutingContext context,
 		ActionExecutionDelegate next)
 	{
-		try
-		{
-			var manager = await CoreApiClient.GetManager();
-			ViewData["ManagerId"] = manager.Id;
-			ViewData["CompanyTitle"] = manager.Company.Title;
-		}
-		catch (Exception) { }
+		var manager = await CoreApiClient.GetManager();
+
+		ViewData["ManagerId"] = manager.Id;
+		ViewData["CompanyTitle"] = manager.Company.Title;
 
 		await next();
 	}

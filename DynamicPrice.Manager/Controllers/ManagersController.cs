@@ -9,14 +9,15 @@ public class ManagersController : BaseController
 	public ManagersController(ICoreApiClient coreApiClient)
 	: base(coreApiClient) { }
 
+	[HttpGet]
 	public async Task<IActionResult> Index(CancellationToken cancellationToken)
 		=> View(await CoreApiClient.GetCompanyManagers(cancellationToken));
 
+	[HttpGet]
 	public IActionResult RegisterManager()
 		=> View();
 
 	[HttpPost]
-	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> RegisterManager(
 		RegisterRequest registerVm,
 		CancellationToken cancellationToken)

@@ -45,7 +45,6 @@
 	</dl>
 
 	<form asp-action="DeleteConfirmed" asp-route-id="@Model.ProductId" method="post">
-		@Html.AntiForgeryToken()
 		<input type="hidden" asp-for="ProductId" />
 		<input type="submit" value="Delete" class="btn btn-danger" /> |
 		<a asp-action="Index">Back to List</a>

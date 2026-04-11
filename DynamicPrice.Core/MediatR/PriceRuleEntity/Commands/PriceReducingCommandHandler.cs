@@ -24,7 +24,7 @@ public class PriceReducingCommandHandler
 		var manager = await _userService.GetRequiredCurrentUserAsync();
 
 		var companyId = manager.CompanyId
-			?? throw new BusinessException("У пользователя не указан CompanyId.");
+			?? throw new BusinessException("Manager is not assigned to a company.");
 
 		var activeCompany = await _context.ActiveCompanies.FindAsync(companyId);
 

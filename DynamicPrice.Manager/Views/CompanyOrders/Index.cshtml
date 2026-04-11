@@ -4,6 +4,7 @@
 
 @{
 	ViewData["Title"] = "Index";
+	if (Model is null) return;
 	var confirmedOrders = Model
 		.Where(o => o.Status == OrderStatus.Confirmed)
 		.OrderBy(o => o.OrderDate);
@@ -14,10 +15,13 @@
 
 <div class="row">
 	<div class="col-md-4">
-		<form asp-action="FindByReceiveKey">
-			<label>Enter the receive key:</label>
-			<input type="text" name="key" />
-			<input type="submit" value="Find order" class="btn btn-primary" />
+		<form asp-action="FindByReceiveKey" method="get">
+			<label class="form-label">Enter the receive key:</label>
+
+			<div class="input-group">
+				<input type="text" name="key" class="form-control" />
+				<button type="submit" class="btn btn-primary">Find order</button>
+			</div>
 		</form>
 	</div>
 </div>

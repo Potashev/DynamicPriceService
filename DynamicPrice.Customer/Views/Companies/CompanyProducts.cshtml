@@ -2,6 +2,8 @@
 @model CompanyProductsInfo
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 
+@if (Model is null || !Model.Products.Any()) return;
+
 <h1>@Model.Company.Title</h1>
 
 <p>
@@ -36,7 +38,10 @@
 					<span id="price-change-@product.ProductId" class="price-change"></span>
 				</td>
 				<td>
-					<a asp-controller="Cart" asp-action="AddCartItem" asp-route-productId="@product.ProductId">Add to Cart</a>
+					<form asp-controller="Cart" asp-action="AddCartItem" method="post">
+						<input type="hidden" name="productId" value="@product.ProductId" />
+						<button type="submit" class="btn btn-link">Add to Cart</button>
+					</form>
 				</td>
 			</tr>
 		}

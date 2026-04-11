@@ -1,12 +1,17 @@
 using DynamicPrice.Client.Infrastructure;
 using DynamicPrice.Client.Infrastructure.Extensions;
 using DynamicPrice.Customer.ApiClients;
+using DynamicPrice.Customer.Extension;
+using Microsoft.AspNetCore.Mvc;
 using Refit;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+	options.Filters.Add<ApiExceptionFilter>();
+	options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+});
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
@@ -14,7 +19,7 @@ builder.Services.AddSession(options =>
 	options.IdleTimeout = TimeSpan.FromMinutes(30);
 	options.Cookie.HttpOnly = true;
 	options.Cookie.IsEssential = true;
-	options.Cookie.Name = "Customer.Session";   //for using manager and customer in one browser
+	options.Cookie.Name = "Customer.Session";
 });
 
 builder.Services.AddClientCommon();

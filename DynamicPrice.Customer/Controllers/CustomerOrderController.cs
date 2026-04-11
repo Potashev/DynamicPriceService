@@ -8,6 +8,7 @@ public class CustomerOrderController : BaseController
 	public CustomerOrderController(ICoreApiClient coreApiClient)
 		: base(coreApiClient) { }
 
+	[HttpPost]
 	public async Task<IActionResult> Confirm(
 		int cartId,
 		CancellationToken cancellationToken)
@@ -16,11 +17,13 @@ public class CustomerOrderController : BaseController
 		return RedirectToAction(nameof(Details), new { id = orderId });
 	}
 
+	[HttpGet]
 	public async Task<IActionResult> Details(
 		int id,
 		CancellationToken cancellationToken)
 			=> View(await CoreApiClient.OrderDetails(id, cancellationToken));
 
+	[HttpPost]
 	public async Task<IActionResult> Cancel(
 		int orderId,
 		CancellationToken cancellationToken)
@@ -29,6 +32,7 @@ public class CustomerOrderController : BaseController
 		return RedirectToAction(nameof(Details), new { id = orderId });
 	}
 
+	[HttpGet]
 	public async Task<IActionResult> GetReceiveKey(
 		int orderId,
 		int receiveKey)

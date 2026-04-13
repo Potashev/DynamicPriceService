@@ -3,11 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Customer.Controllers;
 
-public class CartController : BaseController
+public class CartController(ICoreApiClient CoreApiClient) : Controller
 {
-	public CartController(ICoreApiClient coreApiClient)
-		: base(coreApiClient) { }
-
 	[HttpGet]
 	public async Task<IActionResult> Details(
 		string companyId,

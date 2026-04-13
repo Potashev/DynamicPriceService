@@ -4,11 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Manager.Controllers;
 
-public class ProductsController : BaseController
+public class ProductsController(ICoreApiClient CoreApiClient) : Controller
 {
-	public ProductsController(ICoreApiClient coreApiClient)
-		: base(coreApiClient) { }
-
 	[HttpGet]
 	public async Task<IActionResult> Index(CancellationToken cancellationToken)
 		=> View(await CoreApiClient.GetProducts(cancellationToken));

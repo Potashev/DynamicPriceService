@@ -3,11 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Customer.Controllers;
 
-public class CustomerOrderController : BaseController
+public class CustomerOrderController(ICoreApiClient CoreApiClient) : Controller
 {
-	public CustomerOrderController(ICoreApiClient coreApiClient)
-		: base(coreApiClient) { }
-
 	[HttpPost]
 	public async Task<IActionResult> Confirm(
 		int cartId,

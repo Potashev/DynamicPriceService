@@ -4,11 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Manager.Controllers;
 
-public class PriceRuleController : BaseController
+public class PriceRuleController(ICoreApiClient CoreApiClient) : Controller
 {
-	public PriceRuleController(ICoreApiClient coreApiClient)
-		: base(coreApiClient) { }
-
 	[HttpGet]
 	public async Task<IActionResult> Details(CancellationToken cancellationToken)
 		=> View(await CoreApiClient.GetPriceRule(cancellationToken));

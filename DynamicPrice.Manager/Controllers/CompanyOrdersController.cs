@@ -3,10 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Manager.Controllers;
 
-public class CompanyOrdersController : BaseController
+public class CompanyOrdersController(ICoreApiClient CoreApiClient) : Controller
 {
-	public CompanyOrdersController(ICoreApiClient coreApiClient)
-		: base(coreApiClient) { }
 
 	[HttpGet]
 	public async Task<IActionResult> Index(CancellationToken cancellationToken)

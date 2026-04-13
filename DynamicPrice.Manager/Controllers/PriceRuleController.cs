@@ -4,11 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Manager.Controllers;
 
-public class PriceRuleController(ICoreApiClient CoreApiClient) : Controller
+public class PriceRuleController(
+	ICoreApiClient coreApiClient) : Controller
 {
 	[HttpGet]
 	public async Task<IActionResult> Details(CancellationToken cancellationToken)
-		=> View(await CoreApiClient.GetPriceRule(cancellationToken));
+		=> View(await coreApiClient.GetPriceRule(cancellationToken));
 
 	[HttpGet]
 	public async Task<IActionResult> Edit(
@@ -18,7 +19,7 @@ public class PriceRuleController(ICoreApiClient CoreApiClient) : Controller
 		if (id is null)
 			return NotFound();
 
-		var priceRuleWithStatus = await CoreApiClient.GetPriceRule(cancellationToken);
+		var priceRuleWithStatus = await coreApiClient.GetPriceRule(cancellationToken);
 
 		return View(priceRuleWithStatus.PriceRule);
 	}
@@ -30,7 +31,7 @@ public class PriceRuleController(ICoreApiClient CoreApiClient) : Controller
 	{
 		if (ModelState.IsValid)
 		{
-			await CoreApiClient.UpdatePriceRule(priceRuleVm, cancellationToken);
+			await coreApiClient.UpdatePriceRule(priceRuleVm, cancellationToken);
 			return RedirectToAction(nameof(Details));
 		}
 
@@ -40,14 +41,14 @@ public class PriceRuleController(ICoreApiClient CoreApiClient) : Controller
 	[HttpPost]
 	public async Task<IActionResult> Run(CancellationToken cancellationToken)
 	{
-		await CoreApiClient.RunPriceReducing(cancellationToken);
+		await coreApiClient.RunPriceReducing(cancellationToken);
 		return RedirectToAction(nameof(Details));
 	}
 
 	[HttpPost]
 	public async Task<IActionResult> Stop(CancellationToken cancellationToken)
 	{
-		await CoreApiClient.StopPriceReducing(cancellationToken);
+		await coreApiClient.StopPriceReducing(cancellationToken);
 		return RedirectToAction(nameof(Details));
 	}
 }

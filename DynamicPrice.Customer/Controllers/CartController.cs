@@ -3,20 +3,21 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Customer.Controllers;
 
-public class CartController(ICoreApiClient CoreApiClient) : Controller
+public class CartController(
+	ICoreApiClient coreApiClient) : Controller
 {
 	[HttpGet]
 	public async Task<IActionResult> Details(
 		string companyId,
 		CancellationToken cancellationToken)
-			=> View(await CoreApiClient.GetCartDetails(companyId, cancellationToken));
+			=> View(await coreApiClient.GetCartDetails(companyId, cancellationToken));
 
 	[HttpPost]
 	public async Task<IActionResult> AddCartItem(
 		int productId,
 		CancellationToken cancellationToken)
 	{
-		var companyId = await CoreApiClient.AddCartItem(productId, cancellationToken);
+		var companyId = await coreApiClient.AddCartItem(productId, cancellationToken);
 		return RedirectToAction(nameof(Details), new { companyId });
 	}
 
@@ -25,7 +26,7 @@ public class CartController(ICoreApiClient CoreApiClient) : Controller
 		int productId,
 		CancellationToken cancellationToken)
 	{
-		var companyId = await CoreApiClient.RemoveCartItem(productId, cancellationToken);
+		var companyId = await coreApiClient.RemoveCartItem(productId, cancellationToken);
 		return RedirectToAction(nameof(Details), new { companyId });
 	}
 }

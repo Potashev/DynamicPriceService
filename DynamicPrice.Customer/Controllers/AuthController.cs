@@ -3,24 +3,13 @@ using DynamicPrice.Customer.ApiClients;
 using DynamicPrice.Shared.Contracts.Requests;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 namespace DynamicPrice.Customer.Controllers;
 
-public class AuthController : Controller
+public class AuthController(
+	ICoreApiClient coreApiClient,
+	IAuthTokenStore authTokenStore) : Controller
 {
-	private readonly ICoreApiClient _coreApiClient;
-	private readonly IAuthTokenStore _authTokenStore;
-
-	public AuthController(
-		IAuthTokenStore authTokenStore,
-		ICoreApiClient coreApiClient)
-	{
-		_authTokenStore = authTokenStore;
-		_coreApiClient = coreApiClient;
-	}
-
 	[HttpGet]
 	public IActionResult LoginCustomer()
 		=> View();
@@ -33,9 +22,9 @@ public class AuthController : Controller
 		if (!ModelState.IsValid)
 			return View(loginVm);
 
-		var tokenResponse = await _coreApiClient.LoginCustomer(loginVm, cancellationToken);
+		var tokenResponse = await coreApiClient.LoginCustomer(loginVm, cancellationToken);
 
-		_authTokenStore.SetToken(tokenResponse.Token);
+		authTokenStore.SetToken(tokenResponse.Token);
 
 		await AuthHelper.SignInWithJwtAsync(HttpContext, tokenResponse.Token);
 
@@ -51,7 +40,7 @@ public class AuthController : Controller
 		await HttpContext.SignOutAsync("Cookies");
 
 		// очистка JWT
-		_authTokenStore.SetToken(string.Empty);
+		authTokenStore.SetToken(string.Empty);
 
 		return RedirectToAction(nameof(LoginCustomer));
 	}

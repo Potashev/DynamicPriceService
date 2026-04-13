@@ -35,21 +35,9 @@ public class AuthController : Controller
 
 		var tokenResponse = await _coreApiClient.LoginCustomer(loginVm, cancellationToken);
 
-		//todo: moved to client.inf helper
-
-		// ✅ сохраняем JWT (для API)
 		_authTokenStore.SetToken(tokenResponse.Token);
 
-		// ✅ парсим JWT
-		var handler = new JwtSecurityTokenHandler();
-		var jwt = handler.ReadJwtToken(tokenResponse.Token);
-
-		// ✅ создаём identity из claims
-		var identity = new ClaimsIdentity(jwt.Claims, "Cookies");
-		var principal = new ClaimsPrincipal(identity);
-
-		// ✅ логиним пользователя в MVC
-		await HttpContext.SignInAsync("Cookies", principal);
+		await AuthHelper.SignInWithJwtAsync(HttpContext, tokenResponse.Token);
 
 		return RedirectToAction(
 			nameof(CompaniesController.Index),

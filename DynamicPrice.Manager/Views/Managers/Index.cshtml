@@ -1,9 +1,11 @@
 ﻿@using DynamicPrice.Shared.Contracts.ViewModels.Responses
+@using System.Security.Claims
 @model IEnumerable<ManagerInfoViewModel>
 
 @{
 	ViewData["Title"] = "Index";
 	var currentManagerId = ViewData["ManagerId"]?.ToString();
+	var managerId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 	if (Model is null) return;
 }
 

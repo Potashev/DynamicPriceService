@@ -20,6 +20,8 @@ public class BaseController : Controller
 	{
 		var manager = await CoreApiClient.GetManager();
 
+		var companyTitle = User.FindFirst("company_title")?.Value;
+
 		ViewData["ManagerId"] = manager.Id;
 		ViewData["CompanyTitle"] = manager.Company.Title;
 

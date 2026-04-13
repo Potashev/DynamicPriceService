@@ -44,6 +44,20 @@
 					</span>
 				</div>
 			}
+
+@* 			@{
+				var companyTitle = User.FindFirst("company_title")?.Value;
+			}
+
+			@if (!string.IsNullOrEmpty(companyTitle))
+			{
+				<div class="d-flex align-items-center ms-auto me-3">
+					<span class="navbar-text bg-light px-2 py-1 rounded fw-semibold">
+						@companyTitle
+					</span>
+				</div>
+			} *@
+
 		</nav>
 	</header>
 	<div class="container">

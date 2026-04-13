@@ -23,6 +23,9 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddClientCommon();
 
+builder.Services.AddAuthentication("Cookies")
+	.AddCookie("Cookies");
+
 var baseUrl = builder.Configuration["ApiSettings:BaseUrl"]
 	?? throw new InvalidOperationException("Missing configuration: ApiSettings:BaseUrl");
 
@@ -49,6 +52,9 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseSession();
+
+app.UseAuthentication();
+app.UseAuthorization();		//надо ли на клиенте?
 
 app.MapControllerRoute(
 	name: "default",

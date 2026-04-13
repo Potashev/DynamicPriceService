@@ -95,7 +95,12 @@ public class UserService : IUserService
 		List<Claim> claims =
 		[
 			new(JwtRegisteredClaimNames.Sub, user.Id),
+			new(ClaimTypes.NameIdentifier, user.Id),
+
 			new(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
+
+			new("company_id", user.CompanyId.ToString()),
+			//new("company_title", user.Company.Title),
 
 			..roles.Select(r => new Claim(ClaimTypes.Role, r))
 		];

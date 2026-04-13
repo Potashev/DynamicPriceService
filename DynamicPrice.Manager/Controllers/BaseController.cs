@@ -18,12 +18,12 @@ public class BaseController : Controller
 		ActionExecutingContext context,
 		ActionExecutionDelegate next)
 	{
-		var manager = await CoreApiClient.GetManager();
+		//var manager = await CoreApiClient.GetManager();
 
-		var companyTitle = User.FindFirst("company_title")?.Value;
+		//var companyTitle = User.FindFirst("company_title")?.Value;
 
-		ViewData["ManagerId"] = manager.Id;
-		ViewData["CompanyTitle"] = manager.Company.Title;
+		//ViewData["ManagerId"] = manager.Id;
+		//ViewData["CompanyTitle"] = manager.Company.Title;
 
 		await next();
 	}

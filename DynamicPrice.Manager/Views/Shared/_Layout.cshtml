@@ -36,16 +36,16 @@
 					</ul>
 				</div>
 			</div>
-			@if (!string.IsNullOrEmpty(ViewData["CompanyTitle"] as string))
+@* 			@if (!string.IsNullOrEmpty(ViewData["CompanyTitle"] as string))
 			{
 				<div class="d-flex align-items-center ms-auto me-3">
 					<span class="navbar-text bg-light px-2 py-1 rounded fw-semibold">
 						@ViewData["CompanyTitle"]
 					</span>
 				</div>
-			}
+			} *@
 
-@* 			@{
+			@{
 				var companyTitle = User.FindFirst("company_title")?.Value;
 			}
 
@@ -56,7 +56,7 @@
 						@companyTitle
 					</span>
 				</div>
-			} *@
+			}
 
 		</nav>
 	</header>

@@ -18,9 +18,9 @@ public class BaseController : Controller
 		ActionExecutingContext context,
 		ActionExecutionDelegate next)
 	{
-		var customer = await CoreApiClient.GetCustomer();
+		//var customer = await CoreApiClient.GetCustomer();
 
-		ViewData["CustomerName"] = customer.Name;
+		//ViewData["CustomerName"] = customer.Name;
 
 		await next();
 	}

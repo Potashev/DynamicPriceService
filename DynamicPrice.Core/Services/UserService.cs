@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DynamicPrice.Core.Data;
 using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Core.Models;
 using DynamicPrice.Shared.Contracts.Requests;
@@ -19,17 +20,20 @@ public class UserService : IUserService
 	private readonly UserManager<ApplicationUser> _userManager;
 	private readonly IConfiguration _config;
 	private readonly IMapper _mapper;
+	private readonly DynamicPriceCoreContext _dpContext;
 
 	public UserService(
 		IHttpContextAccessor httpContextAccessor,
 		UserManager<ApplicationUser> userManager,
 		IConfiguration config,
-		IMapper mapper)
+		IMapper mapper,
+		DynamicPriceCoreContext dpContext)
 	{
 		_httpContextAccessor = httpContextAccessor;
 		_userManager = userManager;
 		_config = config;
 		_mapper = mapper;
+		_dpContext = dpContext;
 	}
 
 	public string? UserId
@@ -60,9 +64,11 @@ public class UserService : IUserService
 
 		var roles = await _userManager.GetRolesAsync(user);
 
+		var company = await GetCompanyAsync(user);
+
 		return new TokenResponse
 		{
-			Token = GenerateJwtToken(user, roles)
+			Token = GenerateJwtToken(user, roles, company)
 		};
 	}
 
@@ -88,9 +94,20 @@ public class UserService : IUserService
 	public async Task UpdateUserAsync(ApplicationUser user)
 		=> await _userManager.UpdateAsync(user);
 
+	private async Task<Company?> GetCompanyAsync(ApplicationUser user)
+	{
+		if (!user.CompanyId.HasValue)
+			return null;
+
+		return await _dpContext.Companies
+			.Where(c => c.CompanyId == user.CompanyId)
+			.FirstOrDefaultAsync();
+	}
+
 	private string GenerateJwtToken(
 		ApplicationUser user,
-		IList<string> roles)
+		IList<string> roles,
+		Company company)
 	{
 		List<Claim> claims =
 		[
@@ -99,11 +116,30 @@ public class UserService : IUserService
 
 			new(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
 
-			new("company_id", user.CompanyId.ToString()),
+		//	new("company_id", user.CompanyId.ToString()),
+
+		//			// добавляем только если есть
+		//...(company is not null
+		//	? [new Claim("company_title", company.Title)]
+		//	: []),
+
+			//new("company_title", GetCompanyTitle(user)),
 			//new("company_title", user.Company.Title),
 
 			..roles.Select(r => new Claim(ClaimTypes.Role, r))
 		];
+
+		if (roles.Contains("Customer"))
+		{
+			claims.Add(new("customer_name", user.UserName ?? ""));
+		}
+
+		if (roles.Contains("Manager") && company is not null)
+		{
+			claims.Add(new("company_id", company.CompanyId.ToString()));
+			claims.Add(new("company_title", company.Title));
+		}
+
 
 		var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
 		var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

@@ -24,8 +24,8 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddClientCommon();
 
-builder.Services.AddAuthentication("Cookies")
-	.AddCookie("Cookies");
+//builder.Services.AddAuthentication("Cookies")
+//	.AddCookie("Cookies");
 
 
 var baseUrl = builder.Configuration["ApiSettings:BaseUrl"]
@@ -56,7 +56,7 @@ app.UseRouting();
 app.UseSession();
 
 app.UseAuthentication();
-app.UseAuthorization();     //надо ли на клиенте?
+//app.UseAuthorization();     //надо ли на клиенте?
 
 app.MapControllerRoute(
 	name: "default",

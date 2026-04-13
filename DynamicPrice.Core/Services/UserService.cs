@@ -18,22 +18,22 @@ public class UserService : IUserService
 {
 	private readonly IHttpContextAccessor _httpContextAccessor;
 	private readonly UserManager<ApplicationUser> _userManager;
-	private readonly IConfiguration _config;
 	private readonly IMapper _mapper;
-	private readonly DynamicPriceCoreContext _dpContext;
+	private readonly IUserCompanyService _userCompanyService;
+	private readonly ITokenService _tokenService;
 
 	public UserService(
 		IHttpContextAccessor httpContextAccessor,
 		UserManager<ApplicationUser> userManager,
-		IConfiguration config,
 		IMapper mapper,
-		DynamicPriceCoreContext dpContext)
+		IUserCompanyService userCompanyService,
+		ITokenService tokenService)
 	{
 		_httpContextAccessor = httpContextAccessor;
 		_userManager = userManager;
-		_config = config;
 		_mapper = mapper;
-		_dpContext = dpContext;
+		_userCompanyService = userCompanyService;
+		_tokenService = tokenService;
 	}
 
 	public string? UserId
@@ -64,11 +64,11 @@ public class UserService : IUserService
 
 		var roles = await _userManager.GetRolesAsync(user);
 
-		var company = await GetCompanyAsync(user);
+		var company = await _userCompanyService.GetCompanyAsync(user);
 
 		return new TokenResponse
 		{
-			Token = GenerateJwtToken(user, roles, company)
+			Token = _tokenService.GenerateToken(user, roles, company)
 		};
 	}
 
@@ -93,72 +93,6 @@ public class UserService : IUserService
 
 	public async Task UpdateUserAsync(ApplicationUser user)
 		=> await _userManager.UpdateAsync(user);
-
-	private async Task<Company?> GetCompanyAsync(ApplicationUser user)
-	{
-		if (!user.CompanyId.HasValue)
-			return null;
-
-		return await _dpContext.Companies
-			.Where(c => c.CompanyId == user.CompanyId)
-			.FirstOrDefaultAsync();
-	}
-
-	private string GenerateJwtToken(
-		ApplicationUser user,
-		IList<string> roles,
-		Company company)
-	{
-		List<Claim> claims =
-		[
-			new(JwtRegisteredClaimNames.Sub, user.Id),
-			new(ClaimTypes.NameIdentifier, user.Id),
-
-			new(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
-
-		//	new("company_id", user.CompanyId.ToString()),
-
-		//			// добавляем только если есть
-		//...(company is not null
-		//	? [new Claim("company_title", company.Title)]
-		//	: []),
-
-			//new("company_title", GetCompanyTitle(user)),
-			//new("company_title", user.Company.Title),
-
-			..roles.Select(r => new Claim(ClaimTypes.Role, r))
-		];
-
-		if (roles.Contains("Customer"))
-		{
-			claims.Add(new("customer_name", user.UserName ?? ""));
-		}
-
-		if (roles.Contains("Manager") && company is not null)
-		{
-			claims.Add(new("company_id", company.CompanyId.ToString()));
-			claims.Add(new("company_title", company.Title));
-		}
-
-
-		var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
-		var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-		var expireMinutes = _config.GetValue<int>("Jwt:ExpireMinutes");
-
-		var tokenDescriptor = new SecurityTokenDescriptor
-		{
-			Subject = new ClaimsIdentity(claims),
-			Expires = DateTime.UtcNow.AddMinutes(expireMinutes),
-			SigningCredentials = credentials,
-			Issuer = _config["Jwt:Issuer"],
-			Audience = _config["Jwt:Audience"]
-		};
-
-		var tokenHandler = new JsonWebTokenHandler();
-		string accessToken = tokenHandler.CreateToken(tokenDescriptor);
-		return accessToken;
-	}
 }
 
 public interface IUserService

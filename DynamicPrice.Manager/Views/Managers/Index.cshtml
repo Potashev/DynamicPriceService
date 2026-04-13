@@ -4,8 +4,7 @@
 
 @{
 	ViewData["Title"] = "Index";
-	var currentManagerId = ViewData["ManagerId"]?.ToString();
-	var managerId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+	var currentManagerId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 	if (Model is null) return;
 }
 

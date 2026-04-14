@@ -41,9 +41,8 @@
 							<span class="navbar-text bg-light px-2 py-1 rounded fw-semibold">
 								@CurrentUser.CompanyTitle
 							</span>
-
+							<span> | </span>
 							<form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
-								@Html.AntiForgeryToken()
 								<button type="submit" class="nav-link btn btn-link text-dark p-0">
 									Logout
 								</button>

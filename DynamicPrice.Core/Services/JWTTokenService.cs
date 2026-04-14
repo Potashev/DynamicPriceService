@@ -6,12 +6,13 @@ using System.Text;
 
 namespace DynamicPrice.Core.Services;
 
-public class JWTTokenService(IConfiguration config) : ITokenService
+public class TokenService(
+	IConfiguration config) : ITokenService
 {
 	public string GenerateToken(
-	ApplicationUser user,
-	IList<string> roles,
-	Company? company)
+		ApplicationUser user,
+		IList<string> roles,
+		Company? company)
 	{
 		List<Claim> claims =
 		[
@@ -32,7 +33,6 @@ public class JWTTokenService(IConfiguration config) : ITokenService
 			claims.Add(new("company_id", company.CompanyId.ToString()));
 			claims.Add(new("company_title", company.Title));
 		}
-
 
 		var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]!));
 		var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

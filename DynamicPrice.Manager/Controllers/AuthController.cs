@@ -1,7 +1,6 @@
 ﻿using DynamicPrice.Client.Infrastructure;
 using DynamicPrice.Manager.ApiClients;
 using DynamicPrice.Shared.Contracts.Requests;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Manager.Controllers;
@@ -34,7 +33,7 @@ public class AuthController(
 	[HttpPost]
 	public async Task<IActionResult> Logout()
 	{
-		await HttpContext.SignOutAsync("Cookies");
+		//await HttpContext.SignOutAsync("Cookies");
 
 		authTokenStore.SetToken(string.Empty);
 

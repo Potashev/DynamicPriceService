@@ -34,7 +34,7 @@ public class AuthController(
 	[HttpPost]
 	public async Task<IActionResult> Logout()
 	{
-		await HttpContext.SignOutAsync("Cookies");
+		//await HttpContext.SignOutAsync("Cookies");
 
 		authTokenStore.SetToken(string.Empty);
 

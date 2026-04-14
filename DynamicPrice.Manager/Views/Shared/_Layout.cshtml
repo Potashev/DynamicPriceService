@@ -33,6 +33,13 @@
 						<li class="nav-item">
 							<a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="LoginManager">Login</a>
 						</li>
+						<li class="nav-item">
+							<form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
+								<button type="submit" class="nav-link btn btn-link text-dark" style="display:inline; padding:0;">
+									Logout
+								</button>
+							</form>
+						</li>
 					</ul>
 				</div>
 			</div>

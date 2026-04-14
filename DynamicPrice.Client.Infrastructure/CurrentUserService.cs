@@ -6,17 +6,17 @@ namespace DynamicPrice.Client.Infrastructure;
 public class CurrentUserService(
 	IAuthTokenStore tokenStore) : ICurrentUserService
 {
-	public bool IsAuthenticated 
-		=> GetToken() is not null;
-
 	public string? UserId
 		=> GetClaim(ClaimTypes.NameIdentifier);
+
+	public string? UserName
+		=> GetClaim(ClaimTypes.Name);
 
 	public string? CompanyTitle 
 		=> GetClaim("company_title");
 
-	public string? CustomerName
-		=> GetClaim("customer_name");
+	public bool IsAuthenticated
+		=> GetToken() is not null;
 
 	private string? GetClaim(string name)
 		=> GetToken()?.Claims
@@ -25,7 +25,9 @@ public class CurrentUserService(
 	private JwtSecurityToken? GetToken()
 	{
 		var token = tokenStore.GetToken();
-		if (string.IsNullOrEmpty(token)) return null;
+
+		if (string.IsNullOrEmpty(token))
+			return null;
 
 		return new JwtSecurityTokenHandler().ReadJwtToken(token);
 	}
@@ -33,8 +35,8 @@ public class CurrentUserService(
 
 public interface ICurrentUserService
 {
-	bool IsAuthenticated { get; }
 	string? UserId { get; }
+	string? UserName { get; }
 	string? CompanyTitle { get; }
-	string? CustomerName { get; }
+	bool IsAuthenticated { get; }
 }

@@ -18,17 +18,19 @@ public class TokenService(
 		[
 			new(JwtRegisteredClaimNames.Sub, user.Id),
 			new(ClaimTypes.NameIdentifier, user.Id),
+			new(ClaimTypes.Name, user.UserName ?? string.Empty),
 			new(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
 
 			..roles.Select(r => new Claim(ClaimTypes.Role, r))
 		];
 
-		if (roles.Contains("Customer"))
-		{
-			claims.Add(new("customer_name", user.UserName ?? ""));
-		}
+		//if (roles.Contains("Customer"))
+		//{
+		//	claims.Add(new("customer_name", user.UserName ?? ""));
+		//}
 
-		if (roles.Contains("Manager") && company is not null)
+		//if (roles.Contains("Manager") && company is not null)
+		if (company is not null)
 		{
 			claims.Add(new("company_id", company.CompanyId.ToString()));
 			claims.Add(new("company_title", company.Title));

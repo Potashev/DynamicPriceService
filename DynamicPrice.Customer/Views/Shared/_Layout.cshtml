@@ -33,7 +33,7 @@
 						@if (CurrentUser.IsAuthenticated)
 						{
 							<span class="navbar-text bg-light px-2 py-1 rounded fw-semibold">
-								@CurrentUser.CustomerName
+								@CurrentUser.UserName
 							</span>
 
 							<form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">

@@ -1,16 +1,12 @@
 ﻿using AutoMapper;
-using DynamicPrice.Core.Data;
 using DynamicPrice.Core.Exceptions;
 using DynamicPrice.Core.Models;
 using DynamicPrice.Shared.Contracts.Requests;
 using DynamicPrice.Shared.Contracts.Responses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.JsonWebTokens;
-using Microsoft.IdentityModel.Tokens;
 using System.Linq.Expressions;
 using System.Security.Claims;
-using System.Text;
 
 namespace DynamicPrice.Core.Services;
 

@@ -22,6 +22,12 @@ builder.Services.AddSession(options =>
 	options.Cookie.Name = "Customer.Session";
 });
 
+builder.Services.AddAuthentication()
+	.AddCookie("CustomerCookies", options =>
+	{
+		options.Cookie.Name = "Customer.Auth";
+	});
+
 builder.Services.AddClientCommon();
 
 //builder.Services.AddAuthentication("Cookies")

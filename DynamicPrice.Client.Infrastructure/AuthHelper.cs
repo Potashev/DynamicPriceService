@@ -10,14 +10,17 @@ namespace DynamicPrice.Client.Infrastructure;
 
 public static class AuthHelper
 {
-	public static async Task SignInWithJwtAsync(HttpContext context, string jwtToken)
+	public static async Task SignInWithJwtAsync(
+		HttpContext context, 
+		string jwtToken,
+		string cookiesName)
 	{
 		var handler = new JwtSecurityTokenHandler();
 		var jwt = handler.ReadJwtToken(jwtToken);
 
-		var identity = new ClaimsIdentity(jwt.Claims, "Cookies");
+		var identity = new ClaimsIdentity(jwt.Claims, cookiesName);
 		var principal = new ClaimsPrincipal(identity);
 
-		await context.SignInAsync("Cookies", principal);
+		await context.SignInAsync(cookiesName, principal);
 	}
 }

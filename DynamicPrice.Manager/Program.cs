@@ -21,10 +21,17 @@ builder.Services.AddSession(options =>
 	options.Cookie.Name = "Manager.Session";
 });
 
+builder.Services.AddAuthentication()
+	.AddCookie("ManagerCookies", options =>
+	{
+		options.Cookie.Name = "Manager.Auth";
+	});
+
 builder.Services.AddClientCommon();
 
 //builder.Services.AddAuthentication("Cookies")
 //	.AddCookie("Cookies");
+
 
 var baseUrl = builder.Configuration["ApiSettings:BaseUrl"]
 	?? throw new InvalidOperationException("Missing configuration: ApiSettings:BaseUrl");

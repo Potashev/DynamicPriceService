@@ -27,7 +27,7 @@ public class AuthController(
 
 		authTokenStore.SetToken(tokenResponse.Token);
 
-		await AuthHelper.SignInWithJwtAsync(HttpContext, tokenResponse.Token, "ManagerCookies");
+		//await AuthHelper.SignInWithJwtAsync(HttpContext, tokenResponse.Token, "ManagerCookies");
 
 		return RedirectToAction(
 			nameof(ProductsController.Index),

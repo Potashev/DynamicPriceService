@@ -21,11 +21,11 @@ builder.Services.AddSession(options =>
 	options.Cookie.Name = "Manager.Session";
 });
 
-builder.Services.AddAuthentication()
-	.AddCookie("ManagerCookies", options =>
-	{
-		options.Cookie.Name = "Manager.Auth";
-	});
+//builder.Services.AddAuthentication()
+//	.AddCookie("ManagerCookies", options =>
+//	{
+//		options.Cookie.Name = "Manager.Auth";
+//	});
 
 builder.Services.AddClientCommon();
 
@@ -60,7 +60,7 @@ app.UseRouting();
 
 app.UseSession();
 
-app.UseAuthentication();
+//app.UseAuthentication();
 //app.UseAuthorization();		//надо ли на клиенте?
 
 app.MapControllerRoute(

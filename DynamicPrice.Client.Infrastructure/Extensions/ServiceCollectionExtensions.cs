@@ -13,6 +13,8 @@ public static class ServiceCollectionExtensions
 		services.TryAddScoped<IAuthTokenStore, SessionAuthTokenStore>();
 		services.AddTransient<AuthHeaderHandler>();
 
+		services.AddScoped<CurrentUserService>();
+
 		//services.AddAuthentication("Cookies")
 		//	.AddCookie("Cookies");	//todo: can be the reason why broken man and cust auth
 

@@ -6,6 +6,9 @@ namespace DynamicPrice.Client.Infrastructure;
 public class CurrentUserService(
 	IAuthTokenStore tokenStore) : ICurrentUserService
 {
+	public bool IsAuthenticated 
+		=> GetToken() is not null;
+
 	public string? UserId
 		=> GetClaim(ClaimTypes.NameIdentifier);
 
@@ -30,6 +33,7 @@ public class CurrentUserService(
 
 public interface ICurrentUserService
 {
+	bool IsAuthenticated { get; }
 	string? UserId { get; }
 	string? CompanyTitle { get; }
 	string? CustomerName { get; }

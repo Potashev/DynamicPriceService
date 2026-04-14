@@ -1,23 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 
 namespace DynamicPrice.Client.Infrastructure;
 
-public class CurrentUserService
+public class CurrentUserService(
+	IAuthTokenStore tokenStore)
 {
-	private readonly IAuthTokenStore _tokenStore;
-
-	public CurrentUserService(IAuthTokenStore tokenStore)
-	{
-		_tokenStore = tokenStore;
-	}
-
 	private JwtSecurityToken? GetToken()
 	{
-		var token = _tokenStore.GetToken();
+		var token = tokenStore.GetToken();
 		if (string.IsNullOrEmpty(token)) return null;
 
 		return new JwtSecurityTokenHandler().ReadJwtToken(token);
@@ -33,8 +24,6 @@ public class CurrentUserService
 		=> GetClaim("customer_name");
 
 	private string? GetClaim(string name)
-	{
-		return GetToken()?.Claims
+		=> GetToken()?.Claims
 			.FirstOrDefault(c => c.Type == name)?.Value;
-	}
 }

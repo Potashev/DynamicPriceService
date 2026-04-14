@@ -11,12 +11,8 @@ public static class ServiceCollectionExtensions
 		services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 		//services.TryAddScoped<IAuthTokenStore, CookiesAuthTokenStore>();
 		services.TryAddScoped<IAuthTokenStore, SessionAuthTokenStore>();
-		services.AddTransient<AuthHeaderHandler>();
-
 		services.AddScoped<CurrentUserService>();
-
-		//services.AddAuthentication("Cookies")
-		//	.AddCookie("Cookies");	//todo: can be the reason why broken man and cust auth
+		services.AddTransient<AuthHeaderHandler>();
 
 		return services;
 	}

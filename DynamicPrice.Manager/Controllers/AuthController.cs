@@ -10,7 +10,6 @@ public class AuthController(
 	ICoreApiClient coreApiClient,
 	IAuthTokenStore authTokenStore) : Controller
 {
-
 	[HttpGet]
 	public IActionResult LoginManager()
 		=> View();
@@ -26,8 +25,6 @@ public class AuthController(
 		var tokenResponse = await coreApiClient.LoginManager(loginVm, cancellationToken);
 
 		authTokenStore.SetToken(tokenResponse.Token);
-
-		//await AuthHelper.SignInWithJwtAsync(HttpContext, tokenResponse.Token, "ManagerCookies");
 
 		return RedirectToAction(
 			nameof(ProductsController.Index),

@@ -4,8 +4,6 @@
 
 @{
 	ViewData["Title"] = "Index";
-	var currentManagerId = CurrentUser.UserId;
-	// var currentManagerId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 	if (Model is null) return;
 }
 
@@ -32,7 +30,7 @@
 				<td>
 					@Html.DisplayFor(modelItem => item.Name)
 
-					@if (currentManagerId == item.Id)
+					@if (CurrentUser.UserId == item.Id)
 					{
 						<span class="badge bg-success">You</span>
 					}

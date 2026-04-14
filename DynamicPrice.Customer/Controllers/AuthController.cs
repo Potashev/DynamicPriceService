@@ -26,8 +26,6 @@ public class AuthController(
 
 		authTokenStore.SetToken(tokenResponse.Token);
 
-		//await AuthHelper.SignInWithJwtAsync(HttpContext, tokenResponse.Token, "CustomerCookies");
-
 		return RedirectToAction(
 			nameof(CompaniesController.Index),
 			nameof(CompaniesController).Replace("Controller", ""));
@@ -36,10 +34,8 @@ public class AuthController(
 	[HttpPost]
 	public async Task<IActionResult> Logout()
 	{
-		// logout из MVC
 		await HttpContext.SignOutAsync("Cookies");
 
-		// очистка JWT
 		authTokenStore.SetToken(string.Empty);
 
 		return RedirectToAction(nameof(LoginCustomer));

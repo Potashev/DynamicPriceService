@@ -4,7 +4,8 @@ using System.Security.Claims;
 namespace DynamicPrice.Client.Infrastructure;
 
 public class CurrentUserService(
-	IAuthTokenStore tokenStore) : ICurrentUserService
+	IAuthTokenStore tokenStore)
+	: ICurrentUserService
 {
 	public string? UserId
 		=> GetClaim(ClaimTypes.NameIdentifier);

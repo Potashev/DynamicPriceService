@@ -11,7 +11,8 @@ using ProblemDetails = Microsoft.AspNetCore.Mvc.ProblemDetails;
 
 
 public class ApiExceptionFilter(
-	ILogger<ApiExceptionFilter> logger) : IAsyncExceptionFilter
+	ILogger<ApiExceptionFilter> logger)
+	: IAsyncExceptionFilter
 {
 	public async Task OnExceptionAsync(ExceptionContext context)
 	{

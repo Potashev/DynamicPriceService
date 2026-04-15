@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace DynamicPrice.Manager.Controllers;
 
 public class ManagersController(
-	ICoreApiClient coreApiClient) : Controller
+	ICoreApiClient coreApiClient) 
+	: Controller
 {
 	[HttpGet]
 	public async Task<IActionResult> Index(CancellationToken cancellationToken)

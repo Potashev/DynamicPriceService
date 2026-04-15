@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace DynamicPrice.Customer.Controllers;
 
 public class CustomerOrderController(
-	ICoreApiClient coreApiClient) : Controller
+	ICoreApiClient coreApiClient) 
+	: Controller
 {
 	[HttpPost]
 	public async Task<IActionResult> Confirm(

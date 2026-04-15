@@ -24,12 +24,6 @@ public class TokenService(
 			..roles.Select(r => new Claim(ClaimTypes.Role, r))
 		];
 
-		//if (roles.Contains("Customer"))
-		//{
-		//	claims.Add(new("customer_name", user.UserName ?? ""));
-		//}
-
-		//if (roles.Contains("Manager") && company is not null)
 		if (company is not null)
 		{
 			claims.Add(new("company_id", company.CompanyId.ToString()));

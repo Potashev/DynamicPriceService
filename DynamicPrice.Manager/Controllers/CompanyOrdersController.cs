@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace DynamicPrice.Manager.Controllers;
 
 public class CompanyOrdersController(
-	ICoreApiClient сoreApiClient) : Controller
+	ICoreApiClient сoreApiClient) 
+	: Controller
 {
 
 	[HttpGet]

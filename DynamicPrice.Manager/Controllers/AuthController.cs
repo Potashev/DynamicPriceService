@@ -7,7 +7,8 @@ namespace DynamicPrice.Manager.Controllers;
 
 public class AuthController(
 	ICoreApiClient coreApiClient,
-	IAuthTokenStore authTokenStore) : Controller
+	IAuthTokenStore authTokenStore)
+	: Controller
 {
 	[HttpGet]
 	public IActionResult LoginManager()
@@ -33,8 +34,6 @@ public class AuthController(
 	[HttpPost]
 	public async Task<IActionResult> Logout()
 	{
-		//await HttpContext.SignOutAsync("Cookies");
-
 		authTokenStore.SetToken(string.Empty);
 
 		return RedirectToAction(nameof(LoginManager));

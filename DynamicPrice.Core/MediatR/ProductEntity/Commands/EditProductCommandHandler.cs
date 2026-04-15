@@ -7,37 +7,30 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPrice.Core.MediatR.ProductEntity.Commands;
 
-public class EditProductCommandHandler
+public class EditProductCommandHandler(
+	DynamicPriceCoreContext context,
+	IMapper mapper,
+	IUserService userService)
 	: IRequestHandler<EditProductCommand, int>
 {
-	private readonly DynamicPriceCoreContext _context;
-	private readonly IMapper _mapper;
-	private readonly IUserService _userService;
-
-	public EditProductCommandHandler(
-		DynamicPriceCoreContext context,
-		IMapper mapper,
-		IUserService userService)
-		=> (_context, _mapper, _userService) = (context, mapper, userService);
-
 	public async Task<int> Handle(
 		EditProductCommand request,
 		CancellationToken cancellationToken)
 	{
-		var manager = await _userService.GetRequiredCurrentUserAsync();
+		var manager = await userService.GetRequiredCurrentUserAsync();
 
 		var updatedProductVm = request.ProductVm;
 
-		var product = await _context.Products
+		var product = await context.Products
 			.FirstOrDefaultAsync(p => 
 				p.ProductId == updatedProductVm.ProductId && 
 				p.CompanyId == manager.CompanyId, cancellationToken)
 			?? throw new NotFoundException("Product not found.");
 
-		_mapper.Map(updatedProductVm, product);
+		mapper.Map(updatedProductVm, product);
 
-		_context.Update(product);
-		await _context.SaveChangesAsync(cancellationToken);
+		context.Update(product);
+		await context.SaveChangesAsync(cancellationToken);
 
 		return product.ProductId;
 	}

@@ -8,26 +8,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPrice.Core.MediatR.CartEntity.Commands;
 
-public class RemoveProductFromCartCommandHandler
+public class RemoveProductFromCartCommandHandler(
+	DynamicPriceCoreContext context,
+	IMapper mapper,
+	IUserService userService)
 	: IRequestHandler<RemoveProductFromCartCommand, CartViewModel>
 {
-	private readonly DynamicPriceCoreContext _context;
-	private readonly IMapper _mapper;
-	private readonly IUserService _userService;
-
-	public RemoveProductFromCartCommandHandler(
-		DynamicPriceCoreContext context,
-		IMapper mapper,
-		IUserService userService)
-		=> (_context, _mapper, _userService) = (context, mapper, userService);
-
 	public async Task<CartViewModel> Handle(
 		RemoveProductFromCartCommand request,
 		CancellationToken cancellationToken)
 	{
-		var customer = await _userService.GetRequiredCurrentUserAsync();
+		var customer = await userService.GetRequiredCurrentUserAsync();
 
-		var cart = await _context.Carts
+		var cart = await context.Carts
 			.Where(c => c.CustomerId == customer.Id
 				&& c.CartItems.Any(ci => ci.ProductId == request.ProductId))
 			.Include(c => c.CartItems)
@@ -36,8 +29,8 @@ public class RemoveProductFromCartCommandHandler
 
 		cart.RemoveItem(request.ProductId);
 
-		await _context.SaveChangesAsync(cancellationToken);
+		await context.SaveChangesAsync(cancellationToken);
 
-		return _mapper.Map<CartViewModel>(cart);
+		return mapper.Map<CartViewModel>(cart);
 	}
 }

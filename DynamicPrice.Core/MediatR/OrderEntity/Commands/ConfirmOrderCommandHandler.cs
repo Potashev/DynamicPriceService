@@ -7,24 +7,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPrice.Core.MediatR.OrderEntity.Commands;
 
-public class ConfirmOrderCommandHandler
+public class ConfirmOrderCommandHandler(
+	DynamicPriceCoreContext context,
+	IUserService userService)
 	: IRequestHandler<ConfirmOrderCommand, int>
 {
-	private readonly DynamicPriceCoreContext _context;
-	private readonly IUserService _userService;
-
-	public ConfirmOrderCommandHandler(
-		DynamicPriceCoreContext context,
-		IUserService userService)
-		=> (_context, _userService) = (context, userService);
-
 	public async Task<int> Handle(
 		ConfirmOrderCommand request,
 		CancellationToken cancellationToken)
 	{
-		var customer = await _userService.GetRequiredCurrentUserAsync();
+		var customer = await userService.GetRequiredCurrentUserAsync();
 
-		var cart = await _context.Carts
+		var cart = await context.Carts
 			.Where(c => c.CartId == request.CartId && c.CustomerId == customer.Id)
 			.Include(c => c.Company)
 			.Include(c => c.CartItems)
@@ -36,10 +30,10 @@ public class ConfirmOrderCommandHandler
 
 		order.AddItems(cart.CartItems);
 
-		_context.Orders.Add(order);
-		_context.Carts.Remove(cart);
+		context.Orders.Add(order);
+		context.Carts.Remove(cart);
 
-		await _context.SaveChangesAsync(cancellationToken);
+		await context.SaveChangesAsync(cancellationToken);
 
 		return order.OrderId;
 	}

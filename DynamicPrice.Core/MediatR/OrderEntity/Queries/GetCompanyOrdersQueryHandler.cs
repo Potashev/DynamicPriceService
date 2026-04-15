@@ -7,35 +7,28 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPrice.Core.MediatR.OrderEntity.Queries;
 
-public class GetCompanyOrdersQueryHandler
+public class GetCompanyOrdersQueryHandler(
+	DynamicPriceCoreContext context,
+	IMapper mapper,
+	IUserService userService)
 	: IRequestHandler<GetCompanyOrdersQuery, IEnumerable<OrderViewModel>>
 {
-	private readonly DynamicPriceCoreContext _context;
-	private readonly IMapper _mapper;
-	private readonly IUserService _userService;
-
-	public GetCompanyOrdersQueryHandler(
-		DynamicPriceCoreContext context,
-		IMapper mapper,
-		IUserService userService)
-		=> (_context, _mapper, _userService) = (context, mapper, userService);
-
 	public async Task<IEnumerable<OrderViewModel>> Handle(
 		GetCompanyOrdersQuery request,
 		CancellationToken cancellationToken)
 	{
-		var manager = await _userService.GetRequiredCurrentUserAsync();
+		var manager = await userService.GetRequiredCurrentUserAsync();
 
-		var companyOrders = await _context.Orders
+		var companyOrders = await context.Orders
 			.Where(o => o.CompanyId == manager.CompanyId)
 			.OrderByDescending(o => o.OrderDate)
 			.ToArrayAsync(cancellationToken);
 
-		var companyOrdersVm = _mapper.Map<OrderViewModel[]>(companyOrders);
+		var companyOrdersVm = mapper.Map<OrderViewModel[]>(companyOrders);
 
 		foreach (var orderVm in companyOrdersVm.Where(o => !VirtualCustomer.IsVirtualCustomer(o.CustomerId)))
 		{
-			orderVm.CustomerName = (await _userService.GetUserByIdAsync(orderVm.CustomerId))?.UserName ?? string.Empty;
+			orderVm.CustomerName = (await userService.GetUserByIdAsync(orderVm.CustomerId))?.UserName ?? string.Empty;
 		}
 
 		return companyOrdersVm;

@@ -7,24 +7,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPrice.Core.MediatR.OrderEntity.Queries;
 
-public class GetCompanyStatisticsQueryHandler
+public class GetCompanyStatisticsQueryHandler(
+	DynamicPriceCoreContext context,
+	IUserService userService)
 	: IRequestHandler<GetCompanyStatisticsQuery, OrdersStatistics>
 {
-	private readonly DynamicPriceCoreContext _context;
-	private readonly IUserService _userService;
-
-	public GetCompanyStatisticsQueryHandler(
-		DynamicPriceCoreContext context,
-		IUserService userService)
-		=> (_context, _userService) = (context, userService);
-
 	public async Task<OrdersStatistics> Handle(
 		GetCompanyStatisticsQuery request,
 		CancellationToken cancellationToken)
 	{
-		var manager = await _userService.GetRequiredCurrentUserAsync();
+		var manager = await userService.GetRequiredCurrentUserAsync();
 
-		var companyOrdersWithAmount = await _context.Orders
+		var companyOrdersWithAmount = await context.Orders
 			.Where(o => o.CompanyId == manager.CompanyId)
 			.Select(o => new
 			{

@@ -6,24 +6,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPrice.Core.MediatR.OrderEntity.Queries;
 
-public class GetOrderIdByReceiveKeyQueryHandler
+public class GetOrderIdByReceiveKeyQueryHandler(
+	DynamicPriceCoreContext context,
+	IUserService userService)
 	: IRequestHandler<GetOrderIdByReceiveKeyQuery, int>
 {
-	private readonly DynamicPriceCoreContext _context;
-	private readonly IUserService _userService;
-
-	public GetOrderIdByReceiveKeyQueryHandler(
-		DynamicPriceCoreContext context,
-		IUserService userService)
-		=> (_context, _userService) = (context, userService);
-
 	public async Task<int> Handle(
 		GetOrderIdByReceiveKeyQuery request,
 		CancellationToken cancellationToken)
 	{
-		var manager = await _userService.GetRequiredCurrentUserAsync();
+		var manager = await userService.GetRequiredCurrentUserAsync();
 
-		var orderId = await _context.Orders
+		var orderId = await context.Orders
 			.Where(o =>
 				o.ReceiveKey.ToString() == request.ReceiveKey &&
 				o.CompanyId == manager.CompanyId)

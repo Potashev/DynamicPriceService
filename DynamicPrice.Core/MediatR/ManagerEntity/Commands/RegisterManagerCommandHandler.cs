@@ -5,21 +5,17 @@ using MediatR;
 
 namespace DynamicPrice.Core.MediatR.ManagerEntity.Commands;
 
-public class RegisterManagerCommandHandler
+public class RegisterManagerCommandHandler(
+	IUserService userService)
 	: IRequestHandler<RegisterManagerCommand>
 {
-	private readonly IUserService _userService;
-
-	public RegisterManagerCommandHandler(IUserService userService)
-		=> _userService = userService;
-
 	public async Task Handle(
 	RegisterManagerCommand request,
 	CancellationToken cancellationToken)
 	{
-		var manager = await _userService.GetRequiredCurrentUserAsync();
+		var manager = await userService.GetRequiredCurrentUserAsync();
 
-		await _userService.RegisterUserAsync(
+		await userService.RegisterUserAsync(
 			new RegisterUserRequest(request.registerVm)
 			{
 				Role = "Manager",

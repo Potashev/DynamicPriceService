@@ -9,32 +9,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPrice.Core.MediatR.CartEntity.Commands;
 
-public class AddProductToCartCommandHadnler
+public class AddProductToCartCommandHadnler(
+	DynamicPriceCoreContext context,
+	IMapper mapper,
+	IUserService userService)
 	: IRequestHandler<AddProductToCartCommand, CartViewModel>
 {
-	private readonly DynamicPriceCoreContext _context;
-	private readonly IMapper _mapper;
-	private readonly IUserService _userService;
-
-	public AddProductToCartCommandHadnler(
-		DynamicPriceCoreContext context,
-		IMapper mapper,
-		IUserService userService)
-		=> (_context, _mapper, _userService) = (context, mapper, userService);
-
 	public async Task<CartViewModel> Handle(
 		AddProductToCartCommand request,
 		CancellationToken cancellationToken)
 	{
-		var customer = await _userService.GetRequiredCurrentUserAsync();
+		var customer = await userService.GetRequiredCurrentUserAsync();
 
-		var product = await _context.Products
+		var product = await context.Products
 			.Include(p => p.Company)
 			.Where(p => p.ProductId.ToString() == request.ProductId)
 			.FirstOrDefaultAsync(cancellationToken)
 			?? throw new NotFoundException("Product not found");
 
-		var cart = await _context.Carts
+		var cart = await context.Carts
 			.Include(c => c.CartItems)
 			.Where(c => c.CustomerId == customer.Id
 				&& c.CompanyId == product.CompanyId)
@@ -43,12 +36,12 @@ public class AddProductToCartCommandHadnler
 		if (cart is null)
 		{
 			cart = new Cart(customer.Id, product.CompanyId);
-			await _context.Carts.AddAsync(cart);
+			await context.Carts.AddAsync(cart);
 		}
 
 		cart.AddItem(product.ProductId);
 
-		await _context.SaveChangesAsync(cancellationToken);
-		return _mapper.Map<CartViewModel>(cart);
+		await context.SaveChangesAsync(cancellationToken);
+		return mapper.Map<CartViewModel>(cart);
 	}
 }

@@ -59,7 +59,11 @@ public abstract class PriceServiceBase<TEvent> : IConsumer<TEvent>
 	{
 		var product = await _context.Products
 			.FirstOrDefaultAsync(p => p.ProductId == productId)
-			?? throw new NotFoundException("Product not found.");
+			?? throw new NotFoundException("Product not found.");	//todo: check in throw - shut down?
+
+		//todo: check
+		if (product.Status != ProductStatus.Active)
+			return;
 
 		var priceRule = await _context.PriceRules
 			.FirstOrDefaultAsync(pr => pr.Company.CompanyId == product.CompanyId)

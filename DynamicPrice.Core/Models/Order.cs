@@ -77,6 +77,9 @@ public class Order
 		{
 			var product = item.Product;
 
+			if (product.Status is not ProductStatus.Active)
+				throw new BusinessException($"Product '{product.Title}' is not available now");
+
 			product.ReduceQuantity(item.Quantity);
 
 			OrderItems.Add(new OrderItem

@@ -4,14 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Customer.Controllers;
 
-public class CustomerController : BaseController
+public class CustomerController(
+	ICoreApiClient coreApiClient) 
+	: Controller
 {
-	public CustomerController(ICoreApiClient coreApiClient)
-		: base(coreApiClient) { }
-
 	[HttpGet]
 	public async Task<IActionResult> Index(CancellationToken cancellationToken)
-		=> View(await CoreApiClient.GetCustomer(cancellationToken));
+		=> View(await coreApiClient.GetCustomer(cancellationToken));
 
 	[HttpPost]
 	public async Task<IActionResult> TopUpBalance(
@@ -20,7 +19,7 @@ public class CustomerController : BaseController
 	{
 		if (ModelState.IsValid)
 		{
-			await CoreApiClient.TopUpBalance(balanceRequest, cancellationToken);
+			await coreApiClient.TopUpBalance(balanceRequest, cancellationToken);
 		}
 		return RedirectToAction(nameof(Index));
 	}
@@ -37,7 +36,7 @@ public class CustomerController : BaseController
 		if (!ModelState.IsValid)
 			return View(registerVm);
 
-		await CoreApiClient.RegisterCustomer(registerVm, cancellationToken);
+		await coreApiClient.RegisterCustomer(registerVm, cancellationToken);
 
 		return RedirectToAction(
 				nameof(AuthController.LoginCustomer),

@@ -5,19 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Manager.Controllers;
 
-public class AuthController : Controller
+public class AuthController(
+	ICoreApiClient coreApiClient,
+	IAuthTokenStore authTokenStore)
+	: Controller
 {
-	private readonly ICoreApiClient _coreApiClient;
-	private readonly IAuthTokenStore _authTokenStore;
-
-	public AuthController(
-		IAuthTokenStore authTokenStore,
-		ICoreApiClient coreApiClient)
-	{
-		_authTokenStore = authTokenStore;
-		_coreApiClient = coreApiClient;
-	}
-
 	[HttpGet]
 	public IActionResult LoginManager()
 		=> View();
@@ -27,15 +19,23 @@ public class AuthController : Controller
 		LoginRequest loginVm,
 		CancellationToken cancellationToken)
 	{
-		if (ModelState.IsValid)
-		{
-			var tokenResponse = await _coreApiClient.LoginManager(loginVm, cancellationToken);
-			_authTokenStore.SetToken(tokenResponse.Token);
+		if (!ModelState.IsValid)
+			return View(loginVm);
 
-			return RedirectToAction(
-				nameof(ProductsController.Index),
-				nameof(ProductsController).Replace("Controller", ""));
-		}
-		return View();
+		var tokenResponse = await coreApiClient.LoginManager(loginVm, cancellationToken);
+
+		authTokenStore.SetToken(tokenResponse.Token);
+
+		return RedirectToAction(
+			nameof(ProductsController.Index),
+			nameof(ProductsController).Replace("Controller", ""));
+	}
+
+	[HttpPost]
+	public async Task<IActionResult> Logout()
+	{
+		authTokenStore.SetToken(string.Empty);
+
+		return RedirectToAction(nameof(LoginManager));
 	}
 }

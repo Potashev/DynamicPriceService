@@ -4,14 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Manager.Controllers;
 
-public class ProductsController : BaseController
+public class ProductsController(
+	ICoreApiClient coreApiClient) 
+	: Controller
 {
-	public ProductsController(ICoreApiClient coreApiClient)
-		: base(coreApiClient) { }
-
 	[HttpGet]
 	public async Task<IActionResult> Index(CancellationToken cancellationToken)
-		=> View(await CoreApiClient.GetProducts(cancellationToken));
+		=> View(await coreApiClient.GetProducts(cancellationToken));
 
 	[HttpGet]
 	public async Task<IActionResult> Details(
@@ -21,7 +20,7 @@ public class ProductsController : BaseController
 		if (id is null)
 			return NotFound();
 
-		var productVm = await CoreApiClient.GetProduct((int)id, cancellationToken);
+		var productVm = await coreApiClient.GetProduct((int)id, cancellationToken);
 		return View(productVm);
 	}
 
@@ -36,7 +35,7 @@ public class ProductsController : BaseController
 	{
 		if (ModelState.IsValid)
 		{
-			await CoreApiClient.CreateProduct(productVm, cancellationToken);
+			await coreApiClient.CreateProduct(productVm, cancellationToken);
 			return RedirectToAction(nameof(Index));
 		}
 		return View(productVm);
@@ -49,7 +48,7 @@ public class ProductsController : BaseController
 	{
 		if (id is null) return NotFound();
 
-		var productVm = await CoreApiClient.GetProduct((int)id, cancellationToken);
+		var productVm = await coreApiClient.GetProduct((int)id, cancellationToken);
 		return View(productVm);
 	}
 
@@ -60,7 +59,7 @@ public class ProductsController : BaseController
 	{
 		if (ModelState.IsValid)
 		{
-			await CoreApiClient.UpdateProduct(productVm, cancellationToken);
+			await coreApiClient.UpdateProduct(productVm, cancellationToken);
 			return RedirectToAction(nameof(Index));
 		}
 		return View(productVm);
@@ -73,7 +72,7 @@ public class ProductsController : BaseController
 	{
 		if (id is null) return NotFound();
 
-		var productVm = await CoreApiClient.GetProduct((int)id, cancellationToken);
+		var productVm = await coreApiClient.GetProduct((int)id, cancellationToken);
 		return productVm == null
 			? NotFound()
 			: View(productVm);
@@ -84,7 +83,7 @@ public class ProductsController : BaseController
 		int id,
 		CancellationToken cancellationToken)
 	{
-		await CoreApiClient.DeleteProduct(id, cancellationToken);
+		await coreApiClient.DeleteProduct(id, cancellationToken);
 		return RedirectToAction(nameof(Index));
 	}
 }

@@ -5,18 +5,14 @@ using MediatR;
 
 namespace DynamicPrice.Core.MediatR.CustomerEntity.Commands;
 
-public class RegisterCustomerCommandHandler
+public class RegisterCustomerCommandHandler(
+	IUserService userService)
 	: IRequestHandler<RegisterCustomerCommand>
 {
-	private readonly IUserService _userService;
-
-	public RegisterCustomerCommandHandler(IUserService userService)
-		=> _userService = userService;
-
 	public async Task Handle(
 	RegisterCustomerCommand request,
 	CancellationToken cancellationToken)
-		=> await _userService.RegisterUserAsync(
+		=> await userService.RegisterUserAsync(
 			new RegisterUserRequest(request.registerVm)
 			{
 				Role = "Customer",

@@ -3,7 +3,6 @@
 
 @{
 	ViewData["Title"] = "Index";
-	var currentManagerId = ViewData["ManagerId"]?.ToString();
 	if (Model is null) return;
 }
 
@@ -30,7 +29,7 @@
 				<td>
 					@Html.DisplayFor(modelItem => item.Name)
 
-					@if (currentManagerId == item.Id)
+					@if (CurrentUser.UserId == item.Id)
 					{
 						<span class="badge bg-success">You</span>
 					}

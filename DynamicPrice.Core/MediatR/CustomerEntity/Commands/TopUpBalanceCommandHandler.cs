@@ -4,22 +4,18 @@ using MediatR;
 
 namespace DynamicPrice.Core.MediatR.CustomerEntity.Commands;
 
-public class TopUpBalanceCommandHandler
+public class TopUpBalanceCommandHandler(
+	IUserService userService)
 	: IRequestHandler<TopUpBalanceCommand>
 {
-	private readonly IUserService _userService;
-
-	public TopUpBalanceCommandHandler(IUserService userService)
-		=> _userService = userService;
-
 	public async Task Handle(
 		TopUpBalanceCommand request,
 		CancellationToken cancellationToken)
 	{
-		var customer = await _userService.GetRequiredCurrentUserAsync();
+		var customer = await userService.GetRequiredCurrentUserAsync();
 
 		customer.Balance += request.balanceVm.ReplenishmentAmount;
 
-		await _userService.UpdateCurrentUserAsync();
+		await userService.UpdateCurrentUserAsync();
 	}
 }

@@ -9,28 +9,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPrice.Core.MediatR.CompanyEntity.Queries;
 
-public class GetCompanyProductsQueryHandler
+public class GetCompanyProductsQueryHandler(
+	DynamicPriceCoreContext context,
+	IMapper mapper)
 	: IRequestHandler<GetCompanyProductsQuery, CompanyProductsInfo>
 {
-	private readonly DynamicPriceCoreContext _context;
-	private readonly IMapper _mapper;
-
-	public GetCompanyProductsQueryHandler(
-		DynamicPriceCoreContext context,
-		IMapper mapper)
-		=> (_context, _mapper) = (context, mapper);
-
 	public async Task<CompanyProductsInfo> Handle(
 		GetCompanyProductsQuery request,
 		CancellationToken cancellationToken)
 	{
-		var company = await _context.ActiveCompanies
+		var company = await context.ActiveCompanies
 			.Where(ac => ac.CompanyId.ToString() == request.CompanyId)
 			.Select(ac => ac.Company)
 			.FirstOrDefaultAsync(cancellationToken)
 			?? throw new NotFoundException("Company not found or not active");
 
-		var products = await _context.Products
+		var products = await context.Products
 			.Where(p => p.CompanyId == company.CompanyId)
 			.Where(Product.CanBeReducedExpr)
 			.Include(p => p.PriceDynamics
@@ -40,8 +34,8 @@ public class GetCompanyProductsQueryHandler
 
 		return new CompanyProductsInfo
 		{
-			Company = _mapper.Map<CompanyViewModel>(company),
-			Products = _mapper.Map<ProductInfoViewModel[]>(products),
+			Company = mapper.Map<CompanyViewModel>(company),
+			Products = mapper.Map<ProductInfoViewModel[]>(products),
 			PriceHistoryLimit = company.PriceHistoryLimit
 		};
 	}

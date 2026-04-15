@@ -7,26 +7,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPrice.Core.MediatR.OrderEntity.Queries;
 
-public class GetCustomerOrderDetailsQueryHandler
+public class GetCustomerOrderDetailsQueryHandler(
+	DynamicPriceCoreContext context,
+	IMapper mapper,
+	IUserService userService)
 	: IRequestHandler<GetCustomerOrderDetailsQuery, OrderViewModel>
 {
-	private readonly DynamicPriceCoreContext _context;
-	private readonly IMapper _mapper;
-	private readonly IUserService _userService;
-
-	public GetCustomerOrderDetailsQueryHandler(
-		DynamicPriceCoreContext context,
-		IMapper mapper,
-		IUserService userService)
-		=> (_context, _mapper, _userService) = (context, mapper, userService);
-
 	public async Task<OrderViewModel> Handle(
 		GetCustomerOrderDetailsQuery request,
 		CancellationToken cancellationToken)
 	{
-		var customer = await _userService.GetRequiredCurrentUserAsync();
+		var customer = await userService.GetRequiredCurrentUserAsync();
 
-		var customerOrder = await _context.Orders
+		var customerOrder = await context.Orders
 			.Where(o =>
 				o.OrderId.ToString() == request.OrderId &&
 				o.CustomerId == customer.Id)
@@ -35,6 +28,6 @@ public class GetCustomerOrderDetailsQueryHandler
 			.Include(o => o.Company)
 			.FirstOrDefaultAsync(cancellationToken);
 
-		return _mapper.Map<OrderViewModel>(customerOrder);
+		return mapper.Map<OrderViewModel>(customerOrder);
 	}
 }

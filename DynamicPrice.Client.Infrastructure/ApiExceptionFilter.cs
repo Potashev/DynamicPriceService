@@ -11,7 +11,8 @@ using ProblemDetails = Microsoft.AspNetCore.Mvc.ProblemDetails;
 
 
 public class ApiExceptionFilter(
-	ILogger<ApiExceptionFilter> logger) : IAsyncExceptionFilter
+	ILogger<ApiExceptionFilter> logger)
+	: IAsyncExceptionFilter
 {
 	public async Task OnExceptionAsync(ExceptionContext context)
 	{
@@ -62,6 +63,7 @@ public class ApiExceptionFilter(
 		if (!string.IsNullOrWhiteSpace(problem?.Detail))
 			return problem.Detail;
 
-		return "Unable to reach server. Please try again later.";
+		//todo: updated - reach server or not auth (orders/product etc when not auth)
+		return "Unable to reach server. Please try again later.";	
 	}
 }

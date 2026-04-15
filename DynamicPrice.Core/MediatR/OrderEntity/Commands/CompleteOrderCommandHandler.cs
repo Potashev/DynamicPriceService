@@ -8,26 +8,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPrice.Core.MediatR.OrderEntity.Commands;
 
-public class CompleteOrderCommandHandler
+public class CompleteOrderCommandHandler(
+	DynamicPriceCoreContext context,
+	IUserService userService,
+	IPublishEndpoint publishEndpoint)
 	: IRequestHandler<CompleteOrderCommand, int>
 {
-	private readonly DynamicPriceCoreContext _context;
-	private readonly IUserService _userService;
-	private readonly IPublishEndpoint _publishEndpoint;
-
-	public CompleteOrderCommandHandler(
-		DynamicPriceCoreContext context,
-		IUserService userService,
-		IPublishEndpoint publishEndpoint)
-		=> (_context, _userService, _publishEndpoint) = (context, userService, publishEndpoint);
-
 	public async Task<int> Handle(
 		CompleteOrderCommand request,
 		CancellationToken cancellationToken)
 	{
-		var manager = await _userService.GetRequiredCurrentUserAsync();
+		var manager = await userService.GetRequiredCurrentUserAsync();
 
-		var order = await _context.Orders
+		var order = await context.Orders
 			.Where(o => o.OrderId.ToString() == request.OrderId && o.CompanyId == manager.CompanyId)
 			.Include(o => o.OrderItems)
 				.ThenInclude(oi => oi.Product)
@@ -37,7 +30,7 @@ public class CompleteOrderCommandHandler
 		if (order.Status is not OrderStatus.Ready)
 			throw new BusinessException("Only ready for receive orders can be completed.");
 
-		var customer = await _userService.GetUserByIdAsync(order.CustomerId)
+		var customer = await userService.GetUserByIdAsync(order.CustomerId)
 			?? throw new NotFoundException("Customer not found.");
 
 		var orderTotalAmount = order.OrderItems
@@ -50,11 +43,11 @@ public class CompleteOrderCommandHandler
 
 		order.MarkAsCompleted();
 
-		await _context.SaveChangesAsync(cancellationToken);
-		await _userService.UpdateUserAsync(customer);
+		await context.SaveChangesAsync(cancellationToken);
+		await userService.UpdateUserAsync(customer);
 
 		foreach (var item in order.OrderItems)
-			await _publishEndpoint.Publish(
+			await publishEndpoint.Publish(
 				new PriceIncreaseEvent(item.ProductId, item.Quantity),
 				cancellationToken);
 

@@ -9,26 +9,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPrice.Core.MediatR.CustomerEntity.Queries;
 
-public class GetCustomerInfoQueryHandler
+public class GetCustomerInfoQueryHandler(
+	DynamicPriceCoreContext context,
+	IMapper mapper,
+	IUserService userService)
 	: IRequestHandler<GetCustomerInfoQuery, CustomerInfoViewModel>
 {
-	private readonly DynamicPriceCoreContext _context;
-	private readonly IMapper _mapper;
-	private readonly IUserService _userService;
-
-	public GetCustomerInfoQueryHandler(
-		DynamicPriceCoreContext context,
-		IMapper mapper,
-		IUserService userService)
-		=> (_context, _mapper, _userService) = (context, mapper, userService);
-
 	public async Task<CustomerInfoViewModel> Handle(
 		GetCustomerInfoQuery request,
 		CancellationToken cancellationToken)
 	{
-		var customer = await _userService.GetRequiredCurrentUserAsync();
+		var customer = await userService.GetRequiredCurrentUserAsync();
 
-		var customerOrders = await _context.Orders
+		var customerOrders = await context.Orders
 			.Include(o => o.Company)
 			.Include(o => o.OrderItems)
 				.ThenInclude(oi => oi.Product)
@@ -41,7 +34,7 @@ public class GetCustomerInfoQueryHandler
 			Name = customer.UserName ?? string.Empty,
 			Email = customer.Email ?? string.Empty,
 			Balance = customer.Balance,
-			Orders = _mapper.Map<OrderViewModel[]>(customerOrders)
+			Orders = mapper.Map<OrderViewModel[]>(customerOrders)
 		};
 	}
 }

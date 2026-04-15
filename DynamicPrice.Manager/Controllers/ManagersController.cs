@@ -4,14 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicPrice.Manager.Controllers;
 
-public class ManagersController : BaseController
+public class ManagersController(
+	ICoreApiClient coreApiClient) 
+	: Controller
 {
-	public ManagersController(ICoreApiClient coreApiClient)
-	: base(coreApiClient) { }
-
 	[HttpGet]
 	public async Task<IActionResult> Index(CancellationToken cancellationToken)
-		=> View(await CoreApiClient.GetCompanyManagers(cancellationToken));
+		=> View(await coreApiClient.GetCompanyManagers(cancellationToken));
 
 	[HttpGet]
 	public IActionResult RegisterManager()
@@ -25,7 +24,7 @@ public class ManagersController : BaseController
 		if (!ModelState.IsValid)
 			return View(registerVm);
 
-		await CoreApiClient.RegisterManager(registerVm, cancellationToken);
+		await coreApiClient.RegisterManager(registerVm, cancellationToken);
 
 		return RedirectToAction(nameof(Index));
 	}

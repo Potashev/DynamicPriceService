@@ -5,119 +5,75 @@ using DynamicPrice.Shared.Contracts.Requests;
 using DynamicPrice.Shared.Contracts.Responses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.JsonWebTokens;
-using Microsoft.IdentityModel.Tokens;
 using System.Linq.Expressions;
 using System.Security.Claims;
-using System.Text;
 
 namespace DynamicPrice.Core.Services;
 
-public class UserService : IUserService
-{
-	private readonly IHttpContextAccessor _httpContextAccessor;
-	private readonly UserManager<ApplicationUser> _userManager;
-	private readonly IConfiguration _config;
-	private readonly IMapper _mapper;
-
-	public UserService(
+public class UserService(
 		IHttpContextAccessor httpContextAccessor,
 		UserManager<ApplicationUser> userManager,
-		IConfiguration config,
-		IMapper mapper)
-	{
-		_httpContextAccessor = httpContextAccessor;
-		_userManager = userManager;
-		_config = config;
-		_mapper = mapper;
-	}
-
+		IMapper mapper,
+		IUserCompanyService userCompanyService,
+		ITokenService tokenService) : IUserService
+{
 	public string? UserId
-		=> _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+		=> httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
 	public string? Role
-		=> _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role)?.Value;
+		=> httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role)?.Value;
 
 	public async Task<ApplicationUser> GetRequiredCurrentUserAsync()
 		=> await GetUserByIdAsync(UserId ?? string.Empty)
 			?? throw new UnauthorizedException("User is not authenticated.");
 
 	public async Task<ApplicationUser> GetUserByIdAsync(string userId)
-		=> await _userManager.FindByIdAsync(userId)
+		=> await userManager.FindByIdAsync(userId)
 			?? throw new NotFoundException("User not found.");
 
 	public async Task<IEnumerable<ApplicationUser>> GetUsersAsync(Expression<Func<ApplicationUser, bool>> predicate)
-		=> await _userManager.Users
+		=> await userManager.Users
 			.Where(predicate)
 			.AsNoTracking()
 			.ToListAsync();
 
 	public async Task<TokenResponse> LoginUserAsync(LoginRequest request)
 	{
-		var user = await _userManager.FindByNameAsync(request.Username);
-		if (user == null || !await _userManager.CheckPasswordAsync(user, request.Password))
+		var user = await userManager.FindByNameAsync(request.Username);
+		if (user == null || !await userManager.CheckPasswordAsync(user, request.Password))
 			throw new UnauthorizedException("Unauthorized!");
 
-		var roles = await _userManager.GetRolesAsync(user);
+		var roles = await userManager.GetRolesAsync(user);
+
+		var company = await userCompanyService.GetCompanyAsync(user);
 
 		return new TokenResponse
 		{
-			Token = GenerateJwtToken(user, roles)
+			Token = tokenService.GenerateToken(user, roles, company)
 		};
 	}
 
 	public async Task RegisterUserAsync(RegisterUserRequest request)
 	{
-		var user = _mapper.Map<ApplicationUser>(request);
+		var user = mapper.Map<ApplicationUser>(request);
 
-		var result = await _userManager.CreateAsync(user, request.Password);
+		var result = await userManager.CreateAsync(user, request.Password);
 		if (!result.Succeeded)
 		{
 			throw new ApplicationException($"User creation failed!");
 		}
 
-		await _userManager.AddToRoleAsync(user, request.Role);
+		await userManager.AddToRoleAsync(user, request.Role);
 	}
 
 	public async Task UpdateCurrentUserAsync()
 	{
 		var user = await GetRequiredCurrentUserAsync();
-		await _userManager.UpdateAsync(user);
+		await userManager.UpdateAsync(user);
 	}
 
 	public async Task UpdateUserAsync(ApplicationUser user)
-		=> await _userManager.UpdateAsync(user);
-
-	private string GenerateJwtToken(
-		ApplicationUser user,
-		IList<string> roles)
-	{
-		List<Claim> claims =
-		[
-			new(JwtRegisteredClaimNames.Sub, user.Id),
-			new(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
-
-			..roles.Select(r => new Claim(ClaimTypes.Role, r))
-		];
-
-		var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
-		var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-		var expireMinutes = _config.GetValue<int>("Jwt:ExpireMinutes");
-
-		var tokenDescriptor = new SecurityTokenDescriptor
-		{
-			Subject = new ClaimsIdentity(claims),
-			Expires = DateTime.UtcNow.AddMinutes(expireMinutes),
-			SigningCredentials = credentials,
-			Issuer = _config["Jwt:Issuer"],
-			Audience = _config["Jwt:Audience"]
-		};
-
-		var tokenHandler = new JsonWebTokenHandler();
-		string accessToken = tokenHandler.CreateToken(tokenDescriptor);
-		return accessToken;
-	}
+		=> await userManager.UpdateAsync(user);
 }
 
 public interface IUserService

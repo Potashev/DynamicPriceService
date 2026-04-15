@@ -9,26 +9,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPrice.Core.MediatR.ManagerEntity.Queries;
 
-public class GetManagerInfoQueryHandler
+public class GetManagerInfoQueryHandler(
+	DynamicPriceCoreContext context,
+	IMapper mapper,
+	IUserService userService)
 	: IRequestHandler<GetManagerInfoQuery, ManagerInfoViewModel>
 {
-	private readonly DynamicPriceCoreContext _context;
-	private readonly IMapper _mapper;
-	private readonly IUserService _userService;
-
-	public GetManagerInfoQueryHandler(
-		DynamicPriceCoreContext context,
-		IMapper mapper,
-		IUserService userService)
-		=> (_context, _mapper, _userService) = (context, mapper, userService);
-
 	public async Task<ManagerInfoViewModel> Handle(
 		GetManagerInfoQuery request,
 		CancellationToken cancellationToken)
 	{
-		var manager = await _userService.GetRequiredCurrentUserAsync();
+		var manager = await userService.GetRequiredCurrentUserAsync();
 
-		var company = await _context.Companies
+		var company = await context.Companies
 			.FirstOrDefaultAsync(c => c.CompanyId == manager.CompanyId, cancellationToken);
 
 		return new ManagerInfoViewModel
@@ -36,7 +29,7 @@ public class GetManagerInfoQueryHandler
 			Id = manager.Id ?? string.Empty,
 			Name = manager.UserName ?? string.Empty,
 			Email = manager.Email ?? string.Empty,
-			Company = _mapper.Map<CompanyViewModel>(company)
+			Company = mapper.Map<CompanyViewModel>(company)
 		};
 	}
 }

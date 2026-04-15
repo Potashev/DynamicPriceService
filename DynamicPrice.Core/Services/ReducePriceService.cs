@@ -14,7 +14,6 @@ public class ReducePriceService : PriceServiceBase<PriceReduceEvent>
 {
 	public ReducePriceService(
 		DynamicPriceCoreContext context,
-		IConfiguration config,
 		IHubContext<PriceHub> priceHubContext,
 		ILogger<ReducePriceService> logger)
 		: base(context, priceHubContext, logger) { }

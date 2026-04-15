@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DynamicPrice.Core.Data;
+using DynamicPrice.Core.Models;
 using DynamicPrice.Core.Services;
 using DynamicPrice.Shared.Contracts.ViewModels;
 using MediatR;
@@ -20,7 +21,9 @@ public class GetProductsQueryHandler(
 		var manager = await userService.GetRequiredCurrentUserAsync();
 
 		var products = await context.Products
-			.Where(p => p.Company.CompanyId == manager.CompanyId)
+			.Where(p => 
+				p.Company.CompanyId == manager.CompanyId &&
+				p.Status == ProductStatus.Active)
 			.ToArrayAsync(cancellationToken);
 
 		return mapper.Map<ProductViewModel[]>(products);

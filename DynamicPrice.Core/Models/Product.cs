@@ -51,6 +51,11 @@ public class Product
 	public string? Description { get; set; }
 
 	/// <summary>
+	/// 
+	/// </summary>
+	public ProductStatus Status { get; set; }
+
+	/// <summary>
 	/// Время последней продажи товара. Используется для определения "простоя" продукта.
 	/// </summary>
 	public DateTime? LastSellTime { get; set; }
@@ -84,4 +89,15 @@ public class Product
 
 	public static Expression<Func<Product, bool>> CanBeReducedExpr =>
 		p => p.Quantity == null || p.Quantity > 0;
+}
+
+/// <summary>
+/// 
+/// </summary>
+public enum ProductStatus
+{
+	/// <summary></summary>
+	Active,
+	/// <summary></summary>
+	Archived,
 }

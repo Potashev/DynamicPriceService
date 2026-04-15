@@ -1,5 +1,6 @@
 ﻿using DynamicPrice.Core.Data;
 using DynamicPrice.Core.Exceptions;
+using DynamicPrice.Core.Models;
 using DynamicPrice.Core.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +24,10 @@ public class DeleteProductCommandHandler(
 				p.CompanyId == manager.CompanyId, cancellationToken)
 			?? throw new NotFoundException("Product not found.");
 
-		context.Products.Remove(product);
+		//context.Products.Remove(product);
+
+		product.Status = ProductStatus.Archived;
+
 		await context.SaveChangesAsync(cancellationToken);
 	}
 }

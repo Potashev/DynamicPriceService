@@ -84,6 +84,9 @@ public class Product
 		Quantity -= amount;
 	}
 
+	public bool IsActive()
+		=> Status == ProductStatus.Active;
+
 	public void UpdateStatus(ProductStatus targetStatus)
 	{
 		if (Status == targetStatus)

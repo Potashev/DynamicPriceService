@@ -27,6 +27,9 @@ public class AddProductToCartCommandHadnler(
 			.FirstOrDefaultAsync(cancellationToken)
 			?? throw new NotFoundException("Product not found");
 
+		if (!product.IsActive())
+			throw new BusinessException($"Product '{product.Title}' is not available now");
+
 		var cart = await context.Carts
 			.Include(c => c.CartItems)
 			.Where(c => c.CustomerId == customer.Id

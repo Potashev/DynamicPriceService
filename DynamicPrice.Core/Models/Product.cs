@@ -104,8 +104,8 @@ public class Product
 /// </summary>
 public enum ProductStatus
 {
-	/// <summary>Товар доступен для продажи</summary>
+	/// <summary>Продукт доступен для продажи.</summary>
 	Active,
-	/// <summary>Товар снят с продажи</summary>
+	/// <summary>Продукт снят с продажи.</summary>
 	Archived,
 }

@@ -7,13 +7,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPrice.Core.MediatR.ProductEntity.Commands;
 
-public class DeleteProductCommandHandler(
+public class MakeArchivedProductCommandHandler(
 	DynamicPriceCoreContext context,
 	IUserService userService)
-	: IRequestHandler<DeleteProductCommand>
+	: IRequestHandler<MakeArchivedProductCommand>
 {
 	public async Task Handle(
-		DeleteProductCommand request,
+		MakeArchivedProductCommand request,
 		CancellationToken cancellationToken)
 	{
 		var manager = await userService.GetRequiredCurrentUserAsync();
@@ -24,9 +24,11 @@ public class DeleteProductCommandHandler(
 				p.CompanyId == manager.CompanyId, cancellationToken)
 			?? throw new NotFoundException("Product not found.");
 
-		//context.Products.Remove(product);
-
-		product.Status = ProductStatus.Archived;
+		//todo: add product.UpdateStatus(ProductStatus.Archived)?
+		if (product.Status != ProductStatus.Archived)
+			product.Status  = ProductStatus.Archived;
+		else
+			throw new BusinessException("Product already archived.");
 
 		await context.SaveChangesAsync(cancellationToken);
 	}

@@ -2,4 +2,4 @@
 
 namespace DynamicPrice.Core.MediatR.ProductEntity.Commands;
 
-public record DeleteProductCommand(int ProductId) : IRequest;
+public record MakeActiveProductCommand(int ProductId) : IRequest;

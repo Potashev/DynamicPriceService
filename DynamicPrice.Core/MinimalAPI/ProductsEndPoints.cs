@@ -24,8 +24,14 @@ public static class ProductsEndPoints
 		products.MapPost("", Create)
 			.WithSummary("Создать продукт");
 
-		products.MapDelete("/{id}", Delete)
-			.WithSummary("Удалить продукт");
+		//products.MapDelete("/{id}", Delete)
+		//	.WithSummary("Удалить продукт");
+
+		products.MapPatch("/{id}/archive", MakeArchived)
+			.WithSummary("");
+
+		products.MapPatch("/{id}/activate", MakeActive)
+			.WithSummary("");
 	}
 
 	private static async Task<IResult> GetProducts(
@@ -51,12 +57,31 @@ public static class ProductsEndPoints
 		CancellationToken cancellationToken)
 			=> Results.Ok(await mediator.Send(new CreateProductCommand(productVm), cancellationToken));
 
-	private static async Task<IResult> Delete(
-		int id,
-		IMediator mediator,
-		CancellationToken cancellationToken)
+	//private static async Task<IResult> Delete(
+	//	int id,
+	//	IMediator mediator,
+	//	CancellationToken cancellationToken)
+	//{
+	//	await mediator.Send(new DeleteProductCommand(id), cancellationToken);
+	//	return Results.Ok();
+	//}
+
+	private static async Task<IResult> MakeArchived(
+	int id,
+	IMediator mediator,
+	CancellationToken cancellationToken)
 	{
-		await mediator.Send(new DeleteProductCommand(id), cancellationToken);
+		//await mediator.Send(new MakeActiveProductCommand(id), cancellationToken);
+		await mediator.Send(new MakeArchivedProductCommand(id), cancellationToken);
+		return Results.Ok();
+	}
+
+	private static async Task<IResult> MakeActive(
+	int id,
+	IMediator mediator,
+	CancellationToken cancellationToken)
+	{
+		await mediator.Send(new MakeActiveProductCommand(id), cancellationToken);
 		return Results.Ok();
 	}
 }

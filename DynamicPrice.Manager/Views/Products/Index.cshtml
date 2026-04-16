@@ -12,8 +12,9 @@
 <h1>Products</h1>
 
 <p>
-	<a asp-action="Create">Create New</a>
+	<a asp-action="Create" class="btn btn-primary">Create New</a>
 </p>
+
 <table class="table table-striped" style="table-layout: fixed;">
 	<thead>
 		<tr>
@@ -57,7 +58,13 @@
 				<td>
 					<a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
 					<a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
-					<a asp-action="Delete" asp-route-id="@item.ProductId">Archive</a>
+				
+					<form asp-action="MakeArchived"
+						  asp-route-id="@item.ProductId"
+						  method="post"
+						  style="display:inline;">
+						<button type="submit" class="btn btn-link p-0">Archive</button>
+					</form>
 				</td>
 			</tr>
 		}
@@ -65,6 +72,16 @@
 </table>
 
 <h2>Archived</h2>
+
+<label class="mb-3 d-block">
+	<input type="checkbox" id="hideArchivedCheckbox" />
+	Hide archived products
+
+	<span title="Archived products are excluded from dynamic pricing and are not available for customers. They are kept for orders history and analytics."
+		  style="cursor: help; margin-left: 5px;">
+		ℹ️
+	</span>
+</label>
 
 <table class="table table-striped" style="table-layout: fixed;">
 	<thead>
@@ -90,7 +107,7 @@
 	<tbody>
 		@foreach (var item in archivedProducts)
 		{
-			<tr>
+			<tr class="archived-product">
 				<td>
 					@Html.DisplayFor(modelItem => item.Title)
 				</td>
@@ -109,9 +126,29 @@
 				<td>
 					<a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
 					<a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
-					<a asp-action="Delete" asp-route-id="@item.ProductId">Activate</a>
+					
+					<form asp-action="MakeActive"
+						  asp-route-id="@item.ProductId"
+						  method="post"
+						  style="display:inline;">
+						<button type="submit" class="btn btn-link p-0">Activate</button>
+					</form>
 				</td>
 			</tr>
 		}
 	</tbody>
 </table>
+
+<script>
+	const checkbox = document.getElementById('hideArchivedCheckbox');
+
+	function toggleArchived() {
+		document.querySelectorAll('.archived-product').forEach(row => {
+			row.style.display = checkbox.checked ? 'none' : '';
+		});
+	}
+
+	checkbox.addEventListener('change', toggleArchived);
+
+	toggleArchived();
+</script>

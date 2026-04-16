@@ -57,16 +57,11 @@ public abstract class PriceServiceBase<TEvent> : IConsumer<TEvent>
 		int productId,
 		Func<Product, PriceRule, decimal> priceCalculator)
 	{
-		//throw new NotFoundException("Product not found.");
-
 		var product = await _context.Products
-			//.Where(p => p.Status == ProductStatus.Active)
-			.FirstOrDefaultAsync(p => p.ProductId == productId)
-			?? throw new NotFoundException("Product not found.");	//todo: check in throw - shut down? change to logger?
-
-		//todo: check
-		if (product.Status != ProductStatus.Active)
-			return;
+			.FirstOrDefaultAsync(p => 
+				p.ProductId == productId &&
+				p.Status == ProductStatus.Active)
+			?? throw new NotFoundException("Product not found or not active.");
 
 		var priceRule = await _context.PriceRules
 			.FirstOrDefaultAsync(pr => pr.Company.CompanyId == product.CompanyId)

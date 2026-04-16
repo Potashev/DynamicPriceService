@@ -51,7 +51,7 @@ public class Product
 	public string? Description { get; set; }
 
 	/// <summary>
-	/// 
+	/// Текущий статус продукта.
 	/// </summary>
 	public ProductStatus Status { get; set; }
 
@@ -100,12 +100,12 @@ public class Product
 }
 
 /// <summary>
-/// 
+/// Возможные статусы продукта.
 /// </summary>
 public enum ProductStatus
 {
-	/// <summary></summary>
+	/// <summary>Товар доступен для продажи</summary>
 	Active,
-	/// <summary></summary>
+	/// <summary>Товар снят с продажи</summary>
 	Archived,
 }

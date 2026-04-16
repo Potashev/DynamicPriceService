@@ -21,9 +21,6 @@ public class GetProductsQueryHandler(
 
 		var products = await context.Products
 			.Where(p => p.Company.CompanyId == manager.CompanyId)
-			//.Where(p => 
-			//	p.Company.CompanyId == manager.CompanyId &&
-			//	p.Status == Models.ProductStatus.Active)
 			.ToArrayAsync(cancellationToken);
 
 		return mapper.Map<ProductViewModel[]>(products);

@@ -45,11 +45,6 @@ public interface ICoreApiClient
 		ProductViewModel productVm,
 		CancellationToken cancellationToken);
 
-	//[Delete("/api/company/products/{id}")]
-	//Task DeleteProduct(
-	//	int id,
-	//	CancellationToken cancellationToken);
-
 	[Patch("/api/company/products/{id}/archive")]
 	Task ArchiveProduct(
 		int id,

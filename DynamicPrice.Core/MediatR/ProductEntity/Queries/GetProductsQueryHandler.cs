@@ -20,9 +20,10 @@ public class GetProductsQueryHandler(
 		var manager = await userService.GetRequiredCurrentUserAsync();
 
 		var products = await context.Products
-			.Where(p => 
-				p.Company.CompanyId == manager.CompanyId &&
-				p.Status == Models.ProductStatus.Active)
+			.Where(p => p.Company.CompanyId == manager.CompanyId)
+			//.Where(p => 
+			//	p.Company.CompanyId == manager.CompanyId &&
+			//	p.Status == Models.ProductStatus.Active)
 			.ToArrayAsync(cancellationToken);
 
 		return mapper.Map<ProductViewModel[]>(products);

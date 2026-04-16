@@ -71,84 +71,90 @@
 	</tbody>
 </table>
 
-<h2>Archived</h2>
+@if (archivedProducts.Any())
+{
+		<h2>Archived</h2>
 
-<label class="mb-3 d-block">
-	<input type="checkbox" id="hideArchivedCheckbox" />
-	Hide archived products
+		<label class="mb-3 d-block">
+			<input type="checkbox" id="hideArchivedCheckbox" />
+			Hide archived products
 
-	<span title="Archived products are excluded from dynamic pricing and are not available for customers. They are kept for orders history and analytics."
-		  style="cursor: help; margin-left: 5px;">
-		ℹ️
-	</span>
-</label>
+			<span title="Archived products are excluded from dynamic pricing and are not available for customers. They are kept for orders history and analytics."
+				  style="cursor: help; margin-left: 5px;">
+				ℹ️
+			</span>
+		</label>
 
-<table class="table table-striped" style="table-layout: fixed;">
-	<thead>
-		<tr>
-			<th>
-				@Html.DisplayNameFor(model => model.Title)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Price)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.MinimumPrice)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Quantity)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Description)
-			</th>
-			<th></th>
-		</tr>
-	</thead>
-	<tbody>
-		@foreach (var item in archivedProducts)
-		{
-			<tr class="archived-product">
-				<td>
-					@Html.DisplayFor(modelItem => item.Title)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.Price)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.MinimumPrice)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.Quantity)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.Description)
-				</td>
-				<td>
-					<a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
-					<a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
+	<div id="archived-section">
+		<table class="table table-striped" style="table-layout: fixed;">
+			<thead>
+				<tr>
+					<th>
+						@Html.DisplayNameFor(model => model.Title)
+					</th>
+					<th>
+						@Html.DisplayNameFor(model => model.Price)
+					</th>
+					<th>
+						@Html.DisplayNameFor(model => model.MinimumPrice)
+					</th>
+					<th>
+						@Html.DisplayNameFor(model => model.Quantity)
+					</th>
+					<th>
+						@Html.DisplayNameFor(model => model.Description)
+					</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var item in archivedProducts)
+				{
+					<tr class="archived-product">
+						<td>
+							@Html.DisplayFor(modelItem => item.Title)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.Price)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.MinimumPrice)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.Quantity)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.Description)
+						</td>
+						<td>
+							<a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
+							<a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
 					
-					<form asp-action="MakeActive"
-						  asp-route-id="@item.ProductId"
-						  method="post"
-						  style="display:inline;">
-						<button type="submit" class="btn btn-link p-0">Activate</button>
-					</form>
-				</td>
-			</tr>
-		}
-	</tbody>
-</table>
+							<form asp-action="MakeActive"
+								  asp-route-id="@item.ProductId"
+								  method="post"
+								  style="display:inline;">
+								<button type="submit" class="btn btn-link p-0">Activate</button>
+							</form>
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+}
 
 <script>
 	const checkbox = document.getElementById('hideArchivedCheckbox');
+	const section = document.getElementById('archived-section');
 
 	function toggleArchived() {
-		document.querySelectorAll('.archived-product').forEach(row => {
-			row.style.display = checkbox.checked ? 'none' : '';
-		});
+		if (!section) return;
+
+		section.style.display = checkbox.checked ? 'none' : '';
 	}
 
-	checkbox.addEventListener('change', toggleArchived);
+	checkbox?.addEventListener('change', toggleArchived);
 
 	toggleArchived();
 </script>

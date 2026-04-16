@@ -84,6 +84,14 @@ public class Product
 		Quantity -= amount;
 	}
 
+	public void UpdateStatus(ProductStatus targetStatus)
+	{
+		if (Status == targetStatus)
+			throw new BusinessException($"Product is already {Status.ToString().ToLower()}.");
+
+		Status = targetStatus;
+	}
+
 	public void UpdateLastSellTime(DateTime time)
 		=> LastSellTime = time;
 

@@ -24,11 +24,7 @@ public class MakeArchivedProductCommandHandler(
 				p.CompanyId == manager.CompanyId, cancellationToken)
 			?? throw new NotFoundException("Product not found.");
 
-		//todo: add product.UpdateStatus(ProductStatus.Archived)?
-		if (product.Status != ProductStatus.Archived)
-			product.Status  = ProductStatus.Archived;
-		else
-			throw new BusinessException("Product already archived.");
+		product.UpdateStatus(ProductStatus.Archived);
 
 		await context.SaveChangesAsync(cancellationToken);
 	}

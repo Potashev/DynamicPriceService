@@ -24,14 +24,7 @@ public class MakeActiveProductCommandHandler(
 				p.CompanyId == manager.CompanyId, cancellationToken)
 			?? throw new NotFoundException("Product not found.");
 
-		//context.Products.Remove(product);
-
-		//product.Status = ProductStatus.Archived;
-
-		if (product.Status != ProductStatus.Active)
-			product.Status  = ProductStatus.Active;
-		else
-			throw new BusinessException("Product already active.");
+		product.UpdateStatus(ProductStatus.Active);
 
 		await context.SaveChangesAsync(cancellationToken);
 	}

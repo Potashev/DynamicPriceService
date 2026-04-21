@@ -49,6 +49,7 @@ public class VirtualCustomersService : BackgroundService
 
 				var companyProducts = await context.Products
 					.Where(p => p.CompanyId == companyForMonitoring.CompanyId)
+					.Where(p => p.Status == ProductStatus.Active)
 					.Where(Product.CanBeReducedExpr)
 					.Include(p => p.PriceDynamics
 						.OrderByDescending(pd => pd.Date)

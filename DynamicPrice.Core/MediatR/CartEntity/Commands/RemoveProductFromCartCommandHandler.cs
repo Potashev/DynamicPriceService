@@ -21,9 +21,11 @@ public class RemoveProductFromCartCommandHandler(
 		var customer = await userService.GetRequiredCurrentUserAsync();
 
 		var cart = await context.Carts
-			.Where(c => c.CustomerId == customer.Id
-				&& c.CartItems.Any(ci => ci.ProductId == request.ProductId))
+			.Where(c => 
+				c.CustomerId == customer.Id &&
+				c.CartItems.Any(ci => ci.ProductId == request.ProductId))
 			.Include(c => c.CartItems)
+				.ThenInclude(ci => ci.Product)
 			.FirstOrDefaultAsync(cancellationToken)
 			?? throw new NotFoundException("Cart not found");
 

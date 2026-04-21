@@ -57,7 +57,7 @@ public class Cart
 		}
 		else
 		{
-			existingItem.Quantity += 1;
+			existingItem.Quantity++;
 		}
 	}
 
@@ -67,9 +67,15 @@ public class Cart
 			.FirstOrDefault(ci => ci.ProductId == productId)
 			?? throw new NotFoundException("Cart item not found");
 
-		cartItem.Quantity -= 1;
+		if (!cartItem.Product.IsActive())
+		{
+			CartItems.Remove(cartItem);
+			return;
+		}
 
-		if (cartItem.Quantity == 0)
+		cartItem.Quantity--;
+
+		if (cartItem.Quantity <= 0)
 			CartItems.Remove(cartItem);
 	}
 }

@@ -18,6 +18,8 @@ public class ProductViewModel : IValidatableObject
 
 	public string? Description { get; init; }
 
+	public ProductStatus Status { get; init; }
+
 	public ICollection<PriceDynamicViewModel> PriceDynamics { get; init; } = [];
 
 	public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
@@ -30,4 +32,10 @@ public class ProductViewModel : IValidatableObject
 			);
 		}
 	}
+}
+
+public enum ProductStatus
+{
+	Active,
+	Archived,
 }

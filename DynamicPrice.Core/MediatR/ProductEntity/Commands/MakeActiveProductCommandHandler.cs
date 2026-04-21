@@ -1,18 +1,19 @@
 ﻿using DynamicPrice.Core.Data;
 using DynamicPrice.Core.Exceptions;
+using DynamicPrice.Core.Models;
 using DynamicPrice.Core.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPrice.Core.MediatR.ProductEntity.Commands;
 
-public class DeleteProductCommandHandler(
+public class MakeActiveProductCommandHandler(
 	DynamicPriceCoreContext context,
 	IUserService userService)
-	: IRequestHandler<DeleteProductCommand>
+	: IRequestHandler<MakeActiveProductCommand>
 {
 	public async Task Handle(
-		DeleteProductCommand request,
+		MakeActiveProductCommand request,
 		CancellationToken cancellationToken)
 	{
 		var manager = await userService.GetRequiredCurrentUserAsync();
@@ -23,7 +24,8 @@ public class DeleteProductCommandHandler(
 				p.CompanyId == manager.CompanyId, cancellationToken)
 			?? throw new NotFoundException("Product not found.");
 
-		context.Products.Remove(product);
+		product.UpdateStatus(ProductStatus.Active);
+
 		await context.SaveChangesAsync(cancellationToken);
 	}
 }

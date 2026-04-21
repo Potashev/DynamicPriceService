@@ -65,25 +65,21 @@ public class ProductsController(
 		return View(productVm);
 	}
 
-	[HttpGet]
-	public async Task<IActionResult> Delete(
-		int? id,
-		CancellationToken cancellationToken)
-	{
-		if (id is null) return NotFound();
-
-		var productVm = await coreApiClient.GetProduct((int)id, cancellationToken);
-		return productVm == null
-			? NotFound()
-			: View(productVm);
-	}
-
 	[HttpPost]
-	public async Task<IActionResult> DeleteConfirmed(
+	public async Task<IActionResult> MakeArchived(
 		int id,
 		CancellationToken cancellationToken)
 	{
-		await coreApiClient.DeleteProduct(id, cancellationToken);
+		await coreApiClient.ArchiveProduct(id, cancellationToken);
+		return RedirectToAction(nameof(Index));
+	}
+
+	[HttpPost]
+	public async Task<IActionResult> MakeActive(
+		int id,
+		CancellationToken cancellationToken)
+	{
+		await coreApiClient.ActivateProduct(id, cancellationToken);
 		return RedirectToAction(nameof(Index));
 	}
 }

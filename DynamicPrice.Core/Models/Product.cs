@@ -51,6 +51,11 @@ public class Product
 	public string? Description { get; set; }
 
 	/// <summary>
+	/// Текущий статус продукта.
+	/// </summary>
+	public ProductStatus Status { get; set; }
+
+	/// <summary>
 	/// Время последней продажи товара. Используется для определения "простоя" продукта.
 	/// </summary>
 	public DateTime? LastSellTime { get; set; }
@@ -79,9 +84,31 @@ public class Product
 		Quantity -= amount;
 	}
 
+	public bool IsActive()
+		=> Status == ProductStatus.Active;
+
+	public void UpdateStatus(ProductStatus targetStatus)
+	{
+		if (Status == targetStatus)
+			throw new BusinessException($"Product is already {Status.ToString().ToLower()}.");
+
+		Status = targetStatus;
+	}
+
 	public void UpdateLastSellTime(DateTime time)
 		=> LastSellTime = time;
 
 	public static Expression<Func<Product, bool>> CanBeReducedExpr =>
 		p => p.Quantity == null || p.Quantity > 0;
+}
+
+/// <summary>
+/// Возможные статусы продукта.
+/// </summary>
+public enum ProductStatus
+{
+	/// <summary>Продукт доступен для продажи.</summary>
+	Active,
+	/// <summary>Продукт снят с продажи.</summary>
+	Archived,
 }

@@ -26,6 +26,7 @@ public class GetCompanyProductsQueryHandler(
 
 		var products = await context.Products
 			.Where(p => p.CompanyId == company.CompanyId)
+			.Where(p => p.Status == Models.ProductStatus.Active)
 			.Where(Product.CanBeReducedExpr)
 			.Include(p => p.PriceDynamics
 				.OrderByDescending(pd => pd.Date)

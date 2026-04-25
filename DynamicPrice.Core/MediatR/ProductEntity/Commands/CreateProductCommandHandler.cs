@@ -26,6 +26,7 @@ public class CreateProductCommandHandler(
 
 		product.CompanyId = companyId;
 		product.LastSellTime = DateTime.UtcNow;
+		product.Status = ProductStatus.Active;
 
 		await context.Products.AddAsync(product, cancellationToken);
 		await context.SaveChangesAsync(cancellationToken);

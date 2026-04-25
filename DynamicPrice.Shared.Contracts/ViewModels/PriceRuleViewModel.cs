@@ -12,4 +12,12 @@ public class PriceRuleViewModel
 	[Range(0, double.MaxValue, ErrorMessage = "Reduction cannot be negative")]
 	public double Reduction { get; init; }
 	public TimeSpan NoSellTime { get; init; }
+
+	public PriceStatus Status { get; init; }
+}
+
+public enum PriceStatus
+{
+	Active,
+	Archived,
 }

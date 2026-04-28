@@ -1,4 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+	<PropertyGroup>
+	  <UserSecretsId>cf2e0a96-e4ba-4413-a27b-dbe042141364</UserSecretsId>
+	  <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+	  <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" />
 		<PackageReference Include="Bogus" />
@@ -14,6 +19,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
 		<PackageReference Include="prometheus-net.AspNetCore" />
 		<PackageReference Include="Swashbuckle.AspNetCore" />
 	</ItemGroup>

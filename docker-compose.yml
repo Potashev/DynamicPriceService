@@ -1,0 +1,18 @@
+services:
+  dynamicprice.manager:
+    image: ${DOCKER_REGISTRY-}dynamicpricemanager
+    build:
+      context: .
+      dockerfile: DynamicPrice.Manager/Dockerfile
+
+  dynamicprice.customer:
+    image: ${DOCKER_REGISTRY-}dynamicpricecustomer
+    build:
+      context: .
+      dockerfile: DynamicPrice.Customer/Dockerfile
+
+  dynamicprice.core:
+    image: ${DOCKER_REGISTRY-}dynamicpricecore
+    build:
+      context: .
+      dockerfile: DynamicPrice.Core/Dockerfile

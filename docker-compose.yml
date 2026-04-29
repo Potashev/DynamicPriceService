@@ -1,4 +1,28 @@
+version: '3.9'
+
 services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2025-latest
+    container_name: sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=yourStrong(!)Password
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+
+  dynamicprice.core:
+    image: ${DOCKER_REGISTRY-}dynamicpricecore
+    build:
+      context: .
+      dockerfile: DynamicPrice.Core/Dockerfile
+    depends_on:
+      - sqlserver
+    environment:
+      - ConnectionStrings__DynamicPriceDb=Server=sqlserver,1433;Database=DynamicPriceDb;User Id=sa;Password=yourStrong(!)Password;TrustServerCertificate=True
+      - ConnectionStrings__IdentityDb=Server=sqlserver,1433;Database=IdentityDb;User Id=sa;Password=yourStrong(!)Password;TrustServerCertificate=True
+
   dynamicprice.manager:
     image: ${DOCKER_REGISTRY-}dynamicpricemanager
     build:
@@ -11,8 +35,5 @@ services:
       context: .
       dockerfile: DynamicPrice.Customer/Dockerfile
 
-  dynamicprice.core:
-    image: ${DOCKER_REGISTRY-}dynamicpricecore
-    build:
-      context: .
-      dockerfile: DynamicPrice.Core/Dockerfile
+volumes:
+  sql_data:

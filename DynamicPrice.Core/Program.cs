@@ -25,10 +25,35 @@ builder.Services.AddProblemDetails(configure =>
 });
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
+//builder.Services.AddDbContext<DynamicPriceCoreContext>(options =>
+//	options.UseSqlServer(configuration.GetConnectionString("DynamicPriceDb") ?? throw new InvalidOperationException("Connection string 'DynamicPriceDb' not found.")));
+//builder.Services.AddDbContext<IdentityContext>(options =>
+//	options.UseSqlServer(configuration.GetConnectionString("IdentityDb") ?? throw new InvalidOperationException("Connection string 'IdentityDb' not found.")));
+
 builder.Services.AddDbContext<DynamicPriceCoreContext>(options =>
-	options.UseSqlServer(configuration.GetConnectionString("DynamicPriceDb") ?? throw new InvalidOperationException("Connection string 'DynamicPriceDb' not found.")));
+	options.UseSqlServer(
+		configuration.GetConnectionString("DynamicPriceDb")
+		?? throw new InvalidOperationException("Connection string 'DynamicPriceDb' not found."),
+		sqlOptions =>
+		{
+			sqlOptions.EnableRetryOnFailure(
+				maxRetryCount: 5,
+				maxRetryDelay: TimeSpan.FromSeconds(10),
+				errorNumbersToAdd: null);
+		}));
+
 builder.Services.AddDbContext<IdentityContext>(options =>
-	options.UseSqlServer(configuration.GetConnectionString("IdentityDb") ?? throw new InvalidOperationException("Connection string 'IdentityDb' not found.")));
+	options.UseSqlServer(
+		configuration.GetConnectionString("IdentityDb")
+		?? throw new InvalidOperationException("Connection string 'IdentityDb' not found."),
+		sqlOptions =>
+		{
+			sqlOptions.EnableRetryOnFailure(
+				maxRetryCount: 5,
+				maxRetryDelay: TimeSpan.FromSeconds(10),
+				errorNumbersToAdd: null);
+		}));
+
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 	.AddEntityFrameworkStores<IdentityContext>();
@@ -89,20 +114,26 @@ builder.Services.AddMassTransit(x =>
 	x.AddConsumer<ReducePriceService>();
 	x.AddConsumer<IncreasePriceService>();
 
-	x.UsingRabbitMq((context, cfg) =>
+	//x.UsingRabbitMq((context, cfg) =>
+	//{
+	//	var host = configuration["RabbitMq:Host"] ?? "localhost";
+	//	var user = configuration["RabbitMq:Username"] ?? "guest";
+	//	var pass = configuration["RabbitMq:Password"] ?? "guest";
+
+	//	cfg.Host(host, h =>
+	//	{
+	//		h.Username(user);
+	//		h.Password(pass);
+	//	});
+
+	//	cfg.ConfigureEndpoints(context);
+	//});
+
+	x.UsingInMemory((context, cfg) =>
 	{
-		var host = configuration["RabbitMq:Host"] ?? "localhost";
-		var user = configuration["RabbitMq:Username"] ?? "guest";
-		var pass = configuration["RabbitMq:Password"] ?? "guest";
-
-		cfg.Host(host, h =>
-		{
-			h.Username(user);
-			h.Password(pass);
-		});
-
 		cfg.ConfigureEndpoints(context);
 	});
+
 });
 
 builder.Services.AddHostedService<FindProductsToReduceService>();

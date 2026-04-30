@@ -86,11 +86,11 @@ builder.Services.AddAuthorizationBuilder()
 
 builder.Services.AddCors(options =>
 {
-	options.AddPolicy("AllowSpecificOrigins",
+	options.AddPolicy("AllowAll",
 		policy =>
 		{
-			policy.SetIsOriginAllowedToAllowWildcardSubdomains();
-			policy.WithOrigins("https://localhost:7022", "https://localhost:7183")
+			policy
+				.SetIsOriginAllowed(_ => true)
 				.AllowAnyHeader()
 				.AllowAnyMethod()
 				.AllowCredentials();
@@ -148,7 +148,6 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
 
-
 if (app.Environment.IsDevelopment())
 {
 	app.UseDeveloperExceptionPage();
@@ -161,9 +160,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseExceptionHandler();
 
-//app.UseHttpsRedirection();
+app.UseRouting();
 
-app.UseCors("AllowSpecificOrigins");
+app.UseCors("AllowAll");
 
 app.UseAuthentication();
 app.UseAuthorization();

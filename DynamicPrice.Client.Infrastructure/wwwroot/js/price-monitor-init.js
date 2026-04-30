@@ -1,6 +1,8 @@
 ﻿import { PriceMonitor } from './price-monitor.js';
 
-const defaultHubUrl = "https://localhost:7140/priceHub"; // fallback
+//const defaultHubUrl = "https://localhost:7140/priceHub"; // fallback
+//const defaultHubUrl = "http://dynamicprice.core:8080/priceHub"; // fallback
+const defaultHubUrl = "http://localhost:5001/priceHub";
 
 function resolveHubUrlFromDom() {
 	// priority: body.dataset.priceHubUrl -> first canvas[data-price-hub-url] -> default

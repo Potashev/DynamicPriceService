@@ -114,25 +114,27 @@ builder.Services.AddMassTransit(x =>
 	x.AddConsumer<ReducePriceService>();
 	x.AddConsumer<IncreasePriceService>();
 
-	//x.UsingRabbitMq((context, cfg) =>
+	x.UsingRabbitMq((context, cfg) =>
+	{
+		//todo: add to config
+		var host = configuration["RabbitMq:Host"] ?? "rabbitmq";
+		var user = configuration["RabbitMq:Username"] ?? "guest";
+		var pass = configuration["RabbitMq:Password"] ?? "guest";
+
+		cfg.Host(host, h =>
+		{
+			h.Username(user);
+			h.Password(pass);
+		});
+
+		cfg.ConfigureEndpoints(context);
+		//cfg.ConfigureEndpoints(context, new KebabCaseEndpointNameFormatter("dynamic-price", false));
+	});
+
+	//x.UsingInMemory((context, cfg) =>
 	//{
-	//	var host = configuration["RabbitMq:Host"] ?? "localhost";
-	//	var user = configuration["RabbitMq:Username"] ?? "guest";
-	//	var pass = configuration["RabbitMq:Password"] ?? "guest";
-
-	//	cfg.Host(host, h =>
-	//	{
-	//		h.Username(user);
-	//		h.Password(pass);
-	//	});
-
 	//	cfg.ConfigureEndpoints(context);
 	//});
-
-	x.UsingInMemory((context, cfg) =>
-	{
-		cfg.ConfigureEndpoints(context);
-	});
 
 });
 

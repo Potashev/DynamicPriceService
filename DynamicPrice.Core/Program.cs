@@ -116,10 +116,14 @@ builder.Services.AddMassTransit(x =>
 
 	x.UsingRabbitMq((context, cfg) =>
 	{
-		//todo: add to config
-		var host = configuration["RabbitMq:Host"] ?? "rabbitmq";
-		var user = configuration["RabbitMq:Username"] ?? "guest";
-		var pass = configuration["RabbitMq:Password"] ?? "guest";
+		var host = configuration["RabbitMq:Host"]
+			?? throw new InvalidOperationException("RabbitMq:Host missing");
+
+		var user = configuration["RabbitMq:Username"]
+			?? throw new InvalidOperationException("RabbitMq:Username missing");
+
+		var pass = configuration["RabbitMq:Password"]
+			?? throw new InvalidOperationException("RabbitMq:Password missing");
 
 		cfg.Host(host, h =>
 		{
@@ -128,7 +132,10 @@ builder.Services.AddMassTransit(x =>
 		});
 
 		cfg.ConfigureEndpoints(context);
-		//cfg.ConfigureEndpoints(context, new KebabCaseEndpointNameFormatter("dynamic-price", false));
+		//todo: check
+		//cfg.ConfigureEndpoints(
+		//	context, 
+		//	new KebabCaseEndpointNameFormatter("dynamic-price", false));
 	});
 
 	//x.UsingInMemory((context, cfg) =>

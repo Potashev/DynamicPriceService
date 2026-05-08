@@ -16,9 +16,6 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
-    environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
 
   dynamicprice.core:
     container_name: dynamicprice.core
@@ -34,9 +31,6 @@ services:
       - ASPNETCORE_URLS=http://+:8080
       - ConnectionStrings__DynamicPriceDb=Server=sqlserver,1433;Database=DynamicPriceDb;User Id=sa;Password=yourStrong(!)Password;TrustServerCertificate=True
       - ConnectionStrings__IdentityDb=Server=sqlserver,1433;Database=IdentityDb;User Id=sa;Password=yourStrong(!)Password;TrustServerCertificate=True
-      - RabbitMq__Host=rabbitmq
-      - RabbitMq__Username=guest
-      - RabbitMq__Password=guest
 
   dynamicprice.manager:
     container_name: dynamicprice.manager

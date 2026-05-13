@@ -16,6 +16,8 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
 
   dynamicprice.core:
     container_name: dynamicprice.core
@@ -58,3 +60,7 @@ services:
 
 volumes:
   sql_data:
+    name: dynamicpriceservice_sql_data
+
+  rabbitmq_data:
+    name: dynamicpriceservice_rabbitmq_data

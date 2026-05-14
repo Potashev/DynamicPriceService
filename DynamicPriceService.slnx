@@ -4,6 +4,9 @@
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
   </Folder>
+  <Project Path="docker-compose.dcproj">
+    <Build />
+  </Project>
   <Project Path="DynamicPrice.Client.Infrastructure/DynamicPrice.Client.Infrastructure.csproj" />
   <Project Path="DynamicPrice.Core/DynamicPrice.Core.csproj" />
   <Project Path="DynamicPrice.Customer/DynamicPrice.Customer.csproj" />

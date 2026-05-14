@@ -1,0 +1,55 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2025-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=myStrongDevPassword!
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+
+  rabbitmq:
+    image: rabbitmq:4.3.0-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  dynamicprice.core:
+    build:
+      context: .
+      dockerfile: DynamicPrice.Core/Dockerfile
+    depends_on:
+      - sqlserver
+      - rabbitmq
+    ports:
+      - "5001:8080"
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+
+  dynamicprice.manager:
+    build:
+      context: .
+      dockerfile: DynamicPrice.Manager/Dockerfile
+    depends_on:
+      - dynamicprice.core
+    ports:
+      - "5002:8080"
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+      - ApiSettings__BaseUrl=http://dynamicprice.core:8080
+
+  dynamicprice.customer:
+    build:
+      context: .
+      dockerfile: DynamicPrice.Customer/Dockerfile
+    depends_on:
+      - dynamicprice.core
+    ports:
+      - "5003:8080"
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+      - ApiSettings__BaseUrl=http://dynamicprice.core:8080
+
+volumes:
+  sql_data:

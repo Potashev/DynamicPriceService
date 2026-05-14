@@ -61,11 +61,11 @@ builder.Services.AddAuthorizationBuilder()
 
 builder.Services.AddCors(options =>
 {
-	options.AddPolicy("AllowSpecificOrigins",
+	options.AddPolicy("AllowAll",
 		policy =>
 		{
-			policy.SetIsOriginAllowedToAllowWildcardSubdomains();
-			policy.WithOrigins("https://localhost:7022", "https://localhost:7183")
+			policy
+				.SetIsOriginAllowed(_ => true)
 				.AllowAnyHeader()
 				.AllowAnyMethod()
 				.AllowCredentials();
@@ -91,9 +91,14 @@ builder.Services.AddMassTransit(x =>
 
 	x.UsingRabbitMq((context, cfg) =>
 	{
-		var host = configuration["RabbitMq:Host"] ?? "localhost";
-		var user = configuration["RabbitMq:Username"] ?? "guest";
-		var pass = configuration["RabbitMq:Password"] ?? "guest";
+		var host = configuration["RabbitMq:Host"]
+			?? throw new InvalidOperationException("RabbitMq:Host missing");
+
+		var user = configuration["RabbitMq:Username"]
+			?? throw new InvalidOperationException("RabbitMq:Username missing");
+
+		var pass = configuration["RabbitMq:Password"]
+			?? throw new InvalidOperationException("RabbitMq:Password missing");
 
 		cfg.Host(host, h =>
 		{
@@ -117,7 +122,6 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
 
-
 if (app.Environment.IsDevelopment())
 {
 	app.UseDeveloperExceptionPage();
@@ -130,9 +134,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseExceptionHandler();
 
-app.UseHttpsRedirection();
+app.UseRouting();
 
-app.UseCors("AllowSpecificOrigins");
+app.UseCors("AllowAll");
 
 app.UseAuthentication();
 app.UseAuthorization();

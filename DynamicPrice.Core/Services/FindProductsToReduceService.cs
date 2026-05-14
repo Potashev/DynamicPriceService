@@ -15,7 +15,8 @@ namespace DynamicPrice.Core.Services;
 /// </summary>
 public class FindProductsToReduceService : BackgroundService
 {
-	private const int NEXT_MONITOR_MILLISECONDS = 1000;
+	//private const int NEXT_MONITOR_MILLISECONDS = 1000;
+	private const int NEXT_MONITOR_MILLISECONDS = 5000;
 
 	private readonly IServiceProvider _serviceProvider;
 	private readonly ILogger<FindProductsToReduceService> _logger;

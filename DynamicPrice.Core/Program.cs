@@ -25,35 +25,10 @@ builder.Services.AddProblemDetails(configure =>
 });
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
-//builder.Services.AddDbContext<DynamicPriceCoreContext>(options =>
-//	options.UseSqlServer(configuration.GetConnectionString("DynamicPriceDb") ?? throw new InvalidOperationException("Connection string 'DynamicPriceDb' not found.")));
-//builder.Services.AddDbContext<IdentityContext>(options =>
-//	options.UseSqlServer(configuration.GetConnectionString("IdentityDb") ?? throw new InvalidOperationException("Connection string 'IdentityDb' not found.")));
-
 builder.Services.AddDbContext<DynamicPriceCoreContext>(options =>
-	options.UseSqlServer(
-		configuration.GetConnectionString("DynamicPriceDb")
-		?? throw new InvalidOperationException("Connection string 'DynamicPriceDb' not found."),
-		sqlOptions =>
-		{
-			sqlOptions.EnableRetryOnFailure(
-				maxRetryCount: 5,
-				maxRetryDelay: TimeSpan.FromSeconds(10),
-				errorNumbersToAdd: null);
-		}));
-
+	options.UseSqlServer(configuration.GetConnectionString("DynamicPriceDb") ?? throw new InvalidOperationException("Connection string 'DynamicPriceDb' not found.")));
 builder.Services.AddDbContext<IdentityContext>(options =>
-	options.UseSqlServer(
-		configuration.GetConnectionString("IdentityDb")
-		?? throw new InvalidOperationException("Connection string 'IdentityDb' not found."),
-		sqlOptions =>
-		{
-			sqlOptions.EnableRetryOnFailure(
-				maxRetryCount: 5,
-				maxRetryDelay: TimeSpan.FromSeconds(10),
-				errorNumbersToAdd: null);
-		}));
-
+	options.UseSqlServer(configuration.GetConnectionString("IdentityDb") ?? throw new InvalidOperationException("Connection string 'IdentityDb' not found.")));
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 	.AddEntityFrameworkStores<IdentityContext>();
@@ -132,17 +107,7 @@ builder.Services.AddMassTransit(x =>
 		});
 
 		cfg.ConfigureEndpoints(context);
-		//todo: check
-		//cfg.ConfigureEndpoints(
-		//	context, 
-		//	new KebabCaseEndpointNameFormatter("dynamic-price", false));
 	});
-
-	//x.UsingInMemory((context, cfg) =>
-	//{
-	//	cfg.ConfigureEndpoints(context);
-	//});
-
 });
 
 builder.Services.AddHostedService<FindProductsToReduceService>();

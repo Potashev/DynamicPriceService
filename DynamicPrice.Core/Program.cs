@@ -26,13 +26,18 @@ builder.Services.AddProblemDetails(configure =>
 });
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
-builder.Services.AddDbContext<DynamicPriceCoreContext>(options =>
-	options.UseSqlServer(configuration.GetConnectionString("DynamicPriceDb") ?? throw new InvalidOperationException("Connection string 'DynamicPriceDb' not found.")));
-builder.Services.AddDbContext<IdentityContext>(options =>
-	options.UseSqlServer(configuration.GetConnectionString("IdentityDb") ?? throw new InvalidOperationException("Connection string 'IdentityDb' not found.")));
+//builder.Services.AddDbContext<DynamicPriceCoreContext>(options =>
+//	options.UseSqlServer(configuration.GetConnectionString("DynamicPriceDb") ?? throw new InvalidOperationException("Connection string 'DynamicPriceDb' not found.")));
+//builder.Services.AddDbContext<IdentityContext>(options =>
+//	options.UseSqlServer(configuration.GetConnectionString("IdentityDb") ?? throw new InvalidOperationException("Connection string 'IdentityDb' not found.")));
 
 builder.Services.AddDbContext<DynamicPriceCoreContext>(options =>
 	options.UseNpgsql(configuration.GetConnectionString("DynamicPriceDb") ?? throw new InvalidOperationException("Connection string 'DynamicPriceDb' not found.")));
+builder.Services.AddDbContext<IdentityContext>(options =>
+	options.UseNpgsql(configuration.GetConnectionString("IdentityDb") ?? throw new InvalidOperationException("Connection string 'IdentityDb' not found.")));
+
+//builder.Services.AddDbContext<DynamicPriceCoreContext>(options =>
+//	options.UseNpgsql(configuration.GetConnectionString("DynamicPriceDb") ?? throw new InvalidOperationException("Connection string 'DynamicPriceDb' not found.")));
 
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()

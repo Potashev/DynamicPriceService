@@ -1,18 +1,7 @@
 services:
-  sqlserver:
-    image: mcr.microsoft.com/mssql/server:2025-latest
-    environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=myStrongDevPassword!
-    ports:
-      - "1433:1433"
-    volumes:
-      - sql_data:/var/opt/mssql
-
   postgres:
     image: postgres:latest
     environment:
-      - POSTGRES_DB=dynamicprice
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     ports:
@@ -29,7 +18,7 @@ services:
       context: .
       dockerfile: DynamicPrice.Core/Dockerfile
     depends_on:
-      - sqlserver
+      - postgres
       - rabbitmq
     ports:
       - "5001:8080"

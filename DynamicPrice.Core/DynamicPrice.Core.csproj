@@ -14,7 +14,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" />
 		<PackageReference Include="Microsoft.Build" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+		<!--<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />-->
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -27,5 +27,9 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\DynamicPrice.Shared.Contracts\DynamicPrice.Shared.Contracts.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Migrations\DynamicPrice\" />
+	  <Folder Include="Migrations\Identity\" />
 	</ItemGroup>
 </Project>

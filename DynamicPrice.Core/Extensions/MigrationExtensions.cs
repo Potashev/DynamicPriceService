@@ -11,7 +11,7 @@ public static class MigrationExtensions
 		var serviceProvider = scope.ServiceProvider;
 
 		var dynamicPriceContext = serviceProvider.GetRequiredService<DynamicPriceCoreContext>();
-		await dynamicPriceContext.Database.MigrateAsync();	//<- здесь
+		await dynamicPriceContext.Database.MigrateAsync();
 
 		var identityContext = serviceProvider.GetRequiredService<IdentityContext>();
 		await identityContext.Database.MigrateAsync();

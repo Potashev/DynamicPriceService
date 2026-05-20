@@ -125,9 +125,6 @@ builder.Services.AddMassTransit(x =>
 	});
 });
 
-//builder.Services.AddHealthChecks();
-builder.Services.AddHealthChecks();
-
 builder.Services.AddHostedService<FindProductsToReduceService>();
 
 builder.Services.AddHostedService<VirtualCustomersService>();
@@ -163,7 +160,6 @@ app.UseHttpMetrics();
 
 app.MapEndPoints();
 app.MapHub<PriceHub>("/priceHub");
-app.MapHealthChecks("/health");
 app.MapMetrics();
 
 app.Run();

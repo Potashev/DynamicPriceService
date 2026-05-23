@@ -41,7 +41,7 @@ document.querySelectorAll("[data-price-monitor]").forEach(el => {
 	// subscribe to product group for targeted updates
 	(async () => {
 		try {
-			await monitor.subscribeToProduct(Number(productId));
+			await monitor.subscribeToProduct(productId);
 		} catch (e) {
 			console.debug("subscribeToProduct failed for", productId, e);
 		}

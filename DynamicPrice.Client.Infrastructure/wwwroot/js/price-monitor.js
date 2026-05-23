@@ -50,12 +50,12 @@
 	// --- Subscription helpers ---
 	async subscribeToProduct(productId) {
 		if (!this.connection) throw new Error("SignalR connection not initialized");
-		if (this.subscribedProducts.has(Number(productId))) {
+		if (this.subscribedProducts.has(productId)) {
 			return;
 		}
 		try {
-			await this.connection.invoke("SubscribeToProduct", Number(productId));
-			this.subscribedProducts.add(Number(productId));
+			await this.connection.invoke("SubscribeToProduct", productId);
+			this.subscribedProducts.add(productId);
 			console.log("Subscribed to product", productId);
 		} catch (e) {
 			console.error("Failed to subscribe to product", productId, e);
@@ -65,10 +65,10 @@
 
 	async unsubscribeFromProduct(productId) {
 		if (!this.connection) return;
-		if (!this.subscribedProducts.has(Number(productId))) return;
+		if (!this.subscribedProducts.has(productId)) return;
 		try {
-			await this.connection.invoke("UnsubscribeFromProduct", Number(productId));
-			this.subscribedProducts.delete(Number(productId));
+			await this.connection.invoke("UnsubscribeFromProduct", productId);
+			this.subscribedProducts.delete(productId);
 			console.log("Unsubscribed from product", productId);
 		} catch (e) {
 			console.debug("Failed to unsubscribe from product", productId, e);

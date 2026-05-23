@@ -30,51 +30,53 @@ public static class DbInitializer
 		}
 	}
 
-	public static async Task SeedDomainAsync(IServiceProvider sp)
+	public static async Task SeedDomainAsync(IServiceProvider serviceProvider)
 	{
-		var db = sp.GetRequiredService<DynamicPriceCoreContext>();
+		var context = serviceProvider.GetRequiredService<DynamicPriceCoreContext>();
 
-		if (!await db.Companies.AnyAsync())
+		if (!await context.Companies.AnyAsync())
 		{
-			db.Companies.AddRange(
-				new Company { Title = "Автозапчасти" },
-				new Company { Title = "Копыта" },
-				new Company { Title = "Рога" }
+			context.Companies.AddRange(
+				new Company { Title = "Автозапчасти", PriceHistoryLimit = 30 },
+				new Company { Title = "Копыта", PriceHistoryLimit = 10 },
+				new Company { Title = "Рога", PriceHistoryLimit = 20 }
 			);
 
-			await db.SaveChangesAsync();
+			await context.SaveChangesAsync();
 		}
+
+		var companies = context.Companies.ToList();
 
 		//TODO: get companies to set companyId
 
-		//if (!await db.PriceRules.AnyAsync())
-		//{
-		//	db.PriceRules.AddRange(
-		//		new PriceRule { CompanyId = 1, Increase = 1, Reduction = 1, NoSellSeconds = 10 },
-		//		new PriceRule { CompanyId = 2, Increase = 1, Reduction = 1, NoSellSeconds = 10 },
-		//		new PriceRule { CompanyId = 3, Increase = 1, Reduction = 1, NoSellSeconds = 10 }
-		//	);
-		//	await db.SaveChangesAsync();
-		//}
+		if (!await context.PriceRules.AnyAsync())
+		{
+			context.PriceRules.AddRange(
+				new PriceRule { CompanyId = companies.GetId("Автозапчасти"), Increase = 1, Reduction = 1, NoSellSeconds = 10 },
+				new PriceRule { CompanyId = companies.GetId("Копыта"), Increase = 1, Reduction = 1, NoSellSeconds = 10 },
+				new PriceRule { CompanyId = companies.GetId("Рога"), Increase = 1, Reduction = 1, NoSellSeconds = 10 }
+			);
+			await context.SaveChangesAsync();
+		}
 
-		//if (!await db.Products.AnyAsync())
-		//{
-		//	var now = DateTime.UtcNow;
-		//	db.Products.AddRange(
-		//		new Product { CompanyId = 1, Title = "Моторное масло", Price = 5000, MinimumPrice = 1000, Quantity = 100, Description = "Mobil 5w-30", LastSellTime = now },
-		//		new Product { CompanyId = 1, Title = "Свечи", Price = 1500, MinimumPrice = 1200, Description = "NGK", LastSellTime = now },
-		//		new Product { CompanyId = 1, Title = "Воздушный фильтр", Price = 700, MinimumPrice = 300, Quantity = 100, LastSellTime = now },
-		//		new Product { CompanyId = 1, Title = "Ремень ГРМ", Price = 3000, MinimumPrice = 1000, Quantity = 10, LastSellTime = now },
-		//		new Product { CompanyId = 1, Title = "Антифриз", Price = 500, MinimumPrice = 200, Quantity = 30, LastSellTime = now },
-		//		new Product { CompanyId = 2, Title = "Хлеб", Price = 50, MinimumPrice = 40, LastSellTime = now },
-		//		new Product { CompanyId = 2, Title = "Молоко", Price = 100, MinimumPrice = 80, LastSellTime = now }
-		//	);
+		if (!await context.Products.AnyAsync())
+		{
+			var now = DateTime.UtcNow;
+			context.Products.AddRange(
+				new Product { CompanyId = companies.GetId("Автозапчасти"), Title = "Моторное масло", Price = 5000, MinimumPrice = 1000, Quantity = 100, Description = "Mobil 5w-30", LastSellTime = now },
+				new Product { CompanyId = companies.GetId("Автозапчасти"), Title = "Свечи", Price = 1500, MinimumPrice = 1200, Description = "NGK", LastSellTime = now },
+				new Product { CompanyId = companies.GetId("Автозапчасти"), Title = "Воздушный фильтр", Price = 700, MinimumPrice = 300, Quantity = 100, LastSellTime = now },
+				new Product { CompanyId = companies.GetId("Автозапчасти"), Title = "Ремень ГРМ", Price = 3000, MinimumPrice = 1000, Quantity = 10, LastSellTime = now },
+				new Product { CompanyId = companies.GetId("Автозапчасти"), Title = "Антифриз", Price = 500, MinimumPrice = 200, Quantity = 30, LastSellTime = now },
+				new Product { CompanyId = companies.GetId("Копыта"), Title = "Хлеб", Price = 50, MinimumPrice = 40, LastSellTime = now },
+				new Product { CompanyId = companies.GetId("Копыта"), Title = "Молоко", Price = 100, MinimumPrice = 80, LastSellTime = now }
+			);
 
-		//	//var products = DataGenerator.GenerateProducts(companyId: 1, count: 10);
-		//	//db.Products.AddRange(products);
+			//var products = DataGenerator.GenerateProducts(companyId: 1, count: 10);
+			//db.Products.AddRange(products);
 
-		//	await db.SaveChangesAsync();
-		//}
+			await context.SaveChangesAsync();
+		}
 
 		//DataGenerator - need for testing metrics on big data
 
@@ -83,12 +85,19 @@ public static class DbInitializer
 		//var products3 = DataGenerator.GenerateProducts(companyId: 3, count: 1000);
 		//db.Products.AddRange(products3);
 
-		await db.SaveChangesAsync();
+		await context.SaveChangesAsync();
 	}
+
+	private static Guid GetId(this List<Company> companies, string companyTitle)
+		=> companies.FirstOrDefault(c => c.Title == companyTitle)
+		?.Id ?? Guid.Empty;
 
 	public static async Task SeedUsersAsync(IServiceProvider serviceProvider)
 	{
 		var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+		var context = serviceProvider.GetRequiredService<DynamicPriceCoreContext>();
+
+		var companies = context.Companies.ToList();
 
 		var customerEmail = "customer@test.com";
 		var customer = await userManager.FindByEmailAsync(customerEmail);
@@ -109,17 +118,15 @@ public static class DbInitializer
 		if (!await userManager.IsInRoleAsync(customer, RoleCustomer))
 			await userManager.AddToRoleAsync(customer, RoleCustomer);
 
-		//todo: get companies ids
+		await EnsureManagerAsync(userManager,
+			email: "manager@test.com",
+			userName: "Man1",
+			companyId: companies.GetId("Автозапчасти"));
 
-		//await EnsureManagerAsync(userManager,
-		//	email: "manager@test.com",
-		//	userName: "Man1",
-		//	companyId: 1);
-
-		//await EnsureManagerAsync(userManager,
-		//	email: "manager2@test.com",
-		//	userName: "Man2",
-		//	companyId: 2);
+		await EnsureManagerAsync(userManager,
+			email: "manager2@test.com",
+			userName: "Man2",
+			companyId: companies.GetId("Копыта"));
 	}
 
 	private static async Task EnsureManagerAsync(

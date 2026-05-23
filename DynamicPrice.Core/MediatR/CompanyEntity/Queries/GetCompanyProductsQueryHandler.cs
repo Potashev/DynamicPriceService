@@ -19,7 +19,7 @@ public class GetCompanyProductsQueryHandler(
 		CancellationToken cancellationToken)
 	{
 		var company = await context.ActiveCompanies
-			.Where(ac => ac.Id.ToString() == request.CompanyId)	//todo: check
+			.Where(ac => ac.Id == request.CompanyId)	//todo: check
 			.Select(ac => ac.Company)
 			.FirstOrDefaultAsync(cancellationToken)
 			?? throw new NotFoundException("Company not found or not active");

@@ -9,7 +9,7 @@ public class CustomerOrderController(
 {
 	[HttpPost]
 	public async Task<IActionResult> Confirm(
-		int cartId,
+		Guid cartId,
 		CancellationToken cancellationToken)
 	{
 		var orderId = await coreApiClient.ConfirmOrder(cartId, cancellationToken);
@@ -18,13 +18,13 @@ public class CustomerOrderController(
 
 	[HttpGet]
 	public async Task<IActionResult> Details(
-		int id,
+		Guid id,
 		CancellationToken cancellationToken)
 			=> View(await coreApiClient.OrderDetails(id, cancellationToken));
 
 	[HttpPost]
 	public async Task<IActionResult> Cancel(
-		int orderId,
+		Guid orderId,
 		CancellationToken cancellationToken)
 	{
 		await coreApiClient.CancelOrder(orderId, cancellationToken);
@@ -33,7 +33,7 @@ public class CustomerOrderController(
 
 	[HttpGet]
 	public async Task<IActionResult> GetReceiveKey(
-		int orderId,
+		Guid orderId,
 		int receiveKey)
 	{
 		ViewBag.OrderId = orderId;

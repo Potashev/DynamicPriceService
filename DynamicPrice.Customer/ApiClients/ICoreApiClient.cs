@@ -14,7 +14,7 @@ public interface ICoreApiClient
 
 	[Get("/api/companies/{companyId}/products")]
 	Task<CompanyProductsInfo> GetCompanyProducts(
-		int companyId,
+		Guid companyId,
 		CancellationToken cancellationToken);
 
 	[Post("/api/auth/login")]
@@ -24,32 +24,32 @@ public interface ICoreApiClient
 
 	[Get("/api/cart?company-id={companyId}")]
 	Task<CartViewModel> GetCartDetails(
-		string companyId,
+		Guid companyId,
 		CancellationToken cancellationToken);
 
 	[Post("/api/cart/items")]
 	Task<int> AddCartItem(
-		[Body] int productId,
+		[Body] Guid productId,
 		CancellationToken cancellationToken);
 
 	[Delete("/api/cart/items/{productId}")]
 	Task<int> RemoveCartItem(
-		int productId,
+		Guid productId,
 		CancellationToken cancellationToken);
 
 	[Post("/api/customer/order/confirm")]
 	Task<int> ConfirmOrder(
-		[Body] int cartId,
+		[Body] Guid cartId,
 		CancellationToken cancellationToken);
 
 	[Patch("/api/customer/order/cancel")]
 	Task CancelOrder(
-		[Body] int orderId,
+		[Body] Guid orderId,
 		CancellationToken cancellationToken);
 
 	[Get("/api/customer/order?id={orderId}")]
 	Task<OrderViewModel> OrderDetails(
-		int orderId,
+		Guid orderId,
 		CancellationToken cancellationToken);
 
 	[Get("/api/customers/me")]

@@ -13,7 +13,7 @@ public class CompaniesController(
 
 	[HttpGet]
 	public async Task<IActionResult> CompanyProducts(
-		int id,
+		Guid id,
 		CancellationToken cancellationToken)
 			=> View(await coreApiClient.GetCompanyProducts(id, cancellationToken));
 }

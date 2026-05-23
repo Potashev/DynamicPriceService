@@ -9,13 +9,13 @@ public class CartController(
 {
 	[HttpGet]
 	public async Task<IActionResult> Details(
-		string companyId,
+		Guid companyId,
 		CancellationToken cancellationToken)
 			=> View(await coreApiClient.GetCartDetails(companyId, cancellationToken));
 
 	[HttpPost]
 	public async Task<IActionResult> AddCartItem(
-		int productId,
+		Guid productId,
 		CancellationToken cancellationToken)
 	{
 		var companyId = await coreApiClient.AddCartItem(productId, cancellationToken);
@@ -24,7 +24,7 @@ public class CartController(
 
 	[HttpPost]
 	public async Task<IActionResult> RemoveCartItem(
-		int productId,
+		Guid productId,
 		CancellationToken cancellationToken)
 	{
 		var companyId = await coreApiClient.RemoveCartItem(productId, cancellationToken);

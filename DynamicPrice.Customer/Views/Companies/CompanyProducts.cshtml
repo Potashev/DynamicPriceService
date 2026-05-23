@@ -27,19 +27,19 @@
 			<tr>
 				<td>@product.Title</td>
 				<td>
-					<price-monitor product-id="@product.ProductId"
+					<price-monitor product-id="@product.Id"
 								   price="@product.Price"
 								   price-dynamics="@product.PriceDynamics"
 								   max-points="@Model.PriceHistoryLimit">
 					</price-monitor>
 				</td>
 				<td>
-					<span id="price-@product.ProductId">@product.Price</span>
-					<span id="price-change-@product.ProductId" class="price-change"></span>
+					<span id="price-@product.Id">@product.Price</span>
+					<span id="price-change-@product.Id" class="price-change"></span>
 				</td>
 				<td>
 					<form asp-controller="Cart" asp-action="AddCartItem" method="post">
-						<input type="hidden" name="productId" value="@product.ProductId" />
+						<input type="hidden" name="productId" value="@product.Id" />
 						<button type="submit" class="btn btn-link">Add to Cart</button>
 					</form>
 				</td>

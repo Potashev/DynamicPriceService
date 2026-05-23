@@ -33,7 +33,7 @@ public static class CompaniesEndPoints
 	}
 
 	private static async Task<IResult> GetCompanyProducts(
-		string companyId,
+		Guid companyId,
 		IMediator mediator,
 		CancellationToken cancellationToken)
 			=> Results.Ok(await mediator.Send(new GetCompanyProductsQuery(companyId), cancellationToken));

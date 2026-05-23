@@ -3,4 +3,4 @@ using MediatR;
 
 namespace DynamicPrice.Core.MediatR.CompanyEntity.Queries;
 
-public record GetCompanyProductsQuery(string CompanyId) : IRequest<CompanyProductsInfo>;
+public record GetCompanyProductsQuery(Guid CompanyId) : IRequest<CompanyProductsInfo>;

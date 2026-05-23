@@ -14,11 +14,11 @@ public class PriceRuleController(
 
 	[HttpGet]
 	public async Task<IActionResult> Edit(
-		int? id,
+		Guid id,
 		CancellationToken cancellationToken)
 	{
-		if (id is null)
-			return NotFound();
+		//if (id is null)
+		//	return NotFound();
 
 		var priceRuleWithStatus = await coreApiClient.GetPriceRule(cancellationToken);
 

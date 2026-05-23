@@ -67,7 +67,7 @@ public class ProductsController(
 
 	[HttpPost]
 	public async Task<IActionResult> MakeArchived(
-		int id,
+		Guid id,
 		CancellationToken cancellationToken)
 	{
 		await coreApiClient.ArchiveProduct(id, cancellationToken);
@@ -76,7 +76,7 @@ public class ProductsController(
 
 	[HttpPost]
 	public async Task<IActionResult> MakeActive(
-		int id,
+		Guid id,
 		CancellationToken cancellationToken)
 	{
 		await coreApiClient.ActivateProduct(id, cancellationToken);

@@ -23,13 +23,13 @@ public class CompanyOrdersController(
 
 	[HttpGet]
 	public async Task<IActionResult> Details(
-		int id,
+		Guid id,
 		CancellationToken cancellationToken)
 			=> View(await сoreApiClient.GetOrder(id, cancellationToken));
 
 	[HttpPost]
 	public async Task<IActionResult> ReadyForReceive(
-		string orderId,
+		Guid orderId,
 		CancellationToken cancellationToken)
 	{
 		await сoreApiClient.ReadyForReceiveOrder(orderId, cancellationToken);
@@ -38,7 +38,7 @@ public class CompanyOrdersController(
 
 	[HttpPost]
 	public async Task<IActionResult> Complete(
-		string orderId,
+		Guid orderId,
 		CancellationToken cancellationToken)
 	{
 		await сoreApiClient.CompleteOrder(orderId, cancellationToken);

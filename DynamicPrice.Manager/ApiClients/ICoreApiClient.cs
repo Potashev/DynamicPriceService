@@ -47,12 +47,12 @@ public interface ICoreApiClient
 
 	[Patch("/api/company/products/{id}/archive")]
 	Task ArchiveProduct(
-		int id,
+		Guid id,
 		CancellationToken cancellationToken);
 
 	[Patch("/api/company/products/{id}/activate")]
 	Task ActivateProduct(
-		int id,
+		Guid id,
 		CancellationToken cancellationToken);
 
 	[Get("/api/company/price-rule")]
@@ -78,22 +78,22 @@ public interface ICoreApiClient
 
 	[Get("/api/company/orders/{id}")]
 	Task<OrderViewModel> GetOrder(
-		int id,
+		Guid id,
 		CancellationToken cancellationToken);
 
 	[Get("/api/company/orders/by-receive-key/{key}")]
-	Task<int> GetOrderIdByReceiveKey(
+	Task<Guid> GetOrderIdByReceiveKey(
 		string key,
 		CancellationToken cancellationToken);
 
 	[Patch("/api/company/orders/{orderId}/ready")]
 	Task ReadyForReceiveOrder(
-		string orderId,
+		Guid orderId,
 		CancellationToken cancellationToken);
 
 	[Patch("/api/company/orders/{orderId}/complete")]
 	Task CompleteOrder(
-		string orderId,
+		Guid orderId,
 		CancellationToken cancellationToken);
 
 	[Get("/api/company/orders/statistics")]

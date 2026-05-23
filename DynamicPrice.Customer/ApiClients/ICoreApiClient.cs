@@ -28,17 +28,17 @@ public interface ICoreApiClient
 		CancellationToken cancellationToken);
 
 	[Post("/api/cart/items")]
-	Task<int> AddCartItem(
+	Task<Guid> AddCartItem(
 		[Body] Guid productId,
 		CancellationToken cancellationToken);
 
 	[Delete("/api/cart/items/{productId}")]
-	Task<int> RemoveCartItem(
+	Task<Guid> RemoveCartItem(
 		Guid productId,
 		CancellationToken cancellationToken);
 
 	[Post("/api/customer/order/confirm")]
-	Task<int> ConfirmOrder(
+	Task<Guid> ConfirmOrder(
 		[Body] Guid cartId,
 		CancellationToken cancellationToken);
 

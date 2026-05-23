@@ -9,7 +9,7 @@ public class ActiveCompany
 	/// <summary>
 	/// Идентификатор компании.
 	/// </summary>
-	public int CompanyId { get; set; }
+	public Guid Id { get; set; }
 
 	/// <summary>
 	/// Навигационное свойство на сущность компании.
@@ -19,7 +19,7 @@ public class ActiveCompany
 	/// <summary>
 	/// Временная метка начала мониторинга.
 	/// </summary>
-	public DateTime StartedAt { get; set; } = DateTime.UtcNow;
+	public DateTime StartedAt { get; set; } = DateTime.UtcNow;  //TODO: change to DateTimeOffset
 
 	/// <summary>
 	/// Временная метка последней проверки активности.

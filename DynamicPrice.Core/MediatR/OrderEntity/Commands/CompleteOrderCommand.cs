@@ -2,4 +2,4 @@
 
 namespace DynamicPrice.Core.MediatR.OrderEntity.Commands;
 
-public record CompleteOrderCommand(string OrderId) : IRequest<int>;
+public record CompleteOrderCommand(string OrderId) : IRequest<Guid>;

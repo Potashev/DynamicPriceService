@@ -20,7 +20,7 @@ public class GetCompanyOrderDetailsQueryHandler(
 		var manager = await userService.GetRequiredCurrentUserAsync();
 
 		var companyOrder = await context.Orders
-			.Where(o => o.OrderId.ToString() == request.OrderId && o.CompanyId == manager.CompanyId)
+			.Where(o => o.Id == request.OrderId && o.CompanyId == manager.CompanyId)
 			.Include(o => o.OrderItems)
 				.ThenInclude(op => op.Product)
 			.FirstOrDefaultAsync(cancellationToken);

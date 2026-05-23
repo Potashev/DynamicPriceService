@@ -12,12 +12,12 @@ public class Product
 	/// <summary>
 	/// Идентификатор продукта.
 	/// </summary>
-	public int ProductId { get; set; }
+	public Guid Id { get; set; }
 
 	/// <summary>
 	/// Идентификатор компании.
 	/// </summary>
-	public int CompanyId { get; set; }
+	public Guid CompanyId { get; set; }
 
 	/// <summary>
 	/// Навигационнное свойство компании, к которой принадлежит продукт.

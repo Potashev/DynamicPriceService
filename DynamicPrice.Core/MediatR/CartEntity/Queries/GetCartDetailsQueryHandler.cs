@@ -24,14 +24,14 @@ public class GetCartDetailsQueryHandler(
 			.Include(c => c.CartItems)
 				.ThenInclude(ci => ci.Product)
 			.FirstOrDefaultAsync(c => c.CustomerId == customer.Id
-				&& c.CompanyId == request.CompanyId, cancellationToken);
+				&& c.Id == request.CompanyId, cancellationToken);
 
 		var cartVm = cart is not null
 			? mapper.Map<CartViewModel>(cart)
 			: new CartViewModel
 			{
 				Company = mapper.Map<CompanyViewModel>(await context.Companies
-					.FirstOrDefaultAsync(c => c.CompanyId == request.CompanyId, cancellationToken)),
+					.FirstOrDefaultAsync(c => c.Id == request.CompanyId, cancellationToken)),
 				CartItems = Array.Empty<CartItemViewModel>()
 			};
 

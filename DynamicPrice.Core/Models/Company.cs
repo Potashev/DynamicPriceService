@@ -9,7 +9,7 @@ public class Company
 	/// <summary>
 	/// Идентификатор компании.
 	/// </summary>
-	public int CompanyId { get; set; }
+	public Guid Id { get; set; }
 
 	/// <summary>
 	/// Название компании.

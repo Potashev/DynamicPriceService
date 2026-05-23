@@ -20,7 +20,7 @@ public class MakeActiveProductCommandHandler(
 
 		var product = await context.Products
 			.FirstOrDefaultAsync(p => 
-				p.ProductId == request.ProductId && 
+				p.Id == request.ProductId && 
 				p.CompanyId == manager.CompanyId, cancellationToken)
 			?? throw new NotFoundException("Product not found.");
 

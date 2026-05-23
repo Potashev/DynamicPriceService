@@ -10,12 +10,12 @@ public class CartItem
 	/// <summary>
 	/// Идентификатор элемента корзины.
 	/// </summary>
-	public int Id { get; set; }
+	public Guid Id { get; set; }
 
 	/// <summary>
 	/// Внешний ключ на корзину, к которой принадлежит элемент.
 	/// </summary>
-	public int CartId { get; set; }
+	public Guid CartId { get; set; }
 
 	/// <summary>
 	/// Навигационное свойство корзины.
@@ -26,7 +26,7 @@ public class CartItem
 	/// <summary>
 	/// Идентификатор продукта.
 	/// </summary>
-	public int ProductId { get; set; }
+	public Guid ProductId { get; set; }
 
 	/// <summary>
 	/// Навигационное свойство продукта.

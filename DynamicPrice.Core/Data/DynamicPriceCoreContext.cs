@@ -14,7 +14,7 @@ public class DynamicPriceCoreContext : DbContext
 
 		modelBuilder.Entity<ActiveCompany>(b =>
 		{
-			b.HasKey(ac => ac.CompanyId);
+			b.HasKey(ac => ac.Id);
 
 			b.Property(ac => ac.StartedAt)
 				.IsRequired();
@@ -23,7 +23,7 @@ public class DynamicPriceCoreContext : DbContext
 
 			b.HasOne(ac => ac.Company)
 			 .WithOne()
-			 .HasForeignKey<ActiveCompany>(ac => ac.CompanyId)
+			 .HasForeignKey<ActiveCompany>(ac => ac.Id)
 			 .OnDelete(DeleteBehavior.Cascade);
 		});
 

@@ -9,9 +9,9 @@ namespace DynamicPrice.Core.MediatR.OrderEntity.Queries;
 public class GetOrderIdByReceiveKeyQueryHandler(
 	DynamicPriceCoreContext context,
 	IUserService userService)
-	: IRequestHandler<GetOrderIdByReceiveKeyQuery, int>
+	: IRequestHandler<GetOrderIdByReceiveKeyQuery, Guid>
 {
-	public async Task<int> Handle(
+	public async Task<Guid> Handle(
 		GetOrderIdByReceiveKeyQuery request,
 		CancellationToken cancellationToken)
 	{
@@ -21,11 +21,14 @@ public class GetOrderIdByReceiveKeyQueryHandler(
 			.Where(o =>
 				o.ReceiveKey.ToString() == request.ReceiveKey &&
 				o.CompanyId == manager.CompanyId)
-			.Select(o => o.OrderId)
+			.Select(o => o.Id)
 			.FirstOrDefaultAsync(cancellationToken);
 
-		return orderId == 0
-			? throw new NotFoundException($"Order with receive key '{request.ReceiveKey}' not found. Key must be a 6-digit number.")
-			: orderId;
+		//todo: check null
+		//return orderId
+		//	? throw new NotFoundException($"Order with receive key '{request.ReceiveKey}' not found. Key must be a 6-digit number.")
+		//	: orderId;
+
+		return orderId;
 	}
 }

@@ -7,11 +7,11 @@
 /// </summary>
 public class PriceHub : Hub
 {
-	public static string GetProductGroup(int productId) => $"product:{productId}";
+	public static string GetProductGroup(Guid productId) => $"product:{productId}";
 
-	public Task SubscribeToProduct(int productId)
+	public Task SubscribeToProduct(Guid productId)
 		=> Groups.AddToGroupAsync(Context.ConnectionId, GetProductGroup(productId));
 
-	public Task UnsubscribeFromProduct(int productId)
+	public Task UnsubscribeFromProduct(Guid productId)
 		=> Groups.RemoveFromGroupAsync(Context.ConnectionId, GetProductGroup(productId));
 }

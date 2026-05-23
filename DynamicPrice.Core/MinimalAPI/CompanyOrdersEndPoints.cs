@@ -36,7 +36,7 @@ public static class CompanyOrdersEndPoints
 			=> Results.Ok(await mediator.Send(new GetCompanyOrdersQuery(), cancellationToken));
 
 	private static async Task<IResult> GetCompanyOrder(
-		string orderId,
+		Guid orderId,
 		IMediator mediator,
 		CancellationToken cancellationToken)
 			=> Results.Ok(await mediator.Send(new GetCompanyOrderDetailsQuery(orderId), cancellationToken));
@@ -48,7 +48,7 @@ public static class CompanyOrdersEndPoints
 			=> Results.Ok(await mediator.Send(new GetOrderIdByReceiveKeyQuery(key), cancellationToken));
 
 	private static async Task<IResult> ReadyForReceive(
-		string orderId,
+		Guid orderId,
 		IMediator mediator,
 		CancellationToken cancellationToken)
 	{

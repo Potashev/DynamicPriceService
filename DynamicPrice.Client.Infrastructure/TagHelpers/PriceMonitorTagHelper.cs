@@ -6,7 +6,7 @@ using System.Text.Json;
 public class PriceMonitorTagHelper : TagHelper
 {
 	[HtmlAttributeName("product-id")]
-	public int ProductId { get; set; }
+	public Guid ProductId { get; set; }
 
 	[HtmlAttributeName("price")]
 	public decimal Price { get; set; }

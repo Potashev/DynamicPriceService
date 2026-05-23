@@ -22,7 +22,7 @@ public class GetManagerInfoQueryHandler(
 		var manager = await userService.GetRequiredCurrentUserAsync();
 
 		var company = await context.Companies
-			.FirstOrDefaultAsync(c => c.CompanyId == manager.CompanyId, cancellationToken);
+			.FirstOrDefaultAsync(c => c.Id == manager.CompanyId, cancellationToken);
 
 		return new ManagerInfoViewModel
 		{

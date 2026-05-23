@@ -20,7 +20,7 @@ public class GetProductsQueryHandler(
 		var manager = await userService.GetRequiredCurrentUserAsync();
 
 		var products = await context.Products
-			.Where(p => p.Company.CompanyId == manager.CompanyId)
+			.Where(p => p.CompanyId == manager.CompanyId)
 			.ToArrayAsync(cancellationToken);
 
 		return mapper.Map<ProductViewModel[]>(products);

@@ -9,16 +9,16 @@ namespace DynamicPrice.Core.MediatR.OrderEntity.Commands;
 public class CancelOrderCommandHandler(
 	DynamicPriceCoreContext context,
 	IUserService userService)
-	: IRequestHandler<CancelOrderCommand, int>
+	: IRequestHandler<CancelOrderCommand, Guid>
 {
-	public async Task<int> Handle(
+	public async Task<Guid> Handle(
 		CancelOrderCommand request,
 		CancellationToken cancellationToken)
 	{
 		var customer = await userService.GetRequiredCurrentUserAsync();
 
 		var order = await context.Orders
-			.Where(o => o.OrderId == request.OrderId && o.CustomerId == customer.Id)
+			.Where(o => o.Id == request.OrderId && o.CustomerId == customer.Id)
 			.Include(o => o.OrderItems)
 				.ThenInclude(oi => oi.Product)
 			.FirstOrDefaultAsync(cancellationToken)

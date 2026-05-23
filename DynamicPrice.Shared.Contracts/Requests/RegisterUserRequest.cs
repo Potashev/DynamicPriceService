@@ -8,7 +8,7 @@ public class RegisterUserRequest
 
 	public string Role { get; init; } = null!;
 	public decimal? Balance { get; init; }
-	public int? CompanyId { get; init; }
+	public Guid? CompanyId { get; init; }
 
 	public RegisterUserRequest(RegisterRequest request)
 	{

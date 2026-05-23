@@ -16,5 +16,5 @@ public class ApplicationUser : IdentityUser
 	/// Идентификатор компании, с которой связан пользователь (менеджер).
 	/// См. также <see cref="Company"/>.
 	/// </summary>
-	public int? CompanyId { get; set; }
+	public Guid? CompanyId { get; set; }
 }

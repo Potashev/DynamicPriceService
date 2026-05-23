@@ -11,7 +11,7 @@ public class Cart
 	/// <summary>
 	/// Идентификатор корзины.
 	/// </summary>
-	public int CartId { get; set; }
+	public Guid Id { get; set; }
 
 	/// <summary>
 	/// Идентификатор клиента.
@@ -21,7 +21,7 @@ public class Cart
 	/// <summary>
 	/// Идентификатор компании, к которой относится корзина.
 	/// </summary>
-	public int CompanyId { get; set; }
+	public Guid CompanyId { get; set; }
 
 	/// <summary>
 	/// Компания, к которой относится корзина.
@@ -35,13 +35,13 @@ public class Cart
 
 	private Cart() { }
 
-	public Cart(string customerId, int companyId)
+	public Cart(string customerId, Guid companyId)
 	{
 		CustomerId = customerId;
 		CompanyId = companyId;
 	}
 
-	public void AddItem(int productId)
+	public void AddItem(Guid productId)
 	{
 		var existingItem = CartItems
 			.FirstOrDefault(ci => ci.ProductId == productId);
@@ -61,7 +61,7 @@ public class Cart
 		}
 	}
 
-	public void RemoveItem(int productId)
+	public void RemoveItem(Guid productId)
 	{
 		var cartItem = CartItems
 			.FirstOrDefault(ci => ci.ProductId == productId)

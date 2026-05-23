@@ -6,7 +6,7 @@ public static class PriceHubExtensions
 {
 	public static Task SendPriceUpdateToProductGroup(
 		this IHubContext<PriceHub> hubContext,
-		int productId,
+		Guid productId,
 		decimal updatedPrice)
 		=> hubContext.Clients.Group(PriceHub.GetProductGroup(productId))
 			.SendAsync("ReceivePriceUpdate", productId, updatedPrice, DateTime.UtcNow);

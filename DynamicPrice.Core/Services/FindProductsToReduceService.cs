@@ -65,11 +65,11 @@ public class FindProductsToReduceService : BackgroundService
 					{
 						try
 						{
-							await publishEndpoint.Publish(new PriceReduceEvent(product.ProductId), token);
+							await publishEndpoint.Publish(new PriceReduceEvent(product.Id), token);
 						}
 						catch (Exception ex)
 						{
-							_logger.LogError(ex, "Failed to publish PriceReduceEvent for ProductId {ProductId}", product.ProductId);
+							_logger.LogError(ex, "Failed to publish PriceReduceEvent for ProductId {ProductId}", product.Id);
 						}
 					});
 				}
@@ -97,7 +97,7 @@ public class FindProductsToReduceService : BackgroundService
 		int? productsCount = null)
 	{
 		var activeCompaniesIds = await context.ActiveCompanies
-			.Select(ac => ac.CompanyId)
+			.Select(ac => ac.Id)
 			.ToListAsync(token);
 
 		if (activeCompaniesIds.Count == 0)

@@ -10,12 +10,12 @@ public class OrderItem
 	/// <summary>
 	/// Идентификатор позиции заказа.
 	/// </summary>
-	public int Id { get; set; } //TODO: make Guid
+	public Guid Id { get; set; }
 
 	/// <summary>
 	/// Идентификатор заказа.
 	/// </summary>
-	public int OrderId { get; set; }
+	public Guid OrderId { get; set; }
 
 	/// <summary>
 	/// Навигационное свойство заказа.
@@ -26,7 +26,7 @@ public class OrderItem
 	/// <summary>
 	/// Идентификатор продукта.
 	/// </summary>
-	public int ProductId { get; set; }
+	public Guid ProductId { get; set; }
 
 	/// <summary>
 	/// Навигационное свойство продукта.

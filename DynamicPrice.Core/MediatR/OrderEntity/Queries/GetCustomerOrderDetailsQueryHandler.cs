@@ -21,7 +21,7 @@ public class GetCustomerOrderDetailsQueryHandler(
 
 		var customerOrder = await context.Orders
 			.Where(o =>
-				o.OrderId.ToString() == request.OrderId &&
+				o.Id == request.OrderId &&
 				o.CustomerId == customer.Id)
 			.Include(o => o.OrderItems)
 				.ThenInclude(op => op.Product)

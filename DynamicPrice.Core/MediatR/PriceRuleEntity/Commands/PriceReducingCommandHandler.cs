@@ -23,7 +23,7 @@ public class PriceReducingCommandHandler(
 		var activeCompany = await context.ActiveCompanies.FindAsync(companyId);
 
 		if (request.IsRunCommand && activeCompany is null)
-			context.ActiveCompanies.Add(new ActiveCompany { CompanyId = companyId, StartedAt = DateTime.UtcNow });
+			context.ActiveCompanies.Add(new ActiveCompany { Id = companyId, StartedAt = DateTime.UtcNow });
 		else if (!request.IsRunCommand && activeCompany is not null)
 			context.ActiveCompanies.Remove(activeCompany);
 

@@ -10,16 +10,16 @@ namespace DynamicPrice.Core.MediatR.OrderEntity.Commands;
 public class ConfirmOrderCommandHandler(
 	DynamicPriceCoreContext context,
 	IUserService userService)
-	: IRequestHandler<ConfirmOrderCommand, int>
+	: IRequestHandler<ConfirmOrderCommand, Guid>
 {
-	public async Task<int> Handle(
+	public async Task<Guid> Handle(
 		ConfirmOrderCommand request,
 		CancellationToken cancellationToken)
 	{
 		var customer = await userService.GetRequiredCurrentUserAsync();
 
 		var cart = await context.Carts
-			.Where(c => c.CartId == request.CartId && c.CustomerId == customer.Id)
+			.Where(c => c.Id == request.CartId && c.CustomerId == customer.Id)
 			.Include(c => c.Company)
 			.Include(c => c.CartItems)
 				.ThenInclude(ci => ci.Product)
@@ -35,6 +35,6 @@ public class ConfirmOrderCommandHandler(
 
 		await context.SaveChangesAsync(cancellationToken);
 
-		return order.OrderId;
+		return order.Id;
 	}
 }

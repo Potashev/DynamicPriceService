@@ -22,15 +22,15 @@ public class GetPriceRuleWithStatusQueryHandler(
 		var manager = await userService.GetRequiredCurrentUserAsync();
 
 		var priceRule = await context.PriceRules
-			.Where(pr => pr.Company.CompanyId == manager.CompanyId)
+			.Where(pr => pr.CompanyId == manager.CompanyId)
 			.FirstOrDefaultAsync(cancellationToken);
 
 		var priceRuleVm = mapper.Map<PriceRuleViewModel>(priceRule);
 
-		var status = priceRule?.CompanyId is int cid
+		var status = priceRule?.CompanyId is Guid cid
 			&& await context.ActiveCompanies
 				.AsNoTracking()
-				.AnyAsync(ac => ac.CompanyId == cid, cancellationToken);
+				.AnyAsync(ac => ac.Id == cid, cancellationToken);
 
 		return new PriceRuleWithStatus
 		{

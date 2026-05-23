@@ -54,17 +54,17 @@ public abstract class PriceServiceBase<TEvent> : IConsumer<TEvent>
 	protected abstract Task ProcessMessage(TEvent message);
 
 	protected async Task UpdatePrice(
-		int productId,
+		Guid productId,
 		Func<Product, PriceRule, decimal> priceCalculator)
 	{
 		var product = await _context.Products
 			.FirstOrDefaultAsync(p => 
-				p.ProductId == productId &&
+				p.Id == productId &&
 				p.Status == ProductStatus.Active)
 			?? throw new NotFoundException("Product not found or not active.");
 
 		var priceRule = await _context.PriceRules
-			.FirstOrDefaultAsync(pr => pr.Company.CompanyId == product.CompanyId)
+			.FirstOrDefaultAsync(pr => pr.CompanyId == product.CompanyId)
 			?? throw new NotFoundException("PriceRule not found.");
 
 		var updatedPrice = priceCalculator(product, priceRule);
@@ -75,14 +75,14 @@ public abstract class PriceServiceBase<TEvent> : IConsumer<TEvent>
 
 			await _context.PriceDynamics.AddAsync(new PriceDynamic
 			{
-				ProductId = product.ProductId,
+				ProductId = product.Id,
 				Price = product.Price,
 				Date = DateTime.UtcNow
 			});
 
 			await _context.SaveChangesAsync();
 
-			await _priceHubContext.SendPriceUpdateToProductGroup(product.ProductId, product.Price);
+			await _priceHubContext.SendPriceUpdateToProductGroup(product.Id, product.Price);
 		}
 	}
 }

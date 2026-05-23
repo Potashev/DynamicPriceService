@@ -2,4 +2,4 @@
 
 namespace DynamicPrice.Core.MediatR.OrderEntity.Commands;
 
-public record CancelOrderCommand(int OrderId) : IRequest<int>;
+public record CancelOrderCommand(Guid OrderId) : IRequest<Guid>;

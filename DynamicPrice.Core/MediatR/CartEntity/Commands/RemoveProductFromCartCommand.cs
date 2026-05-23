@@ -3,4 +3,4 @@ using MediatR;
 
 namespace DynamicPrice.Core.MediatR.CartEntity.Commands;
 
-public record RemoveProductFromCartCommand(int ProductId) : IRequest<CartViewModel>;
+public record RemoveProductFromCartCommand(Guid ProductId) : IRequest<CartViewModel>;

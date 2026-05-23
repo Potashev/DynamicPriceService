@@ -11,9 +11,9 @@ public class CreateProductCommandHandler(
 	DynamicPriceCoreContext context,
 	IMapper mapper,
 	IUserService userService)
-	: IRequestHandler<CreateProductCommand, int>
+	: IRequestHandler<CreateProductCommand, Guid>
 {
-	public async Task<int> Handle(
+	public async Task<Guid> Handle(
 		CreateProductCommand request,
 		CancellationToken cancellationToken)
 	{
@@ -30,6 +30,6 @@ public class CreateProductCommandHandler(
 		await context.Products.AddAsync(product, cancellationToken);
 		await context.SaveChangesAsync(cancellationToken);
 
-		return product.ProductId;
+		return product.Id;
 	}
 }

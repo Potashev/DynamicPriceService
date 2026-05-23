@@ -23,19 +23,19 @@ public static class CustomerOrderEndPoints
 	}
 
 	private static async Task<IResult> GetCustomerOrder(
-		[FromQuery(Name = "id")] string orderId,
+		[FromQuery(Name = "id")] Guid orderId,	//todo: check
 		IMediator mediator,
 		CancellationToken cancellationToken)
 			=> Results.Ok(await mediator.Send(new GetCustomerOrderDetailsQuery(orderId), cancellationToken));
 
 	private static async Task<IResult> ConfirmOrder(
-		[FromBody] int cartId,
+		[FromBody] Guid cartId,
 		IMediator mediator,
 		CancellationToken cancellationToken)
 			=> Results.Ok(await mediator.Send(new ConfirmOrderCommand(cartId), cancellationToken));
 
 	private static async Task<IResult> CancelOrder(
-		[FromBody] int orderId,
+		[FromBody] Guid orderId,
 		IMediator mediator,
 		CancellationToken cancellationToken)
 			=> Results.Ok(await mediator.Send(new CancelOrderCommand(orderId), cancellationToken));

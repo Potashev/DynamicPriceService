@@ -11,9 +11,9 @@ public class EditProductCommandHandler(
 	DynamicPriceCoreContext context,
 	IMapper mapper,
 	IUserService userService)
-	: IRequestHandler<EditProductCommand, int>
+	: IRequestHandler<EditProductCommand, Guid>
 {
-	public async Task<int> Handle(
+	public async Task<Guid> Handle(
 		EditProductCommand request,
 		CancellationToken cancellationToken)
 	{
@@ -23,7 +23,7 @@ public class EditProductCommandHandler(
 
 		var product = await context.Products
 			.FirstOrDefaultAsync(p => 
-				p.ProductId == updatedProductVm.ProductId && 
+				p.Id == updatedProductVm.ProductId && 
 				p.CompanyId == manager.CompanyId, cancellationToken)
 			?? throw new NotFoundException("Product not found.");
 
@@ -32,6 +32,6 @@ public class EditProductCommandHandler(
 		context.Update(product);
 		await context.SaveChangesAsync(cancellationToken);
 
-		return product.ProductId;
+		return product.Id;
 	}
 }

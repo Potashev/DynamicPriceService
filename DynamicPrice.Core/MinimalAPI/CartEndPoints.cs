@@ -23,10 +23,10 @@ public static class CartEndPoints
 	}
 
 	private static async Task<IResult> GetCartDetails(
-		[FromQuery(Name = "company-id")] string companyId,
+		[FromQuery(Name = "company-id")] Guid companyId,	//todo: check
 		IMediator mediator,
 		CancellationToken cancellationToken)
-			=> Results.Ok(await mediator.Send(new GetCartDetailsQuery(Convert.ToInt32(companyId)), cancellationToken));
+			=> Results.Ok(await mediator.Send(new GetCartDetailsQuery(companyId), cancellationToken));
 
 	private static async Task<IResult> AddCartItem(
 		[FromBody] int productId,
@@ -38,7 +38,7 @@ public static class CartEndPoints
 	}
 
 	private static async Task<IResult> RemoveCartItem(
-		int productId,
+		Guid productId,
 		IMediator mediator,
 		CancellationToken cancellationToken)
 	{

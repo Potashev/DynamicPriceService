@@ -37,7 +37,7 @@ public static class ProductsEndPoints
 			=> Results.Ok(await mediator.Send(new GetProductsQuery(), cancellationToken));
 
 	private static async Task<IResult> GetProduct(
-		int id,
+		Guid id,
 		IMediator mediator,
 		CancellationToken cancellationToken)
 			=> Results.Ok(await mediator.Send(new GetProductDetailsQuery(id), cancellationToken));
@@ -55,7 +55,7 @@ public static class ProductsEndPoints
 			=> Results.Ok(await mediator.Send(new CreateProductCommand(productVm), cancellationToken));
 
 	private static async Task<IResult> MakeArchived(
-		int id,
+		Guid id,
 		IMediator mediator,
 		CancellationToken cancellationToken)
 	{
@@ -64,7 +64,7 @@ public static class ProductsEndPoints
 	}
 
 	private static async Task<IResult> MakeActive(
-		int id,
+		Guid id,
 		IMediator mediator,
 		CancellationToken cancellationToken)
 	{

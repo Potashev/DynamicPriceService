@@ -26,7 +26,7 @@ public class TokenService(
 
 		if (company is not null)
 		{
-			claims.Add(new("company_id", company.CompanyId.ToString()));
+			claims.Add(new("company_id", company.Id.ToString()));	//todo: check
 			claims.Add(new("company_title", company.Title));
 		}
 

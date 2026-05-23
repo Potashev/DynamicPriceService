@@ -12,16 +12,16 @@ public class CompleteOrderCommandHandler(
 	DynamicPriceCoreContext context,
 	IUserService userService,
 	IPublishEndpoint publishEndpoint)
-	: IRequestHandler<CompleteOrderCommand, int>
+	: IRequestHandler<CompleteOrderCommand, Guid>
 {
-	public async Task<int> Handle(
+	public async Task<Guid> Handle(
 		CompleteOrderCommand request,
 		CancellationToken cancellationToken)
 	{
 		var manager = await userService.GetRequiredCurrentUserAsync();
 
 		var order = await context.Orders
-			.Where(o => o.OrderId.ToString() == request.OrderId && o.CompanyId == manager.CompanyId)
+			.Where(o => o.Id.ToString() == request.OrderId && o.CompanyId == manager.CompanyId)	//todo: check
 			.Include(o => o.OrderItems)
 				.ThenInclude(oi => oi.Product)
 			.FirstOrDefaultAsync(cancellationToken)
@@ -51,6 +51,6 @@ public class CompleteOrderCommandHandler(
 				new PriceIncreaseEvent(item.ProductId, item.Quantity),
 				cancellationToken);
 
-		return order.OrderId;
+		return order.Id;
 	}
 }

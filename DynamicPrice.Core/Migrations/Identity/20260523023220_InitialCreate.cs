@@ -32,7 +32,7 @@ namespace DynamicPrice.Core.Migrations.Identity
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
                     Balance = table.Column<decimal>(type: "numeric", nullable: false),
-                    CompanyId = table.Column<int>(type: "integer", nullable: true),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: true),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),

@@ -15,7 +15,7 @@ public class Order
 	/// <summary>
 	/// Идентификатор заказа.
 	/// </summary>
-	public int OrderId { get; set; }
+	public Guid Id { get; set; }
 
 	/// <summary>
 	/// Номер заказа.
@@ -31,7 +31,7 @@ public class Order
 	/// <summary>
 	/// Идентификатор компании, к которой относится заказ.
 	/// </summary>
-	public int CompanyId { get; set; }
+	public Guid CompanyId { get; set; }
 
 	/// <summary>
 	/// Навигационное свойство компании.
@@ -61,7 +61,7 @@ public class Order
 
 	private Order() { }
 
-	public Order(string customerId, int companyId)
+	public Order(string customerId, Guid companyId)
 	{
 		CustomerId = customerId;
 		CompanyId = companyId;

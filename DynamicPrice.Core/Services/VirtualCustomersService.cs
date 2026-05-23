@@ -48,7 +48,7 @@ public class VirtualCustomersService : BackgroundService
 				var companyForMonitoring = companies.GetRandomItem();
 
 				var companyProducts = await context.Products
-					.Where(p => p.CompanyId == companyForMonitoring.CompanyId)
+					.Where(p => p.CompanyId == companyForMonitoring.Id)
 					.Where(p => p.Status == ProductStatus.Active)
 					.Where(Product.CanBeReducedExpr)
 					.Include(p => p.PriceDynamics
@@ -60,7 +60,7 @@ public class VirtualCustomersService : BackgroundService
 
 				var productsToBuy = virtualCustomer.MonitorProducts(companyProducts);
 
-				var order = new Order(virtualCustomer.CustomerId, companyForMonitoring.CompanyId);
+				var order = new Order(virtualCustomer.CustomerId, companyForMonitoring.Id);
 
 				order.AddItems(productsToBuy);
 				order.MarkAsReady();

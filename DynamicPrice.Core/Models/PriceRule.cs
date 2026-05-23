@@ -12,12 +12,12 @@ public class PriceRule
 	/// <summary>
 	/// Идентификатор правила.
 	/// </summary>
-	public int PriceRuleId { get; set; }
+	public Guid Id { get; set; }
 
 	/// <summary>
 	/// Идентификатор компании.
 	/// </summary>
-	public int CompanyId { get; set; }
+	public Guid CompanyId { get; set; }
 
 	/// <summary>
 	/// Навигационное свойство компании, к которой относится правило.
@@ -29,7 +29,7 @@ public class PriceRule
 	/// Значение 10 означает повышение на 10%.
 	/// Повышение цены продукта происходит после оформления заказа.
 	/// </summary>
-	public double Increase { get; set; }
+	public double Increase { get; set; }    //todo: rename to IncreasePercent
 
 	/// <summary>
 	/// Снижение цены продукта (в процентах).
@@ -37,7 +37,7 @@ public class PriceRule
 	/// Снижение цены продукта происходит при обнаружении "простоя" продукта.
 	/// См. также <see cref="FindProductsToReduceService"/>.
 	/// </summary>
-	public double Reduction { get; set; }
+	public double Reduction { get; set; }    //todo: rename to ReductionPercent
 
 	/// <summary>
 	/// Допустимое время "простоя" продукта. Если продукт не продавался дольше этого времени — применяется снижение цены.

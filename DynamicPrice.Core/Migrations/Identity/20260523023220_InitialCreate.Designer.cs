@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DynamicPrice.Core.Migrations.Identity
 {
     [DbContext(typeof(IdentityContext))]
-    [Migration("20260517082259_InitialCreate")]
+    [Migration("20260523023220_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -36,8 +36,8 @@ namespace DynamicPrice.Core.Migrations.Identity
                     b.Property<decimal>("Balance")
                         .HasColumnType("numeric");
 
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("integer");
+                    b.Property<Guid?>("CompanyId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()

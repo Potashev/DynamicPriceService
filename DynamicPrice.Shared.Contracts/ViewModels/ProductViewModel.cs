@@ -4,7 +4,7 @@ namespace DynamicPrice.Shared.Contracts.ViewModels;
 
 public class ProductViewModel : IValidatableObject
 {
-	public int ProductId { get; init; }
+	public Guid ProductId { get; init; }
 	public string Title { get; init; } = null!;
 
 	[Range(0, double.MaxValue, ErrorMessage = "Price cannot be negative")]

@@ -13,7 +13,7 @@ public class UserCompanyService(
 			return null;
 
 		return await dbContext.Companies
-			.FirstOrDefaultAsync(c => c.CompanyId == user.CompanyId);
+			.FirstOrDefaultAsync(c => c.Id == user.CompanyId);
 	}
 }
 

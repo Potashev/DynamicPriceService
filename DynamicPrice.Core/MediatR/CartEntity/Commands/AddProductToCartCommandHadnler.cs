@@ -23,7 +23,7 @@ public class AddProductToCartCommandHadnler(
 
 		var product = await context.Products
 			.Include(p => p.Company)
-			.Where(p => p.ProductId.ToString() == request.ProductId)
+			.Where(p => p.Id.ToString() == request.ProductId)	//todo: check guid.tostring()
 			.FirstOrDefaultAsync(cancellationToken)
 			?? throw new NotFoundException("Product not found");
 
@@ -33,7 +33,7 @@ public class AddProductToCartCommandHadnler(
 		var cart = await context.Carts
 			.Include(c => c.CartItems)
 			.Where(c => c.CustomerId == customer.Id
-				&& c.CompanyId == product.CompanyId)
+				&& c.Id == product.CompanyId)
 			.FirstOrDefaultAsync(cancellationToken);
 
 		if (cart is null)
@@ -42,7 +42,7 @@ public class AddProductToCartCommandHadnler(
 			await context.Carts.AddAsync(cart);
 		}
 
-		cart.AddItem(product.ProductId);
+		cart.AddItem(product.Id);
 
 		await context.SaveChangesAsync(cancellationToken);
 		return mapper.Map<CartViewModel>(cart);

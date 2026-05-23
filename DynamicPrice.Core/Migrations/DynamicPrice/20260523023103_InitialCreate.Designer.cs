@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DynamicPrice.Core.Migrations.DynamicPrice
 {
     [DbContext(typeof(DynamicPriceCoreContext))]
-    [Migration("20260517081426_InitialCreate")]
+    [Migration("20260523023103_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -27,8 +27,8 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
 
             modelBuilder.Entity("DynamicPrice.Core.Models.ActiveCompany", b =>
                 {
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime?>("LastMonitoring")
                         .HasColumnType("timestamp with time zone");
@@ -36,27 +36,25 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
                     b.Property<DateTime>("StartedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("CompanyId");
+                    b.HasKey("Id");
 
                     b.ToTable("ActiveCompanies");
                 });
 
             modelBuilder.Entity("DynamicPrice.Core.Models.Cart", b =>
                 {
-                    b.Property<int>("CartId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CartId"));
-
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("CustomerId")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("CartId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
 
@@ -65,17 +63,15 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
 
             modelBuilder.Entity("DynamicPrice.Core.Models.CartItem", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<Guid>("CartId")
+                        .HasColumnType("uuid");
 
-                    b.Property<int>("CartId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
@@ -91,11 +87,9 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
 
             modelBuilder.Entity("DynamicPrice.Core.Models.Company", b =>
                 {
-                    b.Property<int>("CompanyId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CompanyId"));
+                        .HasColumnType("uuid");
 
                     b.Property<int>("PriceHistoryLimit")
                         .HasColumnType("integer");
@@ -104,21 +98,19 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("CompanyId");
+                    b.HasKey("Id");
 
                     b.ToTable("Companies");
                 });
 
             modelBuilder.Entity("DynamicPrice.Core.Models.Order", b =>
                 {
-                    b.Property<int>("OrderId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OrderId"));
-
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("CustomerId")
                         .IsRequired()
@@ -138,7 +130,7 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
-                    b.HasKey("OrderId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
 
@@ -150,17 +142,15 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
 
             modelBuilder.Entity("DynamicPrice.Core.Models.OrderItem", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid");
 
-                    b.Property<int>("OrderId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
 
                     b.Property<decimal>("ProductPrice")
                         .HasColumnType("numeric");
@@ -179,11 +169,9 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
 
             modelBuilder.Entity("DynamicPrice.Core.Models.PriceDynamic", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
@@ -191,8 +179,8 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -203,14 +191,12 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
 
             modelBuilder.Entity("DynamicPrice.Core.Models.PriceRule", b =>
                 {
-                    b.Property<int>("PriceRuleId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PriceRuleId"));
-
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uuid");
 
                     b.Property<double>("Increase")
                         .HasColumnType("double precision");
@@ -221,7 +207,7 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
                     b.Property<double>("Reduction")
                         .HasColumnType("double precision");
 
-                    b.HasKey("PriceRuleId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
 
@@ -230,14 +216,12 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
 
             modelBuilder.Entity("DynamicPrice.Core.Models.Product", b =>
                 {
-                    b.Property<int>("ProductId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ProductId"));
-
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
@@ -262,7 +246,7 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("ProductId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
 
@@ -273,7 +257,7 @@ namespace DynamicPrice.Core.Migrations.DynamicPrice
                 {
                     b.HasOne("DynamicPrice.Core.Models.Company", "Company")
                         .WithOne()
-                        .HasForeignKey("DynamicPrice.Core.Models.ActiveCompany", "CompanyId")
+                        .HasForeignKey("DynamicPrice.Core.Models.ActiveCompany", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -11,9 +11,9 @@ public class EditPriceRuleCommandHandler(
 	DynamicPriceCoreContext context,
 	IMapper mapper,
 	IUserService userService)
-	: IRequestHandler<EditPriceRuleCommand, int>
+	: IRequestHandler<EditPriceRuleCommand, Guid>
 {
-	public async Task<int> Handle(
+	public async Task<Guid> Handle(
 		EditPriceRuleCommand request,
 		CancellationToken cancellationToken)
 	{
@@ -22,8 +22,8 @@ public class EditPriceRuleCommandHandler(
 		var updatedPriceRuleVm = request.PriceRuleVm;
 		var priceRule = await context.PriceRules
 			.FirstOrDefaultAsync(pr => 
-				pr.PriceRuleId == updatedPriceRuleVm.PriceRuleId && 
-				pr.Company.CompanyId == manager.CompanyId, cancellationToken)
+				pr.Id == updatedPriceRuleVm.PriceRuleId && 
+				pr.CompanyId == manager.CompanyId, cancellationToken)
 			?? throw new NotFoundException("Price rule not found.");
 
 		mapper.Map(updatedPriceRuleVm, priceRule);
@@ -31,6 +31,6 @@ public class EditPriceRuleCommandHandler(
 		context.Update(priceRule);
 		await context.SaveChangesAsync(cancellationToken);
 
-		return priceRule.PriceRuleId;
+		return priceRule.Id;
 	}
 }

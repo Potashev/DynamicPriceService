@@ -19,13 +19,13 @@ public class GetCompanyProductsQueryHandler(
 		CancellationToken cancellationToken)
 	{
 		var company = await context.ActiveCompanies
-			.Where(ac => ac.CompanyId.ToString() == request.CompanyId)
+			.Where(ac => ac.Id.ToString() == request.CompanyId)	//todo: check
 			.Select(ac => ac.Company)
 			.FirstOrDefaultAsync(cancellationToken)
 			?? throw new NotFoundException("Company not found or not active");
 
 		var products = await context.Products
-			.Where(p => p.CompanyId == company.CompanyId)
+			.Where(p => p.CompanyId == company.Id)
 			.Where(p => p.Status == Models.ProductStatus.Active)
 			.Where(Product.CanBeReducedExpr)
 			.Include(p => p.PriceDynamics

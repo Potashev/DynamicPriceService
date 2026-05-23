@@ -32,7 +32,7 @@ public interface ICoreApiClient
 
 	[Get("/api/company/products/{id}")]
 	Task<ProductViewModel> GetProduct(
-		int id,
+		Guid id,
 		CancellationToken cancellationToken);
 
 	[Post("/api/company/products")]
@@ -40,7 +40,7 @@ public interface ICoreApiClient
 		ProductViewModel productVm,
 		CancellationToken cancellationToken);
 
-	[Put("/api/company/products/{productVm.ProductId}")]
+	[Put("/api/company/products/{productVm.Id}")]
 	Task UpdateProduct(
 		ProductViewModel productVm,
 		CancellationToken cancellationToken);

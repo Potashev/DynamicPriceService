@@ -20,8 +20,8 @@
 
 		<dt class="col-sm-2">@Html.DisplayNameFor(model => model.Price)</dt>
 		<dd class="col-sm-10">
-			<span id="price-@Model.ProductId">@Html.DisplayFor(model => model.Price)</span>
-			<span id="price-change-@Model.ProductId" class="price-change"></span>
+			<span id="price-@Model.Id">@Html.DisplayFor(model => model.Price)</span>
+			<span id="price-change-@Model.Id" class="price-change"></span>
 		</dd>
 
 		<dt class="col-sm-2">@Html.DisplayNameFor(model => model.MinimumPrice)</dt>
@@ -38,7 +38,7 @@
 	</dl>
 </div>
 
-<price-monitor product-id="@Model.ProductId"
+<price-monitor product-id="@Model.Id"
 			   price="@Model.Price"
 			   price-dynamics="@Model.PriceDynamics"
 			   max-points="@Model.PriceDynamics.Count"
@@ -47,7 +47,7 @@
 </price-monitor>
 
 <div>
-	<a asp-action="Edit" asp-route-id="@Model?.ProductId">Edit</a> |
+	<a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
 	<a asp-action="Index">Back to List</a>
 </div>
 

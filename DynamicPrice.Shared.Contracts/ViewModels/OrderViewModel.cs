@@ -2,7 +2,7 @@
 
 public class OrderViewModel
 {
-	public int OrderId { get; init; }
+	public Guid Id { get; init; }
 	public string Number { get; init; } = null!;
 	public string CustomerId { get; init; } = null!;
 	public string CustomerName { get; set; } = null!;

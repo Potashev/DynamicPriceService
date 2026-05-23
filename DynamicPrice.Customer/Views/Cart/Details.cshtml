@@ -36,12 +36,12 @@
 					<td>@product?.Price</td>
 					<td>
 						<form asp-controller="Cart" asp-action="AddCartItem" method="post" class="d-inline">
-							<input type="hidden" name="productId" value="@product?.ProductId" />
+							<input type="hidden" name="productId" value="@product?.Id" />
 							<button type="submit" class="btn btn-link p-0">Add</button>
 						</form>
 						|
 						<form asp-controller="Cart" asp-action="RemoveCartItem" method="post" class="d-inline">
-							<input type="hidden" name="productId" value="@product?.ProductId" />
+							<input type="hidden" name="productId" value="@product?.Id" />
 							<button type="submit" class="btn btn-link p-0">Remove</button>
 						</form>
 					</td>
@@ -59,7 +59,7 @@ else
 	@if (hasItems)
 	{
 		<form asp-controller="CustomerOrder" asp-action="Confirm" method="post" class="d-inline">
-			<input type="hidden" name="cartId" value="@Model.CartId" />
+			<input type="hidden" name="cartId" value="@Model.Id" />
 			<button type="submit" class="btn btn-primary">Confirm order</button>
 		</form>
 		<span>|</span>
@@ -67,7 +67,7 @@ else
 
 	<a asp-controller="Companies"
 		   asp-action="CompanyProducts"
-		   asp-route-id="@Model.Company?.CompanyId">
+	   asp-route-id="@Model.Company?.Id">
 		Back to List
 	</a>
 </div>

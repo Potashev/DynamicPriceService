@@ -14,13 +14,13 @@ public class ProductsController(
 
 	[HttpGet]
 	public async Task<IActionResult> Details(
-		int? id,
+		Guid id,
 		CancellationToken cancellationToken)
 	{
-		if (id is null)
-			return NotFound();
+		//if (id is null)
+		//	return NotFound();
 
-		var productVm = await coreApiClient.GetProduct((int)id, cancellationToken);
+		var productVm = await coreApiClient.GetProduct(id, cancellationToken);
 		return View(productVm);
 	}
 
@@ -43,12 +43,12 @@ public class ProductsController(
 
 	[HttpGet]
 	public async Task<IActionResult> Edit(
-		int? id,
+		Guid id,
 		CancellationToken cancellationToken)
 	{
-		if (id is null) return NotFound();
+		//if (id is null) return NotFound();
 
-		var productVm = await coreApiClient.GetProduct((int)id, cancellationToken);
+		var productVm = await coreApiClient.GetProduct(id, cancellationToken);
 		return View(productVm);
 	}
 

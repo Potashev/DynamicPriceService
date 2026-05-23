@@ -23,7 +23,7 @@ public class EditProductCommandHandler(
 
 		var product = await context.Products
 			.FirstOrDefaultAsync(p => 
-				p.Id == updatedProductVm.ProductId && 
+				p.Id == updatedProductVm.Id && 
 				p.CompanyId == manager.CompanyId, cancellationToken)
 			?? throw new NotFoundException("Product not found.");
 

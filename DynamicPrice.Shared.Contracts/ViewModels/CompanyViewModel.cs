@@ -2,6 +2,6 @@
 
 public class CompanyViewModel
 {
-	public int CompanyId { get; init; }
+	public Guid Id { get; init; }
 	public string Title { get; init; } = null!;
 }

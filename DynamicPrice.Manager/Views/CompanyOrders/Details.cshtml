@@ -39,7 +39,7 @@
 					@Html.DisplayFor(modelItem => item.Quantity)
 				</td>
 				<td>
-					<a asp-controller="Products" asp-action="Details" asp-route-id="@item.Product.ProductId">Details</a>
+					<a asp-controller="Products" asp-action="Details" asp-route-id="@item.Product.Id">Details</a>
 				</td>
 			</tr>
 		}
@@ -85,7 +85,7 @@
 	@if (Model.Status is OrderStatus.Confirmed or OrderStatus.Ready)
 	{
 		<form asp-action="ReadyForReceive" method="post" style="display:inline;">
-			<input type="hidden" name="orderId" value="@Model.OrderId" />
+			<input type="hidden" name="orderId" value="@Model.Id" />
 			<button type="submit" class="btn btn-primary"
 					@(Model.Status is OrderStatus.Ready ? "disabled" : null)>
 				Ready for receive
@@ -93,7 +93,7 @@
 		</form>
 		<span> | </span>
 		<form asp-action="Complete" method="post" style="display:inline;">
-			<input type="hidden" name="orderId" value="@Model.OrderId" />
+			<input type="hidden" name="orderId" value="@Model.Id" />
 			<button type="submit" class="btn btn-primary"
 					@(Model.Status is OrderStatus.Confirmed ? "disabled" : null)>
 				Complete

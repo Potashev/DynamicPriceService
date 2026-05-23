@@ -47,8 +47,6 @@ public static class DbInitializer
 
 		var companies = context.Companies.ToList();
 
-		//TODO: get companies to set companyId
-
 		if (!await context.PriceRules.AnyAsync())
 		{
 			context.PriceRules.AddRange(

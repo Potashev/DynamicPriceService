@@ -47,12 +47,12 @@
 					<td>@Html.DisplayFor(modelItem => item.CustomerName)</td>
 					<td>@Html.DisplayFor(modelItem => item.OrderDate)</td>
 					<td>
-						<form asp-action="ReadyForReceive" asp-route-orderId="@item.OrderId" method="post" style="display:inline;">
+						<form asp-action="ReadyForReceive" asp-route-orderId="@item.Id" method="post" style="display:inline;">
 							<button type="submit" class="btn btn-primary btn-sm">Ready for receive</button>
 						</form>
 					</td>
 					<td>
-						<a asp-action="Details" asp-route-id="@item.OrderId">Details</a>
+						<a asp-action="Details" asp-route-id="@item.Id">Details</a>
 					</td>
 				</tr>
 			}
@@ -96,7 +96,7 @@
 				<td>@Html.DisplayFor(modelItem => item.CustomerName)</td>
 				<td>@Html.DisplayFor(modelItem => item.OrderDate)</td>
 				<td><order-status status="@(DynamicPrice.Client.Infrastructure.TagHelpers.OrderStatus)item.Status"></order-status></td>
-				<td><a asp-action="Details" asp-route-id="@item.OrderId">Details</a></td>
+				<td><a asp-action="Details" asp-route-id="@item.Id">Details</a></td>
 			</tr>
 		}
 	</tbody>

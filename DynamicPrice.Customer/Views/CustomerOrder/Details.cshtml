@@ -82,7 +82,7 @@
 	{
 		<form asp-action="GetReceiveKey" method="get" style="display:inline;">
 			<input type="hidden" name="receiveKey" value="@Model.ReceiveKey" />
-			<input type="hidden" name="orderId" value="@Model.OrderId" />
+			<input type="hidden" name="orderId" value="@Model.Id" />
 			<button type="submit" class="btn btn-primary"
 					@(Model.Status is OrderStatus.Confirmed ? "disabled" : null)>
 				Receive Key
@@ -90,7 +90,7 @@
 		</form>
 		<span> | </span>
 		<form asp-action="Cancel" method="post" style="display:inline;">
-			<input type="hidden" name="orderId" value="@Model.OrderId" />
+			<input type="hidden" name="orderId" value="@Model.Id" />
 			<button type="submit" class="btn btn-danger">Cancel Order</button>
 		</form>
 		<span> | </span>

@@ -15,8 +15,8 @@ namespace DynamicPrice.Core.Services;
 /// </summary>
 public class FindProductsToReduceService : BackgroundService
 {
-	//private const int NEXT_MONITOR_MILLISECONDS = 1000;
-	private const int NEXT_MONITOR_MILLISECONDS = 5000;
+	private const int NEXT_MONITOR_MILLISECONDS = 1000;
+	//private const int NEXT_MONITOR_MILLISECONDS = 5000;
 
 	private readonly IServiceProvider _serviceProvider;
 	private readonly ILogger<FindProductsToReduceService> _logger;
@@ -121,7 +121,8 @@ public class FindProductsToReduceService : BackgroundService
 			from p in productsActiveCompaniesQuery
 			join pr in priceRulesActiveCompaniesQuery
 				on p.CompanyId equals pr.CompanyId
-			//where EF.Functions.DateDiffSecond(p.LastSellTime, DateTime.UtcNow) > pr.NoSellSeconds		//todo: updated for postgres
+			//where EF.Functions.DateDiffSecond(p.LastSellTime, DateTime.UtcNow) > pr.NoSellSeconds
+			where p.LastSellTime < DateTime.UtcNow.AddSeconds(-pr.NoSellSeconds)	//todo: check
 			select p;
 
 		await foreach (var product in query.AsAsyncEnumerable().WithCancellation(token))
